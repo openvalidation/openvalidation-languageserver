@@ -51,7 +51,5 @@ node .\node_modules\ov-language-server\lib\server.js
 ```
 ### Clients
 
-The following editors and IDEs have available clients:
-
-- Visual Studio Code ([vscode-ovl](https://github.com/NLueg/vscode-ovl.git))
-
+The language server is currently not used in a specific client.
+But stay tuned, we will provide an extension for several editors soon!
