@@ -1,7 +1,8 @@
 # openVALIDATION Language Server
 
-_This repository is under heavy development._
+[![npm version](https://badge.fury.io/js/ov-language-server.svg)](https://badge.fury.io/js/ov-language-server)
 
+_This repository is under heavy development._
 
 This is a [language-server](https://microsoft.github.io/language-server-protocol/) implementation of the domain-specific-langauge [openVALIDATION](https://github.com/openvalidation/openvalidation).
 The server currently requires an installed Java-Version because the server requires a Java-backend.
