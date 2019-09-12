@@ -103,7 +103,7 @@ export class VariableNode extends GenericNode {
     }
 
 
-    public getHoverContent(): HoverContent {
+    public getHoverContent(): HoverContent | null {
         var content: HoverContent = new HoverContent(this.getRange());
 
         var contentText = "Variable " + this.getName();

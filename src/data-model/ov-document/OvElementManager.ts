@@ -35,21 +35,14 @@ export class OvElementManager {
         this._elements.push(element);
     }
 
-    public overrideElement(element: GenericNode, index: number, newRange: [number, number]) {
+    public overrideElement(element: GenericNode, index: number) {
         if (this._elements.length <= index) {
-            // TODO: How to calculate the range correctly?
             this._elements.push(element);
             if (this._elements.length <= index)
                 throw Error("Can't override Element");
         }
 
-        element.updateRangeLines(this._elements[index].getRange().getStart().getLine());
         this._elements[index] = element;
-
-        var lineDifference: number = newRange[1] - this._elements[index].getRange().getEnd().getLine();
-        for (let j = index + 1; j < this._elements.length; j++) {
-            this._elements[j].updateRangeLines(lineDifference);
-        }
     }
 
     public addElements(element: GenericNode[]) {
@@ -174,7 +167,12 @@ export class OvElementManager {
 
             var element = this.getElements()[index];
             var difference: number = indices[0] - element.getRange().getStart().getLine();
-            element.updateRangeLines(difference)
+            element.updateRangeLines(difference);
+
+            var errors = this.getErrors()[index];
+            for (const error of errors) {
+                error.range = Range.create(indices[0], 0, indices[1], 20);
+            }
         }
     }
 }

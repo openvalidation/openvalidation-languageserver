@@ -10,5 +10,5 @@ export abstract class ConditionNode extends OperandNode {
     }
 
     abstract getChilds(): GenericNode[];
-    abstract getHoverContent(): HoverContent;
+    abstract getHoverContent(): HoverContent | null;
 }

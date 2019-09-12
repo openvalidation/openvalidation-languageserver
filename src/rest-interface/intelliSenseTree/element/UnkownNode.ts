@@ -45,7 +45,8 @@ export class UnkownNode extends GenericNode {
         return [];
     }
 
-    public getHoverContent(): HoverContent {
+    public getHoverContent(): HoverContent | null | null {
+        if (!this.content) return null;
         return this.content.getHoverContent();
     }
 

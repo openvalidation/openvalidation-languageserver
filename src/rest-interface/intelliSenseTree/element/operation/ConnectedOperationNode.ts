@@ -40,7 +40,7 @@ export class ConnectedOperationNode extends ConditionNode {
         return childList;
     }
 
-    public getHoverContent(): HoverContent {
+    public getHoverContent(): HoverContent | null {
         var content: HoverContent = new HoverContent(this.getRange());
 
         content.setContent("ConnectedOperation");

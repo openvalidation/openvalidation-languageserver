@@ -20,7 +20,7 @@ export class CommentNode extends GenericNode {
         return childList;
     }
 
-    public getHoverContent(): HoverContent {
+    public getHoverContent(): HoverContent | null {
         var content: HoverContent = new HoverContent(this.getRange());
 
         content.setContent("Comment");

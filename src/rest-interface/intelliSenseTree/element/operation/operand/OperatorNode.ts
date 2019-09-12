@@ -45,7 +45,7 @@ export class OperatorNode extends GenericNode {
         return childList;
     }
 
-    public getHoverContent(): HoverContent {
+    public getHoverContent(): HoverContent | null {
         var content: HoverContent = new HoverContent(this.getRange());
 
         content.setContent("Operator " + this.getOperator() + ": " + this.getDataType());

@@ -49,7 +49,7 @@ export class FunctionOperandNode extends OperandNode {
         this.parameters = value;
     }
 
-    public getHoverContent(): HoverContent {
+    public getHoverContent(): HoverContent | null {
         var content: HoverContent = new HoverContent(this.getRange());
 
         content.setContent("Function " + this.getName() + ": " + this.getDataType());

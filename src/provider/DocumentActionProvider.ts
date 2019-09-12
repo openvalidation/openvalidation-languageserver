@@ -1,10 +1,10 @@
-// import { String } from "typescript-string-operations";
+import { String } from "typescript-string-operations";
 import { Diagnostic, DiagnosticSeverity, Position, Range, TextDocument, TextDocumentChangeEvent } from "vscode-languageserver-types";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
-// import { StringHelper } from "../helper/StringHelper";
+import { StringHelper } from "../helper/StringHelper";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
-// import { GenericNode } from "../rest-interface/intelliSenseTree/GenericNode";
+import { GenericNode } from "../rest-interface/intelliSenseTree/GenericNode";
 import { ApiGlobalResponseError } from "../rest-interface/response/error/ApiGlobalResponseError";
 import { ApiRuleResponseError } from "../rest-interface/response/error/ApiRuleResponseError";
 import { GeneralApiResponse } from "../rest-interface/response/GeneralApiResponse";
@@ -78,68 +78,66 @@ export class DocumentActionProvider extends Provider {
         }
     }
 
-    // private getChangedElements(oldNodes: GenericNode[], newString: string): [[string | null, number][], [number, number][]] {
-    //     var rangeList: [number, number][] = [];
-    //     var linesList: [string | null, number][] = [];
+    private getChangedElements(oldNodes: GenericNode[], newString: string): [[string | null, number][], [number, number][]] {
+        var rangeList: [number, number][] = [];
+        var linesList: [string | null, number][] = [];
 
-    //     // TODO: Iterate per Line and nicht per "element"
+        var newElements: [string[], number][] = StringHelper.getLinesPerElement(newString);
 
-    //     var newElements: [string[], number][] = StringHelper.getLinesPerElement(newString);
+        var index: number = 0;
+        var indexPuffer: number = 0;
+        while (index < newElements.length) {
+            const newElement: [string[], number] = newElements[index + indexPuffer];
+            if (oldNodes.length <= index) break;
+            const oldNode = oldNodes[index];
 
-    //     var index: number = 0;
-    //     var indexPuffer: number = 0;
-    //     while (index < newElements.length) {
-    //         const newElement: [string[], number] = newElements[index + indexPuffer];
-    //         if (oldNodes.length <= index) break;
-    //         const oldNode = oldNodes[index];
+            var newLines = newElement[0];
+            var startLine = newElement[1];
 
-    //         var newLines = newElement[0];
-    //         var startLine = newElement[1];
+            var relevantLines: string[] = [];
 
-    //         var relevantLines: string[] = [];
+            // Iterate over every line
+            var linesChanged: boolean = oldNode.getLines().length != newLines.length;
+            for (var secondIndex = 0; secondIndex < newLines.length; secondIndex++) {
+                const newLine = newLines[secondIndex];
+                const oldLine = oldNode.getLines()[secondIndex];
 
-    //         // Iterate over every line
-    //         var linesChanged: boolean = oldNode.getLines().length != newElement.length;
-    //         for (var secondIndex = 0; secondIndex < newElement.length; secondIndex++) {
-    //             const newLine = newLines[secondIndex];
-    //             const oldLine = oldNode.getLines()[secondIndex];
+                if (newLine != oldLine) {
+                    linesChanged = true;
+                }
 
-    //             if (newLine != oldLine) {
-    //                 linesChanged = true;
-    //             }
+                if (!String.IsNullOrWhiteSpace(newLine)) {
+                    relevantLines.push(newLine);
+                }
+            }
 
-    //             if (!String.IsNullOrWhiteSpace(newLine)) {
-    //                 relevantLines.push(newLine);
-    //             }
-    //         }
+            if (linesChanged) {
+                rangeList.push([startLine, startLine + relevantLines.length - 1]);
+                linesList.push([relevantLines.join("\n"), index]);
+            } else {
+                rangeList.push([startLine, startLine + relevantLines.length - 1]);
+                linesList.push([null, index]);
+            }
+            index++;
+        }
 
-    //         if (linesChanged) {
-    //             rangeList.push([startLine, startLine + relevantLines.length - 1]);
-    //             linesList.push([relevantLines.join("\n"), index]);
-    //         } else {
-    //             rangeList.push([startLine, startLine + relevantLines.length - 1]);
-    //             linesList.push([null, index]);
-    //         }
-    //         index++;
-    //     }
+        // Add new Elements
+        if (index < newElements.length) {
+            for (let j = index; j < newElements.length; j++) {
+                const elementLines = newElements[j][0];
+                const startIndex = newElements[j][1];
 
-    //     // Add new Elements
-    //     if (index < newElements.length) {
-    //         for (let j = index; j < newElements.length; j++) {
-    //             const elementLines = newElements[j][0];
-    //             const startIndex = newElements[j][1];
+                if (elementLines.length > 0) {
+                    rangeList.push([startIndex, startIndex + elementLines.length - 1]);
+                    linesList.push([elementLines.join("\n"), index]);
+                }
+            }
+        }
 
-    //             if (elementLines.length > 0) {
-    //                 rangeList.push([startIndex, startIndex + elementLines.length - 1]);
-    //                 linesList.push([elementLines.join("\n"), index]);
-    //             }
-    //         }
-    //     }
+        // TODO: Generate ONLY the changed lines
 
-    //     // TODO: Generate ONLY the changed lines
-
-    //     return [linesList, rangeList];
-    // }
+        return [linesList, rangeList];
+    }
 
     /**
      * Validates the given document and send the diagnostics and specific ov-notification if necessary
@@ -159,37 +157,34 @@ export class DocumentActionProvider extends Provider {
         var apiResponse: GeneralApiResponse | null = null;
         var ovDocument: OvDocument | undefined = this.server.ovDocuments.get(uri);
 
-        // if (!!ovDocument) {
-        //     var newString: string = document.getText();
-        //     var parsingTupleList = this.getChangedElements(ovDocument.elementManager.getElements(), newString);
+        if (!!ovDocument) {
+            var newString: string = document.getText();
+            var parsingTuple = this.getChangedElements(ovDocument.elementManager.getElements(), newString);
 
+            for (let index = 0; index < parsingTuple[0].length; index++) {
+                const tuple = parsingTuple[0][index];
+                var scope: GenericNode | null = null;
 
-        //     ovDocument.elementManager.updateElementRanges(parsingTupleList[1]);
-        //     console.log(parsingTupleList);
-        //     // TODO: Modify ranges
+                if (!!tuple[0]) {
+                    var parsedElement = await ApiProxy.postLintingData(tuple[0], this.server.restParameter, ovDocument);
+                    if (!parsedElement || !parsedElement.getScope()) continue;
 
-        //     // for (let index = 0; index < parsingTupleList.length; index++) {
-        //     //     const tuple = parsingTupleList[index];
-        //     //     var scope: GenericNode | null = null;
+                    const number = tuple[1];
+                    scope = parsedElement.getScope();
+                    ovDocument.elementManager.overrideElement(scope!, tuple[1]);
 
-        //     //     if (!!tuple[0]) {
-        //     //         var parsedElement = await ApiProxy.postLintingData(tuple[0], this.server.restParameter, ovDocument);
-        //     //         if (!parsedElement || !parsedElement.getScope()) continue;
+                    // TODO: Manipulate Error, that the Error can be passed to the right position
+                    ovDocument.elementManager.overrideError(parsedElement.getErrors().map(err => err.toDiagnostic(scope!.getRange()))!, number);
+                }
+            }
 
-        //     //         const number = tuple[1];
-        //     //         scope = parsedElement.getScope();
-        //     //         // ovDocument.elementManager.overrideElement(scope!, number, tuple[2]);
+            ovDocument.elementManager.updateElementRanges(parsingTuple[1]);
 
-        //     //         // TODO: Manipulate Error, that the Error can be passed to the right position
-        //     //         ovDocument.elementManager.overrideError(parsedElement.getErrors().map(err => err.toDiagnostic(scope!.getRange()))!, number);
-        //     //     }
-        //     // }
-
-        //     var diagnostics: Diagnostic[] = [];
-        //     ovDocument.elementManager.getErrors().forEach(list => diagnostics = diagnostics.concat(list));
-        //     if (diagnostics !== [])
-        //         this.sendDiagnostics(document, diagnostics);
-        // } else {
+            var diagnostics: Diagnostic[] = [];
+            ovDocument.elementManager.getErrors().forEach(list => diagnostics = diagnostics.concat(list));
+            if (diagnostics !== [])
+                this.sendDiagnostics(document, diagnostics);
+        } else {
 
             try {
                 apiResponse = await ApiProxy.postData(document.getText(), this.server.restParameter);
@@ -212,14 +207,29 @@ export class DocumentActionProvider extends Provider {
             var diagnostics: Diagnostic[] = this.generateDiagnostics(apiResponse, ovDocument);
             if (diagnostics !== [])
                 this.sendDiagnostics(document, diagnostics);
-        // }
+        }
 
-        if (!apiResponse || !ovDocument) return;
+        try {
+            apiResponse = await ApiProxy.postData(document.getText(), this.server.restParameter);
+        } catch (err) {
+            console.error("doValidate: " + err);
+
+            if (err != null &&
+                err.response != null &&
+                err.response.data != null) {
+                var diagnostic: Diagnostic = Diagnostic.create(Range.create(0, 0, 0, 1), err.response.data.message, DiagnosticSeverity.Error);
+                this.sendDiagnostics(document, [diagnostic]);
+            }
+            return;
+        }
+
+        if (!ovDocument) return;
         this.server.ovDocuments.addOrOverrideOvDocument(document.uri, ovDocument);
-        this.server.setGeneratedSchema(apiResponse);
 
-        if (apiResponse != null)
+        if (apiResponse != null) {
             this.syntaxNotifier.sendNotificationsIfNecessary(apiResponse);
+            this.server.setGeneratedSchema(apiResponse);
+        }
     }
 
     /**

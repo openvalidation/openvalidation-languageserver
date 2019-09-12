@@ -49,7 +49,7 @@ export class ArrayOperandNode extends OperandNode {
         this.items = value;
     }
 
-    public getHoverContent(): HoverContent {
+    public getHoverContent(): HoverContent | null {
         var content: HoverContent = new HoverContent(this.getRange());
 
         content.setContent("Operand: " + this.getDataType() + "[]");

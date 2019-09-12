@@ -39,7 +39,7 @@ export abstract class GenericNode {
     }
 
     abstract getChilds(): GenericNode[];
-    abstract getHoverContent(): HoverContent;
+    abstract getHoverContent(): HoverContent | null;
     abstract getCompletionContainer(): CompletionContainer;
 
     public updateRangeLines(difference: number): void {
