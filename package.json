@@ -1,6 +1,6 @@
 {
   "name": "ov-language-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -46,8 +46,8 @@
   "scripts": {
     "prepare": "npm run clean && npm run build",
     "clean": "rimraf lib",
-    "build": "tsc",
-    "start": "npm run build && npm run copy:jar && node lib/server.js",
+    "build": "tsc && npm run copy:jar",
+    "start": "npm run build && node lib/server.js",
     "start:watch": "nodemon",
     "test": "jest",
     "test:watch": "jest --watch",

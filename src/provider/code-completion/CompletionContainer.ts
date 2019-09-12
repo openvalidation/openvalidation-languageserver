@@ -50,8 +50,8 @@ export class CompletionContainer {
 
     public getCompletions(declarations: Variable[], aliasHelper: AliasHelper, schema: ISchemaType): CompletionGenerator {
         var generator: CompletionGenerator = new CompletionGenerator(declarations, aliasHelper, schema, this.prependingText);
-
-        this.types.forEach(type => {
+        let uniqueTypes = [... new Set(this.types)];
+        uniqueTypes.forEach(type => {
             switch (type) {
                 case CompletionType.Globals:
                     generator.addGlobals();

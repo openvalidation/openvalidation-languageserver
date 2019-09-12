@@ -90,7 +90,7 @@ export class CompletionGenerator {
 
         var functions = this.aliasHelper.getFunctions();
         functions.forEach(func => {
-            this.addFunction(func, "Bla", "c");
+            this.addFunction(func, "", "c");
         })
         return this;
     }

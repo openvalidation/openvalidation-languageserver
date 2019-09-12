@@ -41,7 +41,7 @@ export class OvServer {
 
     constructor(public readonly connection: IConnection) {
         this.language = Language.Java;
-        this.culture = Culture.German;
+        this.culture = Culture.English;
         this.schema = { complexData: [], dataProperties: [] };
         this.jsonSchema = JSON.parse(JSON.stringify({}));
 
