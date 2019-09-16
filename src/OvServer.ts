@@ -14,9 +14,9 @@ import { HoverProvider } from "./provider/HoverProvider";
 import { RenameProvider } from "./provider/RenameProvider";
 import { ApiProxy } from './rest-interface/ApiProxy';
 import { Culture, Language } from "./rest-interface/ParsingEnums";
-import { GeneralApiResponse } from './rest-interface/response/GeneralApiResponse';
 import { RestParameter } from './rest-interface/RestParameter';
 import { ISchemaType } from './rest-interface/schema/ISchemaType';
+import { LintingResponse } from "./rest-interface/response/LintingResponse";
 
 /**
  * Main-object to bind the websocket connection to the function-providers
@@ -186,9 +186,9 @@ export class OvServer {
      * @param {GeneralApiResponse} data current parsing result
      * @memberof OvServer
      */
-    public setGeneratedSchema(data: GeneralApiResponse) {
-        if (!!data.schema)
-            this.schema = data.schema;
+    public setGeneratedSchema(data: LintingResponse) {
+        if (!!data.getSchema())
+            this.schema = data.getSchema();
     }
 
     /**

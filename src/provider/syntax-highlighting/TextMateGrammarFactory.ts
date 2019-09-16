@@ -1,8 +1,8 @@
 import { StringHelper } from "../../helper/StringHelper";
 import { OvServer } from "../../OvServer";
-import { GeneralApiResponse } from "../../rest-interface/response/GeneralApiResponse";
 import { Pattern, TextMateJson } from "./TextMateJson";
 import { TextMateParameter } from "./TextMateParameter";
+import { LintingResponse } from "../../rest-interface/response/LintingResponse";
 
 export class TextMateGrammarFactory {
 
@@ -19,7 +19,7 @@ export class TextMateGrammarFactory {
      * @returns {object} JSON-Object of the TextMate-Grammar
      * @memberof OvSyntaxNotifier
      */
-    public generateTextMateGrammar(apiResponse: GeneralApiResponse, server: OvServer): any {
+    public generateTextMateGrammar(apiResponse: LintingResponse, server: OvServer): any {
         var parameter: TextMateParameter = new TextMateParameter(apiResponse, server);
         return this.fillTextMateGrammar(parameter);
     }

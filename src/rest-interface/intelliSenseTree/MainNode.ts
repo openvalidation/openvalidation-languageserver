@@ -2,6 +2,7 @@ import { Type } from "class-transformer";
 import { GenericNode } from "./GenericNode";
 import { Variable } from "./Variable";
 import { getGenericOptions } from "./TypeDecorator";
+import { LintingError } from "../response/LintingError";
 
 export class MainNode {
     @Type(() => Variable)
@@ -10,9 +11,13 @@ export class MainNode {
     @Type(() => GenericNode, getGenericOptions())
     private scopes: GenericNode[];
 
+    @Type(() => LintingError)
+    private errors: LintingError[];
+
     constructor() {
         this.declarations = [];
-        this.scopes = []
+        this.scopes = [];
+        this.errors = [];
     }
 
     public getDeclarations(): Variable[] {
@@ -20,6 +25,13 @@ export class MainNode {
     }
     public setDeclarations(value: Variable[]) {
         this.declarations = value;
+    }
+
+    public getErrors(): LintingError[] {
+        return this.errors;
+    }
+    public setErrors(errors: LintingError[]) {
+        this.errors = errors;
     }
 
     public getScopes(): GenericNode[] {

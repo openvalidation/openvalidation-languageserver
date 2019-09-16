@@ -5,7 +5,7 @@ import { AliasKey } from "../../aliases/AliasKey";
 import { StringHelper } from "../../helper/StringHelper";
 import { TreeTraversal } from "../../helper/TreeTraversal";
 import { OvServer } from "../../OvServer";
-import { GeneralApiResponse } from "../../rest-interface/response/GeneralApiResponse";
+import { LintingResponse } from "../../rest-interface/response/LintingResponse";
 import { ISchemaProperty } from "../../rest-interface/schema/ISchemaProperty";
 import { OperationSyntaxStructure } from "./OperatorSyntaxStructure";
 
@@ -20,16 +20,16 @@ export class TextMateParameter {
 
     private aliasHelper: AliasHelper;
 
-    constructor(private readonly apiResponse: GeneralApiResponse, server: OvServer) {
+    constructor(private readonly apiResponse: LintingResponse, server: OvServer) {
         this.aliasHelper = server.aliasHelper;
 
-        this._staticStrings = !apiResponse.staticStrings ? [] : apiResponse.staticStrings;
+        this._staticStrings = !apiResponse.getStaticStrings() ? [] : apiResponse.getStaticStrings();
         this._identifier = this.getIdentifier(server.schema.dataProperties);
         this._complexSchemaProperties = server.schema.complexData;
         this._keywords = server.aliasHelper.getGenericKeywords();
 
         var traversal = new TreeTraversal();
-        var tmpOperations = traversal.getOperations(apiResponse.mainAstNode.getScopes());
+        var tmpOperations = traversal.getOperations(apiResponse.getMainAstNode().getScopes());
         this._operations = tmpOperations.map(o => new OperationSyntaxStructure(o));
 
         this._thenKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.THEN);
@@ -70,8 +70,8 @@ export class TextMateParameter {
     private getIdentifier(schema: Array<ISchemaProperty>): string[] {
         var identifier: string[] = [];
 
-        if (!!this.apiResponse.variableNames)
-            identifier = identifier.concat(this.apiResponse.variableNames.filter(n => !String.IsNullOrWhiteSpace(n)));
+        if (!!this.apiResponse.getVariableNames())
+            identifier = identifier.concat(this.apiResponse.getVariableNames().filter(n => !String.IsNullOrWhiteSpace(n)));
 
         if (!!schema && schema.length > 0)
             identifier = identifier.concat(schema.map(property => property.name));

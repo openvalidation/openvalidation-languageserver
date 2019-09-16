@@ -4,6 +4,7 @@ import { OvServer } from "../OvServer";
 import { GeneralApiResponse } from "../rest-interface/response/GeneralApiResponse";
 import { ApiResponseSuccess } from "../rest-interface/response/success/ApiResponseSuccess";
 import { TextMateGrammarFactory } from "./syntax-highlighting/TextMateGrammarFactory";
+import { LintingResponse } from "src/rest-interface/response/LintingResponse";
 
 /**
  * Generates the parameter of the notification "textDocument/semanticHighlighting" which isn't part of 
@@ -23,13 +24,7 @@ export class OvSyntaxNotifier {
         this.textMateGrammarFactory = new TextMateGrammarFactory;
     }
 
-    /**
-     * Sends the required notifications for semantic-highlighting and generated code
-     *
-     * @param {GeneralApiResponse} apiResponse response that holds the implementation results
-     * @memberof OvSyntaxNotifier
-     */
-    public sendNotificationsIfNecessary(apiResponse: GeneralApiResponse): void {
+    public sendTextMateGrammarIfNecessary(apiResponse: LintingResponse): void {
         var textMateGrammar = this.textMateGrammarFactory.generateTextMateGrammar(apiResponse, this.server);
 
         //Check, if the new grammar is different and musst be send to the client
@@ -37,7 +32,9 @@ export class OvSyntaxNotifier {
             this.textMateGrammar = textMateGrammar;
             this.server.connection.sendNotification("textDocument/semanticHighlighting", textMateGrammar);
         }
+    }
 
+    public sendGeneratedCodeIfNecessary(apiResponse: GeneralApiResponse): void {
         var apiSuccess: ApiResponseSuccess = apiResponse as ApiResponseSuccess;
         var newCodeNotification = this.generatedCodeDataObject(apiSuccess);
 

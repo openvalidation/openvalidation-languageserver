@@ -1,7 +1,9 @@
-import { GenericNode } from "../intelliSenseTree/GenericNode";
-import { IRuleResponseError } from "./error/IRuleResponseError";
+import { MainNode } from "../intelliSenseTree/MainNode";
+import { ISchemaType } from "../schema/ISchemaType";
 
 export interface ILintingResponse {
-    scope: GenericNode | null;
-    errors: IRuleResponseError[];
+    variableNames: string[];
+    staticStrings: string[];
+    mainAstNode: MainNode;
+    schema: ISchemaType;
 }

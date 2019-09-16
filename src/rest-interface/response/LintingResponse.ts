@@ -1,48 +1,44 @@
 import { Type } from "class-transformer";
-import { CommentNode } from "../intelliSenseTree/element/CommentNode";
-import { ArrayOperandNode } from "../intelliSenseTree/element/operation/operand/ArrayOperandNode";
-import { FunctionOperandNode } from "../intelliSenseTree/element/operation/operand/FunctionOperandNode";
-import { OperandNode } from "../intelliSenseTree/element/operation/operand/OperandNode";
-import { ConnectedOperationNode } from "../intelliSenseTree/element/operation/ConnectedOperationNode";
-import { OperationNode } from "../intelliSenseTree/element/operation/OperationNode";
-import { RuleNode } from "../intelliSenseTree/element/RuleNode";
-import { UnkownNode } from "../intelliSenseTree/element/UnkownNode";
-import { VariableNode } from "../intelliSenseTree/element/VariableNode";
-import { GenericNode } from "../intelliSenseTree/GenericNode";
 import { RuleResponseError } from "./error/RuleResponseError";
+import { MainNode } from "../intelliSenseTree/MainNode";
+import { ISchemaType } from "../schema/ISchemaType";
 
 export class LintingResponse {
-    @Type(() => GenericNode, {
-        discriminator: {
-            property: "type",
-            subTypes: [
-                { value: CommentNode, name: "CommentNode" },
-                { value: VariableNode, name: "VariableNode" },
-                { value: RuleNode, name: "RuleNode" },
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
-                { value: FunctionOperandNode, name: "FunctionOperandNode" },
-                { value: OperandNode, name: "OperandNode" },
-                { value: UnkownNode, name: "UnkownNode" },
-                { value: ArrayOperandNode, name: "ArrayOperandNode"}
-            ]
-        }
-    })
-    private scope: GenericNode | null;
+    private variableNames: string[];
+    private staticStrings: string[];
+    private schema: ISchemaType;
 
+    @Type(() => MainNode)
+    private mainAstNode: MainNode;
+    
     @Type(() => RuleResponseError)
     private errors: RuleResponseError[];
 
-    constructor() {
-        this.scope = null;
+    constructor(mainAstNode: MainNode, schema: ISchemaType) {
         this.errors = [];
-    }
-
-    public getScope(): GenericNode | null {
-        return this.scope;
+        this.variableNames = [];
+        this.staticStrings = [];
+        this.mainAstNode = mainAstNode;
+        this.schema = schema;
     }
 
     public getErrors(): RuleResponseError[] {
         return this.errors;
+    }
+
+    public getVariableNames(): string[] {
+        return this.variableNames;
+    }
+    
+    public getStaticStrings(): string[] {
+        return this.staticStrings;
+    }
+
+    public getMainAstNode(): MainNode {
+        return this.mainAstNode;
+    }
+
+    public getSchema(): ISchemaType {
+        return this.schema;
     }
 }

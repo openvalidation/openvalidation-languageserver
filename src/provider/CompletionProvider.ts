@@ -105,7 +105,7 @@ export class CompletionProvider extends Provider {
             declarations = ovDocument.declarations;
         }
 
-        var parsedElement = await ApiProxy.postLintingData(parseString, this.server.restParameter, ovDocument);
+        var parsedElement = await ApiProxy.postCompletionData(parseString, this.server.restParameter, ovDocument);
         if (!parsedElement || !parsedElement.getScope())
             return CompletionGenerator.default(declarations, this.server);
 
