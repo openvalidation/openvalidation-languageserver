@@ -6,7 +6,6 @@ import { GeneralApiResponse } from "../rest-interface/response/GeneralApiRespons
 import { OvSyntaxNotifier } from "./OvSyntaxNotifier";
 import { Provider } from "./Provider";
 import { LintingResponse } from "src/rest-interface/response/LintingResponse";
-import { MainNode } from "src/rest-interface/intelliSenseTree/MainNode";
 
 /**
  * Provider to handle every response which deals with documents. In addition, it handels
@@ -104,7 +103,7 @@ export class DocumentActionProvider extends Provider {
         ovDocument = this.generateDocumentWithAst(apiResponse, document.getText());
 
         if (!ovDocument) return;
-        var diagnostics: Diagnostic[] = this.generateDiagnostics(apiResponse, ovDocument);
+        var diagnostics: Diagnostic[] = this.generateDiagnostics(apiResponse);
         if (diagnostics !== [])
             this.sendDiagnostics(document, diagnostics);
 
@@ -152,15 +151,11 @@ export class DocumentActionProvider extends Provider {
      * @returns {Diagnostic[]}
      * @memberof DocumentActionProvider
      */
-    private generateDiagnostics(apiResponse: LintingResponse | null, ovDocument: OvDocument): Diagnostic[] {
+    private generateDiagnostics(apiResponse: LintingResponse | null): Diagnostic[] {
+        if (apiResponse == null) return [];
+
         var diagnostics: Diagnostic[] = [];
-
-        if (apiResponse == null) return diagnostics;
-
-        var mainNode: MainNode = apiResponse.getMainAstNode();
-        if (mainNode == null) return diagnostics;
-
-        for (const error of mainNode.getErrors()) {
+        for (const error of apiResponse.getErrors()) {
             var diagnostic: Diagnostic = Diagnostic.create(error.getRange().asRange(), error.getMessage());
             diagnostic.severity = DiagnosticSeverity.Error;
             diagnostics.push(diagnostic);

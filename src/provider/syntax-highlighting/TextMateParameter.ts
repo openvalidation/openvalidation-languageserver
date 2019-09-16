@@ -70,8 +70,11 @@ export class TextMateParameter {
     private getIdentifier(schema: Array<ISchemaProperty>): string[] {
         var identifier: string[] = [];
 
-        if (!!this.apiResponse.getVariableNames())
-            identifier = identifier.concat(this.apiResponse.getVariableNames().filter(n => !String.IsNullOrWhiteSpace(n)));
+        if (!!this.apiResponse.getMainAstNode() &&
+            !!this.apiResponse.getMainAstNode().getDeclarations()) {
+            var names: string[] = this.apiResponse.getMainAstNode().getDeclarations().map(d => d.getName());
+            identifier = identifier.concat(names.filter(n => !String.IsNullOrWhiteSpace(n)));
+        }
 
         if (!!schema && schema.length > 0)
             identifier = identifier.concat(schema.map(property => property.name));
