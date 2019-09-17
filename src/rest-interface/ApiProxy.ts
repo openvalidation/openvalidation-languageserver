@@ -1,12 +1,12 @@
 import axios, { AxiosResponse } from "axios";
 import { plainToClass } from "class-transformer";
-import { GeneralApiResponse } from "src/rest-interface/response/GeneralApiResponse";
+import { OvDocument } from "../data-model/ov-document/OvDocument";
 import { AliasesWithOperators } from "./aliases/AliasesWithOperators";
 import { Culture } from "./ParsingEnums";
-import { LintingResponse } from "./response/LintingResponse";
-import { RestParameter } from "./RestParameter";
-import { OvDocument } from "src/data-model/ov-document/OvDocument";
 import { CompletionResponse } from "./response/CompletionResponse";
+import { LintingResponse } from "./response/LintingResponse";
+import { CodeResponse } from "./response/CodeResponse";
+import { RestParameter } from "./RestParameter";
 
 /**
  * Class for requests to the openVALIDATION REST-API
@@ -26,10 +26,10 @@ export class ApiProxy {
      * @param {JSON} schema schema-definition as a JSON
      * @param {Culture} culture culture of the used natural languages
      * @param {Language} language programming-language where the rules should be parsed in
-     * @returns {Promise<GeneralApiResponse>}
+     * @returns {Promise<CodeResponse>}
      * @memberof ApiProxy
      */
-    public static async postData(rule: string, parameter: RestParameter): Promise<GeneralApiResponse | null> {
+    public static async postData(rule: string, parameter: RestParameter): Promise<CodeResponse | null> {
         var data = {
             "rule": rule,
             "schema": JSON.stringify(parameter.schema),
@@ -38,7 +38,7 @@ export class ApiProxy {
         };
 
         try {
-            var response: AxiosResponse<GeneralApiResponse> = await axios.post(this.apiUrl, data, {
+            var response: AxiosResponse<CodeResponse> = await axios.post(this.apiUrl, data, {
                 validateStatus: (status) => { return status == 418 || status == 200; },
                 headers: { "content-type": "application/json" }
             });    

@@ -1,4 +1,4 @@
-import { GeneralApiResponse } from "../GeneralApiResponse";
+import { GeneralApiResponse } from "./GeneralApiResponse";
 
 /**
  * Data-Object for a successful REST-Request
@@ -7,7 +7,7 @@ import { GeneralApiResponse } from "../GeneralApiResponse";
  * @interface ApiResponseSuccess
  * @extends {GeneralApiResponse}
  */
-export interface ApiResponseSuccess extends GeneralApiResponse {
+export interface CodeResponse extends GeneralApiResponse {
     frameworkResult: string;
     implementationResult: string;
 }

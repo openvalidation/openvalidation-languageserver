@@ -1,11 +1,11 @@
-import { Diagnostic, TextDocument, TextDocumentChangeEvent, DiagnosticSeverity } from "vscode-languageserver-types";
+import { CodeResponse } from "src/rest-interface/response/CodeResponse";
+import { LintingResponse } from "src/rest-interface/response/LintingResponse";
+import { Diagnostic, DiagnosticSeverity, TextDocument, TextDocumentChangeEvent } from "vscode-languageserver-types";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
-import { GeneralApiResponse } from "../rest-interface/response/GeneralApiResponse";
 import { OvSyntaxNotifier } from "./OvSyntaxNotifier";
 import { Provider } from "./Provider";
-import { LintingResponse } from "src/rest-interface/response/LintingResponse";
 
 /**
  * Provider to handle every response which deals with documents. In addition, it handels
@@ -112,7 +112,7 @@ export class DocumentActionProvider extends Provider {
         this.server.setGeneratedSchema(apiResponse);
         this.syntaxNotifier.sendTextMateGrammarIfNecessary(apiResponse);
 
-        var codeGenerationResponse: GeneralApiResponse | null = null;
+        var codeGenerationResponse: CodeResponse | null = null;
         try {
             codeGenerationResponse = await ApiProxy.postData(document.getText(), this.server.restParameter);
         }

@@ -1,8 +1,7 @@
 import * as _ from "lodash";
 import { OvStringHelper } from "../helper/OvStringHelper";
 import { OvServer } from "../OvServer";
-import { GeneralApiResponse } from "../rest-interface/response/GeneralApiResponse";
-import { ApiResponseSuccess } from "../rest-interface/response/success/ApiResponseSuccess";
+import { CodeResponse } from "../rest-interface/response/CodeResponse";
 import { TextMateGrammarFactory } from "./syntax-highlighting/TextMateGrammarFactory";
 import { LintingResponse } from "src/rest-interface/response/LintingResponse";
 
@@ -34,9 +33,8 @@ export class OvSyntaxNotifier {
         }
     }
 
-    public sendGeneratedCodeIfNecessary(apiResponse: GeneralApiResponse): void {
-        var apiSuccess: ApiResponseSuccess = apiResponse as ApiResponseSuccess;
-        var newCodeNotification = this.generatedCodeDataObject(apiSuccess);
+    public sendGeneratedCodeIfNecessary(apiResponse: CodeResponse): void {
+        var newCodeNotification = this.generatedCodeDataObject(apiResponse);
 
         //Check, if the new code is different and musst be send to the client
         if (newCodeNotification.value && !_.isEqual(newCodeNotification.value, this.generatedCode)) {
@@ -49,11 +47,11 @@ export class OvSyntaxNotifier {
      * Generates the data-object for the generated code
      *
      * @private
-     * @param {ApiResponseSuccess} apiResponse that holds the implementation result
+     * @param {CodeResponse} apiResponse that holds the implementation result
      * @returns  { language: string, value : string } that holds the required information
      * @memberof OvSyntaxNotifier
      */
-    private generatedCodeDataObject(apiResponse: ApiResponseSuccess): { language: string, value: string } {
+    private generatedCodeDataObject(apiResponse: CodeResponse): { language: string, value: string } {
         var json = {
             language: OvStringHelper.convertOvLanguageToMonacoLanguage(this.server.language),
             value: apiResponse.implementationResult
