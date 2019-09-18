@@ -32,7 +32,7 @@ export class ConnectedOperationNode extends ConditionNode {
         this.conditions = value;
     }
 
-    public getChilds(): GenericNode[] {
+    public getChildren(): GenericNode[] {
         var childList: GenericNode[] = [];
 
         childList = childList.concat(this.conditions);
@@ -55,8 +55,9 @@ export class ConnectedOperationNode extends ConditionNode {
 
         for (const condition of this.getConditions()) {
             var container = condition.getCompletionContainer();
-            if (!container.isEmpty()) return container;
+            if (!container.isEmpty() && !container.containsLogicalOperator()) 
+                return container;
         }
-        return new CompletionContainer(CompletionType.None);
+        return new CompletionContainer(CompletionType.LogicalOperator);
     }
 }

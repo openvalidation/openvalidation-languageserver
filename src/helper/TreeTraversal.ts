@@ -17,7 +17,7 @@ export class TreeTraversal {
      * traverse
      */
     public traverseNode(node: GenericNode, position: Position): GenericNode | null {
-        var nextChild = this.methodFilterElements(node.getChilds(), position);
+        var nextChild = this.methodFilterElements(node.getChildren(), position);
         if (!nextChild) {
             return node;
         }
@@ -50,7 +50,7 @@ export class TreeTraversal {
             }
 
             if (child != null) {
-                var nextChilds = child.getChilds();
+                var nextChilds = child.getChildren();
                 if (nextChilds.length != 0) {
                     operations = operations.concat(this.getOperations(nextChilds));
                 }

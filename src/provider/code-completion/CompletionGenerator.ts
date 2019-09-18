@@ -14,7 +14,7 @@ export class CompletionGenerator {
         private readonly declarations: Variable[],
         private readonly aliasHelper: AliasHelper,
         private readonly schema: ISchemaType,
-        private readonly prependingText: string | null
+        private readonly prependedText: string | null
     ) {
         this.completionList = []
     }
@@ -32,7 +32,7 @@ export class CompletionGenerator {
         this.addKeyword(this.aliasHelper.getKeywordByString("if"), "a");
         this.addKeyword(this.aliasHelper.getKeywordByString("include"), "b");
 
-        this.addSnippet("Variable", "$1 ALS $2", "c");
+        this.addSnippet("Variable", "$1 ALS ${2:variable}", "c");
         this.addSnippet("Short Rule", "$1 MUSS $2", "c");
         return this;
     }
@@ -108,7 +108,8 @@ export class CompletionGenerator {
     }
 
     public addAsKeyword(): CompletionGenerator {
-        this.addKeyword(this.aliasHelper.getKeywordByString(AliasKey.AS), "a");
+        var keyword = this.aliasHelper.getKeywordByString(AliasKey.AS);
+        this.addSnippet(keyword, keyword + " ${1:variable}", "a");
         return this;
     }
 
@@ -171,8 +172,8 @@ export class CompletionGenerator {
         var item = CompletionItem.create(label);
         item.sortText = sortText;
 
-        var tmpPrepending: string = !this.prependingText ? "" : this.prependingText;
-        item.insertText = tmpPrepending + text;
+        var tmpPrepended: string = !this.prependedText ? "" : this.prependedText;
+        item.insertText = tmpPrepended + text;
 
         return item;
     }

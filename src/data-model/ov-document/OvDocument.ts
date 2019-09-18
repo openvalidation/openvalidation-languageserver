@@ -17,13 +17,11 @@ export class OvDocument {
 
     private _elementManager: OvElementManager;
     private _declarations: Variable[];
-    public text: string;
 
-    constructor(astElements: GenericNode[], declarations: Variable[], private _aliaseHelper: AliasHelper, text: string) {
+    constructor(astElements: GenericNode[], declarations: Variable[], private _aliaseHelper: AliasHelper) {
         this._elementManager = new OvElementManager();
         this._declarations = declarations;
         this.create(astElements);
-        this.text = text;
     }
 
     public get declarations(): Variable[] {

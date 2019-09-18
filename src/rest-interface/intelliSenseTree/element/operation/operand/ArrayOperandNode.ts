@@ -37,7 +37,7 @@ export class ArrayOperandNode extends OperandNode {
         return this.items;
     }
 
-    public getChilds(): GenericNode[] {
+    public getChildren(): GenericNode[] {
         return this.getItems();
     }
 

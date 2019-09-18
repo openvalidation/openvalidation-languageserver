@@ -37,7 +37,7 @@ export class FunctionOperandNode extends OperandNode {
         return this.parameters;
     }
 
-    public getChilds(): GenericNode[] {
+    public getChildren(): GenericNode[] {
         return this.getParameters();
     }
 

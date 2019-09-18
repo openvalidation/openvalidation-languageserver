@@ -41,7 +41,7 @@ export class UnkownNode extends GenericNode {
         return this.content;
     }
 
-    public getChilds(): GenericNode[] {
+    public getChildren(): GenericNode[] {
         return [];
     }
 
@@ -53,10 +53,17 @@ export class UnkownNode extends GenericNode {
     public getCompletionContainer(): CompletionContainer {
         var container = this.content.getCompletionContainer();
 
-        if (container.isEmpty()) {
+        if (container.isEmpty() || container.containsLogicalOperator()) {
             container = new CompletionContainer(CompletionType.Then);
+            container.addType(CompletionType.As);
+            container.addType(CompletionType.LogicalOperator);
+        } else if (this.content.isComplete()) {
             container.addType(CompletionType.As);
         }
         return container;
+    }
+
+    public isComplete(): boolean {
+        return true;
     }
 }

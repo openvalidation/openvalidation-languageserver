@@ -139,7 +139,7 @@ export class DocumentActionProvider extends Provider {
 
         return new OvDocument(apiResponse.getMainAstNode()!.getScopes(),
             apiResponse.getMainAstNode()!.getDeclarations(),
-            this.server.aliasHelper, text);
+            this.server.aliasHelper);
     }
 
     /**

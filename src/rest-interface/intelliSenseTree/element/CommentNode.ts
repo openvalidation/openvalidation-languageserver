@@ -1,11 +1,10 @@
-import { AliasHelper } from "../../../aliases/AliasHelper";
-import { AliasKey } from "../../../aliases/AliasKey";
 import { CompletionType } from "../../../enums/CompletionType";
-import { FormattingHelper } from "../../../helper/FormattingHelper";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
+import { AliasHelper } from "src/aliases/AliasHelper";
+import { TextEdit } from "vscode-languageserver";
 
 export class CommentNode extends GenericNode {
     public content: string;
@@ -15,30 +14,43 @@ export class CommentNode extends GenericNode {
         this.content = content;
     }
 
-    public getChilds(): GenericNode[] {
+    public getChildren(): GenericNode[] {
         var childList: GenericNode[] = [];
         return childList;
     }
 
     public getHoverContent(): HoverContent | null {
         var content: HoverContent = new HoverContent(this.getRange());
-
         content.setContent("Comment");
-
         return content;
     }
 
-    protected formatLine(line: string, aliasesHelper: AliasHelper): string {
-        var firstKeyword = line.trim().split(' ')[0];
+        /**
+     * Generates a list of edits for formatting this element
+     *
+     * @returns {TextEdit[]} text-edits that need to be done for the formatting of this element
+     * @memberof OvRule
+     */
+    public formatCode(aliasesHelper: AliasHelper): TextEdit[] {
+        var commentKeyword: string | null = aliasesHelper.getCommentKeyword();
+        if (!commentKeyword) return [];
 
-        var commentKeyword = aliasesHelper.getKeywordByAliasKey(AliasKey.COMMENT);
-        if (!commentKeyword ||
-            firstKeyword.toUpperCase() === commentKeyword) return line;
+        // var spaces = commentKeyword.length + 1;
 
-        return FormattingHelper.generateSpaces(commentKeyword.length + 1) + line;
+        //Foreach line
+        // var textEdit: TextEdit = {
+        //     newText: formattedLine,
+        //     range: Range.create(currentLineNumber, 0, currentLineNumber, lineToCheck.length)
+        // }
+        // textEdits.push(textEdit);
+        return [];
     }
 
     public getCompletionContainer(): CompletionContainer {
         return new CompletionContainer(CompletionType.None);
+    }    
+
+    public isComplete(): boolean {
+        return true;
     }
 }

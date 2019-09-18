@@ -1,9 +1,6 @@
 import { Type } from "class-transformer";
 import { Position, Range } from "vscode-languageserver";
-import { AliasHelper } from "../../../aliases/AliasHelper";
-import { AliasKey } from "../../../aliases/AliasKey";
 import { CompletionType } from "../../../enums/CompletionType";
-import { FormattingHelper } from "../../../helper/FormattingHelper";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../GenericNode";
@@ -37,7 +34,7 @@ export class VariableNode extends GenericNode {
         this.value = value;
     }
 
-    public getChilds(): GenericNode[] {
+    public getChildren(): GenericNode[] {
         var childList: GenericNode[] = [];
 
         if (!!this.value)
@@ -115,44 +112,14 @@ export class VariableNode extends GenericNode {
         return content;
     }
 
-    //TODO: Should be more like a state-machine (safer)
-    /**
-     * Formats the line completely and tries to split the lines
-     *
-     * @private
-     * @param {string} line line to format
-     * @param {string} spaces spaced to add before each line (except the name-declaration)
-     * @returns {string} formatted line
-     * @memberof OvVariable
-     */
-    public formatLine(line: string, aliasesHelper: AliasHelper): string {
-        var splittedLine = line.split(' ');
-        var firstKeyword = splittedLine[0].trim();
-
-        var asKeyword: string | null = aliasesHelper.getKeywordByAliasKey(AliasKey.AS);
-        var spaces: string = !asKeyword ? "" : FormattingHelper.generateSpaces(asKeyword.length + 1);
-
-        // For the linking-operators like or/and 
-        if (aliasesHelper.isLinkingOperator(firstKeyword)) {
-            line = spaces + " " + line;
-        }
-        // Not the last line
-        else if (!aliasesHelper.isAs(firstKeyword)) {
-            var splittedKeywords: string[] = aliasesHelper.getLogicalOperators();
-            var thenKeyword: string | null = aliasesHelper.getKeywordByAliasKey(AliasKey.AS);
-            if (!!thenKeyword)
-                splittedKeywords.push(thenKeyword);
-
-            line = this.splitLineByKeywordsAndFormatCode(line, aliasesHelper, splittedKeywords, spaces);
-        }
-
-        return line;
-    }
-
     public getCompletionContainer(): CompletionContainer {
         if (!this.value)
             return new CompletionContainer(CompletionType.Operand);
 
         return this.value.getCompletionContainer();
+    }
+
+    public isComplete(): boolean {
+        return !!this.value && this.value.isComplete();
     }
 }

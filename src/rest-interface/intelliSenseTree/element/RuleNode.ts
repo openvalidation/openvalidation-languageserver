@@ -1,9 +1,7 @@
 import { Type } from "class-transformer";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../aliases/AliasHelper";
-import { AliasKey } from "../../../aliases/AliasKey";
 import { CompletionType } from "../../../enums/CompletionType";
-import { FormattingHelper } from "../../../helper/FormattingHelper";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../GenericNode";
@@ -11,6 +9,7 @@ import { IndexRange } from "../IndexRange";
 import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { OperationNode } from "./operation/OperationNode";
 import { ConditionNode } from "./operation/ConditionNode";
+import { String } from "typescript-string-operations";
 
 export class RuleNode extends GenericNode {
 
@@ -26,13 +25,11 @@ export class RuleNode extends GenericNode {
     private condition: ConditionNode;
 
     private errorMessage: string;
-    private spacesForMultiLineAction: string;
 
     constructor(errorMessage: string, condition: ConditionNode, line: string[], range: IndexRange) {
         super(line, range);
         this.errorMessage = errorMessage;
         this.condition = condition;
-        this.spacesForMultiLineAction = "";
     }
 
     /**
@@ -76,7 +73,7 @@ export class RuleNode extends GenericNode {
         return aliasesHelper.getLogicalOperators().indexOf(lastWord.toUpperCase()) != -1;
     }
 
-    public getChilds(): GenericNode[] {
+    public getChildren(): GenericNode[] {
         var childList: GenericNode[] = [];
 
         if (!!this.condition)
@@ -93,43 +90,6 @@ export class RuleNode extends GenericNode {
         return content;
     }
 
-    //TODO: Should be more like a state-machine (safer)
-    /**
-     * Formats the line completely and tries to split the lines
-     *
-     * @private
-     * @param {string} line line to format
-     * @returns {string} formatted line
-     * @memberof OvRule
-     */
-    public formatLine(line: string, aliasesHelper: AliasHelper, spaces: string = ""): string {
-        var firstKeyword = line.trim().split(' ')[0];
-
-        var splittedKeywords: string[] = aliasesHelper.getLogicalOperators();
-        var thenKeyword: string | null = aliasesHelper.getKeywordByAliasKey(AliasKey.THEN);
-        if (!!thenKeyword)
-            splittedKeywords.push(thenKeyword);
-
-        // For the first if-line
-        if (aliasesHelper.isIf(firstKeyword)) {
-            line = this.splitLineByKeywordsAndFormatCode(line, aliasesHelper, splittedKeywords);
-        }
-        // For the linking-operators like or/and 
-        else if (aliasesHelper.isLinkingOperator(firstKeyword)) {
-            line = this.splitLineByKeywordsAndFormatCode(line, aliasesHelper, splittedKeywords, " ");
-        }
-        // For the last then-line
-        else if (aliasesHelper.isThen(firstKeyword)) {
-            this.spacesForMultiLineAction = FormattingHelper.generateSpaces(firstKeyword.length + 1);
-        }
-        // For multiline-actions
-        else {
-            line = this.spacesForMultiLineAction + line;
-        }
-
-        return line;
-    }
-
     public getCompletionContainer(): CompletionContainer {
         if (!this.condition) {
             return new CompletionContainer(CompletionType.Operand);
@@ -137,7 +97,7 @@ export class RuleNode extends GenericNode {
             var container: CompletionContainer = this.condition.getCompletionContainer();
 
             // Then the operand is already finished
-            if (container.isEmpty()) {
+            if (container.isEmpty() || container.containsLogicalOperator()) {
                 if (this.errorMessage == null) {
                     container = new CompletionContainer(CompletionType.Then, CompletionType.LogicalOperator);
                 } else if (this.errorMessage == "") {
@@ -150,5 +110,13 @@ export class RuleNode extends GenericNode {
 
             return container;
         }
+    }
+
+    
+
+    public isComplete(): boolean {
+        return !!this.condition && 
+            this.condition.isComplete() && 
+            String.IsNullOrWhiteSpace(this.getErrorMessage());
     }
 }

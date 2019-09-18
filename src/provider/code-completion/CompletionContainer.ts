@@ -24,6 +24,10 @@ export class CompletionContainer {
     public containsOperator(): boolean {
         return this.getTypes().filter(types => types == CompletionType.Operator).length > 0;
     }
+    
+    public containsLogicalOperator(): boolean {
+        return this.getTypes().filter(types => types == CompletionType.LogicalOperator).length > 0;
+    }
 
     public getTypes(): CompletionType[] {
         return this.types;

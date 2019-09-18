@@ -30,7 +30,7 @@ export class OperandNode extends GenericNode {
         return this.name;
     }
 
-    public getChilds(): GenericNode[] {
+    public getChildren(): GenericNode[] {
         var childList: GenericNode[] = [];
         return childList;
     }

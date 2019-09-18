@@ -9,6 +9,6 @@ export abstract class ConditionNode extends OperandNode {
         super(line, range, "Boolean", null);
     }
 
-    abstract getChilds(): GenericNode[];
+    abstract getChildren(): GenericNode[];
     abstract getHoverContent(): HoverContent | null;
 }

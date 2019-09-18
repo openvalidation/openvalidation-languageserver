@@ -98,7 +98,7 @@ export class OperationNode extends ConditionNode {
         this.operator = value;
     }
 
-    public getChilds(): GenericNode[] {
+    public getChildren(): GenericNode[] {
         var childList: GenericNode[] = [];
 
         if (!!this.leftOperand)
@@ -123,7 +123,6 @@ export class OperationNode extends ConditionNode {
 
 
     public getCompletionContainer(): CompletionContainer {
-
         if (!this.leftOperand) return new CompletionContainer(CompletionType.Operand);
 
         var container: CompletionContainer = this.leftOperand.getCompletionContainer();
@@ -148,6 +147,10 @@ export class OperationNode extends ConditionNode {
         if (!this.rightOperand.isComplete() && !container.containsOperator()) {
             return container;
         }
-        return new CompletionContainer(CompletionType.None);
+        return new CompletionContainer(CompletionType.LogicalOperator);
+    }
+
+    public isComplete(): boolean {
+        return !!this.leftOperand && !!this.operator && !!this.rightOperand;
     }
 }

@@ -40,7 +40,7 @@ export class OperatorNode extends GenericNode {
         return this.operator;
     }
 
-    public getChilds(): GenericNode[] {
+    public getChildren(): GenericNode[] {
         var childList: GenericNode[] = [];
         return childList;
     }
@@ -56,5 +56,9 @@ export class OperatorNode extends GenericNode {
     public getCompletionContainer(): CompletionContainer {
         // TODO: Generate CompletionItems
         return new CompletionContainer(CompletionType.None);
+    }
+
+    public isComplete(): boolean {
+        return true;
     }
 }
