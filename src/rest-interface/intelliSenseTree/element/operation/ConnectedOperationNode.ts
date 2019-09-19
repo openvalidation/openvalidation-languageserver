@@ -6,6 +6,7 @@ import { GenericNode } from "../../GenericNode";
 import { IndexRange } from "../../IndexRange";
 import { ConditionNode } from "./ConditionNode";
 import { OperationNode } from "./OperationNode";
+import { Position } from "vscode-languageserver";
 
 export class ConnectedOperationNode extends ConditionNode {
     @Type(() => OperationNode)
@@ -48,16 +49,22 @@ export class ConnectedOperationNode extends ConditionNode {
         return content;
     }
 
-    public getCompletionContainer(): CompletionContainer {
+    public getCompletionContainer(position: Position): CompletionContainer {
         if (this.getConditions().length <= 1) {
             return new CompletionContainer(CompletionType.Operand);
         }
 
         for (const condition of this.getConditions()) {
-            var container = condition.getCompletionContainer();
-            if (!container.isEmpty() && !container.containsLogicalOperator()) 
+            var container = condition.getCompletionContainer(position);
+            if (!container.isEmpty() && !container.containsLogicalOperator())
                 return container;
+            if (condition.getRange().includesPosition(position))
+                return CompletionContainer.createEmpty();
         }
-        return new CompletionContainer(CompletionType.LogicalOperator);
+
+        if (!this.getRange().positionBeforeEnd(position))
+            return new CompletionContainer(CompletionType.LogicalOperator);
+        else
+            return CompletionContainer.createEmpty();
     }
 }

@@ -10,6 +10,7 @@ import { OperandNode } from "./operand/OperandNode";
 import { OperatorNode } from "./operand/OperatorNode";
 import { ConditionNode } from "./ConditionNode";
 import { ConnectedOperationNode } from "./ConnectedOperationNode";
+import { Position } from "vscode-languageserver";
 
 export class OperationNode extends ConditionNode {
     @Type(() => OperandNode, {
@@ -43,11 +44,14 @@ export class OperationNode extends ConditionNode {
     @Type(() => OperatorNode)
     private operator: OperatorNode;
 
+    private constrained: boolean;
+
     constructor(leftOperand: OperandNode, rightOperand: OperandNode, operator: OperatorNode, lines: string[], range: IndexRange) {
         super(lines, range);
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;
         this.operator = operator;
+        this.constrained = false;
     }
 
     /**
@@ -74,6 +78,10 @@ export class OperationNode extends ConditionNode {
         return this.operator;
     }
 
+    public getConstrained(): boolean {
+        return this.constrained;
+    }
+
     /**
      * Setter leftOperand
      * @param {OperandNode} value
@@ -96,6 +104,10 @@ export class OperationNode extends ConditionNode {
      */
     public setOperator(value: OperatorNode) {
         this.operator = value;
+    }
+
+    public setConstrained(value: boolean) {
+        this.constrained = value;
     }
 
     public getChildren(): GenericNode[] {
@@ -122,15 +134,19 @@ export class OperationNode extends ConditionNode {
     }
 
 
-    public getCompletionContainer(): CompletionContainer {
+    public getCompletionContainer(position: Position): CompletionContainer {
         if (!this.leftOperand) return new CompletionContainer(CompletionType.Operand);
 
-        var container: CompletionContainer = this.leftOperand.getCompletionContainer();
+        var container: CompletionContainer = this.leftOperand.getCompletionContainer(position);
         if (!this.leftOperand.isComplete() && !this.operator) {
             return container;
         }
 
         if (!this.operator) {
+            if (this.leftOperand.getRange().positionBeforeEnd(position)) {
+                return CompletionContainer.createEmpty();
+            }
+
             container.addType(CompletionType.Operator);
             container.specificDataType(this.leftOperand.getDataType());
             return container;
@@ -143,7 +159,7 @@ export class OperationNode extends ConditionNode {
             return container;
         }
 
-        container = this.rightOperand.getCompletionContainer();
+        container = this.rightOperand.getCompletionContainer(position);
         if (!this.rightOperand.isComplete() && !container.containsOperator()) {
             return container;
         }

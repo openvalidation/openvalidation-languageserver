@@ -106,11 +106,15 @@ export class CompletionProvider extends Provider {
         }
 
         var parsedElement = await ApiProxy.postCompletionData(parseString, this.server.restParameter, ovDocument);
-        if (!parsedElement || !parsedElement.getScope())
+        if (!parsedElement)
             return CompletionGenerator.default(declarations, this.server);
 
         var relevantElement = parsedElement.getScope();
-        return relevantElement!.getCompletionContainer().getCompletions(declarations, this.server.aliasHelper, this.server.schema).build();
+        if (!relevantElement)
+            return CompletionGenerator.default(declarations, this.server);
+
+        var relativePosition: Position = Position.create(params.position.line - itemTuple[1], params.position.character);
+        return relevantElement!.getCompletionContainer(relativePosition).getCompletions(declarations, this.server.aliasHelper, this.server.schema).build();
     }
 
     public extractItem(text: string[], params: CompletionParams): [string[], number] {

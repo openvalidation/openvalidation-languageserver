@@ -1,4 +1,5 @@
 import { Type } from "class-transformer";
+import { String } from "typescript-string-operations";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../aliases/AliasHelper";
 import { CompletionType } from "../../../enums/CompletionType";
@@ -6,10 +7,9 @@ import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
+import { ConditionNode } from "./operation/ConditionNode";
 import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { OperationNode } from "./operation/OperationNode";
-import { ConditionNode } from "./operation/ConditionNode";
-import { String } from "typescript-string-operations";
 
 export class RuleNode extends GenericNode {
 
@@ -90,14 +90,18 @@ export class RuleNode extends GenericNode {
         return content;
     }
 
-    public getCompletionContainer(): CompletionContainer {
+    public getCompletionContainer(position: Position): CompletionContainer {
         if (!this.condition) {
             return new CompletionContainer(CompletionType.Operand);
         } else {
-            var container: CompletionContainer = this.condition.getCompletionContainer();
+            var container: CompletionContainer = this.condition.getCompletionContainer(position);
+            // if (!this.condition.getRange().positionBeforeEnd(position))
+
 
             // Then the operand is already finished
-            if (container.isEmpty() || container.containsLogicalOperator()) {
+            if ((container.isEmpty() ||
+                container.containsLogicalOperator()) &&
+                !this.condition.getRange().includesPosition(position)) {
                 if (this.errorMessage == null) {
                     container = new CompletionContainer(CompletionType.Then, CompletionType.LogicalOperator);
                 } else if (this.errorMessage == "") {
@@ -112,11 +116,9 @@ export class RuleNode extends GenericNode {
         }
     }
 
-    
-
     public isComplete(): boolean {
-        return !!this.condition && 
-            this.condition.isComplete() && 
+        return !!this.condition &&
+            this.condition.isComplete() &&
             String.IsNullOrWhiteSpace(this.getErrorMessage());
     }
 }

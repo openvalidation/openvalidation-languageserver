@@ -12,6 +12,7 @@ import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { OperationNode } from "./operation/OperationNode";
 import { RuleNode } from "./RuleNode";
 import { VariableNode } from "./VariableNode";
+import { Position } from "vscode-languageserver";
 
 export class UnkownNode extends GenericNode {
     @Type(() => GenericNode, {
@@ -50,8 +51,10 @@ export class UnkownNode extends GenericNode {
         return this.content.getHoverContent();
     }
 
-    public getCompletionContainer(): CompletionContainer {
-        var container = this.content.getCompletionContainer();
+    public getCompletionContainer(range: Position): CompletionContainer {
+        if (!this.content) return new CompletionContainer(CompletionType.None);
+
+        var container = this.content.getCompletionContainer(range);
 
         if (container.isEmpty() || container.containsLogicalOperator()) {
             container = new CompletionContainer(CompletionType.Then);

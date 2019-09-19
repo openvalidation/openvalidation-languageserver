@@ -17,6 +17,10 @@ export class CompletionContainer {
         this.types = types;
     }
 
+    public static createEmpty(): CompletionContainer {
+        return new CompletionContainer(CompletionType.None);
+    }
+
     public isEmpty(): boolean {
         return this.getTypes().filter(types => types == CompletionType.None).length > 0;
     }

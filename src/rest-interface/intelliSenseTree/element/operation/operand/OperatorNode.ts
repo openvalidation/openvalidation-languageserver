@@ -3,6 +3,7 @@ import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
+import { Position } from "vscode-languageserver";
 
 export class OperatorNode extends GenericNode {
     private dataType: string;
@@ -53,7 +54,7 @@ export class OperatorNode extends GenericNode {
         return content;
     }
 
-    public getCompletionContainer(): CompletionContainer {
+    public getCompletionContainer(range: Position): CompletionContainer {
         // TODO: Generate CompletionItems
         return new CompletionContainer(CompletionType.None);
     }

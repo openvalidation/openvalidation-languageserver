@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { TextEdit } from "vscode-languageserver";
+import { TextEdit, Position } from "vscode-languageserver";
 import { AliasHelper } from "../../aliases/AliasHelper";
 import { HoverContent } from "../../helper/HoverContent";
 import { CompletionContainer } from "../../provider/code-completion/CompletionContainer";
@@ -38,7 +38,7 @@ export abstract class GenericNode {
 
     abstract getChildren(): GenericNode[];
     abstract getHoverContent(): HoverContent | null;
-    abstract getCompletionContainer(): CompletionContainer;
+    abstract getCompletionContainer(range: Position): CompletionContainer;
     abstract isComplete(): boolean;
 
     public updateRangeLines(difference: number): void {

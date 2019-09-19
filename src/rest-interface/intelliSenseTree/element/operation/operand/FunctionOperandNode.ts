@@ -1,4 +1,5 @@
 import { Type } from "class-transformer";
+import { Position } from "vscode-languageserver";
 import { CompletionType } from "../../../../../enums/CompletionType";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
@@ -57,7 +58,7 @@ export class FunctionOperandNode extends OperandNode {
         return content;
     }
 
-    public getCompletionContainer(): CompletionContainer {
+    public getCompletionContainer(range: Position): CompletionContainer {
         var container = new CompletionContainer(CompletionType.Operand);
         container.specificDataType(this.getDataType());
 

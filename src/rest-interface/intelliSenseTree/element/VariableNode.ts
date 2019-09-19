@@ -112,11 +112,11 @@ export class VariableNode extends GenericNode {
         return content;
     }
 
-    public getCompletionContainer(): CompletionContainer {
+    public getCompletionContainer(range: Position): CompletionContainer {
         if (!this.value)
             return new CompletionContainer(CompletionType.Operand);
 
-        return this.value.getCompletionContainer();
+        return this.value.getCompletionContainer(range);
     }
 
     public isComplete(): boolean {

@@ -8,6 +8,7 @@ import { ConnectedOperationNode } from "../../operation/ConnectedOperationNode";
 import { OperationNode } from "../../operation/OperationNode";
 import { FunctionOperandNode } from "./FunctionOperandNode";
 import { OperandNode } from "./OperandNode";
+import { Position } from "vscode-languageserver";
 
 export class ArrayOperandNode extends OperandNode {
     @Type(() => OperandNode, {
@@ -38,7 +39,7 @@ export class ArrayOperandNode extends OperandNode {
     }
 
     public getChildren(): GenericNode[] {
-        return this.getItems();
+        return this.getItems().map(i => i as unknown as GenericNode);
     }
 
     /**
@@ -57,7 +58,7 @@ export class ArrayOperandNode extends OperandNode {
         return content;
     }
 
-    public getCompletionContainer(): CompletionContainer {
+    public getCompletionContainer(range: Position): CompletionContainer {
         var container = new CompletionContainer(CompletionType.Operand);
         container.specificDataType(this.getDataType());
         container.specifyPrependingText(", ");

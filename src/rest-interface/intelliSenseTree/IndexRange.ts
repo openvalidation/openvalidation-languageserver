@@ -27,14 +27,22 @@ export class IndexRange {
         this.end = value;
     }
 
-    public includesPosition(position: Position) {
+    public positionAfterStart(position: Position) {
         var afterStart = (this.getStart().getLine() == position.line &&
-                        this.getStart().getColumn() <= position.character) ||
-                        this.getStart().getLine() < position.line;
+            this.getStart().getColumn() <= position.character) ||
+            this.getStart().getLine() < position.line;
+        return afterStart;
+    }
+
+    public positionBeforeEnd(position: Position) {
         var beforeEnd = (this.getEnd().getLine() == position.line &&
-                        this.getEnd().getColumn() >= position.character) ||
-                        this.getEnd().getLine() > position.line;
-        return afterStart && beforeEnd;
+            this.getEnd().getColumn() >= position.character) ||
+            this.getEnd().getLine() > position.line;
+        return beforeEnd;
+    }
+
+    public includesPosition(position: Position) {
+        return this.positionAfterStart(position) && this.positionBeforeEnd(position);
     }
 
     public asRange(): Range {
@@ -42,7 +50,7 @@ export class IndexRange {
     }
 
     public equals(range: IndexRange): boolean {
-        return  !!this.getStart() && !!range.getStart() && this.getStart().equals(range.getStart()) &&
+        return !!this.getStart() && !!range.getStart() && this.getStart().equals(range.getStart()) &&
             !!this.getEnd() && !!range.getEnd() && this.getEnd().equals(range.getEnd());
     }
 }

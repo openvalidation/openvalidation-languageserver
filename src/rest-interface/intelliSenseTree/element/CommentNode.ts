@@ -4,7 +4,7 @@ import { CompletionContainer } from "../../../provider/code-completion/Completio
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
 import { AliasHelper } from "src/aliases/AliasHelper";
-import { TextEdit } from "vscode-languageserver";
+import { TextEdit, Position } from "vscode-languageserver";
 
 export class CommentNode extends GenericNode {
     public content: string;
@@ -46,7 +46,7 @@ export class CommentNode extends GenericNode {
         return [];
     }
 
-    public getCompletionContainer(): CompletionContainer {
+    public getCompletionContainer(range: Position): CompletionContainer {
         return new CompletionContainer(CompletionType.None);
     }    
 
