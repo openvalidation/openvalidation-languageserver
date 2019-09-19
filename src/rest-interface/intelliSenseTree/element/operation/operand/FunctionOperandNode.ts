@@ -9,6 +9,7 @@ import { ConnectedOperationNode } from "../../operation/ConnectedOperationNode";
 import { OperationNode } from "../../operation/OperationNode";
 import { ArrayOperandNode } from "./ArrayOperandNode";
 import { OperandNode } from "./OperandNode";
+import { AliasHelper } from "src/aliases/AliasHelper";
 
 export class FunctionOperandNode extends OperandNode {
     @Type(() => OperandNode, {
@@ -71,5 +72,9 @@ export class FunctionOperandNode extends OperandNode {
 
     public isComplete(): boolean {
         return this.parameters.length > 0;
+    }
+    
+    public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+        return this.getLines().join("\n");
     }
 }

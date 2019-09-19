@@ -1,18 +1,19 @@
 import { Type } from "class-transformer";
+import { Position } from "vscode-languageserver";
+import { AliasHelper } from "../../../aliases/AliasHelper";
 import { CompletionType } from "../../../enums/CompletionType";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
 import { CommentNode } from "./CommentNode";
+import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { ArrayOperandNode } from "./operation/operand/ArrayOperandNode";
 import { FunctionOperandNode } from "./operation/operand/FunctionOperandNode";
 import { OperandNode } from "./operation/operand/OperandNode";
-import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { OperationNode } from "./operation/OperationNode";
 import { RuleNode } from "./RuleNode";
 import { VariableNode } from "./VariableNode";
-import { Position } from "vscode-languageserver";
 
 export class UnkownNode extends GenericNode {
     @Type(() => GenericNode, {
@@ -68,5 +69,9 @@ export class UnkownNode extends GenericNode {
 
     public isComplete(): boolean {
         return true;
+    }
+    
+    public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+        return this.getLines().join("\n");
     }
 }

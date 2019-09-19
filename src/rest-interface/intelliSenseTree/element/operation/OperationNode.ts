@@ -11,6 +11,7 @@ import { OperatorNode } from "./operand/OperatorNode";
 import { ConditionNode } from "./ConditionNode";
 import { ConnectedOperationNode } from "./ConnectedOperationNode";
 import { Position } from "vscode-languageserver";
+import { AliasHelper } from "src/aliases/AliasHelper";
 
 export class OperationNode extends ConditionNode {
     @Type(() => OperandNode, {
@@ -168,5 +169,9 @@ export class OperationNode extends ConditionNode {
 
     public isComplete(): boolean {
         return !!this.leftOperand && !!this.operator && !!this.rightOperand;
+    }
+    
+    public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+        return this.getLines().join("\n");
     }
 }

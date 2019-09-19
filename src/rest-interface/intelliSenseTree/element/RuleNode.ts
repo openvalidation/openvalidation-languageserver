@@ -10,6 +10,7 @@ import { IndexRange } from "../IndexRange";
 import { ConditionNode } from "./operation/ConditionNode";
 import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { OperationNode } from "./operation/OperationNode";
+import { FormattingHelper } from "../../../helper/FormattingHelper";
 
 export class RuleNode extends GenericNode {
 
@@ -120,5 +121,24 @@ export class RuleNode extends GenericNode {
         return !!this.condition &&
             this.condition.isComplete() &&
             String.IsNullOrWhiteSpace(this.getErrorMessage());
+    }
+
+    public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+        var ruleString: string = this.getLines().join("\n");
+        if (!this.condition) return ruleString;
+
+        var splittedRule: string[] = ruleString.split(this.condition.getLines().join("\n"));
+        var returnString: string = "";
+
+        if (!String.IsNullOrWhiteSpace(splittedRule[0]))
+            returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(splittedRule[0]) + " ";
+                
+        var conditionString: string = this.condition.getBeautifiedContent(aliasesHelper);
+        returnString += conditionString + (String.IsNullOrWhiteSpace(returnString) ? "" : "\n");
+        
+        if (!String.IsNullOrWhiteSpace(splittedRule[1]))
+            returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(splittedRule[1]);
+
+        return returnString;
     }
 }

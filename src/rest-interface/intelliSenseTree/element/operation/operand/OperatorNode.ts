@@ -4,6 +4,7 @@ import { CompletionContainer } from "../../../../../provider/code-completion/Com
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { Position } from "vscode-languageserver";
+import { AliasHelper } from "src/aliases/AliasHelper";
 
 export class OperatorNode extends GenericNode {
     private dataType: string;
@@ -61,5 +62,9 @@ export class OperatorNode extends GenericNode {
 
     public isComplete(): boolean {
         return true;
+    }
+    
+    public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+        return this.getLines().join("\n");
     }
 }

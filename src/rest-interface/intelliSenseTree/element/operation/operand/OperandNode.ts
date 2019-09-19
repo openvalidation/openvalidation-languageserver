@@ -1,9 +1,11 @@
+import { Position } from "vscode-languageserver";
+import { AliasHelper } from "../../../../../aliases/AliasHelper";
 import { CompletionType } from "../../../../../enums/CompletionType";
+import { FormattingHelper } from "../../../../../helper/FormattingHelper";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
-import { Position } from "vscode-languageserver";
 
 export class OperandNode extends GenericNode {
     private dataType: string;
@@ -52,5 +54,9 @@ export class OperandNode extends GenericNode {
 
     public isComplete(): boolean {
         return true;
+    }
+    
+    public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+        return this.getLines().map(line => FormattingHelper.removeDuplicateWhitespacesFromLine(line)).join("\n");
     }
 }

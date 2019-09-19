@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { TextEdit, Position } from "vscode-languageserver";
+import { TextEdit, Position, Range } from "vscode-languageserver";
 import { AliasHelper } from "../../aliases/AliasHelper";
 import { HoverContent } from "../../helper/HoverContent";
 import { CompletionContainer } from "../../provider/code-completion/CompletionContainer";
@@ -40,6 +40,7 @@ export abstract class GenericNode {
     abstract getHoverContent(): HoverContent | null;
     abstract getCompletionContainer(range: Position): CompletionContainer;
     abstract isComplete(): boolean;
+    abstract getBeautifiedContent(aliasesHelper: AliasHelper): string;
 
     public updateRangeLines(difference: number): void {
         if (!this.getRange() || !this.getRange().getStart() || !this.getRange().getEnd()) return;
@@ -58,7 +59,38 @@ export abstract class GenericNode {
      * @returns {TextEdit[]} text-edits that need to be done for the formatting of this element
      * @memberof OvRule
      */
-    public formatCode(aliasesHelper: AliasHelper): TextEdit[] {
-        return [];
+    public formatCode(aliasHelper: AliasHelper): TextEdit[] {
+        var textEdits: TextEdit[] = [];
+        var formattedString: string = this.getBeautifiedContent(aliasHelper);
+        var formattedLines: string[] = formattedString.split("\n");
+        var previousEndLine = this.getRange().getEnd().getLine();
+
+        var previousLength: number[] = [];
+        for (let index = 0; index < this.getLines().length; index++) {
+            const element = this.getLines()[index];
+            previousLength.push(element.length);
+        }
+
+        for (let index = 0; index < formattedLines.length; index++) {
+            var formattedLine = formattedLines[index];
+            var currentLineNumber = this.getStartLineNumber() + index;
+
+            var updateLength: number = formattedLine.length;
+            if (previousLength.length > index) {
+                updateLength = previousLength[index];
+            }
+
+            if (currentLineNumber > previousEndLine) {
+                formattedLine += "\n";
+            }
+
+            var textEdit: TextEdit = {
+                newText: formattedLine,
+                range: Range.create(currentLineNumber, 0, currentLineNumber, updateLength)
+            }
+            textEdits.push(textEdit);
+        }
+
+        return textEdits;
     }
 }

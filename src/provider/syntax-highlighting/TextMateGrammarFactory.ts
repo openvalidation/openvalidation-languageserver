@@ -44,7 +44,7 @@ export class TextMateGrammarFactory {
         json.patterns.push({
             comment: 'pattern for actions in a rule',
             name: 'string.action.ov',
-            begin: '(?<=(?i)' + parameter.thenKeyword + ' )',
+            begin: '(?<=((?i)(' + parameter.thenKeyword + ')))',
             end: this.emptyLineRegex
         });
 

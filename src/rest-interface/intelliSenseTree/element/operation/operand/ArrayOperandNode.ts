@@ -9,6 +9,7 @@ import { OperationNode } from "../../operation/OperationNode";
 import { FunctionOperandNode } from "./FunctionOperandNode";
 import { OperandNode } from "./OperandNode";
 import { Position } from "vscode-languageserver";
+import { AliasHelper } from "../../../../../aliases/AliasHelper";
 
 export class ArrayOperandNode extends OperandNode {
     @Type(() => OperandNode, {
@@ -63,5 +64,9 @@ export class ArrayOperandNode extends OperandNode {
         container.specificDataType(this.getDataType());
         container.specifyPrependingText(", ");
         return container;
+    }
+    
+    public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+        return this.getLines().join("\n");
     }
 }

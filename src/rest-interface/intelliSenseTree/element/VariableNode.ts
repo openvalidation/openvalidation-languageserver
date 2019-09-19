@@ -1,14 +1,18 @@
 import { Type } from "class-transformer";
+import { String } from "typescript-string-operations";
 import { Position, Range } from "vscode-languageserver";
+import { AliasHelper } from "../../../aliases/AliasHelper";
+import { AliasKey } from "../../../aliases/AliasKey";
 import { CompletionType } from "../../../enums/CompletionType";
+import { FormattingHelper } from "../../../helper/FormattingHelper";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
+import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { ArrayOperandNode } from "./operation/operand/ArrayOperandNode";
 import { FunctionOperandNode } from "./operation/operand/FunctionOperandNode";
 import { OperandNode } from "./operation/operand/OperandNode";
-import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { OperationNode } from "./operation/OperationNode";
 
 export class VariableNode extends GenericNode {
@@ -121,5 +125,26 @@ export class VariableNode extends GenericNode {
 
     public isComplete(): boolean {
         return !!this.value && this.value.isComplete();
+    }
+    
+    public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+        var variableString: string = this.getLines().join("\n");
+        if (!this.value) return variableString;
+
+        var asKeyword: string | null = aliasesHelper.getKeywordByAliasKey(AliasKey.AS);
+        if (!asKeyword) return variableString;
+
+        var splittedVariable: string[] = variableString.split(this.value.getLines().join("\n"));
+        var returnString: string = "";
+
+        var spaces = FormattingHelper.generateSpaces(asKeyword.length + 1);
+        var conditionString: string = this.value.getBeautifiedContent(aliasesHelper).replace("\n", "\n" + spaces);
+        returnString += spaces + conditionString + "\n";
+        
+        for (const splittedLine of splittedVariable) {
+            if (!String.IsNullOrWhiteSpace(splittedLine))
+                returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(splittedLine);
+        }
+        return returnString;
     }
 }

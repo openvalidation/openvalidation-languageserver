@@ -7,6 +7,7 @@ import { IndexRange } from "../../IndexRange";
 import { ConditionNode } from "./ConditionNode";
 import { OperationNode } from "./OperationNode";
 import { Position } from "vscode-languageserver";
+import { AliasHelper } from "../../../../aliases/AliasHelper";
 
 export class ConnectedOperationNode extends ConditionNode {
     @Type(() => OperationNode)
@@ -66,5 +67,18 @@ export class ConnectedOperationNode extends ConditionNode {
             return new CompletionContainer(CompletionType.LogicalOperator);
         else
             return CompletionContainer.createEmpty();
+    }
+    
+    public getBeautifiedContent(aliasHelper: AliasHelper): string {
+        if (this.getConditions().length == 0) return this.getLines().join("\n");
+        var returnString: string = "";
+        var index = 0;
+        for (; index < this.getConditions().length - 1; index++) {
+            const element = this.getConditions()[index];
+            returnString += element.getBeautifiedContent(aliasHelper) + "\n";            
+        }
+        returnString += this.getConditions()[index].getBeautifiedContent(aliasHelper);
+
+        return returnString;
     }
 }
