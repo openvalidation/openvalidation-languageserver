@@ -11,6 +11,7 @@ import { ConditionNode } from "./operation/ConditionNode";
 import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { OperationNode } from "./operation/OperationNode";
 import { FormattingHelper } from "../../../helper/FormattingHelper";
+import { AliasKey } from "../../../aliases/AliasKey";
 
 export class RuleNode extends GenericNode {
 
@@ -132,12 +133,33 @@ export class RuleNode extends GenericNode {
 
         if (!String.IsNullOrWhiteSpace(splittedRule[0]))
             returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(splittedRule[0]) + " ";
-                
+
         var conditionString: string = this.condition.getBeautifiedContent(aliasesHelper);
         returnString += conditionString + (String.IsNullOrWhiteSpace(returnString) ? "" : "\n");
-        
+
         if (!String.IsNullOrWhiteSpace(splittedRule[1]))
             returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(splittedRule[1]);
+
+        if (this.condition.isConstrained()) return returnString;
+
+        //keywords inside a not constrained rule should be right-justified
+        var relevantKeywords: string[] = aliasesHelper.getKeywordsByAliasKeys(AliasKey.AND, AliasKey.OR, AliasKey.THEN, AliasKey.IF);
+        var thenKeyword: string | null = aliasesHelper.getKeywordByAliasKey(AliasKey.THEN);
+        var highestLength: number = Math.max.apply(null, relevantKeywords.map(word => word.length));
+
+        var splittedLines = returnString.split("\n");
+        var isErrorMessage: boolean = false;
+        returnString = "";
+        for (const line of splittedLines) {
+            var spaceLength : number = highestLength + 1;
+
+            var startingKeyword = relevantKeywords.filter(key => line.toLowerCase().startsWith(key.toLowerCase()));
+            if (startingKeyword.length > 0 && !isErrorMessage) {
+                if (startingKeyword[0] == thenKeyword) isErrorMessage = true;
+                spaceLength = highestLength - startingKeyword[0].length;
+            }
+            returnString += FormattingHelper.generateSpaces(spaceLength) + line.trim() + "\n";
+        }
 
         return returnString;
     }

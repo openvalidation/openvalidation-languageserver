@@ -79,7 +79,7 @@ export class OperationNode extends ConditionNode {
         return this.operator;
     }
 
-    public getConstrained(): boolean {
+    public isConstrained(): boolean {
         return this.constrained;
     }
 

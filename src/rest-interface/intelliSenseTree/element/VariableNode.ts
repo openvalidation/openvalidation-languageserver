@@ -138,7 +138,8 @@ export class VariableNode extends GenericNode {
         var returnString: string = "";
 
         var spaces = FormattingHelper.generateSpaces(asKeyword.length + 1);
-        var conditionString: string = this.value.getBeautifiedContent(aliasesHelper).replace("\n", "\n" + spaces);
+        var conditionString: string = this.value.getBeautifiedContent(aliasesHelper);
+        conditionString = conditionString.replace(new RegExp("\n", 'g'), "\n" + spaces);
         returnString += spaces + conditionString + "\n";
         
         for (const splittedLine of splittedVariable) {

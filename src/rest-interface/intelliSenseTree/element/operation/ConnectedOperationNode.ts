@@ -34,6 +34,10 @@ export class ConnectedOperationNode extends ConditionNode {
         this.conditions = value;
     }
 
+    public isConstrained(): boolean {
+        return this.getConditions().map(cond => cond.isConstrained()).some(bool => bool);
+    }
+
     public getChildren(): GenericNode[] {
         var childList: GenericNode[] = [];
 

@@ -64,7 +64,7 @@ export class AliasHelper {
      * @returns {string[]} found natural words
      * @memberof TextMateParameter
      */
-    public getKeywordsByAliasKeys(keywordsToFind: AliasKey[]): string[] {
+    public getKeywordsByAliasKeys(...keywordsToFind: AliasKey[]): string[] {
         var returnList: string[] = []
 
         keywordsToFind.forEach(key => {
@@ -102,7 +102,7 @@ export class AliasHelper {
     }
 
     public getLogicalOperators(): string[] {
-        return this.getKeywordsByAliasKeys([AliasKey.OR, AliasKey.AND]);
+        return this.getKeywordsByAliasKeys(AliasKey.OR, AliasKey.AND);
     }
 
     public getOperators(): Map<string, string> {

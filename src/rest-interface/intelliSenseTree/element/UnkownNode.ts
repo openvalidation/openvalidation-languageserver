@@ -72,6 +72,6 @@ export class UnkownNode extends GenericNode {
     }
     
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        return this.getLines().join("\n");
+        return this.content.getBeautifiedContent(aliasesHelper);
     }
 }

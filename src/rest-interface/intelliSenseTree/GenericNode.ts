@@ -63,14 +63,13 @@ export abstract class GenericNode {
         var textEdits: TextEdit[] = [];
         var formattedString: string = this.getBeautifiedContent(aliasHelper);
         var formattedLines: string[] = formattedString.split("\n");
-        var previousEndLine = this.getRange().getEnd().getLine();
 
         var previousLength: number[] = [];
         for (let index = 0; index < this.getLines().length; index++) {
             const element = this.getLines()[index];
             previousLength.push(element.length);
         }
-
+        var currentLineNumber = 0;
         for (let index = 0; index < formattedLines.length; index++) {
             var formattedLine = formattedLines[index];
             var currentLineNumber = this.getStartLineNumber() + index;
@@ -80,17 +79,12 @@ export abstract class GenericNode {
                 updateLength = previousLength[index];
             }
 
-            if (currentLineNumber > previousEndLine) {
-                formattedLine += "\n";
-            }
-
             var textEdit: TextEdit = {
                 newText: formattedLine,
                 range: Range.create(currentLineNumber, 0, currentLineNumber, updateLength)
             }
             textEdits.push(textEdit);
         }
-
         return textEdits;
     }
 }

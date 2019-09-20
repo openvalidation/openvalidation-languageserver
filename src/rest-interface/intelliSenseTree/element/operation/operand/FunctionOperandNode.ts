@@ -67,6 +67,8 @@ export class FunctionOperandNode extends OperandNode {
             container.specifyPrependingText(", ");
         }
 
+        // TODO: If "isComplete" return also operation with higher priority
+
         return container;
     }
 

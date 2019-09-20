@@ -11,4 +11,5 @@ export abstract class ConditionNode extends OperandNode {
 
     abstract getChildren(): GenericNode[];
     abstract getHoverContent(): HoverContent | null;
+    abstract isConstrained(): boolean;
 }
