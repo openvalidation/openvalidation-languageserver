@@ -7,6 +7,7 @@ import { ApiProxy } from "../rest-interface/ApiProxy";
 import { Variable } from "../rest-interface/intelliSenseTree/Variable";
 import { CompletionGenerator } from "./code-completion/CompletionGenerator";
 import { Provider } from "./Provider";
+import { CompletionResponse } from "src/rest-interface/response/CompletionResponse";
 
 /*
  * Response-Provider for "onCompletion"
@@ -105,15 +106,19 @@ export class CompletionProvider extends Provider {
             declarations = ovDocument.declarations;
         }
 
-        var parsedElement = await ApiProxy.postCompletionData(parseString, this.server.restParameter, ovDocument);
-        if (!parsedElement)
+        var response = await ApiProxy.postCompletionData(parseString, this.server.restParameter, ovDocument);
+        var relativePosition: Position = Position.create(params.position.line - itemTuple[1], params.position.character);
+        return this.completionForParsedElement(response, declarations, relativePosition);
+    }
+
+    private completionForParsedElement(response: CompletionResponse | null, declarations: Variable[], relativePosition: Position): CompletionItem[] | null {
+        if (!response)
             return CompletionGenerator.default(declarations, this.server);
 
-        var relevantElement = parsedElement.getScope();
+        var relevantElement = response.getScope();
         if (!relevantElement)
             return CompletionGenerator.default(declarations, this.server);
 
-        var relativePosition: Position = Position.create(params.position.line - itemTuple[1], params.position.character);
         return relevantElement!.getCompletionContainer(relativePosition).getCompletions(declarations, this.server.aliasHelper, this.server.schema).build();
     }
 

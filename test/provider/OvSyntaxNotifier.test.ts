@@ -15,20 +15,20 @@ describe("OvSyntax notifier test", () => {
         expect(provider).not.toBeNull();
     });
 
-    test("sendNotificationsIfNecessary with apiResponseSuccess, expect no error", () => {
-        provider.sendNotificationsIfNecessary(testInitializer.mockNotEmptyApiResponseSuccess());
-    });
-
     test("sendNotificationsIfNecessary with empty apiResponse, expect no error", () => {
-        provider.sendNotificationsIfNecessary(testInitializer.mockEmptyApiResponse());
+        provider.sendTextMateGrammarIfNecessary(testInitializer.mockNotEmptyLintingResponse());
+        provider.sendGeneratedCodeIfNecessary(testInitializer.mockEmptyCode());
     });
 
     test("sendNotificationsIfNecessary with not empty apiResponse, expect no error", () => {
-        provider.sendNotificationsIfNecessary(testInitializer.mockNotEmptyApiResponse());
+        provider.sendTextMateGrammarIfNecessary(testInitializer.mockEmptyLintingResponse());
+        provider.sendGeneratedCodeIfNecessary(testInitializer.mockEmptyCode());
     });
 
-    test("sendNotificationsIfNecessary two times with apiResponseSuccess, expect no error", () => {
-        provider.sendNotificationsIfNecessary(testInitializer.mockNotEmptyApiResponseSuccess());
-        provider.sendNotificationsIfNecessary(testInitializer.mockNotEmptyApiResponseSuccess());
+    test("sendNotificationsIfNecessary two times with not empty apiResponse, expect no error", () => {
+        provider.sendTextMateGrammarIfNecessary(testInitializer.mockEmptyLintingResponse());
+        provider.sendGeneratedCodeIfNecessary(testInitializer.mockEmptyCode());
+        provider.sendTextMateGrammarIfNecessary(testInitializer.mockEmptyLintingResponse());
+        provider.sendGeneratedCodeIfNecessary(testInitializer.mockEmptyCode());
     });
 });

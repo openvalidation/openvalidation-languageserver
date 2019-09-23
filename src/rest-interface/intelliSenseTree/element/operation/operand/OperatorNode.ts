@@ -1,4 +1,3 @@
-import { CompletionType } from "../../../../../enums/CompletionType";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../../GenericNode";
@@ -55,15 +54,22 @@ export class OperatorNode extends GenericNode {
         return content;
     }
 
-    public getCompletionContainer(range: Position): CompletionContainer {
-        // TODO: Generate CompletionItems
-        return new CompletionContainer(CompletionType.None);
+    public completionBeforeNode(): CompletionContainer {
+        return CompletionContainer.empty();
+    }
+
+    public completionAfterNode(): CompletionContainer {
+        return CompletionContainer.operand(this.validType);
+    }
+
+    public completionInsideNode(range: Position): CompletionContainer {
+        return CompletionContainer.empty();
     }
 
     public isComplete(): boolean {
         return true;
     }
-    
+
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         return this.getLines().join("\n");
     }

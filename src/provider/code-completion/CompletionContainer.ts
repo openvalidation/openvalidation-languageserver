@@ -17,8 +17,24 @@ export class CompletionContainer {
         this.types = types;
     }
 
-    public static createEmpty(): CompletionContainer {
+    public static empty(): CompletionContainer {
         return new CompletionContainer(CompletionType.None);
+    }
+
+    public static logicalOperator(): CompletionContainer {
+        return new CompletionContainer(CompletionType.LogicalOperator);
+    }
+
+    public static operand(datatype: string): CompletionContainer {
+        var container = new CompletionContainer(CompletionType.Operand);
+        container.specificDataType(datatype);
+        return container;
+    }
+
+    public static operator(datatype: string): CompletionContainer {
+        var container = new CompletionContainer(CompletionType.Operator);
+        container.specificDataType(datatype);
+        return container;
     }
 
     public isEmpty(): boolean {

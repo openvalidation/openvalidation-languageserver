@@ -4,7 +4,7 @@ import { GeneralApiResponse } from "./GeneralApiResponse";
  * Data-Object for a successful REST-Request
  *
  * @export
- * @interface ApiResponseSuccess
+ * @interface CodeResponse
  * @extends {GeneralApiResponse}
  */
 export interface CodeResponse extends GeneralApiResponse {

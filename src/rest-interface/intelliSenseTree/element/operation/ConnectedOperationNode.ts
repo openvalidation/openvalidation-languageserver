@@ -54,32 +54,40 @@ export class ConnectedOperationNode extends ConditionNode {
         return content;
     }
 
-    public getCompletionContainer(position: Position): CompletionContainer {
+    public completionBeforeNode(): CompletionContainer {
+        return this.conditions.length > 0
+            ? this.conditions[0].completionBeforeNode()
+            : CompletionContainer.empty();
+    }
+
+    public completionAfterNode(): CompletionContainer {
+        return this.conditions.length > 0
+            ? this.conditions[this.conditions.length - 1].completionAfterNode()
+            : CompletionContainer.empty();
+    }
+
+    public completionInsideNode(position: Position): CompletionContainer {
         if (this.getConditions().length <= 1) {
             return new CompletionContainer(CompletionType.Operand);
         }
-
+        var container: CompletionContainer = CompletionContainer.empty();
         for (const condition of this.getConditions()) {
             var container = condition.getCompletionContainer(position);
-            if (!container.isEmpty() && !container.containsLogicalOperator())
+            if ((!container.isEmpty() && !container.containsLogicalOperator()) ||
+                condition.getRange().startsAfter(position))
                 return container;
-            if (condition.getRange().includesPosition(position))
-                return CompletionContainer.createEmpty();
         }
 
-        if (!this.getRange().positionBeforeEnd(position))
-            return new CompletionContainer(CompletionType.LogicalOperator);
-        else
-            return CompletionContainer.createEmpty();
+        return CompletionContainer.empty();
     }
-    
+
     public getBeautifiedContent(aliasHelper: AliasHelper): string {
         if (this.getConditions().length == 0) return this.getLines().join("\n");
         var returnString: string = "";
         var index = 0;
         for (; index < this.getConditions().length - 1; index++) {
             const element = this.getConditions()[index];
-            returnString += element.getBeautifiedContent(aliasHelper) + "\n";            
+            returnString += element.getBeautifiedContent(aliasHelper) + "\n";
         }
         returnString += this.getConditions()[index].getBeautifiedContent(aliasHelper);
 

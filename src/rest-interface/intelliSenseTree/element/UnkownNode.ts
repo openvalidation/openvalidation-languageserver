@@ -34,7 +34,7 @@ export class UnkownNode extends GenericNode {
     })
     private content: GenericNode;
 
-    constructor(content: OperandNode, lines: string[], range: IndexRange) {
+    constructor(content: GenericNode, lines: string[], range: IndexRange) {
         super(lines, range);
         this.content = content;
     }
@@ -52,7 +52,17 @@ export class UnkownNode extends GenericNode {
         return this.content.getHoverContent();
     }
 
-    public getCompletionContainer(range: Position): CompletionContainer {
+
+    // TODO: Implement completion in UnkownNode
+    public completionBeforeNode(): CompletionContainer {
+        return CompletionContainer.empty();
+    }
+
+    public completionAfterNode(): CompletionContainer {
+        return CompletionContainer.logicalOperator();
+    }    
+
+    public completionInsideNode(range: Position): CompletionContainer {
         if (!this.content) return new CompletionContainer(CompletionType.None);
 
         var container = this.content.getCompletionContainer(range);

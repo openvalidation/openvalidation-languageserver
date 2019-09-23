@@ -1,5 +1,3 @@
-import { HoverContent } from '../../../../helper/HoverContent';
-import { GenericNode } from '../../GenericNode';
 import { IndexRange } from '../../IndexRange';
 import { OperandNode } from './operand/OperandNode';
 
@@ -9,7 +7,5 @@ export abstract class ConditionNode extends OperandNode {
         super(line, range, "Boolean", null);
     }
 
-    abstract getChildren(): GenericNode[];
-    abstract getHoverContent(): HoverContent | null;
     abstract isConstrained(): boolean;
 }

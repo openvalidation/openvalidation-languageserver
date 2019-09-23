@@ -14,6 +14,10 @@ export class IndexRange {
         this.end = end;
     }
 
+    public static create(startLine: number, startColumn: number, endLine: number, endColumn: number) {
+        return new IndexRange(new IndexPosition(startLine, startColumn), new IndexPosition(endLine, endColumn));
+    }
+
     public getStart(): IndexPosition {
         return this.start;
     }
@@ -27,22 +31,22 @@ export class IndexRange {
         this.end = value;
     }
 
-    public positionAfterStart(position: Position) {
+    public startsAfter(position: Position) {
         var afterStart = (this.getStart().getLine() == position.line &&
             this.getStart().getColumn() <= position.character) ||
             this.getStart().getLine() < position.line;
-        return afterStart;
+        return !afterStart;
     }
 
-    public positionBeforeEnd(position: Position) {
+    public endsBefore(position: Position) {
         var beforeEnd = (this.getEnd().getLine() == position.line &&
             this.getEnd().getColumn() >= position.character) ||
             this.getEnd().getLine() > position.line;
-        return beforeEnd;
+        return !beforeEnd;
     }
 
     public includesPosition(position: Position) {
-        return this.positionAfterStart(position) && this.positionBeforeEnd(position);
+        return !this.startsAfter(position) && !this.endsBefore(position);
     }
 
     public asRange(): Range {

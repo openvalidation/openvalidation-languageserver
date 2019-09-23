@@ -1,7 +1,7 @@
 import { StringHelper } from "../../helper/StringHelper";
-import { OperandNode } from "../../rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
 import { OperatorNode } from "../../rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
 import { OperationNode } from "../../rest-interface/intelliSenseTree/element/operation/OperationNode";
+import { BaseOperandNode } from "../../rest-interface/intelliSenseTree/element/operation/operand/BaseOperandNode";
 
 export class OperationSyntaxStructure {
 
@@ -28,8 +28,8 @@ export class OperationSyntaxStructure {
         }
     }
 
-    private _leftOperand: OperandNode | null;
-    private _rightOperand: OperandNode | null;
+    private _leftOperand: BaseOperandNode | null;
+    private _rightOperand: BaseOperandNode | null;
     private _operator: OperatorNode | null;
 
     public get leftOperand(): string {

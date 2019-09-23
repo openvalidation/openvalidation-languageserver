@@ -12,9 +12,10 @@ import { ConditionNode } from "./ConditionNode";
 import { ConnectedOperationNode } from "./ConnectedOperationNode";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "src/aliases/AliasHelper";
+import { BaseOperandNode } from "./operand/BaseOperandNode";
 
 export class OperationNode extends ConditionNode {
-    @Type(() => OperandNode, {
+    @Type(() => BaseOperandNode, {
         discriminator: {
             property: "type",
             subTypes: [
@@ -26,9 +27,9 @@ export class OperationNode extends ConditionNode {
             ]
         }
     })
-    private leftOperand: OperandNode;
+    private leftOperand: BaseOperandNode;
 
-    @Type(() => OperandNode, {
+    @Type(() => BaseOperandNode, {
         discriminator: {
             property: "type",
             subTypes: [
@@ -40,14 +41,14 @@ export class OperationNode extends ConditionNode {
             ]
         }
     })
-    private rightOperand: OperandNode;
+    private rightOperand: BaseOperandNode;
 
     @Type(() => OperatorNode)
     private operator: OperatorNode;
 
     private constrained: boolean;
 
-    constructor(leftOperand: OperandNode, rightOperand: OperandNode, operator: OperatorNode, lines: string[], range: IndexRange) {
+    constructor(leftOperand: BaseOperandNode, rightOperand: BaseOperandNode, operator: OperatorNode, lines: string[], range: IndexRange) {
         super(lines, range);
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;
@@ -57,17 +58,17 @@ export class OperationNode extends ConditionNode {
 
     /**
      * Getter leftOperand
-     * @return {OperandNode}
+     * @return {BaseOperandNode}
      */
-    public getLeftOperand(): OperandNode {
+    public getLeftOperand(): BaseOperandNode {
         return this.leftOperand;
     }
 
     /**
      * Getter rightOperand
-     * @return {OperandNode}
+     * @return {BaseOperandNode}
      */
-    public getRightOperand(): OperandNode {
+    public getRightOperand(): BaseOperandNode {
         return this.rightOperand;
     }
 
@@ -85,17 +86,17 @@ export class OperationNode extends ConditionNode {
 
     /**
      * Setter leftOperand
-     * @param {OperandNode} value
+     * @param {BaseOperandNode} value
      */
-    public setLeftOperand(value: OperandNode) {
+    public setLeftOperand(value: BaseOperandNode) {
         this.leftOperand = value;
     }
 
     /**
      * Setter rightOperand
-     * @param {OperandNode} value
+     * @param {BaseOperandNode} value
      */
-    public setRightOperand(value: OperandNode) {
+    public setRightOperand(value: BaseOperandNode) {
         this.rightOperand = value;
     }
 
@@ -134,8 +135,14 @@ export class OperationNode extends ConditionNode {
         return content;
     }
 
+    public completionBeforeNode(): CompletionContainer {
+        return CompletionContainer.empty();
+    }
+    public completionAfterNode(): CompletionContainer {
+        return CompletionContainer.logicalOperator();
+    }
 
-    public getCompletionContainer(position: Position): CompletionContainer {
+    public completionInsideNode(position: Position): CompletionContainer {
         if (!this.leftOperand) return new CompletionContainer(CompletionType.Operand);
 
         var container: CompletionContainer = this.leftOperand.getCompletionContainer(position);
@@ -144,8 +151,8 @@ export class OperationNode extends ConditionNode {
         }
 
         if (!this.operator) {
-            if (this.leftOperand.getRange().positionBeforeEnd(position)) {
-                return CompletionContainer.createEmpty();
+            if (!this.leftOperand.getRange().endsBefore(position)) {
+                return CompletionContainer.empty(); 
             }
 
             container.addType(CompletionType.Operator);

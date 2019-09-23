@@ -92,26 +92,35 @@ export class RuleNode extends GenericNode {
         return content;
     }
 
-    public getCompletionContainer(position: Position): CompletionContainer {
+    // TODO: Implement completion in UnkownNode
+    public completionBeforeNode(): CompletionContainer {
+        return CompletionContainer.empty();
+    }
+
+    public completionAfterNode(): CompletionContainer {
+        if (this.errorMessage == null) {
+            return new CompletionContainer(CompletionType.Then, CompletionType.LogicalOperator);
+        } else if (this.errorMessage == "") {
+            return new CompletionContainer(CompletionType.None);
+        }
+        else {
+            return new CompletionContainer(CompletionType.LogicalOperator);
+        }
+    }
+
+    public completionInsideNode(position: Position): CompletionContainer {
         if (!this.condition) {
             return new CompletionContainer(CompletionType.Operand);
         } else {
             var container: CompletionContainer = this.condition.getCompletionContainer(position);
             // if (!this.condition.getRange().positionBeforeEnd(position))
 
+            // TODO: Implement codecompletion
 
             // Then the operand is already finished
             if ((container.isEmpty() ||
                 container.containsLogicalOperator()) &&
                 !this.condition.getRange().includesPosition(position)) {
-                if (this.errorMessage == null) {
-                    container = new CompletionContainer(CompletionType.Then, CompletionType.LogicalOperator);
-                } else if (this.errorMessage == "") {
-                    container = new CompletionContainer(CompletionType.None);
-                }
-                else {
-                    container = new CompletionContainer(CompletionType.LogicalOperator);
-                }
             }
 
             return container;
@@ -151,7 +160,7 @@ export class RuleNode extends GenericNode {
         var isErrorMessage: boolean = false;
         returnString = "";
         for (const line of splittedLines) {
-            var spaceLength : number = highestLength + 1;
+            var spaceLength: number = highestLength + 1;
 
             var startingKeyword = relevantKeywords.filter(key => line.toLowerCase().startsWith(key.toLowerCase()));
             if (startingKeyword.length > 0 && !isErrorMessage) {

@@ -38,9 +38,25 @@ export abstract class GenericNode {
 
     abstract getChildren(): GenericNode[];
     abstract getHoverContent(): HoverContent | null;
-    abstract getCompletionContainer(range: Position): CompletionContainer;
     abstract isComplete(): boolean;
     abstract getBeautifiedContent(aliasesHelper: AliasHelper): string;
+    
+    abstract completionInsideNode(position: Position): CompletionContainer;
+    abstract completionBeforeNode(): CompletionContainer;
+    abstract completionAfterNode(): CompletionContainer;
+
+    public getCompletionContainer(position: Position): CompletionContainer {
+        if (this.getRange().startsAfter(position)) {
+            return this.completionBeforeNode();
+        }
+
+        if (this.getRange().includesPosition(position)) {
+            return this.completionInsideNode(position);
+        }
+
+        return this.completionAfterNode();
+    }
+
 
     public updateRangeLines(difference: number): void {
         if (!this.getRange() || !this.getRange().getStart() || !this.getRange().getEnd()) return;

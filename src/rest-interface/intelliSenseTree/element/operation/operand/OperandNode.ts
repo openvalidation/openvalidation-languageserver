@@ -1,36 +1,15 @@
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../../../aliases/AliasHelper";
-import { CompletionType } from "../../../../../enums/CompletionType";
 import { FormattingHelper } from "../../../../../helper/FormattingHelper";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
+import { BaseOperandNode } from "./BaseOperandNode";
 
-export class OperandNode extends GenericNode {
-    private dataType: string;
-    private name: string | null; // Null, if Operand is not set
-
+export class OperandNode extends BaseOperandNode {
     constructor(lines: string[], range: IndexRange, dataType: string, name: string | null) {
-        super(lines, range);
-        this.dataType = dataType;
-        this.name = name;
-    }
-
-    /**
-     * Getter dataType
-     * @return {string}
-     */
-    public getDataType(): string {
-        return this.dataType;
-    }
-
-    /**
-     * Getter name
-     * @return {string | null}, null if the name isn't set
-     */
-    public getName(): string | null {
-        return this.name;
+        super(lines, range, dataType, name);
     }
 
     public getChildren(): GenericNode[] {
@@ -46,10 +25,16 @@ export class OperandNode extends GenericNode {
         return content;
     }
 
-    public getCompletionContainer(range: Position): CompletionContainer {
-        var container = new CompletionContainer(CompletionType.Operator);
-        container.specificDataType(this.getDataType());
-        return container;
+    public completionBeforeNode(): CompletionContainer {
+        return CompletionContainer.empty();
+    }
+
+    public completionAfterNode(): CompletionContainer {
+        return CompletionContainer.operator(this.getDataType());
+    }
+
+    public completionInsideNode(range: Position): CompletionContainer {
+        return CompletionContainer.empty();
     }
 
     public isComplete(): boolean {

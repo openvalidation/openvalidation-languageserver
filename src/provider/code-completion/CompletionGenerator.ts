@@ -30,14 +30,12 @@ export class CompletionGenerator {
      */
     public addGlobals(): CompletionGenerator {
         this.addKeyword(this.aliasHelper.getKeywordByString("if"), "a");
-        this.addKeyword(this.aliasHelper.getKeywordByString("include"), "b");
 
         this.addSnippet("Variable", "$1 ALS ${2:variable}", "c");
         this.addSnippet("Short Rule", "$1 MUSS $2", "c");
         return this;
     }
 
-    // TODO: Show only the fitting Operators
     public addFittingOperator(datatype: string | null): CompletionGenerator {
         for (const operator of this.aliasHelper.getOperators()) {
             if (datatype == operator[1] || "Object" == operator[1])
@@ -75,6 +73,7 @@ export class CompletionGenerator {
 
     public addFittingIdentifier(name: string | null, datatype: string | null): CompletionGenerator {
         this.declarations.forEach(variable => {
+            console.log(datatype);
             if ((!!variable.getDataType() && variable.getDataType() == datatype && variable.getName() != name) ||
                 (!name && !datatype)) {
                 this.addVariable(variable.getName(), variable.getDataType(), "a");

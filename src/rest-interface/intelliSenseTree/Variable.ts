@@ -2,9 +2,9 @@ export class Variable {
     private name: string;
     private dataType: string;
 
-    constructor() {
-        this.name = "";
-        this.dataType = "";
+    constructor(name: string, datatype: string) {
+        this.name = name;
+        this.dataType = datatype;
     }
 
     public getName(): string {

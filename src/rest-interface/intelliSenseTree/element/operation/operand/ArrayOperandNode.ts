@@ -1,18 +1,18 @@
 import { Type } from "class-transformer";
-import { CompletionType } from "../../../../../enums/CompletionType";
+import { Position } from "vscode-languageserver";
+import { AliasHelper } from "../../../../../aliases/AliasHelper";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { ConnectedOperationNode } from "../../operation/ConnectedOperationNode";
 import { OperationNode } from "../../operation/OperationNode";
+import { BaseOperandNode } from "./BaseOperandNode";
 import { FunctionOperandNode } from "./FunctionOperandNode";
 import { OperandNode } from "./OperandNode";
-import { Position } from "vscode-languageserver";
-import { AliasHelper } from "../../../../../aliases/AliasHelper";
 
-export class ArrayOperandNode extends OperandNode {
-    @Type(() => OperandNode, {
+export class ArrayOperandNode extends BaseOperandNode {
+    @Type(() => BaseOperandNode, {
         discriminator: {
             property: "type",
             subTypes: [
@@ -24,18 +24,18 @@ export class ArrayOperandNode extends OperandNode {
             ]
         }
     })
-    private items: OperandNode[];
+    private items: BaseOperandNode[];
 
-    constructor(items: OperandNode[], lines: string[], range: IndexRange, dataType: string, name: string) {
+    constructor(items: BaseOperandNode[], lines: string[], range: IndexRange, dataType: string, name: string) {
         super(lines, range, dataType, name);
         this.items = items;
     }
 
     /**
      * Getter parameters
-     * @return {OperandNode[]}
+     * @return {BaseOperandNode[]}
      */
-    public getItems(): OperandNode[] {
+    public getItems(): BaseOperandNode[] {
         return this.items;
     }
 
@@ -45,9 +45,9 @@ export class ArrayOperandNode extends OperandNode {
 
     /**
      * Setter parameters
-     * @param {OperandNode[]} value
+     * @param {BaseOperandNode[]} value
      */
-    public setItems(value: OperandNode[]) {
+    public setItems(value: BaseOperandNode[]) {
         this.items = value;
     }
 
@@ -59,14 +59,25 @@ export class ArrayOperandNode extends OperandNode {
         return content;
     }
 
-    public getCompletionContainer(range: Position): CompletionContainer {
-        var container = new CompletionContainer(CompletionType.Operand);
-        container.specificDataType(this.getDataType());
+    public completionBeforeNode(): CompletionContainer {
+        return CompletionContainer.empty();
+    }
+
+    public completionAfterNode(): CompletionContainer {
+        var container = CompletionContainer.operand(this.getDataType());
         container.specifyPrependingText(", ");
         return container;
     }
-    
+
+    public completionInsideNode(range: Position): CompletionContainer {
+        return CompletionContainer.empty();
+    }
+
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         return this.getLines().join("\n");
+    }
+    
+    public isComplete(): boolean {
+        return true;
     }
 }

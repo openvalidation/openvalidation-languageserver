@@ -19,6 +19,8 @@ export enum AliasKey {
     OPERATOR = 'ʬoperatorʬ',
 
     
-    FUNCTION = 'ʬfunctionʬ'
+    FUNCTION = 'ʬfunctionʬ',
+
+    EQUALS = 'ʬoperatorʬequals'
 
 }

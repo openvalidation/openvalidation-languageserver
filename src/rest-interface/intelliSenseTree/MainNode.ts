@@ -9,6 +9,7 @@ export class MainNode {
 
     @Type(() => GenericNode, getGenericOptions())
     private scopes: GenericNode[];
+    
     constructor() {
         this.declarations = [];
         this.scopes = [];

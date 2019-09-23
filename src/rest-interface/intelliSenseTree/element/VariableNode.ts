@@ -14,9 +14,10 @@ import { ArrayOperandNode } from "./operation/operand/ArrayOperandNode";
 import { FunctionOperandNode } from "./operation/operand/FunctionOperandNode";
 import { OperandNode } from "./operation/operand/OperandNode";
 import { OperationNode } from "./operation/OperationNode";
+import { BaseOperandNode } from "./operation/operand/BaseOperandNode";
 
 export class VariableNode extends GenericNode {
-    @Type(() => OperandNode, {
+    @Type(() => BaseOperandNode, {
         discriminator: {
             property: "type",
             subTypes: [
@@ -28,11 +29,11 @@ export class VariableNode extends GenericNode {
             ]
         }
     })
-    private value: OperandNode;
+    private value: BaseOperandNode;
 
     private name: string;
 
-    constructor(name: string, value: OperandNode, lines: string[], range: IndexRange) {
+    constructor(name: string, value: BaseOperandNode, lines: string[], range: IndexRange) {
         super(lines, range);
         this.name = name;
         this.value = value;
@@ -51,7 +52,7 @@ export class VariableNode extends GenericNode {
      * Getter value
      * @return {ValueNode}
      */
-    public getValue(): OperandNode {
+    public getValue(): BaseOperandNode {
         return this.value;
     }
 
@@ -67,7 +68,7 @@ export class VariableNode extends GenericNode {
      * Setter value
      * @param {ValueNode} value
      */
-    public setValue(value: OperandNode) {
+    public setValue(value: BaseOperandNode) {
         this.value = value;
     }
 
@@ -116,7 +117,16 @@ export class VariableNode extends GenericNode {
         return content;
     }
 
-    public getCompletionContainer(range: Position): CompletionContainer {
+    // TODO: Implement completion in VariableNode
+    public completionBeforeNode(): CompletionContainer {
+        return CompletionContainer.empty();
+    }
+
+    public completionAfterNode(): CompletionContainer {
+        return CompletionContainer.logicalOperator();
+    }
+
+    public completionInsideNode(range: Position): CompletionContainer {
         if (!this.value)
             return new CompletionContainer(CompletionType.Operand);
 

@@ -28,9 +28,13 @@ export class TextMateParameter {
         this._complexSchemaProperties = server.schema.complexData;
         this._keywords = server.aliasHelper.getGenericKeywords();
 
-        var traversal = new TreeTraversal();
-        var tmpOperations = traversal.getOperations(apiResponse.getMainAstNode().getScopes());
-        this._operations = tmpOperations.map(o => new OperationSyntaxStructure(o));
+        if (apiResponse.getMainAstNode() != null) {
+            var traversal = new TreeTraversal();
+            var tmpOperations = traversal.getOperations(apiResponse.getMainAstNode().getScopes());
+            this._operations = tmpOperations.map(o => new OperationSyntaxStructure(o));
+        } else {
+            this._operations = [];
+        }
 
         this._thenKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.THEN);
         this._commentKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.COMMENT);

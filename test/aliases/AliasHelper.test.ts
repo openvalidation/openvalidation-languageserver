@@ -57,9 +57,7 @@ describe("AliasHelper Tests", () => {
         setDefaultAliases();
 
         var expected: string[] = ["AND", "COMMENT"];
-
-        var input: AliasKey[] = [AliasKey.AND, AliasKey.COMMENT];
-        var actual: string[] = aliasHelper.getKeywordsByAliasKeys(input);
+        var actual: string[] = aliasHelper.getKeywordsByAliasKeys(AliasKey.AND, AliasKey.COMMENT);
 
         expect(actual).toEqual(expected);
     });
@@ -69,9 +67,7 @@ describe("AliasHelper Tests", () => {
         setDefaultAliases();
 
         var expected: string[] = ["AND"];
-
-        var input: AliasKey[] = [AliasKey.AND, AliasKey.SUMME_VON];
-        var actual: string[] = aliasHelper.getKeywordsByAliasKeys(input);
+        var actual: string[] = aliasHelper.getKeywordsByAliasKeys(AliasKey.AND, AliasKey.SUMME_VON);
 
         expect(actual).toEqual(expected);
     });

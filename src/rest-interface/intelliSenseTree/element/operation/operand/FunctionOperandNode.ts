@@ -1,6 +1,6 @@
 import { Type } from "class-transformer";
+import { AliasHelper } from "src/aliases/AliasHelper";
 import { Position } from "vscode-languageserver";
-import { CompletionType } from "../../../../../enums/CompletionType";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../../GenericNode";
@@ -8,11 +8,11 @@ import { IndexRange } from "../../../IndexRange";
 import { ConnectedOperationNode } from "../../operation/ConnectedOperationNode";
 import { OperationNode } from "../../operation/OperationNode";
 import { ArrayOperandNode } from "./ArrayOperandNode";
+import { BaseOperandNode } from "./BaseOperandNode";
 import { OperandNode } from "./OperandNode";
-import { AliasHelper } from "src/aliases/AliasHelper";
 
-export class FunctionOperandNode extends OperandNode {
-    @Type(() => OperandNode, {
+export class FunctionOperandNode extends BaseOperandNode {
+    @Type(() => BaseOperandNode, {
         discriminator: {
             property: "type",
             subTypes: [
@@ -24,18 +24,18 @@ export class FunctionOperandNode extends OperandNode {
             ]
         }
     })
-    private parameters: OperandNode[];
+    private parameters: BaseOperandNode[];
 
-    constructor(parameters: OperandNode[], lines: string[], range: IndexRange, dataType: string, name: string) {
+    constructor(parameters: BaseOperandNode[], lines: string[], range: IndexRange, dataType: string, name: string) {
         super(lines, range, dataType, name);
         this.parameters = parameters;
     }
 
     /**
      * Getter parameters
-     * @return {OperandNode[]}
+     * @return {BaseOperandNode[]}
      */
-    public getParameters(): OperandNode[] {
+    public getParameters(): BaseOperandNode[] {
         return this.parameters;
     }
 
@@ -45,9 +45,9 @@ export class FunctionOperandNode extends OperandNode {
 
     /**
      * Setter parameters
-     * @param {OperandNode[]} value
+     * @param {BaseOperandNode[]} value
      */
-    public setParameters(value: OperandNode[]) {
+    public setParameters(value: BaseOperandNode[]) {
         this.parameters = value;
     }
 
@@ -59,9 +59,16 @@ export class FunctionOperandNode extends OperandNode {
         return content;
     }
 
-    public getCompletionContainer(range: Position): CompletionContainer {
-        var container = new CompletionContainer(CompletionType.Operand);
-        container.specificDataType(this.getDataType());
+    public completionBeforeNode(): CompletionContainer {
+        return CompletionContainer.empty();
+    }
+
+    public completionAfterNode(): CompletionContainer {
+        return CompletionContainer.operator(this.getDataType());
+    }
+
+    public completionInsideNode(range: Position): CompletionContainer {
+        var container = CompletionContainer.operand(this.getDataType())
 
         if (this.parameters.length > 0) {
             container.specifyPrependingText(", ");

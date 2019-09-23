@@ -20,8 +20,8 @@ describe("ApiProxy Tests", () => {
         expect(response).not.toBeNull();
     });
 
-    test("getAliases get default aliases, expect a response", async () => {
-        var response = await ApiProxy.postLintingData(initializer.getDocumentText(), initializer.server.restParameter, undefined);
+    test("postLintingData, expect a response", async () => {
+        var response = await ApiProxy.postLintingData(initializer.getDocumentText(), initializer.server.restParameter);
         expect(response).not.toBeNull();
     });
 
