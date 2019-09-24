@@ -6,6 +6,7 @@ import { CompletionContainer } from "../../../../../provider/code-completion/Com
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { BaseOperandNode } from "./BaseOperandNode";
+import { CompletionState } from "../../../../../provider/code-completion/CompletionStates";
 
 export class OperandNode extends BaseOperandNode {
     constructor(lines: string[], range: IndexRange, dataType: string, name: string | null) {
@@ -18,23 +19,15 @@ export class OperandNode extends BaseOperandNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange());
-
-        content.setContent("Operand " + this.getName() + ": " + this.getDataType());
-
+        var stringContent: string = "Operand " + this.getName() + ": " + this.getDataType();
+        var content: HoverContent = new HoverContent(this.getRange(), stringContent);
         return content;
     }
 
-    public completionBeforeNode(): CompletionContainer {
-        return CompletionContainer.empty();
-    }
-
-    public completionAfterNode(): CompletionContainer {
-        return CompletionContainer.operator(this.getDataType());
-    }
-
-    public completionInsideNode(range: Position): CompletionContainer {
-        return CompletionContainer.empty();
+    public getCompletionContainer(range: Position): CompletionContainer {
+        var container = CompletionContainer.create(CompletionState.Empty);
+        container.setDataType(this.getDataType());
+        return container;
     }
 
     public isComplete(): boolean {

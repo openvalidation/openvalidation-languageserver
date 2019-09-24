@@ -10,6 +10,7 @@ import { OperationNode } from "../../operation/OperationNode";
 import { BaseOperandNode } from "./BaseOperandNode";
 import { FunctionOperandNode } from "./FunctionOperandNode";
 import { OperandNode } from "./OperandNode";
+import { CompletionState } from "../../../../../provider/code-completion/CompletionStates";
 
 export class ArrayOperandNode extends BaseOperandNode {
     @Type(() => BaseOperandNode, {
@@ -52,25 +53,14 @@ export class ArrayOperandNode extends BaseOperandNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange());
-
-        content.setContent("Operand: " + this.getDataType() + "[]");
-
+        var content: HoverContent = new HoverContent(this.getRange(), "Operand: " + this.getDataType() + "[]");
         return content;
     }
 
-    public completionBeforeNode(): CompletionContainer {
-        return CompletionContainer.empty();
-    }
-
-    public completionAfterNode(): CompletionContainer {
-        var container = CompletionContainer.operand(this.getDataType());
-        container.specifyPrependingText(", ");
+    public getCompletionContainer(range: Position): CompletionContainer {        
+        var container = CompletionContainer.create(CompletionState.ArrayOperand);
+        container.setDataType(this.getDataType());
         return container;
-    }
-
-    public completionInsideNode(range: Position): CompletionContainer {
-        return CompletionContainer.empty();
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {

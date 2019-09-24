@@ -2,7 +2,6 @@ import { Type } from "class-transformer";
 import { String } from "typescript-string-operations";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../aliases/AliasHelper";
-import { CompletionType } from "../../../enums/CompletionType";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../GenericNode";
@@ -12,6 +11,8 @@ import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { OperationNode } from "./operation/OperationNode";
 import { FormattingHelper } from "../../../helper/FormattingHelper";
 import { AliasKey } from "../../../aliases/AliasKey";
+import { CompletionState } from "../../../provider/code-completion/CompletionStates";
+import { ActionErrorNode } from "./ActionErrorNode";
 
 export class RuleNode extends GenericNode {
 
@@ -24,13 +25,14 @@ export class RuleNode extends GenericNode {
             ]
         }
     })
-    private condition: ConditionNode;
+    private condition: ConditionNode | null;
 
-    private errorMessage: string;
+    @Type(() => ActionErrorNode)
+    private errorNode: ActionErrorNode | null;
 
-    constructor(errorMessage: string, condition: ConditionNode, line: string[], range: IndexRange) {
+    constructor(errorNode: ActionErrorNode | null, condition: ConditionNode | null, line: string[], range: IndexRange) {
         super(line, range);
-        this.errorMessage = errorMessage;
+        this.errorNode = errorNode;
         this.condition = condition;
     }
 
@@ -38,15 +40,15 @@ export class RuleNode extends GenericNode {
      * Getter errorMessage
      * @return {string}
      */
-    public getErrorMessage(): string {
-        return this.errorMessage;
+    public getErrorNode(): ActionErrorNode | null {
+        return this.errorNode;
     }
 
     /**
      * Getter condition
      * @return {ConditionNode}
      */
-    public getCondition(): ConditionNode {
+    public getCondition(): ConditionNode | null {
         return this.condition;
     }
 
@@ -54,8 +56,8 @@ export class RuleNode extends GenericNode {
      * Setter errorMessage
      * @param {string} value
      */
-    public setErrorMessage(value: string) {
-        this.errorMessage = value;
+    public setErrorNode(value: ActionErrorNode) {
+        this.errorNode = value;
     }
 
     /**
@@ -85,52 +87,37 @@ export class RuleNode extends GenericNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange());
-
-        content.setContent("Rule");
-
+        var content: HoverContent = new HoverContent(this.getRange(), "Rule");
         return content;
     }
 
-    // TODO: Implement completion in UnkownNode
-    public completionBeforeNode(): CompletionContainer {
-        return CompletionContainer.empty();
-    }
-
-    public completionAfterNode(): CompletionContainer {
-        if (this.errorMessage == null) {
-            return new CompletionContainer(CompletionType.Then, CompletionType.LogicalOperator);
-        } else if (this.errorMessage == "") {
-            return new CompletionContainer(CompletionType.None);
+    public getCompletionContainer(position: Position): CompletionContainer {
+        // Then we are inside the error-node and we don't want completion
+        if (!!this.errorNode && !this.errorNode.getRange().startsAfter(position)) {
+            return CompletionContainer.create(CompletionState.Empty);
         }
-        else {
-            return new CompletionContainer(CompletionType.LogicalOperator);
-        }
-    }
 
-    public completionInsideNode(position: Position): CompletionContainer {
-        if (!this.condition) {
-            return new CompletionContainer(CompletionType.Operand);
-        } else {
+        if (!this.condition) return CompletionContainer.create(CompletionState.RuleStart);
+
+        if (!this.condition.getRange().startsAfter(position)) {
             var container: CompletionContainer = this.condition.getCompletionContainer(position);
-            // if (!this.condition.getRange().positionBeforeEnd(position))
 
-            // TODO: Implement codecompletion
-
-            // Then the operand is already finished
-            if ((container.isEmpty() ||
-                container.containsLogicalOperator()) &&
-                !this.condition.getRange().includesPosition(position)) {
+            if (this.condition.isComplete() && this.errorNode == null) {
+                container.addState(CompletionState.RuleEnd);
             }
 
             return container;
         }
+
+        return CompletionContainer.create(CompletionState.Empty);
     }
 
     public isComplete(): boolean {
         return !!this.condition &&
             this.condition.isComplete() &&
-            String.IsNullOrWhiteSpace(this.getErrorMessage());
+            !!this.getErrorNode() &&
+            !!this.getErrorNode()!.getErrorMessage() &&
+            String.IsNullOrWhiteSpace(this.getErrorNode()!.getErrorMessage()!);
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {

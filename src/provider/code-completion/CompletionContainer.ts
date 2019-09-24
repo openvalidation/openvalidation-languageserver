@@ -1,8 +1,9 @@
-import { AliasHelper } from "src/aliases/AliasHelper";
-import { ISchemaType } from "src/rest-interface/schema/ISchemaType";
-import { CompletionType } from "../../enums/CompletionType";
+import { AliasHelper } from "../../aliases/AliasHelper";
+import { ISchemaType } from "../../rest-interface/schema/ISchemaType";
 import { Variable } from "../../rest-interface/intelliSenseTree/Variable";
 import { CompletionGenerator } from "./CompletionGenerator";
+import { CompletionState } from "./CompletionStates";
+import { CompletionType } from "../../enums/CompletionType";
 
 export class CompletionContainer {
     private dataType: string | null;
@@ -15,7 +16,33 @@ export class CompletionContainer {
         this.filteredName = null;
         this.prependingText = null;
         this.types = types;
+        this.possibleStates = [];
     }
+
+    private possibleStates: CompletionState[];
+
+    public getState(): CompletionState[] {
+        return this.possibleStates;
+    }
+    public addState(value: CompletionState) {
+        if (value != CompletionState.Empty)
+            this.possibleStates.push(value);
+    }
+    public setState(...value: CompletionState[]) {
+        this.possibleStates = value.filter(v => v != CompletionState.Empty);
+    }
+
+    public getDataType(): string | null {
+        return this.dataType;
+    }
+
+    public static create(state: CompletionState): CompletionContainer {
+        var container = new CompletionContainer();
+        container.setState(state);
+        return container;
+    }
+
+
 
     public static empty(): CompletionContainer {
         return new CompletionContainer(CompletionType.None);
@@ -27,13 +54,13 @@ export class CompletionContainer {
 
     public static operand(datatype: string): CompletionContainer {
         var container = new CompletionContainer(CompletionType.Operand);
-        container.specificDataType(datatype);
+        container.setDataType(datatype);
         return container;
     }
 
     public static operator(datatype: string): CompletionContainer {
         var container = new CompletionContainer(CompletionType.Operator);
-        container.specificDataType(datatype);
+        container.setDataType(datatype);
         return container;
     }
 
@@ -44,7 +71,7 @@ export class CompletionContainer {
     public containsOperator(): boolean {
         return this.getTypes().filter(types => types == CompletionType.Operator).length > 0;
     }
-    
+
     public containsLogicalOperator(): boolean {
         return this.getTypes().filter(types => types == CompletionType.LogicalOperator).length > 0;
     }
@@ -57,7 +84,7 @@ export class CompletionContainer {
         this.types.push(type);
     }
 
-    public specificDataType(dataType: string): CompletionContainer {
+    public setDataType(dataType: string): CompletionContainer {
         this.dataType = dataType;
         return this;
     }

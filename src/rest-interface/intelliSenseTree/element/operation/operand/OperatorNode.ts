@@ -3,7 +3,8 @@ import { CompletionContainer } from "../../../../../provider/code-completion/Com
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { Position } from "vscode-languageserver";
-import { AliasHelper } from "src/aliases/AliasHelper";
+import { AliasHelper } from "../../../../../aliases/AliasHelper";
+import { CompletionState } from "../../../../../provider/code-completion/CompletionStates";
 
 export class OperatorNode extends GenericNode {
     private dataType: string;
@@ -47,23 +48,15 @@ export class OperatorNode extends GenericNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange());
-
-        content.setContent("Operator " + this.getOperator() + ": " + this.getDataType());
-
-        return content;
+        var content: string = "Operator " + this.getOperator() + ": " + this.getDataType();
+        var hoverContent: HoverContent = new HoverContent(this.getRange(), content);
+        return hoverContent;
     }
 
-    public completionBeforeNode(): CompletionContainer {
-        return CompletionContainer.empty();
-    }
-
-    public completionAfterNode(): CompletionContainer {
-        return CompletionContainer.operand(this.validType);
-    }
-
-    public completionInsideNode(range: Position): CompletionContainer {
-        return CompletionContainer.empty();
+    public getCompletionContainer(range: Position): CompletionContainer {
+        var container = CompletionContainer.create(CompletionState.Empty);
+        container.setDataType(this.validType);
+        return container;
     }
 
     public isComplete(): boolean {

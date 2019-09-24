@@ -51,18 +51,8 @@ export class UnkownNode extends GenericNode {
         if (!this.content) return null;
         return this.content.getHoverContent();
     }
-
-
-    // TODO: Implement completion in UnkownNode
-    public completionBeforeNode(): CompletionContainer {
-        return CompletionContainer.empty();
-    }
-
-    public completionAfterNode(): CompletionContainer {
-        return CompletionContainer.logicalOperator();
-    }    
-
-    public completionInsideNode(range: Position): CompletionContainer {
+    
+    public getCompletionContainer(range: Position): CompletionContainer {
         if (!this.content) return new CompletionContainer(CompletionType.None);
 
         var container = this.content.getCompletionContainer(range);

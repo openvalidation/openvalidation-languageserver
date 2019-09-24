@@ -4,8 +4,8 @@ export class HoverContent {
     private content: string;
     private range: IndexRange;
 
-    constructor(range: IndexRange) { 
-        this.content = "";
+    constructor(range: IndexRange, content: string) { 
+        this.content = content;
         this.range = range;
     }
 

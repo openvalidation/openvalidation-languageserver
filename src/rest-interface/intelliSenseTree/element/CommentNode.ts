@@ -5,6 +5,7 @@ import { IndexRange } from "../IndexRange";
 import { AliasHelper } from "../../../aliases/AliasHelper";
 import { Position } from "vscode-languageserver";
 import { FormattingHelper } from "../../../helper/FormattingHelper";
+import { CompletionState } from "src/provider/code-completion/CompletionStates";
 
 export class CommentNode extends GenericNode {
     public content: string;
@@ -20,41 +21,12 @@ export class CommentNode extends GenericNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange());
-        content.setContent("Comment");
+        var content: HoverContent = new HoverContent(this.getRange(), "Comment");
         return content;
     }
 
-    //     /**
-    //  * Generates a list of edits for formatting this element
-    //  *
-    //  * @returns {TextEdit[]} text-edits that need to be done for the formatting of this element
-    //  * @memberof OvRule
-    //  */
-    // public formatCode(aliasesHelper: AliasHelper): TextEdit[] {
-    //     var commentKeyword: string | null = aliasesHelper.getCommentKeyword();
-    //     if (!commentKeyword) return [];
-
-    //     // var spaces = commentKeyword.length + 1;
-
-    //     //Foreach line
-    //     // var textEdit: TextEdit = {
-    //     //     newText: formattedLine,
-    //     //     range: Range.create(currentLineNumber, 0, currentLineNumber, lineToCheck.length)
-    //     // }
-    //     // textEdits.push(textEdit);
-    //     return [];
-    // }
-
-    public completionBeforeNode(): CompletionContainer {
-        return CompletionContainer.empty();
-    }
-    public completionAfterNode(): CompletionContainer {
-        return CompletionContainer.empty();
-    }
-
-    public completionInsideNode(range: Position): CompletionContainer {
-        return CompletionContainer.empty();
+    public getCompletionContainer(range: Position): CompletionContainer {
+        return CompletionContainer.create(CompletionState.Empty);
     }
 
     public isComplete(): boolean {

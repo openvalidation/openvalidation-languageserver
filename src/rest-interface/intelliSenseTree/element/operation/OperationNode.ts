@@ -1,5 +1,4 @@
 import { Type } from "class-transformer";
-import { CompletionType } from "../../../../enums/CompletionType";
 import { HoverContent } from "../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../GenericNode";
@@ -11,8 +10,9 @@ import { OperatorNode } from "./operand/OperatorNode";
 import { ConditionNode } from "./ConditionNode";
 import { ConnectedOperationNode } from "./ConnectedOperationNode";
 import { Position } from "vscode-languageserver";
-import { AliasHelper } from "src/aliases/AliasHelper";
+import { AliasHelper } from "../../../../aliases/AliasHelper";
 import { BaseOperandNode } from "./operand/BaseOperandNode";
+import { CompletionState } from "../../../../provider/code-completion/CompletionStates";
 
 export class OperationNode extends ConditionNode {
     @Type(() => BaseOperandNode, {
@@ -27,7 +27,7 @@ export class OperationNode extends ConditionNode {
             ]
         }
     })
-    private leftOperand: BaseOperandNode;
+    private leftOperand: BaseOperandNode | null;
 
     @Type(() => BaseOperandNode, {
         discriminator: {
@@ -41,14 +41,14 @@ export class OperationNode extends ConditionNode {
             ]
         }
     })
-    private rightOperand: BaseOperandNode;
+    private rightOperand: BaseOperandNode | null;
 
     @Type(() => OperatorNode)
-    private operator: OperatorNode;
+    private operator: OperatorNode | null;
 
     private constrained: boolean;
 
-    constructor(leftOperand: BaseOperandNode, rightOperand: BaseOperandNode, operator: OperatorNode, lines: string[], range: IndexRange) {
+    constructor(leftOperand: BaseOperandNode | null, operator: OperatorNode | null, rightOperand: BaseOperandNode | null, lines: string[], range: IndexRange) {
         super(lines, range);
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;
@@ -60,7 +60,7 @@ export class OperationNode extends ConditionNode {
      * Getter leftOperand
      * @return {BaseOperandNode}
      */
-    public getLeftOperand(): BaseOperandNode {
+    public getLeftOperand(): BaseOperandNode | null {
         return this.leftOperand;
     }
 
@@ -68,7 +68,7 @@ export class OperationNode extends ConditionNode {
      * Getter rightOperand
      * @return {BaseOperandNode}
      */
-    public getRightOperand(): BaseOperandNode {
+    public getRightOperand(): BaseOperandNode | null {
         return this.rightOperand;
     }
 
@@ -76,7 +76,7 @@ export class OperationNode extends ConditionNode {
      * Getter operator
      * @return {string}
      */
-    public getOperator(): OperatorNode {
+    public getOperator(): OperatorNode | null {
         return this.operator;
     }
 
@@ -128,56 +128,40 @@ export class OperationNode extends ConditionNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange());
-
-        content.setContent("Operation");
-
+        var content: HoverContent = new HoverContent(this.getRange(), "Operation");
         return content;
     }
 
-    public completionBeforeNode(): CompletionContainer {
-        return CompletionContainer.empty();
-    }
-    public completionAfterNode(): CompletionContainer {
-        return CompletionContainer.logicalOperator();
-    }
+    public getCompletionContainer(position: Position): CompletionContainer {
+        if (!this.leftOperand) {
+            return CompletionContainer.create(CompletionState.OperandMissing);
+        }
 
-    public completionInsideNode(position: Position): CompletionContainer {
-        if (!this.leftOperand) return new CompletionContainer(CompletionType.Operand);
-
-        var container: CompletionContainer = this.leftOperand.getCompletionContainer(position);
-        if (!this.leftOperand.isComplete() && !this.operator) {
+        if (this.leftOperand.getRange().endsBefore(position) && !this.operator) {
+            var container = this.leftOperand.getCompletionContainer(position);
+            container.addState(CompletionState.Operand);
             return container;
         }
 
-        if (!this.operator) {
-            if (!this.leftOperand.getRange().endsBefore(position)) {
-                return CompletionContainer.empty(); 
-            }
-
-            container.addType(CompletionType.Operator);
-            container.specificDataType(this.leftOperand.getDataType());
+        if (!!this.operator && this.operator.getRange().endsBefore(position) && !this.rightOperand) {
+            var container = this.operator.getCompletionContainer(position);
+            container.addState(CompletionState.Operator);
             return container;
         }
 
-        if (!this.rightOperand) {
-            container = new CompletionContainer(CompletionType.Operand);
-            container.specificDataType(this.leftOperand.getDataType());
-            container.specifyNameFiltering(this.leftOperand.getName());
+        if (!!this.rightOperand && this.rightOperand.getRange().endsBefore(position)) {
+            var container = this.rightOperand.getCompletionContainer(position);
+            container.addState(CompletionState.ConnectedOperation);
             return container;
         }
 
-        container = this.rightOperand.getCompletionContainer(position);
-        if (!this.rightOperand.isComplete() && !container.containsOperator()) {
-            return container;
-        }
-        return new CompletionContainer(CompletionType.LogicalOperator);
+        return CompletionContainer.create(CompletionState.Empty);
     }
 
     public isComplete(): boolean {
         return !!this.leftOperand && !!this.operator && !!this.rightOperand;
     }
-    
+
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         return this.getLines().join("\n");
     }

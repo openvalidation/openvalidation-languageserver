@@ -47,26 +47,11 @@ export class ConnectedOperationNode extends ConditionNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange());
-
-        content.setContent("ConnectedOperation");
-
+        var content: HoverContent = new HoverContent(this.getRange(), "ConnectedOperation");
         return content;
     }
 
-    public completionBeforeNode(): CompletionContainer {
-        return this.conditions.length > 0
-            ? this.conditions[0].completionBeforeNode()
-            : CompletionContainer.empty();
-    }
-
-    public completionAfterNode(): CompletionContainer {
-        return this.conditions.length > 0
-            ? this.conditions[this.conditions.length - 1].completionAfterNode()
-            : CompletionContainer.empty();
-    }
-
-    public completionInsideNode(position: Position): CompletionContainer {
+    public getCompletionContainer(position: Position): CompletionContainer {
         if (this.getConditions().length <= 1) {
             return new CompletionContainer(CompletionType.Operand);
         }

@@ -33,9 +33,7 @@ export abstract class BaseOperandNode extends GenericNode {
 
     abstract getChildren(): GenericNode[];
     abstract getHoverContent(): HoverContent | null;
-    abstract completionBeforeNode(): CompletionContainer;
-    abstract completionAfterNode(): CompletionContainer;
-    abstract completionInsideNode(range: Position): CompletionContainer;
+    abstract getCompletionContainer(range: Position): CompletionContainer;
     abstract isComplete(): boolean;
     abstract getBeautifiedContent(aliasesHelper: AliasHelper): string;
 }

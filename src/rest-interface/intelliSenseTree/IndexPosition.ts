@@ -5,8 +5,8 @@ export class IndexPosition {
     private column: number;
 
     constructor(line: number, column: number) {
-        this.line = 0;
-        this.column = 0;
+        this.line = line;
+        this.column = column;
     }
 
     public getLine(): number {

@@ -106,7 +106,7 @@ export class VariableNode extends GenericNode {
 
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange());
+        var content: HoverContent = new HoverContent(this.getRange(), "");
 
         var contentText = "Variable " + this.getName();
         if (!!this.getValue())
@@ -117,16 +117,7 @@ export class VariableNode extends GenericNode {
         return content;
     }
 
-    // TODO: Implement completion in VariableNode
-    public completionBeforeNode(): CompletionContainer {
-        return CompletionContainer.empty();
-    }
-
-    public completionAfterNode(): CompletionContainer {
-        return CompletionContainer.logicalOperator();
-    }
-
-    public completionInsideNode(range: Position): CompletionContainer {
+    public getCompletionContainer(range: Position): CompletionContainer {
         if (!this.value)
             return new CompletionContainer(CompletionType.Operand);
 

@@ -40,22 +40,7 @@ export abstract class GenericNode {
     abstract getHoverContent(): HoverContent | null;
     abstract isComplete(): boolean;
     abstract getBeautifiedContent(aliasesHelper: AliasHelper): string;
-    
-    abstract completionInsideNode(position: Position): CompletionContainer;
-    abstract completionBeforeNode(): CompletionContainer;
-    abstract completionAfterNode(): CompletionContainer;
-
-    public getCompletionContainer(position: Position): CompletionContainer {
-        if (this.getRange().startsAfter(position)) {
-            return this.completionBeforeNode();
-        }
-
-        if (this.getRange().includesPosition(position)) {
-            return this.completionInsideNode(position);
-        }
-
-        return this.completionAfterNode();
-    }
+    abstract getCompletionContainer(position: Position): CompletionContainer;
 
 
     public updateRangeLines(difference: number): void {

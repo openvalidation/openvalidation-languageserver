@@ -10,6 +10,7 @@ import { OperationNode } from "../../operation/OperationNode";
 import { ArrayOperandNode } from "./ArrayOperandNode";
 import { BaseOperandNode } from "./BaseOperandNode";
 import { OperandNode } from "./OperandNode";
+import { CompletionState } from "../../../../../provider/code-completion/CompletionStates";
 
 export class FunctionOperandNode extends BaseOperandNode {
     @Type(() => BaseOperandNode, {
@@ -52,30 +53,14 @@ export class FunctionOperandNode extends BaseOperandNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange());
-
-        content.setContent("Function " + this.getName() + ": " + this.getDataType());
-
+        var stringContent: string = "Function " + this.getName() + ": " + this.getDataType();
+        var content: HoverContent = new HoverContent(this.getRange(), stringContent);
         return content;
     }
 
-    public completionBeforeNode(): CompletionContainer {
-        return CompletionContainer.empty();
-    }
-
-    public completionAfterNode(): CompletionContainer {
-        return CompletionContainer.operator(this.getDataType());
-    }
-
-    public completionInsideNode(range: Position): CompletionContainer {
-        var container = CompletionContainer.operand(this.getDataType())
-
-        if (this.parameters.length > 0) {
-            container.specifyPrependingText(", ");
-        }
-
-        // TODO: If "isComplete" return also operation with higher priority
-
+    public getCompletionContainer(range: Position): CompletionContainer {    
+        var container = CompletionContainer.create(CompletionState.FunctionOperand);
+        container.setDataType(this.getDataType());
         return container;
     }
 
