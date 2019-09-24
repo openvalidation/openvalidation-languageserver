@@ -3,7 +3,7 @@ import { UnkownNode } from "../../../../src/rest-interface/intelliSenseTree/elem
 import { IndexRange } from "../../../../src/rest-interface/intelliSenseTree/IndexRange";
 import { CompletionState } from "../../../../src/provider/code-completion/CompletionStates";
 import { Position } from "vscode-languageserver";
-// import { OperandNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
+import { OperandNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
 
 describe("UnkownNode Tests", () => {
     beforeEach(() => {
@@ -20,15 +20,15 @@ describe("UnkownNode Tests", () => {
         expect(actual).toEqual(expected);
     });
 
-    // test("getCompletionContainer with OperandNode, expected Operand", () => {
-    //     var operand: OperandNode = new OperandNode(["Alter"], IndexRange.create(0, 0, 0, 5), "Decimal", "Alter");
-    //     var unkown: UnkownNode = new UnkownNode(operand, [], IndexRange.create(0, 0, 0, 5));
+    test("getCompletionContainer with OperandNode, expected Operand", () => {
+        var operand: OperandNode = new OperandNode(["Alter"], IndexRange.create(0, 0, 0, 5), "Decimal", "Alter");
+        var unkown: UnkownNode = new UnkownNode(operand, [], IndexRange.create(0, 0, 0, 5));
 
-    //     var positionParameter = Position.create(0, 0);
+        var positionParameter = Position.create(0, 0);
 
-    //     var expected: CompletionState[] = [CompletionState.Operand];
-    //     var actual: CompletionState[] = unkown.getCompletionContainer(positionParameter).getStates();
+        var expected: CompletionState[] = [CompletionState.Operand];
+        var actual: CompletionState[] = unkown.getCompletionContainer(positionParameter).getStates();
 
-    //     expect(actual).toEqual(expected);
-    // });
+        expect(actual).toEqual(expected);
+    });
 });

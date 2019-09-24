@@ -56,23 +56,15 @@ export class UnkownNode extends GenericNode {
         if (!this.content) return CompletionContainer.create(CompletionState.OperandMissing);
 
         var container: CompletionContainer = this.content.getCompletionContainer(position);
-        // container.
-        if (container.isEmpty() && container instanceof OperandNode) {
-
+        if (container.isEmpty()) {
+            container.addState(CompletionState.Operand);
+            container.addState(CompletionState.UnkownOperand);
+        } else if (this.content.isComplete()) {
+            container.addState(CompletionState.RuleEnd);
+            container.addState(CompletionState.UnkownOperand);
         }
 
         return container;
-
-        // var container = this.content.getCompletionContainer(range);
-
-        // if (container.isEmpty() || container.containsLogicalOperator()) {
-        //     container = new CompletionContainer(CompletionType.Then);
-        //     container.addType(CompletionType.As);
-        //     container.addType(CompletionType.LogicalOperator);
-        // } else if (this.content.isComplete()) {
-        //     container.addType(CompletionType.As);
-        // }
-        // return container;
     }
 
     public isComplete(): boolean {
