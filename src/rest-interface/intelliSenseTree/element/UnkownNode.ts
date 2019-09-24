@@ -1,7 +1,6 @@
 import { Type } from "class-transformer";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../aliases/AliasHelper";
-import { CompletionType } from "../../../enums/CompletionType";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../GenericNode";
@@ -14,6 +13,7 @@ import { OperandNode } from "./operation/operand/OperandNode";
 import { OperationNode } from "./operation/OperationNode";
 import { RuleNode } from "./RuleNode";
 import { VariableNode } from "./VariableNode";
+import { CompletionState } from "../../../provider/code-completion/CompletionStates";
 
 export class UnkownNode extends GenericNode {
     @Type(() => GenericNode, {
@@ -32,14 +32,14 @@ export class UnkownNode extends GenericNode {
             ]
         }
     })
-    private content: GenericNode;
+    private content: GenericNode | null;
 
-    constructor(content: GenericNode, lines: string[], range: IndexRange) {
+    constructor(content: GenericNode | null, lines: string[], range: IndexRange) {
         super(lines, range);
         this.content = content;
     }
 
-    public getContent(): GenericNode {
+    public getContent(): GenericNode | null {
         return this.content;
     }
 
@@ -52,19 +52,27 @@ export class UnkownNode extends GenericNode {
         return this.content.getHoverContent();
     }
     
-    public getCompletionContainer(range: Position): CompletionContainer {
-        if (!this.content) return new CompletionContainer(CompletionType.None);
+    public getCompletionContainer(position: Position): CompletionContainer {
+        if (!this.content) return CompletionContainer.create(CompletionState.OperandMissing);
 
-        var container = this.content.getCompletionContainer(range);
+        var container: CompletionContainer = this.content.getCompletionContainer(position);
+        // container.
+        if (container.isEmpty() && container instanceof OperandNode) {
 
-        if (container.isEmpty() || container.containsLogicalOperator()) {
-            container = new CompletionContainer(CompletionType.Then);
-            container.addType(CompletionType.As);
-            container.addType(CompletionType.LogicalOperator);
-        } else if (this.content.isComplete()) {
-            container.addType(CompletionType.As);
         }
+
         return container;
+
+        // var container = this.content.getCompletionContainer(range);
+
+        // if (container.isEmpty() || container.containsLogicalOperator()) {
+        //     container = new CompletionContainer(CompletionType.Then);
+        //     container.addType(CompletionType.As);
+        //     container.addType(CompletionType.LogicalOperator);
+        // } else if (this.content.isComplete()) {
+        //     container.addType(CompletionType.As);
+        // }
+        // return container;
     }
 
     public isComplete(): boolean {
@@ -72,6 +80,8 @@ export class UnkownNode extends GenericNode {
     }
     
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+        if (!this.content)
+            return this.getLines().join("\n");
         return this.content.getBeautifiedContent(aliasesHelper);
     }
 }

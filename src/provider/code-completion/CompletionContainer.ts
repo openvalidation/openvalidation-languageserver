@@ -21,13 +21,14 @@ export class CompletionContainer {
 
     private possibleStates: CompletionState[];
 
-    public getState(): CompletionState[] {
+    public getStates(): CompletionState[] {
         return this.possibleStates;
     }
     public addState(value: CompletionState) {
         if (value != CompletionState.Empty)
             this.possibleStates.push(value);
     }
+
     public setState(...value: CompletionState[]) {
         this.possibleStates = value.filter(v => v != CompletionState.Empty);
     }
@@ -65,7 +66,7 @@ export class CompletionContainer {
     }
 
     public isEmpty(): boolean {
-        return this.getTypes().filter(types => types == CompletionType.None).length > 0;
+        return this.getStates().every(state => state == CompletionState.Empty);
     }
 
     public containsOperator(): boolean {
@@ -101,25 +102,23 @@ export class CompletionContainer {
 
     public getCompletions(declarations: Variable[], aliasHelper: AliasHelper, schema: ISchemaType): CompletionGenerator {
         var generator: CompletionGenerator = new CompletionGenerator(declarations, aliasHelper, schema, this.prependingText);
-        let uniqueTypes = [... new Set(this.types)];
+        let uniqueTypes = [... new Set(this.possibleStates)];
         uniqueTypes.forEach(type => {
             switch (type) {
-                case CompletionType.Globals:
-                    generator.addGlobals();
-                    break;
-                case CompletionType.Operand:
+                case CompletionState.OperandMissing:
+                case CompletionState.Operator:
                     generator.addFittingIdentifier(this.filteredName, this.dataType);
                     break;
-                case CompletionType.Operator:
+                case CompletionState.Operand:
                     generator.addFittingOperator(this.dataType);
                     break;
-                case CompletionType.LogicalOperator:
+                case CompletionState.OperationEnd:
                     generator.addLogicalOperators();
                     break;
-                case CompletionType.Then:
+                case CompletionState.RuleEnd:
                     generator.addThenKeyword();
                     break;
-                case CompletionType.As:
+                case CompletionState.UnkownOperand:
                     generator.addAsKeyword();
                     break;
                 default:

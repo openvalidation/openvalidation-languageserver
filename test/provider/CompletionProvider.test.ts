@@ -1,13 +1,13 @@
 import "jest";
-import { CompletionItem, Position, CompletionItemKind } from "vscode-languageserver";
+import { CompletionItem, Position } from "vscode-languageserver";
 import { CompletionProvider } from "../../src/provider/CompletionProvider";
 import { TestInitializer } from "../TestInitializer";
-import { GenericNode } from "../../src/rest-interface/intelliSenseTree/GenericNode";
-import { OperandNode } from "../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
-import { IndexRange } from "../../src/rest-interface/intelliSenseTree/IndexRange";
-import { CompletionResponse } from "../../src/rest-interface/response/CompletionResponse";
-import { Variable } from "../../src/rest-interface/intelliSenseTree/Variable";
-import { OperatorNode } from "../../src/rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
+// import { GenericNode } from "../../src/rest-interface/intelliSenseTree/GenericNode";
+// import { OperandNode } from "../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
+// import { IndexRange } from "../../src/rest-interface/intelliSenseTree/IndexRange";
+// import { CompletionResponse } from "../../src/rest-interface/response/CompletionResponse";
+// import { Variable } from "../../src/rest-interface/intelliSenseTree/Variable";
+// import { OperatorNode } from "../../src/rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
 
 describe("Completion provider test", () => {
     var provider: CompletionProvider;
@@ -37,35 +37,35 @@ describe("Completion provider test", () => {
         expect(actual!.length).toEqual(expectedLength);
     });
 
-    test("completionForParsedElement with OperandNode, expected one operator", () => {
-        var expectedLength: number = 1;
-        var expectedType: CompletionItemKind = CompletionItemKind.Keyword;
-        var expectedName: string = "EQUALS";
+    // test("completionForParsedElement with OperandNode, expected one operator", () => {
+    //     var expectedLength: number = 1;
+    //     var expectedType: CompletionItemKind = CompletionItemKind.Keyword;
+    //     var expectedName: string = "EQUALS";
 
-        var line: string = "Alter";
-        var linesLength: number = line.length;
-        var parameter: GenericNode = new OperandNode([line], IndexRange.create(0, 0, 0, linesLength), "Decimal", "Alter");
-        var responseParameter: CompletionResponse | null = new CompletionResponse(parameter);
-        var actual: CompletionItem[] | null = provider["completionForParsedElement"](responseParameter, [], Position.create(0, linesLength + 1));
+    //     var line: string = "Alter";
+    //     var linesLength: number = line.length;
+    //     var parameter: GenericNode = new OperandNode([line], IndexRange.create(0, 0, 0, linesLength), "Decimal", "Alter");
+    //     var responseParameter: CompletionResponse | null = new CompletionResponse(parameter);
+    //     var actual: CompletionItem[] | null = provider["completionForParsedElement"](responseParameter, [], Position.create(0, linesLength + 1));
 
-        expect(actual!.length).toEqual(expectedLength);
-        expect(actual![0].kind).toEqual(expectedType);
-        expect(actual![0].label).toEqual(expectedName);
-    });
+    //     expect(actual!.length).toEqual(expectedLength);
+    //     expect(actual![0].kind).toEqual(expectedType);
+    //     expect(actual![0].label).toEqual(expectedName);
+    // });
 
-    test("completionForParsedElement with OperatorNode, expected one operator", () => {
-        var expectedLength: number = 1;
-        var expectedType: CompletionItemKind = CompletionItemKind.Variable;
-        var expectedName: string = "Something";
+    // test("completionForParsedElement with OperatorNode, expected one operator", () => {
+    //     var expectedLength: number = 1;
+    //     var expectedType: CompletionItemKind = CompletionItemKind.Variable;
+    //     var expectedName: string = "Something";
 
-        var line: string = "GLEICH";
-        var linesLength: number = line.length;
-        var parameter: GenericNode = new OperatorNode([line], IndexRange.create(0, 0, 0, linesLength), "Boolean", "EQUALS", "Object");
-        var responseParameter: CompletionResponse | null = new CompletionResponse(parameter);
-        var actual: CompletionItem[] | null = provider["completionForParsedElement"](responseParameter, [new Variable(expectedName, "Decimal")], Position.create(0, linesLength + 1));
+    //     var line: string = "GLEICH";
+    //     var linesLength: number = line.length;
+    //     var parameter: GenericNode = new OperatorNode([line], IndexRange.create(0, 0, 0, linesLength), "Boolean", "EQUALS", "Object");
+    //     var responseParameter: CompletionResponse | null = new CompletionResponse(parameter);
+    //     var actual: CompletionItem[] | null = provider["completionForParsedElement"](responseParameter, [new Variable(expectedName, "Decimal")], Position.create(0, linesLength + 1));
 
-        expect(actual!.length).toEqual(expectedLength);
-        expect(actual![0].kind).toEqual(expectedType);
-        expect(actual![0].label).toEqual(expectedName);
-    });
+    //     expect(actual!.length).toEqual(expectedLength);
+    //     expect(actual![0].kind).toEqual(expectedType);
+    //     expect(actual![0].label).toEqual(expectedName);
+    // });
 });

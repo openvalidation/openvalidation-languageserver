@@ -97,7 +97,7 @@ export class RuleNode extends GenericNode {
             return CompletionContainer.create(CompletionState.Empty);
         }
 
-        if (!this.condition) return CompletionContainer.create(CompletionState.RuleStart);
+        if (!this.condition) return CompletionContainer.create(CompletionState.OperandMissing);
 
         if (!this.condition.getRange().startsAfter(position)) {
             var container: CompletionContainer = this.condition.getCompletionContainer(position);

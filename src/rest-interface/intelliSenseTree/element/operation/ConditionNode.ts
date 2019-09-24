@@ -1,8 +1,8 @@
 import { IndexRange } from '../../IndexRange';
-import { OperandNode } from './operand/OperandNode';
+import { BaseOperandNode } from './operand/BaseOperandNode';
 
 // Conditions
-export abstract class ConditionNode extends OperandNode {
+export abstract class ConditionNode extends BaseOperandNode {
     constructor(line: string[], range: IndexRange) {
         super(line, range, "Boolean", null);
     }

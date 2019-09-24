@@ -30,7 +30,7 @@ export abstract class BaseOperandNode extends GenericNode {
     public getName(): string | null {
         return this.name;
     }
-
+    
     abstract getChildren(): GenericNode[];
     abstract getHoverContent(): HoverContent | null;
     abstract getCompletionContainer(range: Position): CompletionContainer;

@@ -137,6 +137,7 @@ export class OperationNode extends ConditionNode {
             return CompletionContainer.create(CompletionState.OperandMissing);
         }
 
+        // TODO: Can be done in a loop?!
         if (this.leftOperand.getRange().endsBefore(position) && !this.operator) {
             var container = this.leftOperand.getCompletionContainer(position);
             container.addState(CompletionState.Operand);
@@ -151,7 +152,7 @@ export class OperationNode extends ConditionNode {
 
         if (!!this.rightOperand && this.rightOperand.getRange().endsBefore(position)) {
             var container = this.rightOperand.getCompletionContainer(position);
-            container.addState(CompletionState.ConnectedOperation);
+            container.addState(CompletionState.OperationEnd);
             return container;
         }
 

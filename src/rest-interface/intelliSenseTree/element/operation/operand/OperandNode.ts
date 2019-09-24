@@ -24,14 +24,14 @@ export class OperandNode extends BaseOperandNode {
         return content;
     }
 
-    public getCompletionContainer(range: Position): CompletionContainer {
+    public getCompletionContainer(position: Position): CompletionContainer {
         var container = CompletionContainer.create(CompletionState.Empty);
         container.setDataType(this.getDataType());
         return container;
     }
 
     public isComplete(): boolean {
-        return true;
+        return false;
     }
     
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {

@@ -1,20 +1,14 @@
 export enum CompletionState {
     Empty,
-
-
     FunctionOperand,
     ArrayOperand,
     Operand,
     
-    Variable,
-    LeftOperandVariable,
-    ConnectedOperation,
-    RightOperand,
+    OperationEnd,
     Operator,
     OperandMissing,
-    RightOperandUnkown,
-    RuleStart,
-    LeftOperandRule,
+    
     RuleEnd,
-    Comment
+    Comment,
+    UnkownOperand
 }

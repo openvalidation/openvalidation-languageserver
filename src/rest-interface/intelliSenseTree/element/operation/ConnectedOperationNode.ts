@@ -1,5 +1,4 @@
 import { Type } from "class-transformer";
-import { CompletionType } from "../../../../enums/CompletionType";
 import { HoverContent } from "../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../GenericNode";
@@ -8,6 +7,7 @@ import { ConditionNode } from "./ConditionNode";
 import { OperationNode } from "./OperationNode";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../../aliases/AliasHelper";
+import { CompletionState } from "../../../../provider/code-completion/CompletionStates";
 
 export class ConnectedOperationNode extends ConditionNode {
     @Type(() => OperationNode)
@@ -52,18 +52,21 @@ export class ConnectedOperationNode extends ConditionNode {
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {
-        if (this.getConditions().length <= 1) {
-            return new CompletionContainer(CompletionType.Operand);
-        }
-        var container: CompletionContainer = CompletionContainer.empty();
-        for (const condition of this.getConditions()) {
-            var container = condition.getCompletionContainer(position);
-            if ((!container.isEmpty() && !container.containsLogicalOperator()) ||
-                condition.getRange().startsAfter(position))
-                return container;
+        if (this.getConditions().length == 0) {
+            return CompletionContainer.create(CompletionState.OperandMissing);
         }
 
-        return CompletionContainer.empty();
+        for (let index = 0; index < this.getConditions().length - 1; index++) {
+            const firstElement = this.getConditions()[index];
+            const secondElement = this.getConditions()[index + 1];
+
+            if (firstElement.getRange().endsBefore(position) &&
+                secondElement.getRange().startsAfter(position)) {
+                return firstElement.getCompletionContainer(position);
+            }
+        }
+
+        return this.getConditions()[this.getConditions().length - 1].getCompletionContainer(position);
     }
 
     public getBeautifiedContent(aliasHelper: AliasHelper): string {
@@ -77,5 +80,9 @@ export class ConnectedOperationNode extends ConditionNode {
         returnString += this.getConditions()[index].getBeautifiedContent(aliasHelper);
 
         return returnString;
+    }
+
+    public isComplete(): boolean {
+        return this.conditions.map(cond => cond.isComplete()).every(bool => bool);
     }
 }

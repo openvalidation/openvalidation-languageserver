@@ -29,11 +29,11 @@ export class VariableNode extends GenericNode {
             ]
         }
     })
-    private value: BaseOperandNode;
+    private value: BaseOperandNode | null;
 
     private name: string;
 
-    constructor(name: string, value: BaseOperandNode, lines: string[], range: IndexRange) {
+    constructor(name: string, value: BaseOperandNode | null, lines: string[], range: IndexRange) {
         super(lines, range);
         this.name = name;
         this.value = value;
@@ -52,7 +52,7 @@ export class VariableNode extends GenericNode {
      * Getter value
      * @return {ValueNode}
      */
-    public getValue(): BaseOperandNode {
+    public getValue(): BaseOperandNode | null {
         return this.value;
     }
 
@@ -106,14 +106,11 @@ export class VariableNode extends GenericNode {
 
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange(), "");
-
         var contentText = "Variable " + this.getName();
         if (!!this.getValue())
-            contentText += ": " + this.getValue().getDataType();
+            contentText += ": " + this.getValue()!.getDataType();
 
-        content.setContent(contentText);
-
+        var content: HoverContent = new HoverContent(this.getRange(), contentText);
         return content;
     }
 

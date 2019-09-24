@@ -1,11 +1,11 @@
+import { Position } from "vscode-languageserver";
+import { AliasHelper } from "../../../aliases/AliasHelper";
+import { FormattingHelper } from "../../../helper/FormattingHelper";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
+import { CompletionState } from "../../../provider/code-completion/CompletionStates";
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
-import { AliasHelper } from "../../../aliases/AliasHelper";
-import { Position } from "vscode-languageserver";
-import { FormattingHelper } from "../../../helper/FormattingHelper";
-import { CompletionState } from "src/provider/code-completion/CompletionStates";
 
 export class CommentNode extends GenericNode {
     public content: string;

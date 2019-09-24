@@ -8,7 +8,7 @@ import { ArrayOperandNode } from "../../../../../src/rest-interface/intelliSense
 import { FunctionOperandNode } from "../../../../../src/rest-interface/intelliSenseTree/element/operation/operand/FunctionOperandNode";
 import { OperatorNode } from "../../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
 
-describe("Dummy Tests", () => {
+describe("Operation Tests", () => {
     beforeEach(() => {
     });
 
@@ -18,7 +18,7 @@ describe("Dummy Tests", () => {
         var positionParameter = Position.create(0, 0);
 
         var expected: CompletionState[] = [CompletionState.OperandMissing];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -30,7 +30,7 @@ describe("Dummy Tests", () => {
         var positionParameter = Position.create(0, 6);
 
         var expected: CompletionState[] = [CompletionState.Operand];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -56,7 +56,7 @@ describe("Dummy Tests", () => {
         var positionParameter = Position.create(0, 6);
 
         var expected: CompletionState[] = [CompletionState.ArrayOperand, CompletionState.Operand];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -69,7 +69,7 @@ describe("Dummy Tests", () => {
         var positionParameter = Position.create(0, 6);
 
         var expected: CompletionState[] = [CompletionState.FunctionOperand, CompletionState.Operand];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -82,7 +82,7 @@ describe("Dummy Tests", () => {
         var positionParameter = Position.create(0, "Summe von Einkaufsliste.Preis".length + 1);
 
         var expected: CompletionState[] = [CompletionState.FunctionOperand, CompletionState.Operand];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -95,7 +95,7 @@ describe("Dummy Tests", () => {
         var positionParameter = Position.create(0, 13);
 
         var expected: CompletionState[] = [CompletionState.Operator];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -118,12 +118,12 @@ describe("Dummy Tests", () => {
         var leftOperand: OperandNode = new OperandNode(["Alter"], IndexRange.create(0, 0, 0, 5), "Decimal", "Alter");
         var operator: OperatorNode = new OperatorNode(["gleich"], IndexRange.create(0, 6, 0, 12), "Boolean", "EQUALS", "Object");
         var rightOperand: OperandNode = new OperandNode(["18"], IndexRange.create(0, 13, 0, 15), "Decimal", "18.0");
-        var operation = new OperationNode(leftOperand, operator, rightOperand, ["Alter gleich 18"], IndexRange.create(0, 0, 0, 0));
+        var operation = new OperationNode(leftOperand, operator, rightOperand, ["Alter gleich 18"], IndexRange.create(0, 0, 0, 15));
 
         var positionParameter = Position.create(0, 16);
 
-        var expected: CompletionState[] = [CompletionState.ConnectedOperation];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var expected: CompletionState[] = [CompletionState.OperationEnd];
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -137,8 +137,8 @@ describe("Dummy Tests", () => {
 
         var positionParameter = Position.create(0, 40);
 
-        var expected: CompletionState[] = [CompletionState.FunctionOperand, CompletionState.ConnectedOperation];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var expected: CompletionState[] = [CompletionState.FunctionOperand, CompletionState.OperationEnd];
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -152,8 +152,8 @@ describe("Dummy Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var expected: CompletionState[] = [CompletionState.ArrayOperand, CompletionState.ConnectedOperation];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var expected: CompletionState[] = [CompletionState.ArrayOperand, CompletionState.OperationEnd];
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -167,7 +167,7 @@ describe("Dummy Tests", () => {
         var positionParameter = Position.create(0, 6);
 
         var expected: CompletionState[] = [];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -181,7 +181,7 @@ describe("Dummy Tests", () => {
         var positionParameter = Position.create(0, 13);
 
         var expected: CompletionState[] = [];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -196,7 +196,7 @@ describe("Dummy Tests", () => {
         var positionParameter = Position.create(0, 1);
 
         var expected: CompletionState[] = [];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
@@ -209,7 +209,7 @@ describe("Dummy Tests", () => {
         var positionParameter = Position.create(0, 7);
 
         var expected: CompletionState[] = [];
-        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getState();
+        var actual: CompletionState[] = operation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
     });
