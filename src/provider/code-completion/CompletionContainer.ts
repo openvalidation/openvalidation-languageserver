@@ -2,112 +2,73 @@ import { AliasHelper } from "../../aliases/AliasHelper";
 import { ISchemaType } from "../../rest-interface/schema/ISchemaType";
 import { Variable } from "../../rest-interface/intelliSenseTree/Variable";
 import { CompletionGenerator } from "./CompletionGenerator";
-import { CompletionState } from "./CompletionStates";
-import { CompletionType } from "../../enums/CompletionType";
+import { StateTransition } from "./states/StateTransition";
+import { ConnectionTransition } from "./states/ConnectionTransition";
+import { ThenKeywordTransition } from "./states/ThenKeywordTransition";
+import { OperatorTransition } from "./states/OperatorTransition";
+import { OperandTransition } from "./states/OperandTransition";
+import { AsKeywordTransition } from "./states/AsKeywordTransition";
 
 export class CompletionContainer {
-    private dataType: string | null;
-    private filteredName: string | null;
-    private prependingText: string | null;
-    private _types: CompletionType[];
-    public get types(): CompletionType[] {
-        return this._types;
-    }
-    public set types(value: CompletionType[]) {
-        this._types = value;
+    private transitions: StateTransition[];
+
+    constructor() {
+        this.transitions = [];
     }
 
-    constructor(...types: CompletionType[]) {
-        this.dataType = null;
-        this.filteredName = null;
-        this.prependingText = null;
-        this._types = types;
-        this.possibleStates = [];
-    }
-
-    private possibleStates: CompletionState[];
-
-    public getStates(): CompletionState[] {
-        return this.possibleStates;
-    }
-    public addState(value: CompletionState) {
-        if (value != CompletionState.Empty)
-            this.possibleStates.push(value);
-    }
-
-    public setState(...value: CompletionState[]) {
-        this.possibleStates = value.filter(v => v != CompletionState.Empty);
-    }
-
-    public getDataType(): string | null {
-        return this.dataType;
-    }
-
-    public static create(state: CompletionState): CompletionContainer {
-        var container = new CompletionContainer();
-        container.setState(state);
-        return container;
-    }
-
-    public static operand(datatype: string): CompletionContainer {
-        var container = new CompletionContainer(CompletionType.Operand);
-        container.setDataType(datatype);
-        return container;
-    }
-
-    public static operator(datatype: string): CompletionContainer {
-        var container = new CompletionContainer(CompletionType.Operator);
-        container.setDataType(datatype);
-        return container;
+    public static init(): CompletionContainer {
+        return new CompletionContainer();
     }
 
     public isEmpty(): boolean {
-        return this.getStates().every(state => state == CompletionState.Empty);
+        return this.getTransitions().length == 0;
     }
 
-    public setDataType(dataType: string): CompletionContainer {
-        this.dataType = dataType;
+    public getTransitions(): StateTransition[] {
+        return this.transitions;
+    }
+
+    public connectionTransition(): CompletionContainer {
+        this.transitions.push(new ConnectionTransition());
         return this;
     }
 
-    public specifyNameFiltering(filteredName: string | null): CompletionContainer {
-        this.filteredName = filteredName;
+    public thenKeywordTransition(): CompletionContainer {
+        this.transitions.push(new ThenKeywordTransition());
         return this;
     }
 
-    public specifyPrependingText(text: string): CompletionContainer {
-        this.prependingText = text;
+    public asKeywordTransition(): CompletionContainer {
+        this.transitions.push(new AsKeywordTransition());
+        return this;
+    }
+
+    public operatorTransition(dataType: string): CompletionContainer {
+        this.transitions.push(new OperatorTransition(dataType));
+        return this;
+    }
+
+    public operandTransition(dataType?: string, nameFilter?: string | null, prependingText?: string): CompletionContainer {
+        this.transitions.push(new OperandTransition(dataType, nameFilter, prependingText));
         return this;
     }
 
     public getCompletions(declarations: Variable[], aliasHelper: AliasHelper, schema: ISchemaType): CompletionGenerator {
-        var generator: CompletionGenerator = new CompletionGenerator(declarations, aliasHelper, schema, this.prependingText);
-        let uniqueTypes = [... new Set(this.possibleStates)];
-        uniqueTypes.forEach(type => {
-            switch (type) {
-                case CompletionState.OperandMissing:
-                case CompletionState.Operator:
-                    generator.addFittingIdentifier(this.filteredName, this.dataType);
-                    break;
-                case CompletionState.Operand:
-                    generator.addFittingOperator(this.dataType);
-                    break;
-                case CompletionState.FunctionOperand:
-                case CompletionState.ArrayOperand:
-                    generator.addFittingOperator(this.dataType);
-                    generator.addFittingIdentifier(this.filteredName, this.dataType);
-                    break;
-                case CompletionState.OperationEnd:
-                    generator.addLogicalOperators();
-                    break;
-                case CompletionState.RuleEnd:
-                    generator.addThenKeyword();
-                    break;
-                case CompletionState.UnkownOperand:
-                    generator.addAsKeyword();
-                    break;
-                default:
-                    break;
+        var generator: CompletionGenerator = new CompletionGenerator(declarations, aliasHelper, schema);
+        let uniqueTypes = [... new Set(this.transitions)];
+        uniqueTypes.forEach(transition => {
+            if (transition instanceof OperandTransition) {
+                generator.addFittingIdentifier(transition);
+            } else if (transition instanceof OperatorTransition) {
+                generator.addFittingOperator(transition);
+            } else if (transition instanceof ConnectionTransition) {
+                generator.addLogicalOperators(transition);
+            } else if (transition instanceof AsKeywordTransition) {
+                generator.addThenKeyword(transition);
+            } else if (transition instanceof ThenKeywordTransition) {
+                generator.addAsKeyword(transition);
+            } else if (transition instanceof OperandTransition) {
+                generator.addFittingIdentifier(transition);
             }
         });
 

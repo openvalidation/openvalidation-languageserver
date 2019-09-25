@@ -1,18 +1,17 @@
 import { Type } from "class-transformer";
+import { Position } from "vscode-languageserver";
+import { AliasHelper } from "../../../../aliases/AliasHelper";
 import { HoverContent } from "../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../GenericNode";
 import { IndexRange } from "../../IndexRange";
+import { ConditionNode } from "./ConditionNode";
+import { ConnectedOperationNode } from "./ConnectedOperationNode";
 import { ArrayOperandNode } from "./operand/ArrayOperandNode";
+import { BaseOperandNode } from "./operand/BaseOperandNode";
 import { FunctionOperandNode } from "./operand/FunctionOperandNode";
 import { OperandNode } from "./operand/OperandNode";
 import { OperatorNode } from "./operand/OperatorNode";
-import { ConditionNode } from "./ConditionNode";
-import { ConnectedOperationNode } from "./ConnectedOperationNode";
-import { Position } from "vscode-languageserver";
-import { AliasHelper } from "../../../../aliases/AliasHelper";
-import { BaseOperandNode } from "./operand/BaseOperandNode";
-import { CompletionState } from "../../../../provider/code-completion/CompletionStates";
 
 export class OperationNode extends ConditionNode {
     @Type(() => BaseOperandNode, {
@@ -134,32 +133,32 @@ export class OperationNode extends ConditionNode {
 
     public getCompletionContainer(position: Position): CompletionContainer {
         if (!this.leftOperand) {
-            return CompletionContainer.create(CompletionState.OperandMissing);
+            return CompletionContainer.init().operandTransition();
         }
 
         // TODO: Can be done in a loop?!
         if (!!this.leftOperand.getRange() && this.leftOperand.getRange().endsBefore(position) && !this.operator) {
             var container = this.leftOperand.getCompletionContainer(position);
-            container.addState(CompletionState.Operand);
+            container.operatorTransition(this.leftOperand.getDataType());
             return container;
         }
 
         if (!!this.operator && !!this.operator.getRange() && this.operator.getRange().endsBefore(position) && !this.rightOperand) {
             var container = this.operator.getCompletionContainer(position);
-            container.addState(CompletionState.Operator);
+            container.operandTransition(this.operator.getValidType(), this.leftOperand.getName())
             return container;
         }
 
         if (!!this.rightOperand && !!this.rightOperand.getRange() && this.rightOperand.getRange().endsBefore(position)) {
             var container = this.rightOperand.getCompletionContainer(position);
-            container.addState(CompletionState.OperationEnd);
+            container.connectionTransition();
             return container;
         }
 
         if (this.getRange().includesPosition(position))
-            return CompletionContainer.create(CompletionState.Empty);
+            return CompletionContainer.init();
             
-        return CompletionContainer.create(CompletionState.OperationEnd);
+        return CompletionContainer.init().connectionTransition();
     }
 
     public isComplete(): boolean {

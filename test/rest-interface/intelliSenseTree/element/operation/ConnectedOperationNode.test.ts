@@ -1,6 +1,6 @@
 import "jest";
 import { Position } from "vscode-languageserver";
-import { CompletionState } from "../../../../../src/provider/code-completion/CompletionStates";
+import { StateTransitionEnum } from "../../../../../src/provider/code-completion/states/StateTransitionEnum";
 import { IndexRange } from "../../../../../src/rest-interface/intelliSenseTree/IndexRange";
 import { ConnectedOperationNode } from "../../../../../src/rest-interface/intelliSenseTree/element/operation/ConnectedOperationNode";
 import { OperationNode } from "../../../../../src/rest-interface/intelliSenseTree/element/operation/OperationNode";
@@ -17,8 +17,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 0);
 
-        var expected: CompletionState[] = [CompletionState.OperandMissing];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -29,8 +29,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 0);
 
-        var expected: CompletionState[] = [CompletionState.OperandMissing];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -42,8 +42,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var expected: CompletionState[] = [CompletionState.Operand];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operator];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -56,8 +56,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var expected: CompletionState[] = [CompletionState.Operator];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -72,8 +72,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var expected: CompletionState[] = [CompletionState.OperationEnd];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -94,8 +94,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 36);
 
-        var expected: CompletionState[] = [CompletionState.OperationEnd];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -115,8 +115,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var expected: CompletionState[] = [];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -136,8 +136,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 32);
 
-        var expected: CompletionState[] = [];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -156,8 +156,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 32);
 
-        var expected: CompletionState[] = [];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -176,8 +176,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 36);
 
-        var expected: CompletionState[] = [CompletionState.OperationEnd];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -196,8 +196,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var expected: CompletionState[] = [CompletionState.Operator];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -216,8 +216,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 36);
 
-        var expected: CompletionState[] = [CompletionState.Operator];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -235,8 +235,8 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 36);
 
-        var expected: CompletionState[] = [CompletionState.Operand];
-        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operator];
+        var actual: StateTransitionEnum[] = connectOperation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });

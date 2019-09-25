@@ -1,13 +1,12 @@
 import { Type } from "class-transformer";
+import { Position } from "vscode-languageserver";
+import { AliasHelper } from "../../../../aliases/AliasHelper";
 import { HoverContent } from "../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../GenericNode";
 import { IndexRange } from "../../IndexRange";
 import { ConditionNode } from "./ConditionNode";
 import { OperationNode } from "./OperationNode";
-import { Position } from "vscode-languageserver";
-import { AliasHelper } from "../../../../aliases/AliasHelper";
-import { CompletionState } from "../../../../provider/code-completion/CompletionStates";
 
 export class ConnectedOperationNode extends ConditionNode {
     @Type(() => OperationNode)
@@ -53,7 +52,7 @@ export class ConnectedOperationNode extends ConditionNode {
 
     public getCompletionContainer(position: Position): CompletionContainer {
         if (this.getConditions().length == 0) {
-            return CompletionContainer.create(CompletionState.OperandMissing);
+            return CompletionContainer.init().operandTransition();
         }
 
         for (let index = 0; index < this.getConditions().length - 1; index++) {

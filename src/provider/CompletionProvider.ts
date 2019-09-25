@@ -72,7 +72,7 @@ export class CompletionProvider extends Provider {
             var currentWord = StringHelper.getWordAt(line, params.position.character);
             if (String.IsNullOrWhiteSpace(currentWord)) return null;
 
-            var generator = new CompletionGenerator([], this.server.aliasHelper, this.server.schema, null).addFittingChilds(currentWord);
+            var generator = new CompletionGenerator([], this.server.aliasHelper, this.server.schema).addFittingChilds(currentWord);
             return generator.build();
         }
         return null;
@@ -85,7 +85,7 @@ export class CompletionProvider extends Provider {
             var currentWord = StringHelper.getWordAt(line, params.position.character);
             if (String.IsNullOrWhiteSpace(currentWord)) return null;
 
-            var generator = new CompletionGenerator([], this.server.aliasHelper, this.server.schema, null)
+            var generator = new CompletionGenerator([], this.server.aliasHelper, this.server.schema)
                 .addOperandsWithTypeOfGivenOperand(currentWord.replace(',', ''));
             return generator.build();
         }

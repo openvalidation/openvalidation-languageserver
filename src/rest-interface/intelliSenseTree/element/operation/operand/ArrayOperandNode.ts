@@ -10,7 +10,6 @@ import { OperationNode } from "../../operation/OperationNode";
 import { BaseOperandNode } from "./BaseOperandNode";
 import { FunctionOperandNode } from "./FunctionOperandNode";
 import { OperandNode } from "./OperandNode";
-import { CompletionState } from "../../../../../provider/code-completion/CompletionStates";
 
 export class ArrayOperandNode extends BaseOperandNode {
     @Type(() => BaseOperandNode, {
@@ -57,9 +56,11 @@ export class ArrayOperandNode extends BaseOperandNode {
         return content;
     }
 
-    public getCompletionContainer(range: Position): CompletionContainer {        
-        var container = CompletionContainer.create(CompletionState.ArrayOperand);
-        container.setDataType(this.getDataType());
+    public getCompletionContainer(position: Position): CompletionContainer {        
+        var container = CompletionContainer.init();
+        if (this.isComplete()) {
+            container.operandTransition(this.getDataType());
+        }
         return container;
     }
 
@@ -68,6 +69,6 @@ export class ArrayOperandNode extends BaseOperandNode {
     }
     
     public isComplete(): boolean {
-        return true;
+        return this.items.length > 0;
     }
 }

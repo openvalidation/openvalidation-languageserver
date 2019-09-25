@@ -3,7 +3,6 @@ import { AliasHelper } from "../../../aliases/AliasHelper";
 import { FormattingHelper } from "../../../helper/FormattingHelper";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
-import { CompletionState } from "../../../provider/code-completion/CompletionStates";
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
 
@@ -26,7 +25,7 @@ export class CommentNode extends GenericNode {
     }
 
     public getCompletionContainer(range: Position): CompletionContainer {
-        return CompletionContainer.create(CompletionState.Empty);
+        return CompletionContainer.init();
     }
 
     public isComplete(): boolean {

@@ -1,6 +1,6 @@
 import "jest";
 import { Position } from "vscode-languageserver";
-import { CompletionState } from "../../../../src/provider/code-completion/CompletionStates";
+import { StateTransitionEnum } from "../../../../src/provider/code-completion/states/StateTransitionEnum";
 import { VariableNode } from "../../../../src/rest-interface/intelliSenseTree/element/VariableNode";
 import { IndexRange } from "../../../../src/rest-interface/intelliSenseTree/IndexRange";
 import { OperandNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
@@ -19,8 +19,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 0);
 
-        var expected: CompletionState[] = [CompletionState.OperandMissing];
-        var actual: CompletionState[] = variable.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
+        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -33,8 +33,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var expected: CompletionState[] = [CompletionState.Operand];
-        var actual: CompletionState[] = variable.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operator];
+        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -47,8 +47,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 15);
 
-        var expected: CompletionState[] = [];
-        var actual: CompletionState[] = variable.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [];
+        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -65,8 +65,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var expected: CompletionState[] = [CompletionState.Operator];
-        var actual: CompletionState[] = variable.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
+        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -83,8 +83,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 23);
 
-        var expected: CompletionState[] = [];
-        var actual: CompletionState[] = variable.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [];
+        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -106,8 +106,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var expected: CompletionState[] = [CompletionState.Operator];
-        var actual: CompletionState[] = variable.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
+        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -129,8 +129,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 45);
 
-        var expected: CompletionState[] = [];
-        var actual: CompletionState[] = variable.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [];
+        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });

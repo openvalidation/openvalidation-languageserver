@@ -6,7 +6,6 @@ import { CompletionContainer } from "../../../../../provider/code-completion/Com
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { BaseOperandNode } from "./BaseOperandNode";
-import { CompletionState } from "../../../../../provider/code-completion/CompletionStates";
 
 export class OperandNode extends BaseOperandNode {
     constructor(lines: string[], range: IndexRange, dataType: string, name: string | null) {
@@ -25,9 +24,7 @@ export class OperandNode extends BaseOperandNode {
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {
-        var container = CompletionContainer.create(CompletionState.Empty);
-        container.setDataType(this.getDataType());
-        return container;
+        return CompletionContainer.init();
     }
 
     public isComplete(): boolean {

@@ -6,7 +6,6 @@ import { AliasKey } from "../../../aliases/AliasKey";
 import { FormattingHelper } from "../../../helper/FormattingHelper";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
-import { CompletionState } from "../../../provider/code-completion/CompletionStates";
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
 import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
@@ -105,14 +104,14 @@ export class VariableNode extends GenericNode {
 
     public getCompletionContainer(position: Position): CompletionContainer {
         if (!!this.getNameNode() && !this.getNameNode()!.getRange().startsAfter(position))
-            return CompletionContainer.create(CompletionState.Empty);
+            return CompletionContainer.init();
 
         if (!this.value)
-            return CompletionContainer.create(CompletionState.OperandMissing);
+            return CompletionContainer.init().operandTransition();
 
         var container = this.value.getCompletionContainer(position);
         if (container.isEmpty()) {
-            container.addState(CompletionState.Operand);
+            container.operatorTransition(this.value.getDataType());
         }
         return container;
     }

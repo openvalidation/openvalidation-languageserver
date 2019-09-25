@@ -5,41 +5,34 @@ import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
-import { CommentNode } from "./CommentNode";
 import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { ArrayOperandNode } from "./operation/operand/ArrayOperandNode";
 import { FunctionOperandNode } from "./operation/operand/FunctionOperandNode";
 import { OperandNode } from "./operation/operand/OperandNode";
 import { OperationNode } from "./operation/OperationNode";
-import { RuleNode } from "./RuleNode";
-import { VariableNode } from "./VariableNode";
-import { CompletionState } from "../../../provider/code-completion/CompletionStates";
+import { BaseOperandNode } from "./operation/operand/BaseOperandNode";
 
 export class UnkownNode extends GenericNode {
-    @Type(() => GenericNode, {
+    @Type(() => BaseOperandNode, {
         discriminator: {
             property: "type",
             subTypes: [
-                { value: CommentNode, name: "CommentNode" },
-                { value: VariableNode, name: "VariableNode" },
-                { value: RuleNode, name: "RuleNode" },
                 { value: OperationNode, name: "OperationNode" },
                 { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
                 { value: FunctionOperandNode, name: "FunctionOperandNode" },
                 { value: OperandNode, name: "OperandNode" },
-                { value: UnkownNode, name: "UnkownNode" },
                 { value: ArrayOperandNode, name: "ArrayOperandNode" }
             ]
         }
     })
-    private content: GenericNode | null;
+    private content: BaseOperandNode | null;
 
-    constructor(content: GenericNode | null, lines: string[], range: IndexRange) {
+    constructor(content: BaseOperandNode | null, lines: string[], range: IndexRange) {
         super(lines, range);
         this.content = content;
     }
 
-    public getContent(): GenericNode | null {
+    public getContent(): BaseOperandNode | null {
         return this.content;
     }
 
@@ -53,15 +46,15 @@ export class UnkownNode extends GenericNode {
     }
     
     public getCompletionContainer(position: Position): CompletionContainer {
-        if (!this.content) return CompletionContainer.create(CompletionState.OperandMissing);
+        if (!this.content) return CompletionContainer.init().operandTransition();
 
         var container: CompletionContainer = this.content.getCompletionContainer(position);
         if (container.isEmpty()) {
-            container.addState(CompletionState.Operand);
-            container.addState(CompletionState.UnkownOperand);
+            container.operatorTransition(this.content.getDataType());
+            container.asKeywordTransition();
         } else if (this.content.isComplete()) {
-            container.addState(CompletionState.RuleEnd);
-            container.addState(CompletionState.UnkownOperand);
+            container.thenKeywordTransition();
+            container.asKeywordTransition();
         }
 
         return container;

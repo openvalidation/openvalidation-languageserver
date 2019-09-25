@@ -2,7 +2,6 @@ import { GenericNode } from "../GenericNode";
 import { HoverContent } from "../../../helper/HoverContent";
 import { AliasHelper } from "../../../aliases/AliasHelper";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
-import { CompletionState } from "../../../provider/code-completion/CompletionStates";
 import { Position } from "vscode-languageserver";
 import { IndexRange } from "../IndexRange";
 
@@ -40,6 +39,6 @@ export class ActionErrorNode extends GenericNode {
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {
-        return CompletionContainer.create(CompletionState.Empty);
+        return CompletionContainer.init();
     }
 }

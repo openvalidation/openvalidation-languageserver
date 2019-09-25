@@ -1,8 +1,8 @@
 import "jest";
 import { Position } from "vscode-languageserver";
-import { CompletionState } from "../../../../src/provider/code-completion/CompletionStates";
 import { CommentNode } from "../../../../src/rest-interface/intelliSenseTree/element/CommentNode";
 import { IndexRange } from "../../../../src/rest-interface/intelliSenseTree/IndexRange";
+import { StateTransitionEnum } from "../../../../src/provider/code-completion/states/StateTransitionEnum";
 
 describe("CommentNode Tests", () => {
     beforeEach(() => {
@@ -13,8 +13,8 @@ describe("CommentNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: CompletionState[] = [];
-        var actual: CompletionState[] = comment.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [];
+        var actual: StateTransitionEnum[] = comment.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -24,8 +24,8 @@ describe("CommentNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: CompletionState[] = [];
-        var actual: CompletionState[] = comment.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [];
+        var actual: StateTransitionEnum[] = comment.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });

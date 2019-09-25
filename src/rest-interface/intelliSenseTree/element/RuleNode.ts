@@ -2,17 +2,16 @@ import { Type } from "class-transformer";
 import { String } from "typescript-string-operations";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../aliases/AliasHelper";
+import { AliasKey } from "../../../aliases/AliasKey";
+import { FormattingHelper } from "../../../helper/FormattingHelper";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
+import { ActionErrorNode } from "./ActionErrorNode";
 import { ConditionNode } from "./operation/ConditionNode";
 import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { OperationNode } from "./operation/OperationNode";
-import { FormattingHelper } from "../../../helper/FormattingHelper";
-import { AliasKey } from "../../../aliases/AliasKey";
-import { CompletionState } from "../../../provider/code-completion/CompletionStates";
-import { ActionErrorNode } from "./ActionErrorNode";
 
 export class RuleNode extends GenericNode {
 
@@ -94,22 +93,22 @@ export class RuleNode extends GenericNode {
     public getCompletionContainer(position: Position): CompletionContainer {
         // Then we are inside the error-node and we don't want completion
         if (!!this.errorNode && !!this.errorNode.getRange() && !this.errorNode.getRange().startsAfter(position)) {
-            return CompletionContainer.create(CompletionState.Empty);
+            return CompletionContainer.init()
         }
 
-        if (!this.condition) return CompletionContainer.create(CompletionState.OperandMissing);
+        if (!this.condition) return CompletionContainer.init().operandTransition();
 
         if (!this.condition.getRange().startsAfter(position)) {
             var container: CompletionContainer = this.condition.getCompletionContainer(position);
 
             if (this.condition.isComplete() && this.errorNode == null) {
-                container.addState(CompletionState.RuleEnd);
+                container.thenKeywordTransition();
             }
 
             return container;
         }
 
-        return CompletionContainer.create(CompletionState.Empty);
+        return CompletionContainer.init();
     }
 
     public isComplete(): boolean {

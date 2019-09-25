@@ -10,7 +10,6 @@ import { OperationNode } from "../../operation/OperationNode";
 import { ArrayOperandNode } from "./ArrayOperandNode";
 import { BaseOperandNode } from "./BaseOperandNode";
 import { OperandNode } from "./OperandNode";
-import { CompletionState } from "../../../../../provider/code-completion/CompletionStates";
 
 export class FunctionOperandNode extends BaseOperandNode {
     @Type(() => BaseOperandNode, {
@@ -26,10 +25,13 @@ export class FunctionOperandNode extends BaseOperandNode {
         }
     })
     private parameters: BaseOperandNode[];
+    
+    private acceptedType: string;
 
-    constructor(parameters: BaseOperandNode[], lines: string[], range: IndexRange, dataType: string, name: string) {
+    constructor(parameters: BaseOperandNode[], lines: string[], range: IndexRange, dataType: string, name: string, acceptedType: string) {
         super(lines, range, dataType, name);
         this.parameters = parameters;
+        this.acceptedType = acceptedType;
     }
 
     /**
@@ -42,6 +44,10 @@ export class FunctionOperandNode extends BaseOperandNode {
 
     public getChildren(): GenericNode[] {
         return this.getParameters();
+    }
+
+    public getAcceptedType(): string {
+        return this.acceptedType;
     }
 
     /**
@@ -58,9 +64,11 @@ export class FunctionOperandNode extends BaseOperandNode {
         return content;
     }
 
-    public getCompletionContainer(range: Position): CompletionContainer {    
-        var container = CompletionContainer.create(CompletionState.FunctionOperand);
-        container.setDataType(this.getDataType());
+    public getCompletionContainer(position: Position): CompletionContainer {    
+        var container = CompletionContainer.init();
+        if (this.isComplete()) {
+            container.operandTransition(this.getDataType());
+        }
         return container;
     }
 

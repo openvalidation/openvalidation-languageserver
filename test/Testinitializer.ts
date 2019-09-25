@@ -254,7 +254,23 @@ Kommentar das ist ein Kommentar`
                 "column": 44
             }
         },
-        "errorMessage": "Sie müssen mindestens 18 Jahre alt sein",
+        "errorNode": {
+            "lines": [
+                "DANN Sie müssen mindestens 18 Jahre alt sein"
+            ],
+            "range": {
+                "start": {
+                    "line": 1,
+                    "column": 0
+                },
+                "end": {
+                    "line": 1,
+                    "column": 44
+                }
+            },
+            "errorMessage": "Sie müssen mindestens 18 Jahre alt sein",
+            "type": "ActionErrorNode"
+        },
         "condition": {
             "lines": [
                 "das Alter des Bewerbers KLEINER 18 ist"
@@ -365,7 +381,23 @@ Kommentar das ist ein Kommentar`
                 "column": 68
             }
         },
-        "errorMessage": "Sie müssen mindestens 18 Jahre alt sein und aus Dortmund kommen",
+        "errorNode": {
+            "lines": [
+                "DANN Sie müssen mindestens 18 Jahre alt sein und aus Dortmund kommen"
+            ],
+            "range": {
+                "start": {
+                    "line": 8,
+                    "column": 0
+                },
+                "end": {
+                    "line": 8,
+                    "column": 68
+                }
+            },
+            "errorMessage": "Sie müssen mindestens 18 Jahre alt sein und aus Dortmund kommen",
+            "type": "ActionErrorNode"
+        },
         "condition": {
             "lines": [
                 "der Bewerber Minderjährig ist",
@@ -540,7 +572,23 @@ Kommentar das ist ein Kommentar`
                 "column": 16
             }
         },
-        "name": "Minderjährig",
+        "nameNode": {
+            "lines": [
+                "ALS Minderjährig"
+            ],
+            "range": {
+                "start": {
+                    "line": 4,
+                    "column": 0
+                },
+                "end": {
+                    "line": 4,
+                    "column": 16
+                }
+            },
+            "name": "Minderjährig",
+            "type": "VariableNameNode"
+        },
         "value": {
             "lines": [
                 "das Alter des Bewerbers ist KLEINER 18"

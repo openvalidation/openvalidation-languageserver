@@ -1,12 +1,12 @@
 import "jest";
-import { UnkownNode } from "../../../../src/rest-interface/intelliSenseTree/element/UnkownNode";
-import { IndexRange } from "../../../../src/rest-interface/intelliSenseTree/IndexRange";
-import { CompletionState } from "../../../../src/provider/code-completion/CompletionStates";
 import { Position } from "vscode-languageserver";
+import { StateTransitionEnum } from "../../../../src/provider/code-completion/states/StateTransitionEnum";
+import { ConnectedOperationNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/ConnectedOperationNode";
 import { OperandNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
 import { OperatorNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
 import { OperationNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/OperationNode";
-import { ConnectedOperationNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/ConnectedOperationNode";
+import { UnkownNode } from "../../../../src/rest-interface/intelliSenseTree/element/UnkownNode";
+import { IndexRange } from "../../../../src/rest-interface/intelliSenseTree/IndexRange";
 
 describe("UnkownNode Tests", () => {
     beforeEach(() => {
@@ -17,8 +17,8 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 0);
 
-        var expected: CompletionState[] = [CompletionState.OperandMissing];
-        var actual: CompletionState[] = unkown.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
+        var actual: StateTransitionEnum[] = unkown.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -29,8 +29,8 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var expected: CompletionState[] = [CompletionState.Operand, CompletionState.UnkownOperand];
-        var actual: CompletionState[] = unkown.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operator, StateTransitionEnum.AsKeyword];
+        var actual: StateTransitionEnum[] = unkown.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -43,8 +43,8 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var expected: CompletionState[] = [CompletionState.Operator];
-        var actual: CompletionState[] = unkown.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
+        var actual: StateTransitionEnum[] = unkown.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -59,8 +59,8 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var expected: CompletionState[] = [CompletionState.OperationEnd, CompletionState.RuleEnd, CompletionState.UnkownOperand];
-        var actual: CompletionState[] = unkown.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection, StateTransitionEnum.ThenKeyword, StateTransitionEnum.AsKeyword];
+        var actual: StateTransitionEnum[] = unkown.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -75,8 +75,8 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var expected: CompletionState[] = [CompletionState.OperationEnd, CompletionState.RuleEnd, CompletionState.UnkownOperand];
-        var actual: CompletionState[] = unkown.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection, StateTransitionEnum.ThenKeyword, StateTransitionEnum.AsKeyword];
+        var actual: StateTransitionEnum[] = unkown.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -95,8 +95,8 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 22);
 
-        var expected: CompletionState[] = [CompletionState.OperandMissing];
-        var actual: CompletionState[] = unkown.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
+        var actual: StateTransitionEnum[] = unkown.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });
@@ -116,8 +116,8 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 36);
 
-        var expected: CompletionState[] = [CompletionState.Operand];
-        var actual: CompletionState[] = unkown.getCompletionContainer(positionParameter).getStates();
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operator];
+        var actual: StateTransitionEnum[] = unkown.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
     });

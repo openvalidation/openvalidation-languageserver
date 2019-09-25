@@ -1,10 +1,9 @@
+import { Position } from "vscode-languageserver";
+import { AliasHelper } from "../../../../../aliases/AliasHelper";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
-import { Position } from "vscode-languageserver";
-import { AliasHelper } from "../../../../../aliases/AliasHelper";
-import { CompletionState } from "../../../../../provider/code-completion/CompletionStates";
 
 export class OperatorNode extends GenericNode {
     private dataType: string;
@@ -54,9 +53,7 @@ export class OperatorNode extends GenericNode {
     }
 
     public getCompletionContainer(range: Position): CompletionContainer {
-        var container = CompletionContainer.create(CompletionState.Empty);
-        container.setDataType(this.validType);
-        return container;
+        return CompletionContainer.init();
     }
 
     public isComplete(): boolean {
