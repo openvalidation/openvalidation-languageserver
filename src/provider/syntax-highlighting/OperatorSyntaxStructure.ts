@@ -1,7 +1,7 @@
 import { StringHelper } from "../../helper/StringHelper";
-import { OperatorNode } from "../../rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
-import { OperationNode } from "../../rest-interface/intelliSenseTree/element/operation/OperationNode";
-import { BaseOperandNode } from "../../rest-interface/intelliSenseTree/element/operation/operand/BaseOperandNode";
+import { OperatorNode } from "../../data-model/syntax-tree/element/operation/operand/OperatorNode";
+import { OperationNode } from "../../data-model/syntax-tree/element/operation/OperationNode";
+import { BaseOperandNode } from "../../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
 
 export class OperationSyntaxStructure {
 

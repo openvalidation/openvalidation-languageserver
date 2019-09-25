@@ -1,6 +1,6 @@
 import { AliasHelper } from "../../aliases/AliasHelper";
 import { ISchemaType } from "../../rest-interface/schema/ISchemaType";
-import { Variable } from "../../rest-interface/intelliSenseTree/Variable";
+import { Variable } from "../../data-model/syntax-tree/Variable";
 import { CompletionGenerator } from "./CompletionGenerator";
 import { StateTransition } from "./states/StateTransition";
 import { ConnectionTransition } from "./states/ConnectionTransition";

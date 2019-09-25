@@ -1,14 +1,14 @@
 import { Type } from "class-transformer";
-import { CommentNode } from "../intelliSenseTree/element/CommentNode";
-import { ConnectedOperationNode } from "../intelliSenseTree/element/operation/ConnectedOperationNode";
-import { ArrayOperandNode } from "../intelliSenseTree/element/operation/operand/ArrayOperandNode";
-import { FunctionOperandNode } from "../intelliSenseTree/element/operation/operand/FunctionOperandNode";
-import { OperandNode } from "../intelliSenseTree/element/operation/operand/OperandNode";
-import { OperationNode } from "../intelliSenseTree/element/operation/OperationNode";
-import { RuleNode } from "../intelliSenseTree/element/RuleNode";
-import { UnkownNode } from "../intelliSenseTree/element/UnkownNode";
-import { VariableNode } from "../intelliSenseTree/element/VariableNode";
-import { GenericNode } from "../intelliSenseTree/GenericNode";
+import { CommentNode } from "../../data-model/syntax-tree/element/CommentNode";
+import { ConnectedOperationNode } from "../../data-model/syntax-tree/element/operation/ConnectedOperationNode";
+import { ArrayOperandNode } from "../../data-model/syntax-tree/element/operation/operand/ArrayOperandNode";
+import { FunctionOperandNode } from "../../data-model/syntax-tree/element/operation/operand/FunctionOperandNode";
+import { OperandNode } from "../../data-model/syntax-tree/element/operation/operand/OperandNode";
+import { OperationNode } from "../../data-model/syntax-tree/element/operation/OperationNode";
+import { RuleNode } from "../../data-model/syntax-tree/element/RuleNode";
+import { UnkownNode } from "../../data-model/syntax-tree/element/UnkownNode";
+import { VariableNode } from "../../data-model/syntax-tree/element/VariableNode";
+import { GenericNode } from "../../data-model/syntax-tree/GenericNode";
 
 export class CompletionResponse {
     @Type(() => GenericNode, {

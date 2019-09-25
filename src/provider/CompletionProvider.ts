@@ -4,7 +4,7 @@ import { CompletionKey } from "../Constants";
 import { StringHelper } from "../helper/StringHelper";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
-import { Variable } from "../rest-interface/intelliSenseTree/Variable";
+import { Variable } from "../data-model/syntax-tree/Variable";
 import { CompletionGenerator } from "./code-completion/CompletionGenerator";
 import { Provider } from "./Provider";
 import { CompletionResponse } from "src/rest-interface/response/CompletionResponse";

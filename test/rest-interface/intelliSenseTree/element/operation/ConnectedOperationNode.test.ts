@@ -1,11 +1,11 @@
 import "jest";
 import { Position } from "vscode-languageserver";
 import { StateTransitionEnum } from "../../../../../src/provider/code-completion/states/StateTransitionEnum";
-import { IndexRange } from "../../../../../src/rest-interface/intelliSenseTree/IndexRange";
-import { ConnectedOperationNode } from "../../../../../src/rest-interface/intelliSenseTree/element/operation/ConnectedOperationNode";
-import { OperationNode } from "../../../../../src/rest-interface/intelliSenseTree/element/operation/OperationNode";
-import { OperandNode } from "../../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
-import { OperatorNode } from "../../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
+import { IndexRange } from "../../../../../src/data-model/syntax-tree/IndexRange";
+import { ConnectedOperationNode } from "../../../../../src/data-model/syntax-tree/element/operation/ConnectedOperationNode";
+import { OperationNode } from "../../../../../src/data-model/syntax-tree/element/operation/OperationNode";
+import { OperandNode } from "../../../../../src/data-model/syntax-tree/element/operation/operand/OperandNode";
+import { OperatorNode } from "../../../../../src/data-model/syntax-tree/element/operation/operand/OperatorNode";
 
 describe("ConnectedOperationNode Tests", () => {
     beforeEach(() => {

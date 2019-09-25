@@ -1,11 +1,11 @@
 import "jest";
 import { Position } from 'vscode-languageserver';
-import { OperandNode } from '../../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode';
-import { OperationNode } from '../../../../../src/rest-interface/intelliSenseTree/element/operation/OperationNode';
-import { IndexRange } from '../../../../../src/rest-interface/intelliSenseTree/IndexRange';
-import { ArrayOperandNode } from "../../../../../src/rest-interface/intelliSenseTree/element/operation/operand/ArrayOperandNode";
-import { FunctionOperandNode } from "../../../../../src/rest-interface/intelliSenseTree/element/operation/operand/FunctionOperandNode";
-import { OperatorNode } from "../../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
+import { OperandNode } from '../../../../../src/data-model/syntax-tree/element/operation/operand/OperandNode';
+import { OperationNode } from '../../../../../src/data-model/syntax-tree/element/operation/OperationNode';
+import { IndexRange } from '../../../../../src/data-model/syntax-tree/IndexRange';
+import { ArrayOperandNode } from "../../../../../src/data-model/syntax-tree/element/operation/operand/ArrayOperandNode";
+import { FunctionOperandNode } from "../../../../../src/data-model/syntax-tree/element/operation/operand/FunctionOperandNode";
+import { OperatorNode } from "../../../../../src/data-model/syntax-tree/element/operation/operand/OperatorNode";
 import { StateTransitionEnum } from "../../../../../src/provider/code-completion/states/StateTransitionEnum";
 import { OperatorTransition } from "../../../../../src/provider/code-completion/states/OperatorTransition";
 import { OperandTransition } from "../../../../../src/provider/code-completion/states/OperandTransition";

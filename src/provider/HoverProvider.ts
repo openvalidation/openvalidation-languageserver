@@ -1,5 +1,5 @@
 import { HoverContent } from "src/helper/HoverContent";
-import { GenericNode } from "src/rest-interface/intelliSenseTree/GenericNode";
+import { GenericNode } from "src/data-model/syntax-tree/GenericNode";
 import { Hover, MarkupContent, MarkupKind, TextDocumentPositionParams } from "vscode-languageserver";
 import { TreeTraversal } from "../helper/TreeTraversal";
 import { OvServer } from "../OvServer";

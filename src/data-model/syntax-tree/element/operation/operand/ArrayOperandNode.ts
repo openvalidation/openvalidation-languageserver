@@ -1,17 +1,17 @@
 import { Type } from "class-transformer";
-import { AliasHelper } from "src/aliases/AliasHelper";
 import { Position } from "vscode-languageserver";
+import { AliasHelper } from "../../../../../aliases/AliasHelper";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
-import { ConnectedOperationNode } from "../../operation/ConnectedOperationNode";
-import { OperationNode } from "../../operation/OperationNode";
-import { ArrayOperandNode } from "./ArrayOperandNode";
+import { ConnectedOperationNode } from "../ConnectedOperationNode";
+import { OperationNode } from "../OperationNode";
 import { BaseOperandNode } from "./BaseOperandNode";
+import { FunctionOperandNode } from "./FunctionOperandNode";
 import { OperandNode } from "./OperandNode";
 
-export class FunctionOperandNode extends BaseOperandNode {
+export class ArrayOperandNode extends BaseOperandNode {
     @Type(() => BaseOperandNode, {
         discriminator: {
             property: "type",
@@ -24,43 +24,35 @@ export class FunctionOperandNode extends BaseOperandNode {
             ]
         }
     })
-    private parameters: BaseOperandNode[];
+    private items: BaseOperandNode[];
 
-    private acceptedType: string;
-
-    constructor(parameters: BaseOperandNode[], lines: string[], range: IndexRange, dataType: string, name: string, acceptedType: string) {
+    constructor(items: BaseOperandNode[], lines: string[], range: IndexRange, dataType: string, name: string) {
         super(lines, range, dataType, name);
-        this.parameters = parameters;
-        this.acceptedType = acceptedType;
+        this.items = items;
     }
 
     /**
      * Getter parameters
      * @return {BaseOperandNode[]}
      */
-    public getParameters(): BaseOperandNode[] {
-        return this.parameters;
+    public getItems(): BaseOperandNode[] {
+        return this.items;
     }
 
     public getChildren(): GenericNode[] {
-        return this.getParameters();
-    }
-
-    public getAcceptedType(): string {
-        return this.acceptedType;
+        return this.getItems().map(i => i as unknown as GenericNode);
     }
 
     /**
      * Setter parameters
      * @param {BaseOperandNode[]} value
      */
-    public setParameters(value: BaseOperandNode[]) {
-        this.parameters = value;
+    public setItems(value: BaseOperandNode[]) {
+        this.items = value;
     }
 
     public getHoverContent(): HoverContent | null {
-        var stringContent: string = "Function " + this.getName() + ": " + this.getDataType();
-        var content: HoverContent = new HoverContent(this.getRange(), stringContent);
+        var content: HoverContent = new HoverContent(this.getRange(), "Operand: " + this.getDataType() + "[]");
         return content;
     }
 
@@ -72,11 +64,11 @@ export class FunctionOperandNode extends BaseOperandNode {
         return container;
     }
 
-    public isComplete(): boolean {
-        return this.parameters.length > 0;
-    }
-
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         return this.getLines().join("\n");
+    }
+
+    public isComplete(): boolean {
+        return this.items.length > 0;
     }
 }

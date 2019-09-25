@@ -1,7 +1,7 @@
 import "jest";
 import { Position } from "vscode-languageserver";
-import { CommentNode } from "../../../../src/rest-interface/intelliSenseTree/element/CommentNode";
-import { IndexRange } from "../../../../src/rest-interface/intelliSenseTree/IndexRange";
+import { CommentNode } from "../../../../src/data-model/syntax-tree/element/CommentNode";
+import { IndexRange } from "../../../../src/data-model/syntax-tree/IndexRange";
 import { StateTransitionEnum } from "../../../../src/provider/code-completion/states/StateTransitionEnum";
 
 describe("CommentNode Tests", () => {

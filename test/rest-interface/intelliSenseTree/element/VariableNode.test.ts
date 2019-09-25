@@ -1,13 +1,13 @@
 import "jest";
 import { Position } from "vscode-languageserver";
 import { StateTransitionEnum } from "../../../../src/provider/code-completion/states/StateTransitionEnum";
-import { VariableNode } from "../../../../src/rest-interface/intelliSenseTree/element/VariableNode";
-import { IndexRange } from "../../../../src/rest-interface/intelliSenseTree/IndexRange";
-import { OperandNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
-import { OperatorNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
-import { OperationNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/OperationNode";
-import { ConnectedOperationNode } from "../../../../src/rest-interface/intelliSenseTree/element/operation/ConnectedOperationNode";
-import { VariableNameNode } from "../../../../src/rest-interface/intelliSenseTree/element/VariableNameNode";
+import { VariableNode } from "../../../../src/data-model/syntax-tree/element/VariableNode";
+import { IndexRange } from "../../../../src/data-model/syntax-tree/IndexRange";
+import { OperandNode } from "../../../../src/data-model/syntax-tree/element/operation/operand/OperandNode";
+import { OperatorNode } from "../../../../src/data-model/syntax-tree/element/operation/operand/OperatorNode";
+import { OperationNode } from "../../../../src/data-model/syntax-tree/element/operation/OperationNode";
+import { ConnectedOperationNode } from "../../../../src/data-model/syntax-tree/element/operation/ConnectedOperationNode";
+import { VariableNameNode } from "../../../../src/data-model/syntax-tree/element/VariableNameNode";
 
 describe("VariableNode Tests", () => {
     beforeEach(() => {

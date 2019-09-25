@@ -2,8 +2,8 @@ import { String } from "typescript-string-operations";
 import { Position, Range } from "vscode-languageserver-types";
 import { AliasHelper } from "../../aliases/AliasHelper";
 import { StringHelper } from "../../helper/StringHelper";
-import { GenericNode } from "../../rest-interface/intelliSenseTree/GenericNode";
-import { Variable } from "../../rest-interface/intelliSenseTree/Variable";
+import { GenericNode } from "../syntax-tree/GenericNode";
+import { Variable } from "../syntax-tree/Variable";
 import { OvElementManager } from "./OvElementManager";
 
 /**

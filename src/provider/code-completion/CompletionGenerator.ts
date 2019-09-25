@@ -2,7 +2,7 @@ import { CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-lan
 import { AliasHelper } from "../../aliases/AliasHelper";
 import { AliasKey } from "../../aliases/AliasKey";
 import { OvServer } from "../../OvServer";
-import { Variable } from "../../rest-interface/intelliSenseTree/Variable";
+import { Variable } from "../../data-model/syntax-tree/Variable";
 import { ISchemaProperty } from "../../rest-interface/schema/ISchemaProperty";
 import { ISchemaType } from "../../rest-interface/schema/ISchemaType";
 import { AsKeywordTransition } from "./states/AsKeywordTransition";

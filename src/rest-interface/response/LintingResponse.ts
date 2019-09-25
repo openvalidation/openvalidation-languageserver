@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { MainNode } from "../intelliSenseTree/MainNode";
+import { MainNode } from "../../data-model/syntax-tree/MainNode";
 import { ISchemaType } from "../schema/ISchemaType";
 import { LintingError } from "./LintingError";
 

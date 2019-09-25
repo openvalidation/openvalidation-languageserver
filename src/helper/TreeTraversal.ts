@@ -1,7 +1,7 @@
 import { Position } from "vscode-languageserver";
-import { OperationNode } from "../rest-interface/intelliSenseTree/element/operation/OperationNode";
-import { UnkownNode } from "../rest-interface/intelliSenseTree/element/UnkownNode";
-import { GenericNode } from "../rest-interface/intelliSenseTree/GenericNode";
+import { OperationNode } from "../data-model/syntax-tree/element/operation/OperationNode";
+import { UnkownNode } from "../data-model/syntax-tree/element/UnkownNode";
+import { GenericNode } from "../data-model/syntax-tree/GenericNode";
 
 export class TreeTraversal {
     constructor() { }

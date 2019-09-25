@@ -1,8 +1,8 @@
 import { Diagnostic, Position, Range } from "vscode-languageserver-types";
-import { CommentNode } from "../../rest-interface/intelliSenseTree/element/CommentNode";
-import { RuleNode } from "../../rest-interface/intelliSenseTree/element/RuleNode";
-import { VariableNode } from "../../rest-interface/intelliSenseTree/element/VariableNode";
-import { GenericNode } from "../../rest-interface/intelliSenseTree/GenericNode";
+import { CommentNode } from "../syntax-tree/element/CommentNode";
+import { RuleNode } from "../syntax-tree/element/RuleNode";
+import { VariableNode } from "../syntax-tree/element/VariableNode";
+import { GenericNode } from "../syntax-tree/GenericNode";
 
 /**
  * Saves all elements of an OvDocument and provides a few methods 

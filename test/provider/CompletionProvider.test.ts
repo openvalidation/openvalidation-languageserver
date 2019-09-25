@@ -2,12 +2,12 @@ import "jest";
 import { CompletionItem, Position } from "vscode-languageserver";
 import { CompletionProvider } from "../../src/provider/CompletionProvider";
 import { TestInitializer } from "../TestInitializer";
-// import { GenericNode } from "../../src/rest-interface/intelliSenseTree/GenericNode";
-// import { OperandNode } from "../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
-// import { IndexRange } from "../../src/rest-interface/intelliSenseTree/IndexRange";
+// import { GenericNode } from "../../src/data-model/syntax-tree/GenericNode";
+// import { OperandNode } from "../../src/data-model/syntax-tree/element/operation/operand/OperandNode";
+// import { IndexRange } from "../../src/data-model/syntax-tree/IndexRange";
 // import { CompletionResponse } from "../../src/rest-interface/response/CompletionResponse";
-// import { Variable } from "../../src/rest-interface/intelliSenseTree/Variable";
-// import { OperatorNode } from "../../src/rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
+// import { Variable } from "../../src/data-model/syntax-tree/Variable";
+// import { OperatorNode } from "../../src/data-model/syntax-tree/element/operation/operand/OperatorNode";
 
 describe("Completion provider test", () => {
     var provider: CompletionProvider;

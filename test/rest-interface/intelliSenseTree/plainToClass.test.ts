@@ -1,14 +1,14 @@
 import { plainToClass } from "class-transformer";
 import "jest";
-import { CommentNode } from "../../../src/rest-interface/intelliSenseTree/element/CommentNode";
-import { ArrayOperandNode } from "../../../src/rest-interface/intelliSenseTree/element/operation/operand/ArrayOperandNode";
-import { FunctionOperandNode } from "../../../src/rest-interface/intelliSenseTree/element/operation/operand/FunctionOperandNode";
-import { OperandNode } from "../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
-import { OperatorNode } from "../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
-import { ConnectedOperationNode } from "../../../src/rest-interface/intelliSenseTree/element/operation/ConnectedOperationNode";
-import { OperationNode } from "../../../src/rest-interface/intelliSenseTree/element/operation/OperationNode";
-import { RuleNode } from "../../../src/rest-interface/intelliSenseTree/element/RuleNode";
-import { VariableNode } from "../../../src/rest-interface/intelliSenseTree/element/VariableNode";
+import { CommentNode } from "../../../src/data-model/syntax-tree/element/CommentNode";
+import { ArrayOperandNode } from "../../../src/data-model/syntax-tree/element/operation/operand/ArrayOperandNode";
+import { FunctionOperandNode } from "../../../src/data-model/syntax-tree/element/operation/operand/FunctionOperandNode";
+import { OperandNode } from "../../../src/data-model/syntax-tree/element/operation/operand/OperandNode";
+import { OperatorNode } from "../../../src/data-model/syntax-tree/element/operation/operand/OperatorNode";
+import { ConnectedOperationNode } from "../../../src/data-model/syntax-tree/element/operation/ConnectedOperationNode";
+import { OperationNode } from "../../../src/data-model/syntax-tree/element/operation/OperationNode";
+import { RuleNode } from "../../../src/data-model/syntax-tree/element/RuleNode";
+import { VariableNode } from "../../../src/data-model/syntax-tree/element/VariableNode";
 
 
 describe("plainToClass Test, checks type inference of JSON-Schemas", () => {

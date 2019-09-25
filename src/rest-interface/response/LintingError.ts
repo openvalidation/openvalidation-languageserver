@@ -1,4 +1,4 @@
-import { IndexRange } from "../intelliSenseTree/IndexRange";
+import { IndexRange } from "../../data-model/syntax-tree/IndexRange";
 import { Type } from "class-transformer";
 
 export class LintingError {

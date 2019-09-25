@@ -1,4 +1,4 @@
-import { IndexRange } from "src/rest-interface/intelliSenseTree/IndexRange";
+import { IndexRange } from "src/data-model/syntax-tree/IndexRange";
 
 export class HoverContent {
     private content: string;
