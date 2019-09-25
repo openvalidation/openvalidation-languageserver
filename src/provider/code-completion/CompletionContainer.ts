@@ -9,13 +9,19 @@ export class CompletionContainer {
     private dataType: string | null;
     private filteredName: string | null;
     private prependingText: string | null;
-    private types: CompletionType[];
+    private _types: CompletionType[];
+    public get types(): CompletionType[] {
+        return this._types;
+    }
+    public set types(value: CompletionType[]) {
+        this._types = value;
+    }
 
     constructor(...types: CompletionType[]) {
         this.dataType = null;
         this.filteredName = null;
         this.prependingText = null;
-        this.types = types;
+        this._types = types;
         this.possibleStates = [];
     }
 
@@ -43,16 +49,6 @@ export class CompletionContainer {
         return container;
     }
 
-
-
-    public static empty(): CompletionContainer {
-        return new CompletionContainer(CompletionType.None);
-    }
-
-    public static logicalOperator(): CompletionContainer {
-        return new CompletionContainer(CompletionType.LogicalOperator);
-    }
-
     public static operand(datatype: string): CompletionContainer {
         var container = new CompletionContainer(CompletionType.Operand);
         container.setDataType(datatype);
@@ -67,22 +63,6 @@ export class CompletionContainer {
 
     public isEmpty(): boolean {
         return this.getStates().every(state => state == CompletionState.Empty);
-    }
-
-    public containsOperator(): boolean {
-        return this.getTypes().filter(types => types == CompletionType.Operator).length > 0;
-    }
-
-    public containsLogicalOperator(): boolean {
-        return this.getTypes().filter(types => types == CompletionType.LogicalOperator).length > 0;
-    }
-
-    public getTypes(): CompletionType[] {
-        return this.types;
-    }
-
-    public addType(type: CompletionType) {
-        this.types.push(type);
     }
 
     public setDataType(dataType: string): CompletionContainer {
@@ -111,6 +91,11 @@ export class CompletionContainer {
                     break;
                 case CompletionState.Operand:
                     generator.addFittingOperator(this.dataType);
+                    break;
+                case CompletionState.FunctionOperand:
+                case CompletionState.ArrayOperand:
+                    generator.addFittingOperator(this.dataType);
+                    generator.addFittingIdentifier(this.filteredName, this.dataType);
                     break;
                 case CompletionState.OperationEnd:
                     generator.addLogicalOperators();

@@ -68,15 +68,15 @@ export class OvDocument {
         var indexOfWord = line.indexOf(currentWord);
         var wordRange = Range.create(position.line, indexOfWord, position.line, indexOfWord + currentWord.length);
 
-        if (this.elementManager.getVariables().find(v => v.getName() == currentWord)) {
+        if (this.elementManager.getVariables().find(v => !!v.getNameNode() && v.getNameNode()!.getName() == currentWord)) {
             return [currentWord, wordRange];
         } else {
             // If this word is inside a variable name
             var variableContainsWord = this.elementManager.getVariables()
-                .find(v => v.getName().search(new RegExp('\\b' + currentWord + '\\b')) !== -1);
+                .find(v => v.getNameNode()!.getName().search(new RegExp('\\b' + currentWord + '\\b')) !== -1);
             if (!variableContainsWord) return [currentWord, wordRange];
 
-            var variableName = variableContainsWord.getName();
+            var variableName = variableContainsWord.getNameNode()!.getName();
             var indexOfName = line.indexOf(variableName);
             if (indexOfName == -1) return [currentWord, wordRange];
 

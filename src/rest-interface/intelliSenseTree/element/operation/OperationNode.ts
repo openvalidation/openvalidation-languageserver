@@ -138,25 +138,28 @@ export class OperationNode extends ConditionNode {
         }
 
         // TODO: Can be done in a loop?!
-        if (this.leftOperand.getRange().endsBefore(position) && !this.operator) {
+        if (!!this.leftOperand.getRange() && this.leftOperand.getRange().endsBefore(position) && !this.operator) {
             var container = this.leftOperand.getCompletionContainer(position);
             container.addState(CompletionState.Operand);
             return container;
         }
 
-        if (!!this.operator && this.operator.getRange().endsBefore(position) && !this.rightOperand) {
+        if (!!this.operator && !!this.operator.getRange() && this.operator.getRange().endsBefore(position) && !this.rightOperand) {
             var container = this.operator.getCompletionContainer(position);
             container.addState(CompletionState.Operator);
             return container;
         }
 
-        if (!!this.rightOperand && this.rightOperand.getRange().endsBefore(position)) {
+        if (!!this.rightOperand && !!this.rightOperand.getRange() && this.rightOperand.getRange().endsBefore(position)) {
             var container = this.rightOperand.getCompletionContainer(position);
             container.addState(CompletionState.OperationEnd);
             return container;
         }
 
-        return CompletionContainer.create(CompletionState.Empty);
+        if (this.getRange().includesPosition(position))
+            return CompletionContainer.create(CompletionState.Empty);
+            
+        return CompletionContainer.create(CompletionState.OperationEnd);
     }
 
     public isComplete(): boolean {

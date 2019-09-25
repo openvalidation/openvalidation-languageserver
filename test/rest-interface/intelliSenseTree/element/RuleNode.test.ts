@@ -190,4 +190,28 @@ describe("RuleNode Tests", () => {
 
         expect(actual).toEqual(expected);
     });
+    
+    test("getCompletionContainer with ConnectedOperation and with position right after connector of second operation, expected empty list", () => {     
+        var leftOperand: OperandNode = new OperandNode(["Alter"], IndexRange.create(0, 5, 0, 10), "Decimal", "Alter");
+        var operator: OperatorNode = new OperatorNode(["gleich"], IndexRange.create(0, 11, 0, 17), "Boolean", "EQUALS", "Object");
+        var rightOperand: OperandNode = new OperandNode(["18"], IndexRange.create(0, 18, 0, 20), "Decimal", "18.0");
+        var firstOperation = new OperationNode(leftOperand, operator, rightOperand, ["Alter gleich 18"], IndexRange.create(0, 5, 0, 20));
+ 
+        var secleftOperand: OperandNode = new OperandNode(["Alter"], IndexRange.create(0, 27, 0, 30), "Decimal", "Alter");
+        var secoperator: OperatorNode = new OperatorNode(["gleich"], IndexRange.create(0, 31, 0, 37), "Boolean", "EQUALS", "Object");
+        var secrightOperand: OperandNode = new OperandNode(["18"], IndexRange.create(0, 38, 0, 40), "Decimal", "18.0");
+        var secondOperation = new OperationNode(secleftOperand, secoperator, secrightOperand, ["UND  Alter gleich 18"], IndexRange.create(0, 22, 0, 40));
+
+        var connectOperation: ConnectedOperationNode = new ConnectedOperationNode([firstOperation, secondOperation], ["Alter gleich 18 UND Alter gleich 18 "], IndexRange.create(0, 5, 0, 40));
+
+        var actionNode = new ActionErrorNode(["Dann "], IndexRange.create(0, 42, 0, 46), "");
+        var rule: RuleNode = new RuleNode(actionNode, connectOperation, ["Wenn Alter gleich 18 UND  Alter gleich 18 Dann "], IndexRange.create(0, 0, 0, 46));
+
+        var positionParameter = Position.create(0, 26);
+
+        var expected: CompletionState[] = [];
+        var actual: CompletionState[] = rule.getCompletionContainer(positionParameter).getStates();
+
+        expect(actual).toEqual(expected);
+    });
 });

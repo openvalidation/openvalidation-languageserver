@@ -93,7 +93,7 @@ export class RuleNode extends GenericNode {
 
     public getCompletionContainer(position: Position): CompletionContainer {
         // Then we are inside the error-node and we don't want completion
-        if (!!this.errorNode && !this.errorNode.getRange().startsAfter(position)) {
+        if (!!this.errorNode && !!this.errorNode.getRange() && !this.errorNode.getRange().startsAfter(position)) {
             return CompletionContainer.create(CompletionState.Empty);
         }
 

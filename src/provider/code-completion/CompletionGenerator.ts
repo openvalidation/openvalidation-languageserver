@@ -73,7 +73,6 @@ export class CompletionGenerator {
 
     public addFittingIdentifier(name: string | null, datatype: string | null): CompletionGenerator {
         this.declarations.forEach(variable => {
-            console.log(datatype);
             if ((!!variable.getDataType() && variable.getDataType() == datatype && variable.getName() != name) ||
                 (!name && !datatype)) {
                 this.addVariable(variable.getName(), variable.getDataType(), "a");

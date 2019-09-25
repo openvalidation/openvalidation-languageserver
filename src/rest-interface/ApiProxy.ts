@@ -108,7 +108,7 @@ export class ApiProxy {
     public static async postCompletionData(rule: string, parameter: RestParameter, ovDocument: OvDocument | undefined): Promise<CompletionResponse | null> {
         if (!!ovDocument) {
             var relevantVariables = ovDocument.elementManager.getVariables()
-                .filter(variable => rule.indexOf(variable.getName()) != -1 
+                .filter(variable => !!variable.getNameNode() && rule.indexOf(variable.getNameNode()!.getName()) != -1 
                         && !!variable.getValue()
                         && rule.trim() != variable.getLines().join('\n').trim());
             rule += "\n\n" + relevantVariables
@@ -123,7 +123,7 @@ export class ApiProxy {
         };
 
         try {
-            var response: AxiosResponse<LintingResponse> = await axios.post(this.apiUrl + "/completion", data, {
+            var response: AxiosResponse<CompletionResponse> = await axios.post(this.apiUrl + "/completion", data, {
                 validateStatus: (status) => { return status == 418 || status == 200; },
                 headers: { "content-type": "application/json" }
             });

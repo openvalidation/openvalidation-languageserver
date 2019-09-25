@@ -3,18 +3,19 @@ import { String } from "typescript-string-operations";
 import { Position, Range } from "vscode-languageserver";
 import { AliasHelper } from "../../../aliases/AliasHelper";
 import { AliasKey } from "../../../aliases/AliasKey";
-import { CompletionType } from "../../../enums/CompletionType";
 import { FormattingHelper } from "../../../helper/FormattingHelper";
 import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
+import { CompletionState } from "../../../provider/code-completion/CompletionStates";
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
 import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { ArrayOperandNode } from "./operation/operand/ArrayOperandNode";
+import { BaseOperandNode } from "./operation/operand/BaseOperandNode";
 import { FunctionOperandNode } from "./operation/operand/FunctionOperandNode";
 import { OperandNode } from "./operation/operand/OperandNode";
 import { OperationNode } from "./operation/OperationNode";
-import { BaseOperandNode } from "./operation/operand/BaseOperandNode";
+import { VariableNameNode } from "./VariableNameNode";
 
 export class VariableNode extends GenericNode {
     @Type(() => BaseOperandNode, {
@@ -31,11 +32,12 @@ export class VariableNode extends GenericNode {
     })
     private value: BaseOperandNode | null;
 
-    private name: string;
+    @Type(() => VariableNameNode)
+    private nameNode: VariableNameNode | null;
 
-    constructor(name: string, value: BaseOperandNode | null, lines: string[], range: IndexRange) {
+    constructor(nameNode: VariableNameNode | null, value: BaseOperandNode | null, lines: string[], range: IndexRange) {
         super(lines, range);
-        this.name = name;
+        this.nameNode = nameNode;
         this.value = value;
     }
 
@@ -60,8 +62,8 @@ export class VariableNode extends GenericNode {
      * Getter name
      * @return {string}
      */
-    public getName(): string {
-        return this.name;
+    public getNameNode(): VariableNameNode | null {
+        return this.nameNode;
     }
 
     /**
@@ -76,8 +78,8 @@ export class VariableNode extends GenericNode {
      * Setter name
      * @param {string} value
      */
-    public setName(value: string) {
-        this.name = value;
+    public setNameNode(value: VariableNameNode | null) {
+        this.nameNode = value;
     }
 
     /**
@@ -87,26 +89,13 @@ export class VariableNode extends GenericNode {
      * @memberof OvVariable
      */
     public getRangeOfVariableName(): Range {
-        for (let index = 0; index < this.getLines().length; index++) {
-            const line = this.getLines()[index];
-            var foundIndex = line.indexOf(this.name);
-            if (foundIndex === -1) continue;
+        if (!this.getNameNode()) return this.getRange().asRange();
 
-            var lineNumber: number = this.getStartLineNumber() + index;
-            var startIndex = foundIndex;
-            var endIndex = foundIndex + this.name.length;
-
-            var startPosition: Position = Position.create(lineNumber, startIndex);
-            var endPosition: Position = Position.create(lineNumber, endIndex);
-            return Range.create(startPosition, endPosition);
-        }
-
-        throw Error("Variable " + this.name + " is not included in the Variable-Lines");
+        return this.getNameNode()!.getRange().asRange();
     }
 
-
     public getHoverContent(): HoverContent | null {
-        var contentText = "Variable " + this.getName();
+        var contentText = "Variable" + !this.getNameNode() ? " " : " "  + this.getNameNode()!.getName();
         if (!!this.getValue())
             contentText += ": " + this.getValue()!.getDataType();
 
@@ -114,17 +103,24 @@ export class VariableNode extends GenericNode {
         return content;
     }
 
-    public getCompletionContainer(range: Position): CompletionContainer {
-        if (!this.value)
-            return new CompletionContainer(CompletionType.Operand);
+    public getCompletionContainer(position: Position): CompletionContainer {
+        if (!!this.getNameNode() && !this.getNameNode()!.getRange().startsAfter(position))
+            return CompletionContainer.create(CompletionState.Empty);
 
-        return this.value.getCompletionContainer(range);
+        if (!this.value)
+            return CompletionContainer.create(CompletionState.OperandMissing);
+
+        var container = this.value.getCompletionContainer(position);
+        if (container.isEmpty()) {
+            container.addState(CompletionState.Operand);
+        }
+        return container;
     }
 
     public isComplete(): boolean {
         return !!this.value && this.value.isComplete();
     }
-    
+
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         var variableString: string = this.getLines().join("\n");
         if (!this.value) return variableString;
@@ -139,7 +135,7 @@ export class VariableNode extends GenericNode {
         var conditionString: string = this.value.getBeautifiedContent(aliasesHelper);
         conditionString = conditionString.replace(new RegExp("\n", 'g'), "\n" + spaces);
         returnString += spaces + conditionString + "\n";
-        
+
         for (const splittedLine of splittedVariable) {
             if (!String.IsNullOrWhiteSpace(splittedLine))
                 returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(splittedLine);

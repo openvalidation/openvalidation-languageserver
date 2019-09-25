@@ -148,7 +148,7 @@ export class OvElementManager {
      * @memberof OvDocument
      */
     public getVariablesByName(name: string): VariableNode[] | null {
-        var filteredVariables: VariableNode[] = this.getVariables().filter(element => element.getName().toLowerCase() == name.toLowerCase());
+        var filteredVariables: VariableNode[] = this.getVariables().filter(element => !!element.getNameNode() && element.getNameNode()!.getName().toLowerCase() == name.toLowerCase());
         if (filteredVariables.length > 0) {
             return filteredVariables;
         }

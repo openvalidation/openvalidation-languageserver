@@ -35,6 +35,19 @@ describe("ConnectedOperationNode Tests", () => {
         expect(actual).toEqual(expected);
     });
 
+    test("getCompletionContainer with ConnectedOperationNode and OperationNode with only an Operand, expected Operator", () => {
+        var leftOperand: OperandNode = new OperandNode(["Alter"], IndexRange.create(0, 0, 0, 5), "Decimal", "Alter");
+        var operation = new OperationNode(leftOperand, null, null, [], IndexRange.create(0, 0, 0, 12));
+        var connectOperation: ConnectedOperationNode = new ConnectedOperationNode([operation], [], IndexRange.create(0, 0, 0, 12));
+
+        var positionParameter = Position.create(0, 13);
+
+        var expected: CompletionState[] = [CompletionState.Operand];
+        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+
+        expect(actual).toEqual(expected);
+    });
+
     test("getCompletionContainer with ConnectedOperationNode and half full OperationNode, expected Operator", () => {
         var leftOperand: OperandNode = new OperandNode(["Alter"], IndexRange.create(0, 0, 0, 5), "Decimal", "Alter");
         var operator: OperatorNode = new OperatorNode(["gleich"], IndexRange.create(0, 6, 0, 12), "Boolean", "EQUALS", "Object");
@@ -204,6 +217,25 @@ describe("ConnectedOperationNode Tests", () => {
         var positionParameter = Position.create(0, 36);
 
         var expected: CompletionState[] = [CompletionState.Operator];
+        var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
+
+        expect(actual).toEqual(expected);
+    });
+
+    test("getCompletionContainer with ConnectedOperationNode and 2 OperationNodes and one falsy OperationNode and position after second Operation, expected Operator", () => {        
+        var leftOperand: OperandNode = new OperandNode(["Alter"], IndexRange.create(0, 0, 0, 5), "Decimal", "Alter");
+        var operator: OperatorNode = new OperatorNode(["gleich"], IndexRange.create(0, 6, 0, 12), "Boolean", "EQUALS", "Object");
+        var rightOperand: OperandNode = new OperandNode(["18"], IndexRange.create(0, 13, 0, 15), "Decimal", "18.0");
+        var firstOperation = new OperationNode(leftOperand, operator, rightOperand, ["Alter gleich 18"], IndexRange.create(0, 0, 0, 15));
+ 
+        var secleftOperand: OperandNode = new OperandNode(["Alter"], IndexRange.create(0, 19, 0, 25), "Decimal", "Alter");
+        var secondOperation = new OperationNode(secleftOperand, null, null, ["UND  Alter gleich 18"], IndexRange.create(0, 17, 0, 35));
+
+        var connectOperation: ConnectedOperationNode = new ConnectedOperationNode([firstOperation, secondOperation], [], IndexRange.create(0, 0, 0, 35));
+
+        var positionParameter = Position.create(0, 36);
+
+        var expected: CompletionState[] = [CompletionState.Operand];
         var actual: CompletionState[] = connectOperation.getCompletionContainer(positionParameter).getStates();
 
         expect(actual).toEqual(expected);
