@@ -70,9 +70,9 @@ export class CompletionContainer {
             } else if (transition instanceof ConnectionTransition) {
                 generator.addLogicalOperators(transition);
             } else if (transition instanceof AsKeywordTransition) {
-                generator.addThenKeyword(transition);
-            } else if (transition instanceof ThenKeywordTransition) {
                 generator.addAsKeyword(transition);
+            } else if (transition instanceof ThenKeywordTransition) {
+                generator.addThenKeyword(transition);
             } else if (transition instanceof OperandTransition) {
                 generator.addFittingIdentifier(transition);
             }

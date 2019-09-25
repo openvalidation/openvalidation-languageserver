@@ -57,10 +57,11 @@ export class ConnectedOperationNode extends ConditionNode {
 
         for (let index = 0; index < this.getConditions().length - 1; index++) {
             const firstElement = this.getConditions()[index];
-            const secondElement = this.getConditions()[index + 1];
 
             if (firstElement.getRange().includesPosition(position))
                 return firstElement.getCompletionContainer(position);
+
+            const secondElement = this.getConditions()[index + 1];
 
             // Position is between both elements
             if (firstElement.getRange().endsBefore(position) &&

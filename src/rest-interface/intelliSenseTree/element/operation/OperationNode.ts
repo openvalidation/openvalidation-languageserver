@@ -136,7 +136,6 @@ export class OperationNode extends ConditionNode {
             return CompletionContainer.init().operandTransition();
         }
 
-        // TODO: Can be done in a loop?!
         if (!!this.leftOperand.getRange() && this.leftOperand.getRange().endsBefore(position) && !this.operator) {
             var container = this.leftOperand.getCompletionContainer(position);
             container.operatorTransition(this.leftOperand.getDataType());
