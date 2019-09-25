@@ -39,6 +39,6 @@ export class ActionErrorNode extends GenericNode {
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {
-        return CompletionContainer.init();
+        return CompletionContainer.init().emptyTransition();
     }
 }

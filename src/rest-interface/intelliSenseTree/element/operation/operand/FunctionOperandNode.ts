@@ -25,7 +25,7 @@ export class FunctionOperandNode extends BaseOperandNode {
         }
     })
     private parameters: BaseOperandNode[];
-    
+
     private acceptedType: string;
 
     constructor(parameters: BaseOperandNode[], lines: string[], range: IndexRange, dataType: string, name: string, acceptedType: string) {
@@ -64,9 +64,9 @@ export class FunctionOperandNode extends BaseOperandNode {
         return content;
     }
 
-    public getCompletionContainer(position: Position): CompletionContainer {    
+    public getCompletionContainer(position: Position): CompletionContainer {
         var container = CompletionContainer.init();
-        if (this.isComplete()) {
+        if (!this.isComplete()) {
             container.operandTransition(this.getDataType());
         }
         return container;
@@ -75,7 +75,7 @@ export class FunctionOperandNode extends BaseOperandNode {
     public isComplete(): boolean {
         return this.parameters.length > 0;
     }
-    
+
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         return this.getLines().join("\n");
     }

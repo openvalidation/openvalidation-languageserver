@@ -85,7 +85,13 @@ export class CompletionProvider extends Provider {
             var currentWord = StringHelper.getWordAt(line, params.position.character);
             if (String.IsNullOrWhiteSpace(currentWord)) return null;
 
-            var generator = new CompletionGenerator([], this.server.aliasHelper, this.server.schema)
+            var declarations: Variable[] = [];
+            var ovDocument = this.ovDocuments.get(params.textDocument.uri);
+            if (!!ovDocument) {
+                declarations = ovDocument.declarations;
+            }
+
+            var generator = new CompletionGenerator(declarations, this.server.aliasHelper, this.server.schema)
                 .addOperandsWithTypeOfGivenOperand(currentWord.replace(',', ''));
             return generator.build();
         }

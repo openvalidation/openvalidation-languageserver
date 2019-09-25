@@ -47,7 +47,7 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 15);
 
-        var expected: StateTransitionEnum[] = [];
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
         var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
@@ -83,7 +83,7 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 23);
 
-        var expected: StateTransitionEnum[] = [];
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
         var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
@@ -129,7 +129,7 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 45);
 
-        var expected: StateTransitionEnum[] = [];
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
         var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);

@@ -145,7 +145,7 @@ export class OperationNode extends ConditionNode {
 
         if (!!this.operator && !!this.operator.getRange() && this.operator.getRange().endsBefore(position) && !this.rightOperand) {
             var container = this.operator.getCompletionContainer(position);
-            container.operandTransition(this.operator.getValidType(), this.leftOperand.getName())
+            container.operandTransition(this.leftOperand.getDataType(), this.leftOperand.getName())
             return container;
         }
 
@@ -156,8 +156,8 @@ export class OperationNode extends ConditionNode {
         }
 
         if (this.getRange().includesPosition(position))
-            return CompletionContainer.init();
-            
+            return CompletionContainer.init().emptyTransition();
+
         return CompletionContainer.init().connectionTransition();
     }
 

@@ -8,6 +8,7 @@ import { ThenKeywordTransition } from "./states/ThenKeywordTransition";
 import { OperatorTransition } from "./states/OperatorTransition";
 import { OperandTransition } from "./states/OperandTransition";
 import { AsKeywordTransition } from "./states/AsKeywordTransition";
+import { EmptyTransition } from "./states/EmptyTransition";
 
 export class CompletionContainer {
     private transitions: StateTransition[];
@@ -50,6 +51,11 @@ export class CompletionContainer {
 
     public operandTransition(dataType?: string, nameFilter?: string | null, prependingText?: string): CompletionContainer {
         this.transitions.push(new OperandTransition(dataType, nameFilter, prependingText));
+        return this;
+    }
+
+    public emptyTransition(): CompletionContainer {
+        this.transitions.push(new EmptyTransition());
         return this;
     }
 

@@ -104,7 +104,7 @@ export class VariableNode extends GenericNode {
 
     public getCompletionContainer(position: Position): CompletionContainer {
         if (!!this.getNameNode() && !this.getNameNode()!.getRange().startsAfter(position))
-            return CompletionContainer.init();
+            return CompletionContainer.init().emptyTransition();
 
         if (!this.value)
             return CompletionContainer.init().operandTransition();

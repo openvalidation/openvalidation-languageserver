@@ -46,7 +46,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: StateTransitionEnum[] = [];
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
         var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
@@ -79,7 +79,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 27);
 
-        var expected: StateTransitionEnum[] = [];
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
         var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
@@ -113,7 +113,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: StateTransitionEnum[] = [];
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
         var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
@@ -137,7 +137,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 47);
 
-        var expected: StateTransitionEnum[] = [];
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
         var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
@@ -209,7 +209,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 26);
 
-        var expected: StateTransitionEnum[] = [];
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
         var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);

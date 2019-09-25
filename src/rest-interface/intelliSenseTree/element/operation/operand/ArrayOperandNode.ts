@@ -56,9 +56,9 @@ export class ArrayOperandNode extends BaseOperandNode {
         return content;
     }
 
-    public getCompletionContainer(position: Position): CompletionContainer {        
+    public getCompletionContainer(position: Position): CompletionContainer {
         var container = CompletionContainer.init();
-        if (this.isComplete()) {
+        if (!this.isComplete()) {
             container.operandTransition(this.getDataType());
         }
         return container;
@@ -67,7 +67,7 @@ export class ArrayOperandNode extends BaseOperandNode {
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         return this.getLines().join("\n");
     }
-    
+
     public isComplete(): boolean {
         return this.items.length > 0;
     }

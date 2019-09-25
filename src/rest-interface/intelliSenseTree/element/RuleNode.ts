@@ -93,7 +93,7 @@ export class RuleNode extends GenericNode {
     public getCompletionContainer(position: Position): CompletionContainer {
         // Then we are inside the error-node and we don't want completion
         if (!!this.errorNode && !!this.errorNode.getRange() && !this.errorNode.getRange().startsAfter(position)) {
-            return CompletionContainer.init()
+            return CompletionContainer.init().emptyTransition();
         }
 
         if (!this.condition) return CompletionContainer.init().operandTransition();
@@ -108,7 +108,7 @@ export class RuleNode extends GenericNode {
             return container;
         }
 
-        return CompletionContainer.init();
+        return CompletionContainer.init().emptyTransition();
     }
 
     public isComplete(): boolean {

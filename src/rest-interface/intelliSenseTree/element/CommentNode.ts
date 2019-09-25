@@ -25,7 +25,7 @@ export class CommentNode extends GenericNode {
     }
 
     public getCompletionContainer(range: Position): CompletionContainer {
-        return CompletionContainer.init();
+        return CompletionContainer.init().emptyTransition();
     }
 
     public isComplete(): boolean {

@@ -52,7 +52,7 @@ export class CompletionGenerator {
     public addFittingIdentifier(transition: OperandTransition): CompletionGenerator {
         this.declarations.forEach(variable => {
             if ((!!variable.getDataType() && 
-                    variable.getDataType() == transition.getDataType() && 
+                    variable.getDataType() == transition.getDataType()  && 
                     variable.getName() != transition.getNameFilter()) ||
                 (!transition.getNameFilter() && !transition.getDataType())) {
                 this.addVariable(variable.getName(), variable.getDataType(), "a", transition.getPrependingText());
@@ -108,12 +108,12 @@ export class CompletionGenerator {
     public addOperandsWithTypeOfGivenOperand(operandName: string): CompletionGenerator {
         var variables: Variable | undefined = this.declarations.find(declaration => declaration.getName() == operandName);
         if (!!variables) {
-            return this.addFittingIdentifier(new OperandTransition(variables.getDataType(), operandName))
+            return this.addFittingIdentifier(new OperandTransition(variables.getDataType(), operandName, " "))
         }
 
         var schema: ISchemaProperty | undefined = this.schema.dataProperties.find(property => property.name == operandName);
         if (!!schema) {
-            return this.addFittingIdentifier(new OperandTransition(schema.type, operandName));
+            return this.addFittingIdentifier(new OperandTransition(schema.type, operandName, " "));
         }
 
         return this;
@@ -196,5 +196,11 @@ export class CompletionGenerator {
      */
     private createCompletionItem(text: string, sortText: string, prependedText: string): CompletionItem {
         return this.createCompletionItemWithTextInsertion(text, text + " ", sortText, prependedText);
+    }
+
+    public getSortText(optional: boolean, trueCase?: string, falseCase?: string) {
+        trueCase = !trueCase ? "z" : trueCase;
+        falseCase = !falseCase ? "a" : falseCase;
+        return optional ? trueCase : falseCase;
     }
 }

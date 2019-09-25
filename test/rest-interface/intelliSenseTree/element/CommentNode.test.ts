@@ -13,7 +13,7 @@ describe("CommentNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: StateTransitionEnum[] = [];
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
         var actual: StateTransitionEnum[] = comment.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
@@ -24,7 +24,7 @@ describe("CommentNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: StateTransitionEnum[] = [];
+        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
         var actual: StateTransitionEnum[] = comment.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
 
         expect(actual).toEqual(expected);
