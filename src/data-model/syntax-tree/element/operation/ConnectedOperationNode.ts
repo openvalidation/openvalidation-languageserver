@@ -9,7 +9,15 @@ import { ConditionNode } from "./ConditionNode";
 import { OperationNode } from "./OperationNode";
 
 export class ConnectedOperationNode extends ConditionNode {
-    @Type(() => OperationNode)
+    @Type(() => ConditionNode, {
+        discriminator: {
+            property: "type",
+            subTypes: [
+                { value: OperationNode, name: "OperationNode" },
+                { value: ConnectedOperationNode, name: "ConnectedOperationNode" }
+            ]
+        }
+    })
     private conditions: ConditionNode[];
 
     constructor(conditions: ConditionNode[], lines: string[], range: IndexRange) {
@@ -75,13 +83,19 @@ export class ConnectedOperationNode extends ConditionNode {
 
     public getBeautifiedContent(aliasHelper: AliasHelper): string {
         if (this.getConditions().length == 0) return this.getLines().join("\n");
+
         var returnString: string = "";
         var index = 0;
+        var extraSpacesForNestedOperation: string = !!this.getConnector() ? "    ": "";
+
         for (; index < this.getConditions().length - 1; index++) {
             const element = this.getConditions()[index];
-            returnString += element.getBeautifiedContent(aliasHelper) + "\n";
+            if (index > 0) {
+                returnString += extraSpacesForNestedOperation
+            }
+            returnString += extraSpacesForNestedOperation + element.getBeautifiedContent(aliasHelper) + "\n";
         }
-        returnString += this.getConditions()[index].getBeautifiedContent(aliasHelper);
+        returnString += extraSpacesForNestedOperation + this.getConditions()[index].getBeautifiedContent(aliasHelper);
 
         return returnString;
     }
