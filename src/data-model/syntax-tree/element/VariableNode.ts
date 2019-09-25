@@ -94,7 +94,7 @@ export class VariableNode extends GenericNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var contentText = "Variable" + !this.getNameNode() ? " " : " "  + this.getNameNode()!.getName();
+        var contentText = "Variable" + (!this.getNameNode() ? " " : " "  + this.getNameNode()!.getName());
         if (!!this.getValue())
             contentText += ": " + this.getValue()!.getDataType();
 

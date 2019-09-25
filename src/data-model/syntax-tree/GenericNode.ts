@@ -1,9 +1,10 @@
 import { Type } from "class-transformer";
-import { TextEdit, Position, Range } from "vscode-languageserver";
+import { TextEdit, Position } from "vscode-languageserver";
 import { AliasHelper } from "../../aliases/AliasHelper";
 import { HoverContent } from "../../helper/HoverContent";
 import { CompletionContainer } from "../../provider/code-completion/CompletionContainer";
 import { IndexRange } from "./IndexRange";
+import { String } from "typescript-string-operations";
 
 export abstract class GenericNode {
     private lines: string[];
@@ -63,29 +64,14 @@ export abstract class GenericNode {
     public formatCode(aliasHelper: AliasHelper): TextEdit[] {
         var textEdits: TextEdit[] = [];
         var formattedString: string = this.getBeautifiedContent(aliasHelper);
-        var formattedLines: string[] = formattedString.split("\n");
+        var formattedLines: string[] = formattedString.split("\n").filter(line => !String.IsNullOrWhiteSpace(line));
 
-        var previousLength: number[] = [];
-        for (let index = 0; index < this.getLines().length; index++) {
-            const element = this.getLines()[index];
-            previousLength.push(element.length);
+        var textEdit: TextEdit = {
+            newText: formattedLines.join("\n"),
+            range: this.getRange().asRange()
         }
-        var currentLineNumber = 0;
-        for (let index = 0; index < formattedLines.length; index++) {
-            var formattedLine = formattedLines[index];
-            var currentLineNumber = this.getStartLineNumber() + index;
+        textEdits.push(textEdit);
 
-            var updateLength: number = formattedLine.length;
-            if (previousLength.length > index) {
-                updateLength = previousLength[index];
-            }
-
-            var textEdit: TextEdit = {
-                newText: formattedLine,
-                range: Range.create(currentLineNumber, 0, currentLineNumber, updateLength)
-            }
-            textEdits.push(textEdit);
-        }
         return textEdits;
     }
 }
