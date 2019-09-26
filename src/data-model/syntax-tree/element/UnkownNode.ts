@@ -37,12 +37,23 @@ export class UnkownNode extends GenericNode {
     }
 
     public getChildren(): GenericNode[] {
-        return [];
+        var children: GenericNode[] = [];
+
+        if (this.content != null)
+            children.push(this.content);
+
+        return children;
     }
 
-    public getHoverContent(): HoverContent | null | null {
-        if (!this.content) return null;
-        return this.content.getHoverContent();
+    public getHoverContent(): HoverContent | null {
+        if (!this.content) return new HoverContent(this.getRange(), "Unkown-Element");
+        
+        var hoverContent = this.content.getHoverContent();
+        if (!hoverContent) return hoverContent;
+
+        var ownContent = "`Unkown-Element` with " + hoverContent.getContent();
+        hoverContent.setContent(ownContent);
+        return hoverContent;
     }
     
     public getCompletionContainer(position: Position): CompletionContainer {

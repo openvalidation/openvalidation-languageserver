@@ -49,6 +49,12 @@ npm install ov-language-server
 ```bash
 node .\node_modules\ov-language-server\lib\server.js
 ```
+
+
+### Connect to the language server
+
+You can connect to the language server with the url `localhost:3000` for example with the [monaco-languageclient](https://github.com/TypeFox/monaco-languageclient).
+
 ### Clients
 
 The language server is currently not used in a specific client.

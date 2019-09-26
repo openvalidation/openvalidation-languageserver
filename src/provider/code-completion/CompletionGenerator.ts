@@ -168,7 +168,6 @@ export class CompletionGenerator {
         if (!label) return this;
 
         var completionItem = this.createCompletionItemWithTextInsertion(label, text, sortText, prependedText);
-        completionItem.
         completionItem.kind = CompletionItemKind.Snippet;
         completionItem.insertTextFormat = InsertTextFormat.Snippet;
         completionItem.sortText = sortText;
