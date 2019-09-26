@@ -39,7 +39,6 @@ export class DocumentActionProvider extends Provider {
      * @memberof DocumentActionProvider
      */
     public validate(uri: string): void {
-        //TODO: Show error directly at the wrong string
         this.cleanPendingValidation(uri);
         this.pendingValidationRequests.set(uri, setTimeout(() => {
             this.pendingValidationRequests.delete(uri);
@@ -190,97 +189,3 @@ export class DocumentActionProvider extends Provider {
         });
     }
 }
-
-
-
-// TODO: Code for getting the changed elements
-// private getChangedElements(oldNodes: GenericNode[], newString: string): [[string | null, number][], [number, number][]] {
-//     var rangeList: [number, number][] = [];
-//     var linesList: [string | null, number][] = [];
-
-//     var newElements: [string[], number][] = StringHelper.getLinesPerElement(newString);
-
-//     var index: number = 0;
-//     var indexPuffer: number = 0;
-//     while (index < newElements.length) {
-//         const newElement: [string[], number] = newElements[index + indexPuffer];
-//         if (oldNodes.length <= index) break;
-//         const oldNode = oldNodes[index];
-
-//         var newLines = newElement[0];
-//         var startLine = newElement[1];
-
-//         var relevantLines: string[] = [];
-
-//         // Iterate over every line
-//         var linesChanged: boolean = oldNode.getLines().length != newLines.length;
-//         for (var secondIndex = 0; secondIndex < newLines.length; secondIndex++) {
-//             const newLine = newLines[secondIndex];
-//             const oldLine = oldNode.getLines()[secondIndex];
-
-//             if (newLine != oldLine) {
-//                 linesChanged = true;
-//             }
-
-//             if (!String.IsNullOrWhiteSpace(newLine)) {
-//                 relevantLines.push(newLine);
-//             }
-//         }
-
-//         if (linesChanged) {
-//             rangeList.push([startLine, startLine + relevantLines.length - 1]);
-//             linesList.push([relevantLines.join("\n"), index]);
-//         } else {
-//             rangeList.push([startLine, startLine + relevantLines.length - 1]);
-//             linesList.push([null, index]);
-//         }
-//         index++;
-//     }
-
-//     // Add new Elements
-//     if (index < newElements.length) {
-//         for (let j = index; j < newElements.length; j++) {
-//             const elementLines = newElements[j][0];
-//             const startIndex = newElements[j][1];
-
-//             if (elementLines.length > 0) {
-//                 rangeList.push([startIndex, startIndex + elementLines.length - 1]);
-//                 linesList.push([elementLines.join("\n"), index]);
-//             }
-//         }
-//     }
-
-//     // TODO: Generate ONLY the changed lines
-
-//     return [linesList, rangeList];
-// }
-
-
-// if (!!ovDocument) {
-//     var newString: string = document.getText();
-//     var parsingTuple = this.getChangedElements(ovDocument.elementManager.getElements(), newString);
-
-//     for (let index = 0; index < parsingTuple[0].length; index++) {
-//         const tuple = parsingTuple[0][index];
-//         var scope: GenericNode | null = null;
-
-//         if (!!tuple[0]) {
-//             var parsedElement = await ApiProxy.postLintingData(tuple[0], this.server.restParameter, ovDocument);
-//             if (!parsedElement || !parsedElement.getScope()) continue;
-
-//             const number = tuple[1];
-//             scope = parsedElement.getScope();
-//             ovDocument.elementManager.overrideElement(scope!, tuple[1]);
-
-//             // TODO: Manipulate Error, that the Error can be passed to the right position
-//             ovDocument.elementManager.overrideError(parsedElement.getErrors().map(err => err.toDiagnostic(scope!.getRange()))!, number);
-//         }
-//     }
-
-//     ovDocument.elementManager.updateElementRanges(parsingTuple[1]);
-
-//     var diagnostics: Diagnostic[] = [];
-//     ovDocument.elementManager.getErrors().forEach(list => diagnostics = diagnostics.concat(list));
-//     if (diagnostics !== [])
-//         this.sendDiagnostics(document, diagnostics);
-// }

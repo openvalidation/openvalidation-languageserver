@@ -18,7 +18,7 @@ The backend gets started automatically.
 - [x] Documentation on hover
 - [x] Rename symbol
 - [x] Folding
-- [ ] Formatting
+- [x] Formatting
 
 ## Additional features
 

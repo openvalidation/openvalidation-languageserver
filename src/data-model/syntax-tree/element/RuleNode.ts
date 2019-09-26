@@ -67,15 +67,6 @@ export class RuleNode extends GenericNode {
         this.condition = value;
     }
 
-    // TODO: Refactor
-    public isLastWordLogicalOperator(position: Position, aliasesHelper: AliasHelper): boolean {
-        var line = this.getLines()[position.line - this.getStartLineNumber()];
-        var wordList = line.trim().split(" ");
-        var lastWord = wordList[wordList.length - 1];
-
-        return aliasesHelper.getLogicalOperators().indexOf(lastWord.toUpperCase()) != -1;
-    }
-
     public getChildren(): GenericNode[] {
         var childList: GenericNode[] = [];
 

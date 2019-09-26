@@ -93,7 +93,8 @@ export class ConnectedOperationNode extends ConditionNode {
 
         for (let index = 0; index < this.getConditions().length; index++) {
             const element = this.getConditions()[index];
-            returnString += extraSpacesForNestedOperation + element.getBeautifiedContent(aliasHelper);
+
+            returnString += element.getBeautifiedContent(aliasHelper);
             returnString = returnString.replace(/(?:\r\n|\r|\n)/g, ("\n" + extraSpacesForNestedOperation));
 
             if (index != this.getConditions().length - 1)

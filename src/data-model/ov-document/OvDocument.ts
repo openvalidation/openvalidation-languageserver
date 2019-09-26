@@ -95,7 +95,6 @@ export class OvDocument {
     public getLineByLineNumber(lineNumber: number): string {
         if (this.elementManager.getElements().length == 0) return "";
 
-        // TODO: Refactoring
         var elementList = this.elementManager.getElements().filter(rule => {
             var range = rule.getRange();
             if (!range) return false;

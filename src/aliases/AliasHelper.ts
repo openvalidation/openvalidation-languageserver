@@ -109,6 +109,18 @@ export class AliasHelper {
         return this.getKeywordByAliasKey(AliasKey.AS);
     }
 
+    public getIfKeyword(): string | null {
+        return this.getKeywordByAliasKey(AliasKey.IF);
+    }
+
+    public getThenKeyword(): string | null {
+        return this.getKeywordByAliasKey(AliasKey.THEN);
+    }
+
+    public getConstrainedKeyword(): string[] {
+        return this.getKeywordsByAliasKey(AliasKey.CONSTRAINT);
+    }
+
     public getOperators(): Map<string, string> {
         var keys: [string, string][] = [];
 

@@ -35,8 +35,19 @@ export class CompletionGenerator {
     public addGlobals(): CompletionGenerator {
         this.addKeyword(this.aliasHelper.getKeywordByString("if"), "a", "");
 
-        this.addSnippet("Variable", "$1 ALS ${2:variable}", "c", "");
-        this.addSnippet("Short Rule", "$1 MUSS $2", "c", "");
+        var asWord = this.aliasHelper.getAsKeyword();
+        if (!!asWord)
+            this.addSnippet("Variable", "$1 " + asWord + " ${2:variable}", "b", "");
+
+        var ifWord = this.aliasHelper.getIfKeyword();
+        var thenWord = this.aliasHelper.getThenKeyword();
+        if (!!ifWord && !!thenWord)
+            this.addSnippet("Rule", ifWord + " $1 \n" + thenWord + " ${0:Error Message}", "b", "");
+
+        var constrainedWord: string[] = this.aliasHelper.getConstrainedKeyword();
+        if (constrainedWord.length > 0)
+            this.addSnippet("Constrained Rule", "$1 ${2:" + constrainedWord[0] + "} $0", "c", "");
+
         return this;
     }
 
@@ -51,9 +62,9 @@ export class CompletionGenerator {
 
     public addFittingIdentifier(transition: OperandTransition): CompletionGenerator {
         this.declarations.forEach(variable => {
-            if ((!!variable.getDataType() && 
-                    variable.getDataType() == transition.getDataType()  && 
-                    variable.getName() != transition.getNameFilter()) ||
+            if ((!!variable.getDataType() &&
+                variable.getDataType() == transition.getDataType() &&
+                variable.getName() != transition.getNameFilter()) ||
                 (!transition.getNameFilter() && !transition.getDataType())) {
                 this.addVariable(variable.getName(), variable.getDataType(), "a", transition.getPrependingText());
             }
@@ -157,6 +168,7 @@ export class CompletionGenerator {
         if (!label) return this;
 
         var completionItem = this.createCompletionItemWithTextInsertion(label, text, sortText, prependedText);
+        completionItem.
         completionItem.kind = CompletionItemKind.Snippet;
         completionItem.insertTextFormat = InsertTextFormat.Snippet;
         completionItem.sortText = sortText;
