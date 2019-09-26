@@ -102,14 +102,6 @@ export class RuleNode extends GenericNode {
         return CompletionContainer.init().emptyTransition();
     }
 
-    public isComplete(): boolean {
-        return !!this.condition &&
-            this.condition.isComplete() &&
-            !!this.getErrorNode() &&
-            !!this.getErrorNode()!.getErrorMessage() &&
-            String.IsNullOrWhiteSpace(this.getErrorNode()!.getErrorMessage()!);
-    }
-
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         var ruleString: string = this.getLines().join("\n");
         if (!this.condition) return ruleString;

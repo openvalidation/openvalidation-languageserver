@@ -34,10 +34,6 @@ export class ActionErrorNode extends GenericNode {
         return this.getLines().join("\n");
     }
 
-    public isComplete(): boolean {
-        return true;
-    }
-
     public getCompletionContainer(position: Position): CompletionContainer {
         return CompletionContainer.init().emptyTransition();
     }

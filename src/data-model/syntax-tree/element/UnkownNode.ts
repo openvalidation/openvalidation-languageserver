@@ -70,10 +70,6 @@ export class UnkownNode extends GenericNode {
 
         return container;
     }
-
-    public isComplete(): boolean {
-        return true;
-    }
     
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         if (!this.content)

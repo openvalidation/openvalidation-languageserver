@@ -28,10 +28,6 @@ export class CommentNode extends GenericNode {
         return CompletionContainer.init().emptyTransition();
     }
 
-    public isComplete(): boolean {
-        return true;
-    }
-
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         var commentKeyword: string | null = aliasesHelper.getCommentKeyword();
         if (!commentKeyword) return this.getLines().join('\\n');

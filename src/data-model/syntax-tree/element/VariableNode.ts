@@ -116,10 +116,6 @@ export class VariableNode extends GenericNode {
         return container;
     }
 
-    public isComplete(): boolean {
-        return !!this.value && this.value.isComplete();
-    }
-
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         var variableString: string = this.getLines().join("\n");
         if (!this.value) return variableString;

@@ -39,10 +39,9 @@ export abstract class GenericNode {
 
     abstract getChildren(): GenericNode[];
     abstract getHoverContent(): HoverContent | null;
-    abstract isComplete(): boolean;
     abstract getBeautifiedContent(aliasesHelper: AliasHelper): string;
     abstract getCompletionContainer(position: Position): CompletionContainer;
-
+    // abstract tokenize(): 
 
     public updateRangeLines(difference: number): void {
         if (!this.getRange() || !this.getRange().getStart() || !this.getRange().getEnd()) return;
