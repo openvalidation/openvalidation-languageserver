@@ -32,6 +32,8 @@ export class IndexRange {
     }
 
     public startsAfter(position: Position) {
+        if (!this.getStart()) return false;
+
         var afterStart = (this.getStart().getLine() == position.line &&
             this.getStart().getColumn() <= position.character) ||
             this.getStart().getLine() < position.line;
@@ -39,6 +41,8 @@ export class IndexRange {
     }
 
     public endsBefore(position: Position) {
+        if (!this.getEnd()) return true;
+
         var beforeEnd = (this.getEnd().getLine() == position.line &&
             this.getEnd().getColumn() >= position.character) ||
             this.getEnd().getLine() > position.line;

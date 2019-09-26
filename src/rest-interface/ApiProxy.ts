@@ -1,11 +1,12 @@
 import axios, { AxiosResponse } from "axios";
 import { plainToClass } from "class-transformer";
+import { VariableNode } from "src/data-model/syntax-tree/element/VariableNode";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
 import { AliasesWithOperators } from "./aliases/AliasesWithOperators";
 import { Culture } from "./ParsingEnums";
+import { CodeResponse } from "./response/CodeResponse";
 import { CompletionResponse } from "./response/CompletionResponse";
 import { LintingResponse } from "./response/LintingResponse";
-import { CodeResponse } from "./response/CodeResponse";
 import { RestParameter } from "./RestParameter";
 
 /**
@@ -107,12 +108,9 @@ export class ApiProxy {
 
     public static async postCompletionData(rule: string, parameter: RestParameter, ovDocument: OvDocument | undefined): Promise<CompletionResponse | null> {
         if (!!ovDocument) {
-            var relevantVariables = ovDocument.elementManager.getVariables()
-                .filter(variable => !!variable.getNameNode() && rule.indexOf(variable.getNameNode()!.getName()) != -1 
-                        && !!variable.getValue()
-                        && rule.trim() != variable.getLines().join('\n').trim());
-            rule += "\n\n" + relevantVariables
-                .map(variable => variable.getLines().join('\n')).join('\n\n');
+            var asKeyword: string | null = parameter.aliasHelper.getAsKeyword();
+            var relevantVariables: VariableNode[] = ovDocument.elementManager.getUsedVariables(rule, asKeyword);
+            rule += "\n\n" + relevantVariables.map(variable => variable.getLines().join('\n')).join('\n\n');
         }
 
         var data = {

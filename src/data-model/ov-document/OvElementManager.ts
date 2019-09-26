@@ -155,6 +155,30 @@ export class OvElementManager {
         return null;
     }
 
+    /**
+     * Returns all known variables
+     *
+     * @readonly
+     * @type {OvVariable[]}
+     * @memberof OvElementManager
+     */
+    public getUsedVariables(element: string, asKeyword: string | null): VariableNode[] {
+        var returnNode: VariableNode[] = [];
+
+        for (const variable of this.getVariables()) {
+            if (!variable.getNameNode() ||
+                !variable.getValue() ||
+                element.indexOf(variable.getNameNode()!.getName()) == -1)
+                continue;
+
+            if (!asKeyword || element.toLowerCase().indexOf(asKeyword.toLowerCase() + " " + variable.getNameNode()!.getName().toLowerCase()) == -1) {
+                returnNode.push(variable);
+            }
+        }
+
+        return returnNode;
+    }
+
     public getLines(): string {
         var lines: string[] = this._elements.map(element => element.getLines().join('\n'));
         return lines.join("\n\n");

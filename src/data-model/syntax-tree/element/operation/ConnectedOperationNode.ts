@@ -7,6 +7,7 @@ import { GenericNode } from "../../GenericNode";
 import { IndexRange } from "../../IndexRange";
 import { ConditionNode } from "./ConditionNode";
 import { OperationNode } from "./OperationNode";
+import { FormattingHelper } from "../../../../helper/FormattingHelper";
 
 export class ConnectedOperationNode extends ConditionNode {
     @Type(() => ConditionNode, {
@@ -85,17 +86,19 @@ export class ConnectedOperationNode extends ConditionNode {
         if (this.getConditions().length == 0) return this.getLines().join("\n");
 
         var returnString: string = "";
-        var index = 0;
-        var extraSpacesForNestedOperation: string = !!this.getConnector() ? "    ": "";
 
-        for (; index < this.getConditions().length - 1; index++) {
+        var extraSpacesForNestedOperation: string = !!this.getConnector()
+            ? FormattingHelper.generateSpaces(this.getConnector()!.length + 1)
+            : "";
+
+        for (let index = 0; index < this.getConditions().length; index++) {
             const element = this.getConditions()[index];
-            if (index > 0) {
-                returnString += extraSpacesForNestedOperation
-            }
-            returnString += extraSpacesForNestedOperation + element.getBeautifiedContent(aliasHelper) + "\n";
+            returnString += extraSpacesForNestedOperation + element.getBeautifiedContent(aliasHelper);
+            returnString = returnString.replace(/(?:\r\n|\r|\n)/g, ("\n" + extraSpacesForNestedOperation));
+
+            if (index != this.getConditions().length - 1)
+                returnString += "\n";
         }
-        returnString += extraSpacesForNestedOperation + this.getConditions()[index].getBeautifiedContent(aliasHelper);
 
         return returnString;
     }

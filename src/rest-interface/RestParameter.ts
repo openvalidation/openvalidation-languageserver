@@ -1,7 +1,8 @@
 import { Culture, Language } from "./ParsingEnums";
+import { AliasHelper } from "src/aliases/AliasHelper";
 
 export class RestParameter {
-    constructor(private _schema: JSON, private _culture: Culture, private _language: Language) {
+    constructor(private _schema: JSON, private _culture: Culture, private _language: Language, private _aliasHelper: AliasHelper) {
     }
 
     public get language(): Language {
@@ -12,5 +13,9 @@ export class RestParameter {
     }
     public get schema(): JSON {
         return this._schema;
+    }
+
+    public get aliasHelper(): AliasHelper {
+        return this._aliasHelper;
     }
 }

@@ -46,7 +46,7 @@ export class GotoDefinitionProvider extends Provider {
         var locationList: Location[] = [];
 
         foundVariables.forEach((variable: VariableNode) => {
-            var range = variable.getRangeOfVariableName();
+            var range = variable.getRange().asRange();
             var location = Location.create(params.textDocument.uri, range);
             locationList.push(location);
         });

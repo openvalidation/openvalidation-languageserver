@@ -27,7 +27,6 @@ const app = express();
 // server the static content, i.e. index.html
 app.use(express.static(__dirname));
 
-
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

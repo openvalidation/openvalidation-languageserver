@@ -105,6 +105,10 @@ export class AliasHelper {
         return this.getKeywordsByAliasKeys(AliasKey.OR, AliasKey.AND);
     }
 
+    public getAsKeyword(): string | null {
+        return this.getKeywordByAliasKey(AliasKey.AS);
+    }
+
     public getOperators(): Map<string, string> {
         var keys: [string, string][] = [];
 
@@ -140,6 +144,10 @@ export class AliasHelper {
 
     public getCommentKeyword(): string | null {
         return this.getKeywordByAliasKey(AliasKey.COMMENT);
+    }
+
+    public getLengthOfLongestLogicalOperator() {
+        return Math.max(...this.getLogicalOperators().map(o => o.length)) + 1;
     }
 
     /**

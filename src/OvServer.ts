@@ -74,7 +74,7 @@ export class OvServer {
      * @memberof OvServer
      */
     public get restParameter(): RestParameter {
-        return new RestParameter(this.jsonSchema, this.culture, this.language);
+        return new RestParameter(this.jsonSchema, this.culture, this.language, this.aliasHelper);
     }
 
     /**
