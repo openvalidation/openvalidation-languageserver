@@ -25,5 +25,14 @@ describe("ApiProxy Tests", () => {
         expect(response).not.toBeNull();
     });
 
+    test("postCompletionData without ovDocument, expect a response", async () => {
+        var response = await ApiProxy.postCompletionData(initializer.getDocumentText(), initializer.server.restParameter, undefined);
+        expect(response).not.toBeNull();
+    });
+
+    test("postCompletionData without ovDocument, expect a response", async () => {
+        var response = await ApiProxy.postCompletionData(initializer.getDocumentText(), initializer.server.restParameter, initializer.server.ovDocuments.get("test.ov"));
+        expect(response).not.toBeNull();
+    });
 
 })
