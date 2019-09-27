@@ -1,4 +1,4 @@
-import { Diagnostic, Position, Range } from "vscode-languageserver-types";
+import { Position, Range } from "vscode-languageserver-types";
 import { CommentNode } from "../syntax-tree/element/CommentNode";
 import { RuleNode } from "../syntax-tree/element/RuleNode";
 import { VariableNode } from "../syntax-tree/element/VariableNode";
@@ -13,11 +13,9 @@ import { GenericNode } from "../syntax-tree/GenericNode";
  */
 export class OvElementManager {
     private _elements: GenericNode[];
-    private _errors: Diagnostic[][];
 
     constructor() {
         this._elements = [];
-        this._errors = [];
     }
 
     /**
@@ -47,23 +45,6 @@ export class OvElementManager {
 
     public addElements(element: GenericNode[]) {
         this._elements = this._elements.concat(element);
-    }
-
-    public getErrors(): Diagnostic[][] {
-        return this._errors;
-    }
-
-    public addError(element: Diagnostic[]) {
-        this._errors.push(element);
-    }
-
-    public overrideError(element: Diagnostic[], index: number) {
-        if (this._errors.length <= index) {
-            this._errors.push(element)
-            if (this._errors.length <= index)
-                throw Error("Can't override Error");
-        }
-        this._errors[index] = element;
     }
 
     /**
@@ -182,21 +163,5 @@ export class OvElementManager {
     public getLines(): string {
         var lines: string[] = this._elements.map(element => element.getLines().join('\n'));
         return lines.join("\n\n");
-    }
-
-    public updateElementRanges(lineIndices: [number, number][]): void {
-        for (let index = 0; index < lineIndices.length; index++) {
-            const indices: [number, number] = lineIndices[index];
-            if (index >= this.getElements().length) break;
-
-            var element = this.getElements()[index];
-            var difference: number = indices[0] - element.getRange().getStart().getLine();
-            element.updateRangeLines(difference);
-
-            var errors = this.getErrors()[index];
-            for (const error of errors) {
-                error.range = Range.create(indices[0], 0, indices[1], 20);
-            }
-        }
     }
 }

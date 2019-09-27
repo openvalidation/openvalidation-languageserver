@@ -12,7 +12,7 @@ import { createConnection } from 'vscode-languageserver';
 import * as ws from "ws";
 import { OvServer } from './OvServer';
 
-require("./start-backend");
+// require("./start-backend");
 
 process.on('uncaughtException', function (err: any) {
     console.error('Uncaught Exception: ', err.toString());

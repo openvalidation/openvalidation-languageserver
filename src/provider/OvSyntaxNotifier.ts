@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { OvStringHelper } from "../helper/OvStringHelper";
 import { OvServer } from "../OvServer";
 import { CodeResponse } from "../rest-interface/response/CodeResponse";
-import { TextMateGrammarFactory } from "./syntax-highlighting/TextMateGrammarFactory";
+import { TextMateGrammarFactory, IToken } from "./syntax-highlighting/TextMateGrammarFactory";
 import { LintingResponse } from "src/rest-interface/response/LintingResponse";
 
 /**
@@ -13,23 +13,22 @@ import { LintingResponse } from "src/rest-interface/response/LintingResponse";
  * @class OvSyntaxNotifier
  */
 export class OvSyntaxNotifier {
-    private textMateGrammar: any;
+    private textMateGrammar: IToken[][] ;
     private generatedCode: string | null;
     private textMateGrammarFactory: TextMateGrammarFactory;
 
     constructor(private readonly server: OvServer) {
-        this.textMateGrammar = null;
+        this.textMateGrammar = [];
         this.generatedCode = null;
         this.textMateGrammarFactory = new TextMateGrammarFactory;
     }
 
     public sendTextMateGrammarIfNecessary(apiResponse: LintingResponse): void {
-        var textMateGrammar = this.textMateGrammarFactory.generateTextMateGrammar(apiResponse, this.server);
-
+        var textMateGrammar: IToken[][] = this.textMateGrammarFactory.generateTextMateGrammar(apiResponse, this.server);
         //Check, if the new grammar is different and musst be send to the client
         if (!_.isEqual(textMateGrammar, this.textMateGrammar)) {
             this.textMateGrammar = textMateGrammar;
-            this.server.connection.sendNotification("textDocument/semanticHighlighting", textMateGrammar);
+            this.server.connection.sendNotification("textDocument/semanticHighlighting", JSON.stringify(textMateGrammar));
         }
     }
 

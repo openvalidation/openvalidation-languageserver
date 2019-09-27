@@ -43,17 +43,6 @@ export abstract class GenericNode {
     abstract getCompletionContainer(position: Position): CompletionContainer;
     // abstract tokenize(): 
 
-    public updateRangeLines(difference: number): void {
-        if (!this.getRange() || !this.getRange().getStart() || !this.getRange().getEnd()) return;
-
-        this.getRange().getStart().setLine(this.getRange().getStart().getLine() + difference);
-        this.getRange().getEnd().setLine(this.getRange().getEnd().getLine() + difference);
-
-        this.getChildren().forEach(child => {
-            child.updateRangeLines(difference);
-        });
-    }
-
     /**
      * Generates a list of edits for formatting this element
      *

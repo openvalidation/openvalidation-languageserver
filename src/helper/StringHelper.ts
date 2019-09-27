@@ -15,7 +15,7 @@ export class StringHelper {
      * @returns {string} ored RegExp
      * @memberof OvSyntaxNotifier
      */
-    public static getCaseUnsensitiveOredRegExForWords(params: string[]): string {
+    public static getCaseUnsensitiveOredRegExForWords(...params: string[]): string {
         var returnString: string = "";
 
         params = Array.from(new Set(params).keys());
@@ -41,7 +41,7 @@ export class StringHelper {
      * @returns {string} ored RegExp
      * @memberof OvSyntaxNotifier
      */
-    public static getOredRegExForWords(params: string[]): string {
+    public static getOredRegExForWords(...params: string[]): string {
         var returnString: string = "";
 
         params = Array.from(new Set(params).keys());

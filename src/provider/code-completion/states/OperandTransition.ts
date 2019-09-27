@@ -2,21 +2,34 @@ import { StateTransition } from "./StateTransition";
 import { StateTransitionEnum } from "./StateTransitionEnum";
 
 export class OperandTransition extends StateTransition {
-    private datatype: string | undefined;
-    private nameFilter: string | undefined | null;
+    private _datatype: string | undefined;
+    private _nameFilter: string | undefined | null;
 
     constructor(datatype?: string, nameFilter?: string | null, prependingText?: string) {
         super(StateTransitionEnum.Operand, prependingText);
 
-        this.datatype = datatype;
-        this.nameFilter = nameFilter;
+        this._datatype = datatype;
+        this._nameFilter = nameFilter;
     }
 
-    public getDataType(): string | undefined {
-        return this.datatype;
+    public get dataType(): string | undefined {
+        return this._datatype;
     }
 
-    public getNameFilter(): string | undefined | null {
-        return this.nameFilter;
+    public get nameFilter(): string[] | undefined | null {
+        if (!this._nameFilter) return null;
+
+        var filter: string[] = [this._nameFilter];
+        var complexChild: string[] = this._nameFilter.split('.');
+        if (complexChild.length > 1) {
+            filter.push(complexChild[complexChild.length - 1]);
+        }
+
+        return filter;
+    }
+
+    public isValid(name: string, datatype: string): boolean {
+        return (!!datatype && !! this.nameFilter && datatype == this.dataType && !this.nameFilter.includes(name) ||
+                (!this.nameFilter && !this.dataType));
     }
 }

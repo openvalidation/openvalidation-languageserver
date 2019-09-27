@@ -46,9 +46,6 @@ export class OvDocument {
      */
     private create(astElements: GenericNode[]): void {
         this.elementManager.addElements(astElements);
-        astElements.forEach(element => {
-            this.elementManager.addError([]);
-        });
     }
 
     /**

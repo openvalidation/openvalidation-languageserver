@@ -76,7 +76,7 @@ export class TextMateParameter {
 
         if (!!this.apiResponse.getMainAstNode() &&
             !!this.apiResponse.getMainAstNode().getDeclarations()) {
-            var names: string[] = this.apiResponse.getMainAstNode().getDeclarations().map(d => d.getName());
+            var names: string[] = this.apiResponse.getMainAstNode().getDeclarations().map(d => d.name);
             identifier = identifier.concat(names.filter(n => !String.IsNullOrWhiteSpace(n)));
         }
 
@@ -114,15 +114,22 @@ export class TextMateParameter {
      */
     public getComplexSchemaRegExp(): string | null {
         if (!this.complexSchemaProperties) return null;
+       
+        var ofKeywordString = "(?i)\\s*(" + StringHelper.getCaseUnsensitiveOredRegExForWords(...this.aliasHelper.getOfKeywords()) + ")\\s*";
 
-        var parents = this.complexSchemaProperties.map(p => p.parent);
-        var childs = this.complexSchemaProperties.map(p => p.child);
-        if (parents.length == 0 || childs.length == 0) return null;
+        var propertyStrings: string[] = [];
+        for (const schemaProperty of this.complexSchemaProperties) {
+            var childString = StringHelper.getOredRegExForWords(schemaProperty.child);
+            var parentString = StringHelper.getOredRegExForWords(schemaProperty.parent);
 
-        var parentKeywordString = StringHelper.getOredRegExForWords(parents);
-        var ofKeywordString = "(?i)\\s*(" + StringHelper.getOredRegExForWords(this.aliasHelper.getOfKeywords()) + ")\\s*";
-        var childKeywordString = StringHelper.getOredRegExForWords(childs);
+            var tmpString = StringHelper.getComplexRegExWithOutherBounds(childString, ofKeywordString, parentString);
+            if (!tmpString) continue;
+            
+            propertyStrings.push(tmpString);
+        }
 
-        return StringHelper.getComplexRegExWithOutherBounds(childKeywordString, ofKeywordString, parentKeywordString);
+        if (propertyStrings.length == 0) return null;
+
+        return StringHelper.getOredRegEx(propertyStrings);
     }
 }

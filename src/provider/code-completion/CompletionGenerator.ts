@@ -62,17 +62,13 @@ export class CompletionGenerator {
 
     public addFittingIdentifier(transition: OperandTransition): CompletionGenerator {
         this.declarations.forEach(variable => {
-            if ((!!variable.getDataType() &&
-                variable.getDataType() == transition.getDataType() &&
-                variable.getName() != transition.getNameFilter()) ||
-                (!transition.getNameFilter() && !transition.getDataType())) {
-                this.addVariable(variable.getName(), variable.getDataType(), "a", transition.getPrependingText());
+            if (transition.isValid(variable.name, variable.dataType)) {
+                this.addVariable(variable.name, variable.dataType, "a", transition.getPrependingText());
             }
         });
 
         this.schema.dataProperties.forEach(property => {
-            if ((property.type == transition.getDataType() && property.name != transition.getNameFilter()) ||
-                (!transition.getNameFilter() && !transition.getDataType())) {
+            if (transition.isValid(property.name, property.type)) {
                 this.addVariable(property.name, property.type, "b", transition.getPrependingText());
             }
         });
@@ -105,7 +101,8 @@ export class CompletionGenerator {
     // Schema completion
     public addFittingChilds(parentName: string): CompletionGenerator {
         this.schema.complexData.forEach(property => {
-            if (property.parent == parentName.replace('.', '')) {
+            var manipulatedParent = parentName.endsWith('.') ? parentName.substring(0, parentName.length - 1) : parentName;
+            if (property.parent == manipulatedParent) {
                 var schemaProperty: ISchemaProperty[] = this.schema.dataProperties.filter(p => p.name == property.child);
                 var dataType: string | null = schemaProperty.length > 0 ? schemaProperty[0].type : null;
                 if (!!dataType)
@@ -117,9 +114,9 @@ export class CompletionGenerator {
 
     // Array completion
     public addOperandsWithTypeOfGivenOperand(operandName: string): CompletionGenerator {
-        var variables: Variable | undefined = this.declarations.find(declaration => declaration.getName() == operandName);
+        var variables: Variable | undefined = this.declarations.find(declaration => declaration.name == operandName);
         if (!!variables) {
-            return this.addFittingIdentifier(new OperandTransition(variables.getDataType(), operandName, " "))
+            return this.addFittingIdentifier(new OperandTransition(variables.dataType, operandName, " "))
         }
 
         var schema: ISchemaProperty | undefined = this.schema.dataProperties.find(property => property.name == operandName);

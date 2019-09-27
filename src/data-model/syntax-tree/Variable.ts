@@ -1,22 +1,22 @@
 export class Variable {
-    private name: string;
-    private dataType: string;
+    private _name: string;
+    private _dataType: string;
 
     constructor(name: string, datatype: string) {
-        this.name = name;
-        this.dataType = datatype;
+        this._name = name;
+        this._dataType = datatype;
     }
 
-    public getName(): string {
-        return this.name;
+    public get name(): string {
+        return this._name;
     }
-    public setName(value: string) {
-        this.name = value;
+    public set name(value: string) {
+        this._name = value;
     }
-    public getDataType(): string {
-        return this.dataType;
+    public get dataType(): string {
+        return this._dataType;
     }
-    public setDataType(value: string) {
-        this.dataType = value;
+    public set dataType(value: string) {
+        this._dataType = value;
     }
 }
