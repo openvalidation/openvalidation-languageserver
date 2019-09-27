@@ -115,15 +115,13 @@ export class TextMateParameter {
     public getComplexSchemaRegExp(): string | null {
         if (!this.complexSchemaProperties) return null;
        
-        var ofKeywordString = "(?i)\\s*(" + StringHelper.getCaseUnsensitiveOredRegExForWords(...this.aliasHelper.getOfKeywords()) + ")\\s*";
+        var ofKeywordString = ".*" + StringHelper.getCaseUnsensitiveOredRegExForWords(...this.aliasHelper.getOfKeywords()) + ".*";
 
         var propertyStrings: string[] = [];
         for (const schemaProperty of this.complexSchemaProperties) {
-            var childString = StringHelper.getOredRegExForWords(schemaProperty.child);
-            var parentString = StringHelper.getOredRegExForWords(schemaProperty.parent);
-
-            var tmpString = StringHelper.getComplexRegExWithOutherBounds(childString, ofKeywordString, parentString);
+            var tmpString = StringHelper.getComplexRegExWithOutherBounds(schemaProperty.child, ofKeywordString, schemaProperty.parent);
             if (!tmpString) continue;
+            console.log(tmpString);
             
             propertyStrings.push(tmpString);
         }
