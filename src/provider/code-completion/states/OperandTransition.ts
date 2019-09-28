@@ -2,25 +2,25 @@ import { StateTransition } from "./StateTransition";
 import { StateTransitionEnum } from "./StateTransitionEnum";
 
 export class OperandTransition extends StateTransition {
-    private _datatype: string | undefined;
-    private _nameFilter: string | undefined | null;
+    private dataType: string | undefined;
+    private nameFilter: string | undefined | null;
 
     constructor(datatype?: string, nameFilter?: string | null, prependingText?: string) {
         super(StateTransitionEnum.Operand, prependingText);
 
-        this._datatype = datatype;
-        this._nameFilter = nameFilter;
+        this.dataType = datatype;
+        this.nameFilter = nameFilter;
     }
 
-    public get dataType(): string | undefined {
-        return this._datatype;
+    public getDataType(): string | undefined {
+        return this.dataType;
     }
 
-    public get nameFilter(): string[] | undefined | null {
-        if (!this._nameFilter) return null;
+    public getNameFilter(): string[] | undefined | null {
+        if (!this.nameFilter) return null;
 
-        var filter: string[] = [this._nameFilter];
-        var complexChild: string[] = this._nameFilter.split('.');
+        var filter: string[] = [this.nameFilter];
+        var complexChild: string[] = this.nameFilter.split('.');
         if (complexChild.length > 1) {
             filter.push(complexChild[complexChild.length - 1]);
         }

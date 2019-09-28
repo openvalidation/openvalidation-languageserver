@@ -110,7 +110,9 @@ describe("Operation Tests", () => {
         var positionParameter = Position.create(0, 13);
 
         var expected: string = "Decimal";
-        var actual: string | null = (operation.getCompletionContainer(positionParameter).getTransitions()[0] as OperatorTransition).getDataType();
+
+        var transition = (operation.getCompletionContainer(positionParameter).getTransitions()[0] as OperatorTransition);
+        var actual: string | null = transition.getDataType();
 
         expect(actual).toEqual(expected);
     });
@@ -222,8 +224,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 15);
 
-        var expected: string = "Alter";
-        var actual: string | null | undefined = (operation.getCompletionContainer(positionParameter).getTransitions()[0] as OperandTransition).getNameFilter();
+        var expected: string[] = ["Alter"];
+        var actual: string[] | undefined | null = (operation.getCompletionContainer(positionParameter).getTransitions()[0] as OperandTransition).getNameFilter();
         expect(actual).toEqual(expected);
     });
 
