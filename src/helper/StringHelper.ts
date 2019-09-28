@@ -85,7 +85,22 @@ export class StringHelper {
         return returnString;
     }
 
-    public static getComplexRegExWithLeftBound(leftBound: string, middle: string): string | null {
+    public static makeStringRegExSafe(text: string): string {
+        var criticalSymbols: string[] = ['(', ')', '*'];
+        if (!text) return text;
+
+        criticalSymbols.forEach(symbol => {
+            text = text.replace(symbol, '\\' + symbol);
+        });
+        return text;
+    }
+
+    public static getComplexRegExWithLeftBound(leftBound: string, middle: string, regexSave: boolean = true): string | null {
+        if (regexSave) {
+            leftBound = this.makeStringRegExSafe(leftBound);
+            middle = this.makeStringRegExSafe(middle);
+        }
+
         var leftString = String.IsNullOrWhiteSpace(leftBound) ? "" : String.Format("(?<=({0}))", leftBound);
         if (String.IsNullOrWhiteSpace(leftString)) return null;
 
@@ -97,14 +112,20 @@ export class StringHelper {
         return regex;
     }
 
-    public static getComplexRegExWithOutherBounds(leftBound: string, middle: string, rightBound: string): string | null {
-        var leftString = String.IsNullOrWhiteSpace(leftBound) ? "" : String.Format("(?<=({0}))", leftBound);
+    public static getComplexRegExWithOutherBounds(leftBound: string, middle: string, rightBound: string, regexSave: boolean = true): string | null {
+        if (!regexSave) {
+            leftBound = this.makeStringRegExSafe(leftBound);
+            middle = this.makeStringRegExSafe(middle);
+            rightBound = this.makeStringRegExSafe(rightBound);
+        }
+
+        var leftString = String.IsNullOrWhiteSpace(leftBound) ? "" : String.Format("(?<=({0})).*", leftBound);
         if (String.IsNullOrWhiteSpace(leftString)) return null;
 
         var operatorString = String.IsNullOrWhiteSpace(middle) ? "" : String.Format("({0})", middle);
         if (String.IsNullOrWhiteSpace(operatorString)) return null;
 
-        var rightString = String.IsNullOrWhiteSpace(rightBound) ? "" : String.Format("(?=({0}))", rightBound);
+        var rightString = String.IsNullOrWhiteSpace(rightBound) ? "" : String.Format(".*(?=({0}))", rightBound);
 
         var regex = leftString.concat(operatorString).concat(rightString);
         if (String.IsNullOrWhiteSpace(regex)) return null;
@@ -133,7 +154,7 @@ export class StringHelper {
             //Then we found a paragraph or we are at the end of the file, so we add the rule
             if (currentLines != null &&
                 (line.trim() === '' || index == textDocumentLines.length - 1)) {
-                
+
                 elements.push([currentLines, startLineNumber]);
 
                 currentLines = null;

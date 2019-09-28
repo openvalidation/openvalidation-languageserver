@@ -1,10 +1,11 @@
 import { Type } from "class-transformer";
-import { TextEdit, Position } from "vscode-languageserver";
+import { String } from "typescript-string-operations";
+import { Position, TextEdit } from "vscode-languageserver";
 import { AliasHelper } from "../../aliases/AliasHelper";
+import { FormattingHelper } from "../../helper/FormattingHelper";
 import { HoverContent } from "../../helper/HoverContent";
 import { CompletionContainer } from "../../provider/code-completion/CompletionContainer";
 import { IndexRange } from "./IndexRange";
-import { String } from "typescript-string-operations";
 
 export abstract class GenericNode {
     private lines: string[];
@@ -61,5 +62,9 @@ export abstract class GenericNode {
         textEdits.push(textEdit);
 
         return textEdits;
+    }
+
+    public defaultFormatting(): string {
+        return this.getLines().map(line => FormattingHelper.removeDuplicateWhitespacesFromLine(line)).join("\n");
     }
 }

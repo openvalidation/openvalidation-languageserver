@@ -1,6 +1,5 @@
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../../../aliases/AliasHelper";
-import { FormattingHelper } from "../../../../../helper/FormattingHelper";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../../../GenericNode";
@@ -32,6 +31,6 @@ export class OperandNode extends BaseOperandNode {
     }
     
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        return this.getLines().map(line => FormattingHelper.removeDuplicateWhitespacesFromLine(line)).join("\n");
+        return this.defaultFormatting();
     }
 }

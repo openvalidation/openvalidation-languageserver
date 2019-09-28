@@ -61,6 +61,6 @@ export class OperatorNode extends GenericNode {
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        return this.getLines().join("\n");
+        return this.defaultFormatting();
     }
 }

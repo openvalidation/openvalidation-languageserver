@@ -119,9 +119,8 @@ export class TextMateParameter {
 
         var propertyStrings: string[] = [];
         for (const schemaProperty of this.complexSchemaProperties) {
-            var tmpString = StringHelper.getComplexRegExWithOutherBounds(schemaProperty.child, ofKeywordString, schemaProperty.parent);
+            var tmpString = StringHelper.getComplexRegExWithOutherBounds(schemaProperty.child, ofKeywordString, schemaProperty.parent, false);
             if (!tmpString) continue;
-            console.log(tmpString);
             
             propertyStrings.push(tmpString);
         }

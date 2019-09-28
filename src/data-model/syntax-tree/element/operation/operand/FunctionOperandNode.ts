@@ -77,6 +77,6 @@ export class FunctionOperandNode extends BaseOperandNode {
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        return this.getLines().join("\n");
+        return this.defaultFormatting();
     }
 }
