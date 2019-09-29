@@ -1,5 +1,4 @@
 import { StateTransition } from "./StateTransition";
-import { StateTransitionEnum } from "./StateTransitionEnum";
 import { CompletionGenerator } from "../CompletionGenerator";
 
 export class OperandTransition extends StateTransition {
@@ -7,7 +6,7 @@ export class OperandTransition extends StateTransition {
     private nameFilter: string | undefined | null;
 
     constructor(datatype?: string, nameFilter?: string | null, prependingText?: string) {
-        super(StateTransitionEnum.Operand, prependingText);
+        super(prependingText);
 
         this.dataType = datatype;
         this.nameFilter = nameFilter;

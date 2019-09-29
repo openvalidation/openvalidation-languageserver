@@ -61,8 +61,7 @@ export class CompletionContainer {
 
     public getCompletions(declarations: Variable[], aliasHelper: AliasHelper, schema: ISchemaType): CompletionGenerator {
         var generator: CompletionGenerator = new CompletionGenerator(declarations, aliasHelper, schema);
-        let uniqueTypes = [... new Set(this.transitions)];
-        uniqueTypes.forEach(transition => transition.addCompletionItems(generator));
+        this.transitions.forEach(transition => transition.addCompletionItems(generator));
 
         return generator;
     }
