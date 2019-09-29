@@ -165,6 +165,20 @@ export class OperationNode extends ConditionNode {
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        return this.getLines().join("\n");
+        var returnString = this.defaultFormatting();
+
+        if (!!this.leftOperand) {
+            returnString = returnString.replace(this.leftOperand.defaultFormatting(), this.leftOperand.getBeautifiedContent(aliasesHelper));
+        }
+
+        if (!!this.rightOperand) {
+            returnString = returnString.replace(this.rightOperand.defaultFormatting(), this.rightOperand.getBeautifiedContent(aliasesHelper));
+        }
+
+        if (!!this.operator) {
+            returnString = returnString.replace(this.operator.defaultFormatting(), this.operator.getBeautifiedContent(aliasesHelper));
+        }
+        
+        return returnString;
     }
 }

@@ -38,12 +38,15 @@ export class OperationSyntaxStructure {
     public get leftOperand(): string | null {
         return this._leftOperand;
     }
+    
     public get rightOperand(): string | null {
         return this._rightOperand;
     }
+
     public get operator(): string | null {
         return this._operator;
     }
+
     public getRegExpAsString(): string | null {
         // Determine, if the right Operand is before the operator
         if (!!this.leftOperand && !this.rightOperand && !!this.operator) {
