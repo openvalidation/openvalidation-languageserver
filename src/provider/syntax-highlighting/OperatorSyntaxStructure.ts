@@ -1,7 +1,6 @@
 import { StringHelper } from "../../helper/StringHelper";
-import { OperatorNode } from "../../data-model/syntax-tree/element/operation/operand/OperatorNode";
 import { OperationNode } from "../../data-model/syntax-tree/element/operation/OperationNode";
-import { BaseOperandNode } from "../../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
+import { String } from "typescript-string-operations";
 
 export class OperationSyntaxStructure {
 
@@ -10,48 +9,51 @@ export class OperationSyntaxStructure {
         this._rightOperand = null;
         this._operator = null;
 
-        if (!node) return;
+        if (!node || 
+            !node.getOperator() ||
+            String.IsNullOrWhiteSpace(node.getOperator()!.getLines().join("\n"))) return;
 
-        var left = node.getLeftOperand()
-        if (!!left) {
-            this._leftOperand = left;
+        var splittedLines: string[] = node.getLines().join("\n").split(node.getOperator()!.getLines().join("\n"));
+        if (splittedLines.length >= 1) {
+            this._leftOperand = splittedLines[0];
         }
 
-        var right = node.getRightOperand()
-        if (!!right) {
-            this._rightOperand = right;
+        if (splittedLines.length == 2 &&
+            !String.IsNullOrWhiteSpace(splittedLines[1]) &&
+            !!node.getLeftOperand() && 
+            !!node.getRightOperand() &&
+            !node.getLeftOperand()!.getRange().equals(node.getRightOperand()!.getRange())) {
+            this._rightOperand = splittedLines[1];
+        } else {
+            this._rightOperand = null;
         }
 
-        var op = node.getOperator();
-        if (!!op) {
-            this._operator = op;
-        }
+        this._operator = node.getOperator()!.getLines().join("\n");
     }
 
-    private _leftOperand: BaseOperandNode | null;
-    private _rightOperand: BaseOperandNode | null;
-    private _operator: OperatorNode | null;
+    private _leftOperand: string | null;
+    private _rightOperand: string | null;
+    private _operator: string | null;
 
-    public get leftOperand(): string {
-        if (!this._leftOperand) return "";
-        return this._leftOperand.getLines()[0];
+    public get leftOperand(): string | null {
+        return this._leftOperand;
     }
-    public get rightOperand(): string {
-        if (!this._rightOperand) return "";
-        return this._rightOperand.getLines()[0];
+    public get rightOperand(): string | null {
+        return this._rightOperand;
     }
-    public get operator(): string {
-        if (!this._operator) return "";
-        return this._operator.getLines()[0];
+    public get operator(): string | null {
+        return this._operator;
     }
     public getRegExpAsString(): string | null {
         // Determine, if the right Operand is before the operator
-        if (!!this._rightOperand && !!this._rightOperand.getRange() &&
-            !!this._leftOperand && !!this._leftOperand.getRange()) {
-            if (this._leftOperand.getRange().equals(this._rightOperand.getRange()))
-                return StringHelper.getComplexRegExWithLeftBound(this.leftOperand, this.operator);
+        if (!!this.leftOperand && !this.rightOperand && !!this.operator) {
+            return StringHelper.getComplexRegExWithLeftBound(this.leftOperand, this.operator);
         }
 
-        return StringHelper.getComplexRegExWithOutherBounds(this.leftOperand, this.operator, this.rightOperand);
+        if (!!this.leftOperand && !!this.rightOperand && !!this.operator) {
+            return StringHelper.getComplexRegExWithOutherBounds(this.leftOperand, this.operator, this.rightOperand);
+        }
+
+        return null;
     }
 }

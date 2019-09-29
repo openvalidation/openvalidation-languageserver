@@ -113,7 +113,7 @@ export class StringHelper {
     }
 
     public static getComplexRegExWithOutherBounds(leftBound: string, middle: string, rightBound: string, regexSave: boolean = true): string | null {
-        if (!regexSave) {
+        if (regexSave) {
             leftBound = this.makeStringRegExSafe(leftBound);
             middle = this.makeStringRegExSafe(middle);
             rightBound = this.makeStringRegExSafe(rightBound);
