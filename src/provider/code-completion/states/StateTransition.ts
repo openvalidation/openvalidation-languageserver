@@ -1,4 +1,5 @@
 import { StateTransitionEnum } from "./StateTransitionEnum";
+import { CompletionGenerator } from "../CompletionGenerator";
 
 export abstract class StateTransition {
     private state: StateTransitionEnum;
@@ -16,4 +17,6 @@ export abstract class StateTransition {
     public getPrependingText(): string {
         return this.prependingText;
     }
+
+    abstract addCompletionItems(generator: CompletionGenerator): void;
 }

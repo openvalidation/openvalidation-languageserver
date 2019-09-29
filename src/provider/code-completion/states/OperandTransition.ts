@@ -1,5 +1,6 @@
 import { StateTransition } from "./StateTransition";
 import { StateTransitionEnum } from "./StateTransitionEnum";
+import { CompletionGenerator } from "../CompletionGenerator";
 
 export class OperandTransition extends StateTransition {
     private dataType: string | undefined;
@@ -31,5 +32,9 @@ export class OperandTransition extends StateTransition {
     public isValid(name: string, datatype: string): boolean {
         return (!!datatype && !! this.nameFilter && datatype == this.dataType && !this.nameFilter.includes(name) ||
                 (!this.nameFilter && !this.dataType));
+    }
+
+    public addCompletionItems(generator: CompletionGenerator): void {
+        generator.addFittingIdentifier(this);
     }
 }

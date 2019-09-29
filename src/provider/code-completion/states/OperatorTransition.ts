@@ -1,5 +1,6 @@
 import { StateTransition } from "./StateTransition";
 import { StateTransitionEnum } from "./StateTransitionEnum";
+import { CompletionGenerator } from "../CompletionGenerator";
 
 export class OperatorTransition extends StateTransition {
     private dataType: string;
@@ -12,5 +13,9 @@ export class OperatorTransition extends StateTransition {
 
     public getDataType(): string {
         return this.dataType;
+    }
+    
+    public addCompletionItems(generator: CompletionGenerator): void {
+        generator.addLogicalOperators(this);
     }
 }

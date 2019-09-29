@@ -62,21 +62,7 @@ export class CompletionContainer {
     public getCompletions(declarations: Variable[], aliasHelper: AliasHelper, schema: ISchemaType): CompletionGenerator {
         var generator: CompletionGenerator = new CompletionGenerator(declarations, aliasHelper, schema);
         let uniqueTypes = [... new Set(this.transitions)];
-        uniqueTypes.forEach(transition => {
-            if (transition instanceof OperandTransition) {
-                generator.addFittingIdentifier(transition);
-            } else if (transition instanceof OperatorTransition) {
-                generator.addFittingOperator(transition);
-            } else if (transition instanceof ConnectionTransition) {
-                generator.addLogicalOperators(transition);
-            } else if (transition instanceof AsKeywordTransition) {
-                generator.addAsKeyword(transition);
-            } else if (transition instanceof ThenKeywordTransition) {
-                generator.addThenKeyword(transition);
-            } else if (transition instanceof OperandTransition) {
-                generator.addFittingIdentifier(transition);
-            }
-        });
+        uniqueTypes.forEach(transition => transition.addCompletionItems(generator));
 
         return generator;
     }
