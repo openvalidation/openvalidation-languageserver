@@ -3,6 +3,7 @@ import { OvServer } from "../../OvServer";
 import { Pattern, TextMateJson } from "./TextMateJson";
 import { TextMateParameter } from "./TextMateParameter";
 import { LintingResponse } from "../../rest-interface/response/LintingResponse";
+import { ScopeEnum } from "./ScopeEnum";
 
 export class TextMateGrammarFactory {
 
@@ -54,8 +55,11 @@ export class TextMateGrammarFactory {
             json.patterns.push({
                 comment: 'pattern for identifier (variables)',
                 name: 'variable.parameter.name.ov',
-                begin: '(?<=((?i)(' + parameter.asKeyword + ')))',
-                end: StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.identifier)
+                match: `((?i)${parameter.asKeyword}).*${StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.identifier)}`,
+                captures: {
+                    '1': { name: ScopeEnum.Keyword },
+                    '2': { name: ScopeEnum.Variable }
+                } 
             });
         }
 
@@ -89,6 +93,7 @@ export class TextMateGrammarFactory {
 
         // Operator Keywords
         var operationRegex = parameter.getOperationPatterns();
+        console.log(operationRegex);
         if (!!operationRegex) {
             json.patterns.push(...operationRegex);
         }

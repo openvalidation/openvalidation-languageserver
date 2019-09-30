@@ -23,5 +23,6 @@ export interface PatternBeginEnd extends GenericPattern {
 }
 
 export interface PatternCapture extends GenericPattern {
+    name?: string;
     captures: any;
 }

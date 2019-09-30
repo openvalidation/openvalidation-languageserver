@@ -10,6 +10,7 @@ import { OperationNode } from "../OperationNode";
 import { BaseOperandNode } from "./BaseOperandNode";
 import { FunctionOperandNode } from "./FunctionOperandNode";
 import { OperandNode } from "./OperandNode";
+import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 
 export class ArrayOperandNode extends BaseOperandNode {
     @Type(() => BaseOperandNode, {
@@ -70,5 +71,19 @@ export class ArrayOperandNode extends BaseOperandNode {
 
     public isComplete(): boolean {
         return this.items.length > 0;
+    }
+
+    public getPatternInformation(): SyntaxHighlightingCapture | null {        
+        var capture = new SyntaxHighlightingCapture();
+
+        for (const item of this.getItems()) {
+            var tmpCapture = item.getPatternInformation();
+            if (!tmpCapture) continue;
+
+            capture.addCapture(...tmpCapture.capture);
+            capture.addRegexToMatch(tmpCapture.match);
+        }
+
+        return capture;
     }
 }

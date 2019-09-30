@@ -3,6 +3,7 @@ import { AliasHelper } from "src/aliases/AliasHelper";
 import { Position } from "vscode-languageserver";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
+import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { ConnectedOperationNode } from "../ConnectedOperationNode";
@@ -10,6 +11,7 @@ import { OperationNode } from "../OperationNode";
 import { ArrayOperandNode } from "./ArrayOperandNode";
 import { BaseOperandNode } from "./BaseOperandNode";
 import { OperandNode } from "./OperandNode";
+import { ScopeEnum } from "../../../../../provider/syntax-highlighting/ScopeEnum";
 
 export class FunctionOperandNode extends BaseOperandNode {
     @Type(() => BaseOperandNode, {
@@ -48,6 +50,10 @@ export class FunctionOperandNode extends BaseOperandNode {
 
     public getAcceptedType(): string {
         return this.acceptedType;
+    }   
+    
+    public getType(): string {
+        return this.acceptedType;
     }
 
     /**
@@ -78,5 +84,22 @@ export class FunctionOperandNode extends BaseOperandNode {
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         return this.defaultFormatting();
+    }
+
+    public getPatternInformation(): SyntaxHighlightingCapture | null {        
+        var capture = new SyntaxHighlightingCapture();
+
+        capture.addCapture(ScopeEnum.Keyword);
+        capture.addRegexToMatch(`((?i)${this.getName()})`);
+
+        for (const parameter of this.getParameters()) {
+            var tmpCapture = parameter.getPatternInformation();
+            if (!tmpCapture) continue;
+
+            capture.addCapture(...tmpCapture.capture);
+            capture.addRegexToMatch(tmpCapture.match);
+        }
+
+        return capture;
     }
 }

@@ -1,6 +1,6 @@
 import { CodeResponse } from "src/rest-interface/response/CodeResponse";
 import { LintingResponse } from "src/rest-interface/response/LintingResponse";
-import { Diagnostic, DiagnosticSeverity, TextDocument, TextDocumentChangeEvent } from "vscode-languageserver-types";
+import { Diagnostic, DiagnosticSeverity, TextDocument, TextDocumentChangeEvent, Range } from "vscode-languageserver-types";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
@@ -155,7 +155,8 @@ export class DocumentActionProvider extends Provider {
 
         var diagnostics: Diagnostic[] = [];
         for (const error of apiResponse.getErrors()) {
-            var diagnostic: Diagnostic = Diagnostic.create(error.getRange().asRange(), error.getMessage());
+            var diagnosticRange: Range =  !error.getRange() ? Range.create(0,0,0,1) : error.getRange().asRange();
+            var diagnostic: Diagnostic = Diagnostic.create(diagnosticRange, error.getMessage());
             diagnostic.severity = DiagnosticSeverity.Error;
             diagnostics.push(diagnostic);
         }

@@ -46,13 +46,13 @@ export class SyntaxHighlightingCapture {
         this._capture.push(...scopes);
     }
 
-    public addRegex(regex: string | null): void {
+    public addRegexToMatch(regex: string | null): void {
         if (!regex) return;
 
         if (!this._match)
             this._match = regex;
         else
-            this._match += `.*${regex}`;
+            this._match += `\\s*${regex}`;
     }
 
     /**

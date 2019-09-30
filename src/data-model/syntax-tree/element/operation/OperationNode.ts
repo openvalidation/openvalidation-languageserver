@@ -14,6 +14,7 @@ import { OperandNode } from "./operand/OperandNode";
 import { OperatorNode } from "./operand/OperatorNode";
 import { SyntaxHighlightingCapture } from "../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { ScopeEnum } from "../../../../provider/syntax-highlighting/ScopeEnum";
+import { String } from "typescript-string-operations";
 
 export class OperationNode extends ConditionNode {
     @Type(() => BaseOperandNode, {
@@ -195,34 +196,52 @@ export class OperationNode extends ConditionNode {
 
         if (!!this.getConnector()) {
             capture.addCapture(ScopeEnum.Keyword);
-            capture.addRegex(`((?i)${this.getConnector()})`);
+            capture.addRegexToMatch(`((?i)${this.getConnector()})`);
         }
 
         if (!!this.leftOperand) {
             var tempCapture = this.leftOperand.getPatternInformation();
             if (!!tempCapture) {
                 capture.addCapture(...tempCapture.capture);
-                capture.addRegex(tempCapture.match);
+                capture.addRegexToMatch(tempCapture.match);
             }
         }
 
         if (!!this.operator) {
+            var shadowOperator = this.getLines().join("\n");
+            shadowOperator = shadowOperator.replace(new RegExp(this.operator.getLines().join("\n"), "g"), "");
+
+            if (!!this.leftOperand) {
+                var operandString = this.leftOperand.getLines().join("\n");
+                var startIndex = shadowOperator.indexOf(operandString) + operandString.length;
+                var endIndex = shadowOperator.length;
+                shadowOperator = shadowOperator.substring(startIndex, endIndex);
+            }
+
+            if (!!this.rightOperand) {
+                var operandString = this.rightOperand.getLines().join("\n");
+                var startIndex = 0;
+                var endIndex = shadowOperator.indexOf(operandString);
+                shadowOperator = shadowOperator.substring(startIndex, endIndex);
+            }
+
+            if (!String.IsNullOrWhiteSpace(shadowOperator.trim()))
+                capture.addRegexToMatch(`(?:${shadowOperator.trim()})`);
+
             var tempCapture = this.operator.getPatternInformation();
             if (!!tempCapture) {
                 capture.addCapture(...tempCapture.capture);
-                capture.addRegex(tempCapture.match);
+                capture.addRegexToMatch(tempCapture.match);
             }
         }
 
-        if (!!this.rightOperand) {
+        if (!!this.rightOperand && (!this.leftOperand || !this.leftOperand.getRange().includesRange(this.rightOperand.getRange()))) {
             var tempCapture = this.rightOperand.getPatternInformation();
             if (!!tempCapture) {
                 capture.addCapture(...tempCapture.capture);
-                capture.addRegex(tempCapture.match);
+                capture.addRegexToMatch(tempCapture.match);
             }
         }
-
-        console.log(capture);
 
         return capture;
     }

@@ -74,7 +74,7 @@ export class OperatorNode extends GenericNode {
         } else {
             var capture = new SyntaxHighlightingCapture()
             capture.addCapture(ScopeEnum.Keyword)
-            capture.addRegex(`(${returnString})`);
+            capture.addRegexToMatch(`(${returnString})`);
             return capture;
         }
     }

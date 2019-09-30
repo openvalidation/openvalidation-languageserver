@@ -1,13 +1,14 @@
 import { Type } from "class-transformer";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../../aliases/AliasHelper";
+import { FormattingHelper } from "../../../../helper/FormattingHelper";
 import { HoverContent } from "../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../provider/code-completion/CompletionContainer";
+import { SyntaxHighlightingCapture } from "../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../GenericNode";
 import { IndexRange } from "../../IndexRange";
 import { ConditionNode } from "./ConditionNode";
 import { OperationNode } from "./OperationNode";
-import { FormattingHelper } from "../../../../helper/FormattingHelper";
 
 export class ConnectedOperationNode extends ConditionNode {
     @Type(() => ConditionNode, {
@@ -106,5 +107,20 @@ export class ConnectedOperationNode extends ConditionNode {
 
     public isComplete(): boolean {
         return this.conditions.map(cond => cond.isComplete()).every(bool => bool);
+    }
+
+    public getPatternInformation(): SyntaxHighlightingCapture | null {
+        if (this.conditions.length == 0) return null;
+
+        var capture = new SyntaxHighlightingCapture();
+        for (const condition of this.conditions) {
+            var tmpCapture = condition.getPatternInformation();
+            if (!tmpCapture) return null;
+
+            capture.addCapture(...tmpCapture.capture);
+            capture.addRegexToMatch(tmpCapture.match)
+        }
+
+        return capture;
     }
 }

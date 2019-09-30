@@ -21,17 +21,17 @@ export class IndexRange {
     public getStart(): IndexPosition {
         return this.start;
     }
-    public setStart(value: IndexPosition) {
+    public setStart(value: IndexPosition): void {
         this.start = value;
     }
     public getEnd(): IndexPosition {
         return this.end;
     }
-    public setEnd(value: IndexPosition) {
+    public setEnd(value: IndexPosition): void {
         this.end = value;
     }
 
-    public startsAfter(position: Position) {
+    public startsAfter(position: Position): boolean {
         if (!this.getStart()) return false;
 
         var afterStart = (this.getStart().getLine() == position.line &&
@@ -40,7 +40,7 @@ export class IndexRange {
         return !afterStart;
     }
 
-    public endsBefore(position: Position) {
+    public endsBefore(position: Position): boolean {
         if (!this.getEnd()) return true;
 
         var beforeEnd = (this.getEnd().getLine() == position.line &&
@@ -49,8 +49,15 @@ export class IndexRange {
         return !beforeEnd;
     }
 
-    public includesPosition(position: Position) {
+    public includesPosition(position: Position): boolean {
         return !this.startsAfter(position) && !this.endsBefore(position);
+    }
+
+    public includesRange(range: IndexRange): boolean {
+        if (!range || !range.getStart() || !range.getEnd()) return false;
+
+        return this.includesPosition(range.getStart().asPosition()) || 
+                this.includesPosition(range.getEnd().asPosition());
     }
 
     public asRange(): Range {

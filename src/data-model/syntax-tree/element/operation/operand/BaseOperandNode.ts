@@ -5,7 +5,6 @@ import { CompletionContainer } from "../../../../../provider/code-completion/Com
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
-import { ScopeEnum } from "../../../../../provider/syntax-highlighting/ScopeEnum";
 
 export abstract class BaseOperandNode extends GenericNode {
     private dataType: string;
@@ -48,31 +47,5 @@ export abstract class BaseOperandNode extends GenericNode {
     abstract getCompletionContainer(range: Position): CompletionContainer;
     abstract isComplete(): boolean;
     abstract getBeautifiedContent(aliasesHelper: AliasHelper): string;
-
-    // TODO: Move to OperandNode
-    public getPatternInformation(): SyntaxHighlightingCapture | null {
-        var returnString: string | null = null;
-
-        var splittedOperand = this.getLines().join("\n").split(new RegExp(`(${this.getName()})`, "g"));
-
-        if (splittedOperand.length >= 2) {
-            returnString = `(?:${splittedOperand[0]}).*(${splittedOperand[1]}).*`;
-        }
-
-        if (splittedOperand.length >= 3) {
-            returnString += `(?:${splittedOperand[2]})`;
-        }
-
-        if (!returnString) return null;            
-        var scope = this.getIsStatic()
-            ? this.getDataType() == "Decimal"
-                ? ScopeEnum.StaticNumber
-                : ScopeEnum.StaticString
-            : ScopeEnum.Variable;
-
-        var capture = new SyntaxHighlightingCapture();
-        capture.addCapture(scope);
-        capture.addRegex(returnString);
-        return capture;
-    }
+    abstract getPatternInformation(): SyntaxHighlightingCapture | null;
 }
