@@ -7,16 +7,19 @@ import { TreeTraversal } from "../../helper/TreeTraversal";
 import { OvServer } from "../../OvServer";
 import { LintingResponse } from "../../rest-interface/response/LintingResponse";
 import { ISchemaProperty } from "../../rest-interface/schema/ISchemaProperty";
-import { OperationSyntaxStructure } from "./OperatorSyntaxStructure";
+import { Pattern } from "./TextMateJson";
+import { SyntaxHighlightingCapture } from "./SyntaxHighlightingCapture";
+import { OperationNode } from "src/data-model/syntax-tree/element/operation/OperationNode";
 
 export class TextMateParameter {
     private _keywords: string[];
     private _identifier: string[];
     private _complexSchemaProperties: IComplexData[];
     private _staticStrings: string[];
+    private _asKeyword: string | null;
     private _thenKeyword: string | null;
     private _commentKeyword: string | null;
-    private _operations: OperationSyntaxStructure[];
+    private _operations: OperationNode[];
 
     private aliasHelper: AliasHelper;
 
@@ -30,12 +33,12 @@ export class TextMateParameter {
 
         if (apiResponse.getMainAstNode() != null) {
             var traversal = new TreeTraversal();
-            var tmpOperations = traversal.getOperations(apiResponse.getMainAstNode().getScopes());
-            this._operations = tmpOperations.map(o => new OperationSyntaxStructure(o));
+            this._operations = traversal.getOperations(apiResponse.getMainAstNode().getScopes());
         } else {
             this._operations = [];
         }
 
+        this._asKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.AS);
         this._thenKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.THEN);
         this._commentKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.COMMENT);
     }
@@ -51,6 +54,9 @@ export class TextMateParameter {
     }
     public get staticStrings(): string[] {
         return this._staticStrings;
+    }    
+    public get asKeyword(): string | null {
+        return this._asKeyword;
     }
     public get thenKeyword(): string | null {
         return this._thenKeyword;
@@ -58,7 +64,7 @@ export class TextMateParameter {
     public get commentKeyword(): string | null {
         return this._commentKeyword;
     }
-    public get operations(): OperationSyntaxStructure[] {
+    public get operations(): OperationNode[] {
         return this._operations;
     }
 
@@ -92,20 +98,20 @@ export class TextMateParameter {
      * @returns {(string | null)}
      * @memberof TextMateParameter
      */
-    public getOperationRegExp(): string | null {
-        var stringList: string[] = [];
+    public getOperationPatterns(): Pattern[] {
+        var patternList: Pattern[] = [];
 
         for (const operation of this.operations) {
-            var tmpString = operation.getRegExpAsString();
-            if (!tmpString) continue;
+            var tmpPattern: SyntaxHighlightingCapture | null = operation.getPatternInformation();
+            if (!tmpPattern) continue;
 
-            stringList.push(tmpString);
+            var pattern = tmpPattern.buildPattern();
+            if (!pattern) continue;
+            patternList.push(pattern);
         }
-        if (stringList.length == 0) return null;
-        return StringHelper.getOredRegEx(stringList);
+        return patternList;
     }
-
-
+    
     /**
      *
      *

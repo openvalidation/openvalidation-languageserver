@@ -5,17 +5,23 @@ export interface TextMateJson {
     patterns: Pattern[];
 }
 
-export type Pattern = PatternMatch | PatternBeginEnd;
+export type Pattern = PatternMatch | PatternBeginEnd | PatternCapture;
 
-export interface PatternMatch {
-    comment: string;
+export interface GenericPattern {
+    comment?: string;
+}
+
+export interface PatternMatch extends GenericPattern {
     name: string;
     match: string;
 }
 
-export interface PatternBeginEnd {
-    comment: string;
+export interface PatternBeginEnd extends GenericPattern {
     name: string;
     begin: string;
     end: string;
+}
+
+export interface PatternCapture extends GenericPattern {
+    captures: any;
 }

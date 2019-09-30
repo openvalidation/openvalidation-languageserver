@@ -49,7 +49,7 @@ export class CompletionContainer {
         return this;
     }
 
-    public operandTransition(dataType?: string, nameFilter?: string | null, prependingText?: string): CompletionContainer {
+    public operandTransition(dataType?: string, nameFilter?: string, prependingText?: string): CompletionContainer {
         this.transitions.push(new OperandTransition(dataType, nameFilter, prependingText));
         return this;
     }

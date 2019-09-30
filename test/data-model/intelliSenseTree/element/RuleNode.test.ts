@@ -1,6 +1,5 @@
 import "jest";
 import { Position } from "vscode-languageserver-types";
-import { StateTransitionEnum } from "../../../../src/provider/code-completion/states/StateTransitionEnum";
 import { ActionErrorNode } from "../../../../src/data-model/syntax-tree/element/ActionErrorNode";
 import { ConnectedOperationNode } from "../../../../src/data-model/syntax-tree/element/operation/ConnectedOperationNode";
 import { OperandNode } from "../../../../src/data-model/syntax-tree/element/operation/operand/OperandNode";
@@ -8,6 +7,11 @@ import { OperatorNode } from "../../../../src/data-model/syntax-tree/element/ope
 import { OperationNode } from "../../../../src/data-model/syntax-tree/element/operation/OperationNode";
 import { RuleNode } from "../../../../src/data-model/syntax-tree/element/RuleNode";
 import { IndexRange } from "../../../../src/data-model/syntax-tree/IndexRange";
+import { StateTransition } from "../../../../src/provider/code-completion/states/StateTransition";
+import { OperandTransition } from "../../../../src/provider/code-completion/states/OperandTransition";
+import { EmptyTransition } from "../../../../src/provider/code-completion/states/EmptyTransition";
+import { ConnectionTransition } from "../../../../src/provider/code-completion/states/ConnectionTransition";
+import { ThenKeywordTransition } from "../../../../src/provider/code-completion/states/ThenKeywordTransition";
 
 describe("RuleNode Tests", () => {
     beforeEach(() => {
@@ -18,10 +22,8 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
-        var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
     test("getCompletionContainer with empty Operation, expected RuleStart", () => {
@@ -30,10 +32,8 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
-        var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
     test("getCompletionContainer with complete Operation but invalid position, expected Empty State", () => {
@@ -46,10 +46,8 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
     test("getCompletionContainer with complete Operation, expected ConnectedOperation and RuleEnd", () => {
@@ -62,10 +60,9 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 21);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection, StateTransitionEnum.ThenKeyword];
-        var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(ConnectionTransition);
+        expect(actual[1]).toBeInstanceOf(ThenKeywordTransition);
     });
 
     test("getCompletionContainer with complete Operation and empty message, expected Emptylist", () => {
@@ -79,10 +76,8 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 27);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
     test("getCompletionContainer with complete Operation and empty message with position before message, expected ConnectedOperation", () => {
@@ -96,10 +91,8 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 21);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection];
-        var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
     test("getCompletionContainer with complete Operation and with position before condition, expected empty list", () => {
@@ -113,10 +106,8 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
     test("getCompletionContainer with ConnectedOperation and with position after action, expected empty list", () => {     
@@ -137,10 +128,8 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 47);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
     test("getCompletionContainer with ConnectedOperation and with position before action, expected empty list", () => {     
@@ -161,10 +150,8 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 41);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection];
-        var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
     test("getCompletionContainer with ConnectedOperation and with position before second operation, expected empty list", () => {     
@@ -185,10 +172,8 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 21);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection];
-        var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
     
     test("getCompletionContainer with ConnectedOperation and with position right after connector of second operation, expected empty list", () => {     
@@ -209,9 +194,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 26);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = rule.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 });

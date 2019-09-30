@@ -1,6 +1,5 @@
 import "jest";
 import { Position } from "vscode-languageserver";
-import { StateTransitionEnum } from "../../../../src/provider/code-completion/states/StateTransitionEnum";
 import { VariableNode } from "../../../../src/data-model/syntax-tree/element/VariableNode";
 import { IndexRange } from "../../../../src/data-model/syntax-tree/IndexRange";
 import { OperandNode } from "../../../../src/data-model/syntax-tree/element/operation/operand/OperandNode";
@@ -8,6 +7,10 @@ import { OperatorNode } from "../../../../src/data-model/syntax-tree/element/ope
 import { OperationNode } from "../../../../src/data-model/syntax-tree/element/operation/OperationNode";
 import { ConnectedOperationNode } from "../../../../src/data-model/syntax-tree/element/operation/ConnectedOperationNode";
 import { VariableNameNode } from "../../../../src/data-model/syntax-tree/element/VariableNameNode";
+import { StateTransition } from "../../../../src/provider/code-completion/states/StateTransition";
+import { OperandTransition } from "../../../../src/provider/code-completion/states/OperandTransition";
+import { OperatorTransition } from "../../../../src/provider/code-completion/states/OperatorTransition";
+import { EmptyTransition } from "../../../../src/provider/code-completion/states/EmptyTransition";
 
 describe("VariableNode Tests", () => {
     beforeEach(() => {
@@ -19,10 +22,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 0);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
-        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
     test("getCompletionContainer with VariableNode and OperandNode, expected Operand", () => {
@@ -33,10 +34,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operator];
-        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 
     test("getCompletionContainer with VariableNode and OperandNode and position after variable, expected Empty", () => {
@@ -47,10 +46,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 15);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
     test("getCompletionContainer with VariableNode and ConnectedOperationNode and half full OperationNode, expected Operator", () => {
@@ -65,10 +62,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
-        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
     test("getCompletionContainer with VariableNode and ConnectedOperationNode and half full OperationNode and position after variable, expected Empty", () => {
@@ -83,10 +78,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 23);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
     test("getCompletionContainer with VariableNode and ConnectedOperationNode and half full OperationNode, expected empty", () => {
@@ -106,10 +99,8 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
-        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
     test("getCompletionContainer with VariableNode and ConnectedOperationNode and half full OperationNode and position after variable, expected Operator", () => {
@@ -129,9 +120,7 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 45);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = variable.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 });

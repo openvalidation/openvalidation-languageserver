@@ -40,7 +40,7 @@ export class FormattingProvider extends Provider {
             const element = elements[i];
 
             var currentTextEdits = element.formatCode(this.server.aliasHelper);
-            textEdits = textEdits.concat(currentTextEdits);
+            textEdits.push(...currentTextEdits);
         }
 
         return textEdits;

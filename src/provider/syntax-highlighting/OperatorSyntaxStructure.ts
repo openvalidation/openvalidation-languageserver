@@ -1,62 +1,43 @@
-import { StringHelper } from "../../helper/StringHelper";
 import { OperationNode } from "../../data-model/syntax-tree/element/operation/OperationNode";
 import { String } from "typescript-string-operations";
+import { SyntaxHighlightingCapture } from "./SyntaxHighlightingCapture";
 
 export class OperationSyntaxStructure {
 
+    private _leftOperand: SyntaxHighlightingCapture | null;
+    private _rightOperand: SyntaxHighlightingCapture | null;
+    private _operator: SyntaxHighlightingCapture | null;
+    private _node: OperationNode;
+
     constructor(node: OperationNode) {
-        this._leftOperand = null;
         this._rightOperand = null;
+        this._leftOperand = null;
         this._operator = null;
+        this._node = node;
 
-        if (!node || 
-            !node.getOperator() ||
-            String.IsNullOrWhiteSpace(node.getOperator()!.getLines().join("\n"))) return;
+        if (!node || !node.getLeftOperand()) return;
+        this._leftOperand = node.getLeftOperand()!.getPatternInformation();
 
-        var splittedLines: string[] = node.getLines().join("\n").split(node.getOperator()!.getLines().join("\n"));
-        if (splittedLines.length >= 1) {
-            this._leftOperand = splittedLines[0];
-        }
+        if (!node.getRightOperand()) return;
+        this._rightOperand = node.getRightOperand()!.getPatternInformation();
 
-        if (splittedLines.length == 2 &&
-            !String.IsNullOrWhiteSpace(splittedLines[1]) &&
-            !!node.getLeftOperand() && 
-            !!node.getRightOperand() &&
-            !node.getLeftOperand()!.getRange().equals(node.getRightOperand()!.getRange())) {
-            this._rightOperand = splittedLines[1];
-        } else {
-            this._rightOperand = null;
-        }
-
-        this._operator = node.getOperator()!.getLines().join("\n");
+        if (!node.getOperator() && String.IsNullOrWhiteSpace(node.getOperator()!.getLines().join("\n"))) return;
+        this._operator = node.getOperator()!.getPatternInformation();
     }
 
-    private _leftOperand: string | null;
-    private _rightOperand: string | null;
-    private _operator: string | null;
-
-    public get leftOperand(): string | null {
+    public get leftOperand(): SyntaxHighlightingCapture | null {
         return this._leftOperand;
     }
-    
-    public get rightOperand(): string | null {
+
+    public get rightOperand(): SyntaxHighlightingCapture | null {
         return this._rightOperand;
     }
 
-    public get operator(): string | null {
+    public get operator(): SyntaxHighlightingCapture | null {
         return this._operator;
     }
 
-    public getRegExpAsString(): string | null {
-        // Determine, if the right Operand is before the operator
-        if (!!this.leftOperand && !this.rightOperand && !!this.operator) {
-            return StringHelper.getComplexRegExWithLeftBound(this.leftOperand, this.operator);
-        }
-
-        if (!!this.leftOperand && !!this.rightOperand && !!this.operator) {
-            return StringHelper.getComplexRegExWithOutherBounds(this.leftOperand, this.operator, this.rightOperand);
-        }
-
-        return null;
+    public getRegExpAsString(): SyntaxHighlightingCapture | null {
+        return this._node.getPatternInformation();
     }
 }

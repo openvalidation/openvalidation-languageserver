@@ -6,7 +6,7 @@ export abstract class ConditionNode extends BaseOperandNode {
     private connector: string | null;
 
     constructor(line: string[], range: IndexRange) {
-        super(line, range, "Boolean", null);
+        super(line, range, "Boolean", "");
         this.connector = null;
     }
 

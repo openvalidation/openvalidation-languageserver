@@ -7,7 +7,7 @@ import { IndexRange } from "../../../IndexRange";
 import { BaseOperandNode } from "./BaseOperandNode";
 
 export class OperandNode extends BaseOperandNode {
-    constructor(lines: string[], range: IndexRange, dataType: string, name: string | null) {
+    constructor(lines: string[], range: IndexRange, dataType: string, name: string) {
         super(lines, range, dataType, name);
     }
 

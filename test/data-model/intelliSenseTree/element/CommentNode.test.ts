@@ -2,7 +2,8 @@ import "jest";
 import { Position } from "vscode-languageserver";
 import { CommentNode } from "../../../../src/data-model/syntax-tree/element/CommentNode";
 import { IndexRange } from "../../../../src/data-model/syntax-tree/IndexRange";
-import { StateTransitionEnum } from "../../../../src/provider/code-completion/states/StateTransitionEnum";
+import { EmptyTransition } from "../../../../src/provider/code-completion/states/EmptyTransition";
+import { StateTransition } from "../../../../src/provider/code-completion/states/StateTransition";
 
 describe("CommentNode Tests", () => {
     beforeEach(() => {
@@ -13,10 +14,8 @@ describe("CommentNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = comment.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = comment.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
     test("getCompletionContainer with full CommentNode, expected Empty", () => {
@@ -24,9 +23,7 @@ describe("CommentNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = comment.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = comment.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 });

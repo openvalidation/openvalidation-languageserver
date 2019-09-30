@@ -1,9 +1,12 @@
+import { String } from "typescript-string-operations";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../../../aliases/AliasHelper";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
+import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
+import { ScopeEnum } from "../../../../../provider/syntax-highlighting/ScopeEnum";
 
 export class OperatorNode extends GenericNode {
     private dataType: string;
@@ -62,5 +65,17 @@ export class OperatorNode extends GenericNode {
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         return this.defaultFormatting();
+    }
+
+    public getPatternInformation(): SyntaxHighlightingCapture | null {
+        var returnString = this.getLines().join("\n");
+        if (String.IsNullOrWhiteSpace(returnString)) {
+            return null;
+        } else {
+            var capture = new SyntaxHighlightingCapture()
+            capture.addCapture(ScopeEnum.Keyword)
+            capture.addRegex(`(${returnString})`);
+            return capture;
+        }
     }
 }

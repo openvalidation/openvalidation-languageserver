@@ -6,9 +6,11 @@ import { IndexRange } from '../../../../../src/data-model/syntax-tree/IndexRange
 import { ArrayOperandNode } from "../../../../../src/data-model/syntax-tree/element/operation/operand/ArrayOperandNode";
 import { FunctionOperandNode } from "../../../../../src/data-model/syntax-tree/element/operation/operand/FunctionOperandNode";
 import { OperatorNode } from "../../../../../src/data-model/syntax-tree/element/operation/operand/OperatorNode";
-import { StateTransitionEnum } from "../../../../../src/provider/code-completion/states/StateTransitionEnum";
 import { OperatorTransition } from "../../../../../src/provider/code-completion/states/OperatorTransition";
 import { OperandTransition } from "../../../../../src/provider/code-completion/states/OperandTransition";
+import { StateTransition } from "../../../../../src/provider/code-completion/states/StateTransition";
+import { ConnectionTransition } from "../../../../../src/provider/code-completion/states/ConnectionTransition";
+import { EmptyTransition } from "../../../../../src/provider/code-completion/states/EmptyTransition";
 
 describe("Operation Tests", () => {
     beforeEach(() => {
@@ -19,10 +21,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 0);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
     test("getCompletionContainer with OperationNode with staticOperand, expected Operands", () => {
@@ -31,10 +31,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operator];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 
 
@@ -57,10 +55,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operator];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 
     test("getCompletionContainer with OperationNode with staticFunctionOperand, expected Operands", () => {
@@ -70,10 +66,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operator];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 
     test("getCompletionContainer with OperationNode with staticFunctionOperand, expected correct DataType", () => {
@@ -83,10 +77,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, "Summe von Einkaufsliste.Preis".length + 1);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operator];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 
     test("getCompletionContainer with OperationNode with Operand and Operation, expected Operator", () => {
@@ -96,10 +88,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Operand];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
     test("getCompletionContainer with OperationNode with Operand and Operation, expected correct OperatorDatatype", () => {
@@ -125,10 +115,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
     test("getCompletionContainer with OperationNode with staticFunctionOperand, expected FunctionOperand and ConnectedOperation", () => {
@@ -140,10 +128,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 40);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
     test("getCompletionContainer with OperationNode with staticArrayOperand, expected FunctionOperand and ConnectedOperation", () => {
@@ -155,10 +141,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Connection];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
     test("getCompletionContainer with complete OperationNode and position after leftOperand, expected Operands", () => {
@@ -169,10 +153,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
     test("getCompletionContainer with complete OperationNode and position after operator, expected Operands", () => {
@@ -183,10 +165,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
 
@@ -198,10 +178,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 1);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
     test("getCompletionContainer with incomplete OperationNode and invalid position, expected Operands", () => {
@@ -211,10 +189,8 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 7);
 
-        var expected: StateTransitionEnum[] = [StateTransitionEnum.Empty];
-        var actual: StateTransitionEnum[] = operation.getCompletionContainer(positionParameter).getTransitions().map(t => t.getState());
-
-        expect(actual).toEqual(expected);
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
     test("getCompletionContainer with incomplete OperationNode and name-filter, expected Operands", () => {

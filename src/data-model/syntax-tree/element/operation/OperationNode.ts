@@ -12,6 +12,8 @@ import { BaseOperandNode } from "./operand/BaseOperandNode";
 import { FunctionOperandNode } from "./operand/FunctionOperandNode";
 import { OperandNode } from "./operand/OperandNode";
 import { OperatorNode } from "./operand/OperatorNode";
+import { SyntaxHighlightingCapture } from "../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
+import { ScopeEnum } from "../../../../provider/syntax-highlighting/ScopeEnum";
 
 export class OperationNode extends ConditionNode {
     @Type(() => BaseOperandNode, {
@@ -138,7 +140,10 @@ export class OperationNode extends ConditionNode {
 
         if (!!this.leftOperand.getRange() && this.leftOperand.getRange().endsBefore(position) && !this.operator) {
             var container = this.leftOperand.getCompletionContainer(position);
-            container.operatorTransition(this.leftOperand.getDataType());
+
+            if (container.isEmpty())
+                container.operatorTransition(this.leftOperand.getDataType());
+
             return container;
         }
 
@@ -150,7 +155,10 @@ export class OperationNode extends ConditionNode {
 
         if (!!this.rightOperand && !!this.rightOperand.getRange() && this.rightOperand.getRange().endsBefore(position)) {
             var container = this.rightOperand.getCompletionContainer(position);
-            container.connectionTransition();
+
+            if (container.isEmpty())
+                container.connectionTransition();
+
             return container;
         }
 
@@ -178,7 +186,44 @@ export class OperationNode extends ConditionNode {
         if (!!this.operator) {
             returnString = returnString.replace(this.operator.defaultFormatting(), this.operator.getBeautifiedContent(aliasesHelper));
         }
-        
+
         return returnString;
+    }
+
+    public getPatternInformation(): SyntaxHighlightingCapture | null {
+        var capture: SyntaxHighlightingCapture | null = new SyntaxHighlightingCapture();
+
+        if (!!this.getConnector()) {
+            capture.addCapture(ScopeEnum.Keyword);
+            capture.addRegex(`((?i)${this.getConnector()})`);
+        }
+
+        if (!!this.leftOperand) {
+            var tempCapture = this.leftOperand.getPatternInformation();
+            if (!!tempCapture) {
+                capture.addCapture(...tempCapture.capture);
+                capture.addRegex(tempCapture.match);
+            }
+        }
+
+        if (!!this.operator) {
+            var tempCapture = this.operator.getPatternInformation();
+            if (!!tempCapture) {
+                capture.addCapture(...tempCapture.capture);
+                capture.addRegex(tempCapture.match);
+            }
+        }
+
+        if (!!this.rightOperand) {
+            var tempCapture = this.rightOperand.getPatternInformation();
+            if (!!tempCapture) {
+                capture.addCapture(...tempCapture.capture);
+                capture.addRegex(tempCapture.match);
+            }
+        }
+
+        console.log(capture);
+
+        return capture;
     }
 }

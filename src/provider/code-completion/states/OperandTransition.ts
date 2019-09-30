@@ -1,11 +1,12 @@
 import { StateTransition } from "./StateTransition";
 import { CompletionGenerator } from "../CompletionGenerator";
+import { String } from "typescript-string-operations";
 
 export class OperandTransition extends StateTransition {
     private dataType: string | undefined;
-    private nameFilter: string | undefined | null;
+    private nameFilter: string | undefined;
 
-    constructor(datatype?: string, nameFilter?: string | null, prependingText?: string) {
+    constructor(datatype?: string, nameFilter?: string, prependingText?: string) {
         super(prependingText);
 
         this.dataType = datatype;
@@ -16,8 +17,8 @@ export class OperandTransition extends StateTransition {
         return this.dataType;
     }
 
-    public getNameFilter(): string[] | undefined | null {
-        if (!this.nameFilter) return null;
+    public getNameFilter(): string[] | undefined {
+        if (!this.nameFilter) return undefined;
 
         var filter: string[] = [this.nameFilter];
         var complexChild: string[] = this.nameFilter.split('.');
@@ -29,8 +30,15 @@ export class OperandTransition extends StateTransition {
     }
 
     public isValid(name: string, datatype: string): boolean {
-        return (!!datatype && !! this.nameFilter && datatype == this.dataType && !this.nameFilter.includes(name) ||
-                (!this.nameFilter && !this.dataType));
+        if (!this.dataType && !this.nameFilter) return true;
+
+        // Wrong Datatype
+        if (!String.IsNullOrWhiteSpace(this.dataType!) && datatype != this.dataType) return false;
+
+        // The Attribute with the name is not allowed
+        if (!!this.nameFilter && this.nameFilter.includes(name)) return false;
+
+        return true;
     }
 
     public addCompletionItems(generator: CompletionGenerator): void {

@@ -49,7 +49,7 @@ export class ConnectedOperationNode extends ConditionNode {
     public getChildren(): GenericNode[] {
         var childList: GenericNode[] = [];
 
-        childList = childList.concat(this.conditions);
+        childList.push(...this.conditions);
 
         return childList;
     }

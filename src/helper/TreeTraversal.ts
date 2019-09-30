@@ -52,7 +52,7 @@ export class TreeTraversal {
             if (child != null) {
                 var nextChilds = child.getChildren();
                 if (nextChilds.length != 0) {
-                    operations = operations.concat(this.getOperations(nextChilds));
+                    operations.push(...this.getOperations(nextChilds));
                 }
             }
         }

@@ -44,7 +44,7 @@ export class OvElementManager {
     }
 
     public addElements(element: GenericNode[]) {
-        this._elements = this._elements.concat(element);
+        this._elements.push(...element);
     }
 
     /**

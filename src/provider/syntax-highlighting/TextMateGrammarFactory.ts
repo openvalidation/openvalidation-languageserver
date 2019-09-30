@@ -54,18 +54,19 @@ export class TextMateGrammarFactory {
             json.patterns.push({
                 comment: 'pattern for identifier (variables)',
                 name: 'variable.parameter.name.ov',
-                match: StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.identifier)
+                begin: '(?<=((?i)(' + parameter.asKeyword + ')))',
+                end: StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.identifier)
             });
         }
 
         // Static Strings
-        if (parameter.staticStrings.length > 0) {
-            json.patterns.push({
-                comment: 'pattern for static strings',
-                name: 'string.static.ov',
-                match: StringHelper.getOredRegExForWords(...parameter.staticStrings)
-            });
-        }
+        // if (parameter.staticStrings.length > 0) {
+        //     json.patterns.push({
+        //         comment: 'pattern for static strings',
+        //         name: 'string.static.ov',
+        //         match: StringHelper.getOredRegExForWords(...parameter.staticStrings)
+        //     });
+        // }
 
         // Keywords without Operators
         if (parameter.keywords.length > 0) {
@@ -87,13 +88,9 @@ export class TextMateGrammarFactory {
         }
 
         // Operator Keywords
-        var operationRegex = parameter.getOperationRegExp();
+        var operationRegex = parameter.getOperationPatterns();
         if (!!operationRegex) {
-            json.patterns.push({
-                comment: 'pattern for operations',
-                name: 'keyword.operator.ov',
-                match: operationRegex
-            });
+            json.patterns.push(...operationRegex);
         }
 
         return json;

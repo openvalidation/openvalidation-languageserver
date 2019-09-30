@@ -119,13 +119,13 @@ export class StringHelper {
             rightBound = this.makeStringRegExSafe(rightBound);
         }
 
-        var leftString = String.IsNullOrWhiteSpace(leftBound) ? "" : String.Format("(?<=({0})).*", leftBound);
+        var leftString = String.IsNullOrWhiteSpace(leftBound) ? "" : String.Format("({0}).*", leftBound);
         if (String.IsNullOrWhiteSpace(leftString)) return null;
 
         var operatorString = String.IsNullOrWhiteSpace(middle) ? "" : String.Format("({0})", middle);
         if (String.IsNullOrWhiteSpace(operatorString)) return null;
 
-        var rightString = String.IsNullOrWhiteSpace(rightBound) ? "" : String.Format(".*(?=({0}))", rightBound);
+        var rightString = String.IsNullOrWhiteSpace(rightBound) ? "" : String.Format(".*({0})", rightBound);
 
         var regex = leftString.concat(operatorString).concat(rightString);
         if (String.IsNullOrWhiteSpace(regex)) return null;
