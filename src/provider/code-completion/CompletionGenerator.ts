@@ -116,12 +116,12 @@ export class CompletionGenerator {
     public addOperandsWithTypeOfGivenOperand(operandName: string): CompletionGenerator {
         var variables: Variable | undefined = this.declarations.find(declaration => declaration.name == operandName);
         if (!!variables) {
-            return this.addFittingIdentifier(new OperandTransition(variables.dataType, operandName, " "))
+            return this.addFittingIdentifier(new OperandTransition(variables.dataType, [operandName], " "))
         }
 
         var schema: ISchemaProperty | undefined = this.schema.dataProperties.find(property => property.name == operandName);
         if (!!schema) {
-            return this.addFittingIdentifier(new OperandTransition(schema.type, operandName, " "));
+            return this.addFittingIdentifier(new OperandTransition(schema.type, [operandName], " "));
         }
 
         return this;

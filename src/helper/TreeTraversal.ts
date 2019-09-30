@@ -1,7 +1,8 @@
 import { Position } from "vscode-languageserver";
 import { OperationNode } from "../data-model/syntax-tree/element/operation/OperationNode";
-import { UnkownNode } from "../data-model/syntax-tree/element/UnkownNode";
 import { GenericNode } from "../data-model/syntax-tree/GenericNode";
+import { OperandNode } from "../data-model/syntax-tree/element/operation/operand/OperandNode";
+import { BaseOperandNode } from "../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
 
 export class TreeTraversal {
     constructor() { }
@@ -44,9 +45,6 @@ export class TreeTraversal {
             if (child instanceof OperationNode) {
                 operations.push(child);
                 continue;
-            } else if (child instanceof UnkownNode) {
-                if ((child as UnkownNode).getContent() instanceof OperationNode)
-                    operations.push((child as UnkownNode).getContent() as OperationNode);
             }
 
             if (child != null) {
@@ -58,5 +56,28 @@ export class TreeTraversal {
         }
 
         return operations;
+    }
+
+    public getLonelyOperands(genericNodes: GenericNode[]): OperandNode[] {
+        var childs: GenericNode[] = genericNodes;
+        var operands: OperandNode[] = [];
+
+        for (const child of childs) {
+            if (child instanceof OperationNode) {
+                continue;
+            } else if (child instanceof BaseOperandNode) {
+                operands.push(child);
+                continue;
+            }
+
+            if (child != null) {
+                var nextChilds = child.getChildren();
+                if (nextChilds.length != 0) {
+                    operands.push(...this.getLonelyOperands(nextChilds));
+                }
+            }
+        }
+
+        return operands;
     }
 }

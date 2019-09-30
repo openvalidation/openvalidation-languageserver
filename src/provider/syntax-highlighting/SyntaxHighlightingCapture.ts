@@ -68,7 +68,6 @@ export class SyntaxHighlightingCapture {
                 name: scope
             }
         }
-        console.log(capture);
 
         return {
             match: this.match!,

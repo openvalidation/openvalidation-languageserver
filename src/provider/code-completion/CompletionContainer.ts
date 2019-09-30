@@ -50,7 +50,7 @@ export class CompletionContainer {
     }
 
     public operandTransition(dataType?: string, nameFilter?: string, prependingText?: string): CompletionContainer {
-        this.transitions.push(new OperandTransition(dataType, nameFilter, prependingText));
+        this.transitions.push(new OperandTransition(dataType, !!nameFilter ? [nameFilter] : [], prependingText));
         return this;
     }
 
@@ -64,5 +64,13 @@ export class CompletionContainer {
         this.transitions.forEach(transition => transition.addCompletionItems(generator));
 
         return generator;
+    }
+
+    public addNameFilterToAllOperands(name: string) {
+        this.transitions.forEach(transition => {
+            if (transition instanceof OperandTransition) {
+                transition.getNameFilter
+            }
+        })
     }
 }

@@ -6,6 +6,5 @@
  */
 export interface GeneralApiResponse {
     variableNames: string[];
-    staticStrings: string[];
     ruleErrors: string[];
 }

@@ -4,7 +4,6 @@ import { ISchemaType } from "../schema/ISchemaType";
 import { LintingError } from "./LintingError";
 
 export class LintingResponse {
-    private staticStrings: string[];
     private schema: ISchemaType;
 
     @Type(() => MainNode)
@@ -15,7 +14,6 @@ export class LintingResponse {
 
     constructor(mainAstNode: MainNode, schema: ISchemaType) {
         this.errors = [];
-        this.staticStrings = [];
         this.mainAstNode = mainAstNode;
         this.schema = schema;
     }
@@ -24,10 +22,6 @@ export class LintingResponse {
         return this.errors;
     }
     
-    public getStaticStrings(): string[] {
-        return this.staticStrings;
-    }
-
     public getMainAstNode(): MainNode {
         return this.mainAstNode;
     }

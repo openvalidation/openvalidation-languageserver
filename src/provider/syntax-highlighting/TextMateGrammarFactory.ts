@@ -1,6 +1,6 @@
 import { StringHelper } from "../../helper/StringHelper";
 import { OvServer } from "../../OvServer";
-import { Pattern, TextMateJson } from "./TextMateJson";
+import { TextMateJson } from "./TextMateJson";
 import { TextMateParameter } from "./TextMateParameter";
 import { LintingResponse } from "../../rest-interface/response/LintingResponse";
 import { ScopeEnum } from "./ScopeEnum";
@@ -31,7 +31,7 @@ export class TextMateGrammarFactory {
             scopeName: "source.ov",
             name: "openVALIDATION",
             fileTypes: ['ov'],
-            patterns: this.genericPatterns()
+            patterns: []
         };
 
         // Comments
@@ -63,15 +63,6 @@ export class TextMateGrammarFactory {
             });
         }
 
-        // Static Strings
-        // if (parameter.staticStrings.length > 0) {
-        //     json.patterns.push({
-        //         comment: 'pattern for static strings',
-        //         name: 'string.static.ov',
-        //         match: StringHelper.getOredRegExForWords(...parameter.staticStrings)
-        //     });
-        // }
-
         // Keywords without Operators
         if (parameter.keywords.length > 0) {
             json.patterns.push({
@@ -92,30 +83,11 @@ export class TextMateGrammarFactory {
         }
 
         // Operator Keywords
-        var operationRegex = parameter.getOperationPatterns();
-        console.log(operationRegex);
+        var operationRegex = parameter.getOperationAndOperandPatterns();
         if (!!operationRegex) {
             json.patterns.push(...operationRegex);
         }
 
         return json;
-    }
-
-
-    public genericPatterns(): Pattern[] {
-        var patterns = [];
-
-        patterns.push({
-            comment: "Floating point literal (fraction)",
-            name: "constant.numeric.float.ov",
-            match: "\\b[0-9][0-9_]*\\.[0-9][0-9_]*([eE][+-]?[0-9_]+)?(f32|f64)?\\b"
-        });
-        patterns.push({
-            comment: "Integer literal (decimal)",
-            name: "constant.numeric.integer.decimal.ov",
-            match: "\\b[0-9][0-9_]*([ui](8|16|32|64|128|s|size))?\\b"
-        });
-
-        return patterns;
     }
 }

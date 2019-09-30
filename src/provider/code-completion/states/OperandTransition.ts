@@ -4,9 +4,9 @@ import { String } from "typescript-string-operations";
 
 export class OperandTransition extends StateTransition {
     private dataType: string | undefined;
-    private nameFilter: string | undefined;
+    private nameFilter: string[] | undefined;
 
-    constructor(datatype?: string, nameFilter?: string, prependingText?: string) {
+    constructor(datatype?: string, nameFilter?: string[], prependingText?: string) {
         super(prependingText);
 
         this.dataType = datatype;
@@ -20,13 +20,14 @@ export class OperandTransition extends StateTransition {
     public getNameFilter(): string[] | undefined {
         if (!this.nameFilter) return undefined;
 
-        var filter: string[] = [this.nameFilter];
-        var complexChild: string[] = this.nameFilter.split('.');
-        if (complexChild.length > 1) {
-            filter.push(complexChild[complexChild.length - 1]);
+        var filterList: string[] = this.nameFilter;
+        for (const filter of this.nameFilter) {
+            var complexChild: string[] = filter.split('.');
+            if (complexChild.length > 1) {
+                filterList.push(complexChild[complexChild.length - 1]);
+            }
         }
-
-        return filter;
+        return filterList;
     }
 
     public isValid(name: string, datatype: string): boolean {

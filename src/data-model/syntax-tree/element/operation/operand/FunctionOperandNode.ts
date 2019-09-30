@@ -11,7 +11,6 @@ import { OperationNode } from "../OperationNode";
 import { ArrayOperandNode } from "./ArrayOperandNode";
 import { BaseOperandNode } from "./BaseOperandNode";
 import { OperandNode } from "./OperandNode";
-import { ScopeEnum } from "../../../../../provider/syntax-highlighting/ScopeEnum";
 
 export class FunctionOperandNode extends BaseOperandNode {
     @Type(() => BaseOperandNode, {
@@ -88,9 +87,6 @@ export class FunctionOperandNode extends BaseOperandNode {
 
     public getPatternInformation(): SyntaxHighlightingCapture | null {        
         var capture = new SyntaxHighlightingCapture();
-
-        capture.addCapture(ScopeEnum.Keyword);
-        capture.addRegexToMatch(`((?i)${this.getName()})`);
 
         for (const parameter of this.getParameters()) {
             var tmpCapture = parameter.getPatternInformation();

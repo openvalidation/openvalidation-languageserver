@@ -70,7 +70,6 @@ export class TestInitializer {
     public mockEmptyCode(): CodeResponse {
         var json: CodeResponse = {
             variableNames: [],
-            staticStrings: [],
             ruleErrors: [],
             implementationResult: "",
             frameworkResult: ""
@@ -81,7 +80,6 @@ export class TestInitializer {
 
     public mockEmptyLintingResponse(): LintingResponse {
         var json = {
-            staticStrings: [],
             mainAstNode: undefined,
             schema: {
                 dataProperties: [],
@@ -102,7 +100,6 @@ export class TestInitializer {
      */
     public mockNotEmptyLintingResponse(): LintingResponse {
         var json = {
-            staticStrings: ["Dortmund"],
             mainAstNode: new MainNode(),
             schema: {
                 dataProperties: [{

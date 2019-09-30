@@ -7,6 +7,7 @@ import { IndexRange } from "../../../IndexRange";
 import { BaseOperandNode } from "./BaseOperandNode";
 import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { ScopeEnum } from "../../../../../provider/syntax-highlighting/ScopeEnum";
+import { StringHelper } from "../../../../../helper/StringHelper";
 
 export class OperandNode extends BaseOperandNode {
     constructor(lines: string[], range: IndexRange, dataType: string, name: string) {
@@ -39,14 +40,20 @@ export class OperandNode extends BaseOperandNode {
     public getPatternInformation(): SyntaxHighlightingCapture | null {
         var returnString: string | null = null;
 
-        var splittedOperand = this.getLines().join("\n").split(new RegExp(`(${this.getName()})`, "g"));
+        var splittedOperand = this.getLines().join("\n").split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.getName())})`, "g"));
 
         if (splittedOperand.length >= 2) {
-            returnString = `(?:${splittedOperand[0]})\\s*(${splittedOperand[1]})\\s*`;
+            returnString = `(?:${splittedOperand[0]})\\s*(${StringHelper.makeStringRegExSafe(splittedOperand[1])})\\s*`;
         }
 
         if (splittedOperand.length >= 3) {
-            returnString += `(?:${splittedOperand[2]})`;
+            var duplicateOperands: string = splittedOperand[2];
+            for (let index = 3; index < splittedOperand.length; index++) {
+                const split = splittedOperand[index];
+                duplicateOperands += split;
+            } 
+
+            returnString += `(?:${duplicateOperands})`;
         }
 
         if (!returnString) return null;            

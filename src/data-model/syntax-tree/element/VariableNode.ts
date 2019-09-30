@@ -106,13 +106,19 @@ export class VariableNode extends GenericNode {
         if (!!this.getNameNode() && !this.getNameNode()!.getRange().startsAfter(position))
             return CompletionContainer.init().emptyTransition();
 
+        var nameFilter: string | undefined = !this.getNameNode() ? undefined : this.getNameNode()!.getName();
+
         if (!this.value)
-            return CompletionContainer.init().operandTransition();
+            return CompletionContainer.init().operandTransition(undefined, nameFilter);
 
         var container = this.value.getCompletionContainer(position);
         if (container.isEmpty()) {
             container.operatorTransition(this.value.getDataType());
         }
+
+        if (!!nameFilter)
+            container.addNameFilterToAllOperands(nameFilter);
+            
         return container;
     }
 

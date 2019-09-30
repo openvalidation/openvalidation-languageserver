@@ -1,5 +1,5 @@
-import { AliasHelper } from "src/aliases/AliasHelper";
-import { IComplexData } from "src/rest-interface/schema/IComplexData";
+import { AliasHelper } from "../../aliases/AliasHelper";
+import { IComplexData } from "../../rest-interface/schema/IComplexData";
 import { String } from "typescript-string-operations";
 import { AliasKey } from "../../aliases/AliasKey";
 import { StringHelper } from "../../helper/StringHelper";
@@ -9,24 +9,25 @@ import { LintingResponse } from "../../rest-interface/response/LintingResponse";
 import { ISchemaProperty } from "../../rest-interface/schema/ISchemaProperty";
 import { Pattern } from "./TextMateJson";
 import { SyntaxHighlightingCapture } from "./SyntaxHighlightingCapture";
-import { OperationNode } from "src/data-model/syntax-tree/element/operation/OperationNode";
+import { OperationNode } from "../../data-model/syntax-tree/element/operation/OperationNode";
+import { BaseOperandNode } from "../../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
 
 export class TextMateParameter {
     private _keywords: string[];
     private _identifier: string[];
     private _complexSchemaProperties: IComplexData[];
-    private _staticStrings: string[];
     private _asKeyword: string | null;
     private _thenKeyword: string | null;
     private _commentKeyword: string | null;
+
     private _operations: OperationNode[];
+    private _operands: BaseOperandNode[];
 
     private aliasHelper: AliasHelper;
 
     constructor(private readonly apiResponse: LintingResponse, server: OvServer) {
         this.aliasHelper = server.aliasHelper;
 
-        this._staticStrings = !apiResponse.getStaticStrings() ? [] : apiResponse.getStaticStrings();
         this._identifier = this.getIdentifier(server.schema.dataProperties);
         this._complexSchemaProperties = server.schema.complexData;
         this._keywords = server.aliasHelper.getGenericKeywords();
@@ -34,8 +35,10 @@ export class TextMateParameter {
         if (apiResponse.getMainAstNode() != null) {
             var traversal = new TreeTraversal();
             this._operations = traversal.getOperations(apiResponse.getMainAstNode().getScopes());
+            this._operands = traversal.getLonelyOperands(apiResponse.getMainAstNode().getScopes());
         } else {
             this._operations = [];
+            this._operands = [];
         }
 
         this._asKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.AS);
@@ -51,10 +54,7 @@ export class TextMateParameter {
     }
     public get complexSchemaProperties(): IComplexData[] {
         return this._complexSchemaProperties;
-    }
-    public get staticStrings(): string[] {
-        return this._staticStrings;
-    }    
+    } 
     public get asKeyword(): string | null {
         return this._asKeyword;
     }
@@ -66,6 +66,9 @@ export class TextMateParameter {
     }
     public get operations(): OperationNode[] {
         return this._operations;
+    }
+    public get operands(): BaseOperandNode[] {
+        return this._operands;
     }
 
     /**
@@ -98,7 +101,7 @@ export class TextMateParameter {
      * @returns {(string | null)}
      * @memberof TextMateParameter
      */
-    public getOperationPatterns(): Pattern[] {
+    public getOperationAndOperandPatterns(): Pattern[] {
         var patternList: Pattern[] = [];
 
         for (const operation of this.operations) {
@@ -109,6 +112,16 @@ export class TextMateParameter {
             if (!pattern) continue;
             patternList.push(pattern);
         }
+
+        for (const operand of this.operands) {
+            var tmpPattern: SyntaxHighlightingCapture | null = operand.getPatternInformation();
+            if (!tmpPattern) continue;
+
+            var pattern = tmpPattern.buildPattern();
+            if (!pattern) continue;
+            patternList.push(pattern);
+        }
+
         return patternList;
     }
     
