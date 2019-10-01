@@ -53,7 +53,7 @@ export class ArrayOperandNode extends BaseOperandNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange(), "Operand: " + this.getDataType() + "[]");
+        var content: HoverContent = new HoverContent(this.$range, "Operand: " + this.getDataType() + "[]");
         return content;
     }
 

@@ -34,8 +34,8 @@ export class TextMateParameter {
 
         if (!!apiResponse.$mainAstNode) {
             var traversal = new TreeTraversal();
-            this.operations = traversal.getOperations(apiResponse.$mainAstNode.getScopes());
-            this.operands = traversal.getLonelyOperands(apiResponse.$mainAstNode.getScopes());
+            this.operations = traversal.getOperations(apiResponse.$mainAstNode.$scopes);
+            this.operands = traversal.getLonelyOperands(apiResponse.$mainAstNode.$scopes);
         } else {
             this.operations = [];
             this.operands = [];
@@ -84,8 +84,8 @@ export class TextMateParameter {
         var identifier: string[] = [];
 
         if (!!this.apiResponse.$mainAstNode &&
-            !!this.apiResponse.$mainAstNode.getDeclarations()) {
-            var names: string[] = this.apiResponse.$mainAstNode.getDeclarations().map(d => d.name);
+            !!this.apiResponse.$mainAstNode.$declarations) {
+            var names: string[] = this.apiResponse.$mainAstNode.$declarations.map(d => d.$name);
             identifier = identifier.concat(names.filter(n => !String.IsNullOrWhiteSpace(n)));
         }
 

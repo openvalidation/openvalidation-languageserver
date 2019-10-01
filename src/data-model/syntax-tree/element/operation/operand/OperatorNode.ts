@@ -51,7 +51,7 @@ export class OperatorNode extends GenericNode {
 
     public getHoverContent(): HoverContent | null {
         var content: string = "Operator " + this.getOperator() + ": " + this.getDataType();
-        var hoverContent: HoverContent = new HoverContent(this.getRange(), content);
+        var hoverContent: HoverContent = new HoverContent(this.$range, content);
         return hoverContent;
     }
 
@@ -68,7 +68,7 @@ export class OperatorNode extends GenericNode {
     }
 
     public getPatternInformation(): SyntaxHighlightingCapture | null {
-        var returnString = this.getLines().join("\n");
+        var returnString = this.$lines.join("\n");
         if (String.IsNullOrWhiteSpace(returnString)) {
             return null;
         } else {

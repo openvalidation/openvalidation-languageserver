@@ -100,15 +100,15 @@ export class OvDocument {
         if (this.elementManager.$elements.length == 0) return "";
 
         var elementList = this.elementManager.$elements.filter(rule => {
-            var range = rule.getRange();
+            var range = rule.$range;
             if (!range) return false;
 
-            return range.getStart().getLine() <= lineNumber &&
-                range.getEnd().getLine() >= lineNumber;
+            return range.$start.$line <= lineNumber &&
+                range.$end.$line >= lineNumber;
         });
         if (!elementList || elementList.length == 0) return "";
 
         var element = elementList[0];
-        return element.getLines()[lineNumber - element.getRange().getStart().getLine()];
+        return element.$lines[lineNumber - element.$range.$start.$line];
     }
 }

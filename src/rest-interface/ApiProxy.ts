@@ -129,7 +129,7 @@ export class ApiProxy {
         if (!!ovDocument) {
             var asKeyword: string | null = parameter.$aliasHelper.getAsKeyword();
             var relevantVariables: VariableNode[] = ovDocument.$elementManager.getUsedVariables(rule, asKeyword);
-            rule += "\n\n" + relevantVariables.map(variable => variable.getLines().join('\n')).join('\n\n');
+            rule += "\n\n" + relevantVariables.map(variable => variable.$lines.join('\n')).join('\n\n');
         }
 
         var data = {

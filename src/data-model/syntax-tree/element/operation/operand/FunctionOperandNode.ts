@@ -65,7 +65,7 @@ export class FunctionOperandNode extends BaseOperandNode {
 
     public getHoverContent(): HoverContent | null {
         var stringContent: string = "Function " + this.getName() + ": " + this.getDataType();
-        var content: HoverContent = new HoverContent(this.getRange(), stringContent);
+        var content: HoverContent = new HoverContent(this.$range, stringContent);
         return content;
     }
 

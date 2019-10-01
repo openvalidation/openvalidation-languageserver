@@ -102,8 +102,8 @@ export class CompletionBuilder {
      */
     public addFittingIdentifier(transition: OperandTransition): CompletionBuilder {
         this.declarations.forEach(variable => {
-            if (transition.isValid(variable.name, variable.dataType)) {
-                this.addVariable(variable.name, variable.dataType, "a", transition.$prependingText);
+            if (transition.isValid(variable.$name, variable.$dataType)) {
+                this.addVariable(variable.$name, variable.$dataType, "a", transition.$prependingText);
             }
         });
 
@@ -187,9 +187,9 @@ export class CompletionBuilder {
      * @memberof CompletionBuilder
      */
     public addOperandsWithTypeOfGivenOperand(operandName: string): CompletionBuilder {
-        var variables: Variable | undefined = this.declarations.find(declaration => declaration.name == operandName);
+        var variables: Variable | undefined = this.declarations.find(declaration => declaration.$name == operandName);
         if (!!variables) {
-            return this.addFittingIdentifier(new OperandTransition(variables.dataType, [operandName], " "))
+            return this.addFittingIdentifier(new OperandTransition(variables.$dataType, [operandName], " "))
         }
 
         var schema: ISchemaProperty | undefined = this.schema.dataProperties.find(property => property.name == operandName);

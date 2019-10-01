@@ -4,7 +4,7 @@ import { Diagnostic, DiagnosticSeverity, TextDocument, TextDocumentChangeEvent, 
 import { OvDocument } from "../data-model/ov-document/OvDocument";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
-import { OvSyntaxNotifier } from "./OvSyntaxNotifier";
+import { SyntaxNotifier } from "./SyntaxNotifier";
 import { Provider } from "./Provider";
 
 /**
@@ -30,7 +30,7 @@ export class DocumentActionProvider extends Provider {
     }
 
     private readonly pendingValidationRequests: Map<string, number>;
-    private readonly syntaxNotifier: OvSyntaxNotifier;
+    private readonly syntaxNotifier: SyntaxNotifier;
 
 
     /**
@@ -41,7 +41,7 @@ export class DocumentActionProvider extends Provider {
     constructor(server: OvServer) {
         super(server);
         this.pendingValidationRequests = new Map<string, number>();
-        this.syntaxNotifier = new OvSyntaxNotifier(server);
+        this.syntaxNotifier = new SyntaxNotifier(server);
 
         this.server.documents.onDidOpen(event => this.validate(event.document.uri));
         this.server.documents.onDidChangeContent(event => this.validate(event.document.uri));
@@ -150,11 +150,11 @@ export class DocumentActionProvider extends Provider {
     private generateDocumentWithAst(apiResponse: LintingResponse | null, text: string): OvDocument | undefined {
         if (!apiResponse ||
             !apiResponse.$mainAstNode ||
-            !apiResponse.$mainAstNode.getScopes())
+            !apiResponse.$mainAstNode.$scopes)
             return undefined;
 
-        return new OvDocument(apiResponse.$mainAstNode.getScopes(),
-            apiResponse.$mainAstNode.getDeclarations(),
+        return new OvDocument(apiResponse.$mainAstNode.$scopes,
+            apiResponse.$mainAstNode.$declarations,
             this.server.aliasHelper);
     }
 

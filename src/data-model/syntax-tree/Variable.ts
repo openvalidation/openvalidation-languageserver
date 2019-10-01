@@ -1,22 +1,35 @@
+
+/**
+ * Dataclass for variables that consists of a name and a datatype
+ *
+ * @export
+ * @class Variable
+ */
 export class Variable {
-    private _name: string;
-    private _dataType: string;
+    private name: string;
+    private dataType: string;
 
+    /**
+     * Creates an instance of Variable.
+     * @param {string} name name of the variable
+     * @param {string} datatype datatype of the variable
+     * @memberof Variable
+     */
     constructor(name: string, datatype: string) {
-        this._name = name;
-        this._dataType = datatype;
+        this.name = name;
+        this.dataType = datatype;
     }
 
-    public get name(): string {
-        return this._name;
+    public get $name(): string {
+        return this.name;
     }
-    public set name(value: string) {
-        this._name = value;
+    public set $name(value: string) {
+        this.name = value;
     }
-    public get dataType(): string {
-        return this._dataType;
+    public get $dataType(): string {
+        return this.dataType;
     }
-    public set dataType(value: string) {
-        this._dataType = value;
+    public set $dataType(value: string) {
+        this.dataType = value;
     }
 }

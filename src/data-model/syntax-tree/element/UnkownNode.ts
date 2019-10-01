@@ -46,7 +46,7 @@ export class UnkownNode extends GenericNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        if (!this.content) return new HoverContent(this.getRange(), "Unkown-Element");
+        if (!this.content) return new HoverContent(this.$range, "Unkown-Element");
         
         var hoverContent = this.content.getHoverContent();
         if (!hoverContent) return hoverContent;

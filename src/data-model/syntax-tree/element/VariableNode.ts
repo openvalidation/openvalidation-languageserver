@@ -88,9 +88,9 @@ export class VariableNode extends GenericNode {
      * @memberof OvVariable
      */
     public getRangeOfVariableName(): Range {
-        if (!this.getNameNode()) return this.getRange().asRange();
+        if (!this.getNameNode()) return this.$range.asRange();
 
-        return this.getNameNode()!.getRange().asRange();
+        return this.getNameNode()!.$range.asRange();
     }
 
     public getHoverContent(): HoverContent | null {
@@ -98,12 +98,12 @@ export class VariableNode extends GenericNode {
         if (!!this.getValue())
             contentText += ": " + this.getValue()!.getDataType();
 
-        var content: HoverContent = new HoverContent(this.getRange(), contentText);
+        var content: HoverContent = new HoverContent(this.$range, contentText);
         return content;
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {
-        if (!!this.getNameNode() && !this.getNameNode()!.getRange().startsAfter(position))
+        if (!!this.getNameNode() && !this.getNameNode()!.$range.startsAfter(position))
             return CompletionContainer.init().emptyTransition();
 
         var nameFilter: string | undefined = !this.getNameNode() ? undefined : this.getNameNode()!.getName();
@@ -123,13 +123,13 @@ export class VariableNode extends GenericNode {
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        var variableString: string = this.getLines().join("\n");
+        var variableString: string = this.$lines.join("\n");
         if (!this.value) return variableString;
 
         var asKeyword: string | null = aliasesHelper.getKeywordByAliasKey(AliasKey.AS);
         if (!asKeyword) return variableString;
 
-        var splittedVariable: string[] = variableString.split(this.value.getLines().join("\n"));
+        var splittedVariable: string[] = variableString.split(this.value.$lines.join("\n"));
         var returnString: string = "";
 
         var spaces = FormattingHelper.generateSpaces(asKeyword.length + 1);

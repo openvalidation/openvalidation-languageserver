@@ -27,11 +27,11 @@ export class ActionErrorNode extends GenericNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        return new HoverContent(this.getRange(), "Error-Message: " + this.errorMessage);
+        return new HoverContent(this.$range, "Error-Message: " + this.errorMessage);
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        return this.getLines().join("\n");
+        return this.$lines.join("\n");
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {

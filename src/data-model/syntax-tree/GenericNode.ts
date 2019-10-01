@@ -7,42 +7,54 @@ import { HoverContent } from "../../helper/HoverContent";
 import { CompletionContainer } from "../../provider/code-completion/CompletionContainer";
 import { IndexRange } from "./IndexRange";
 
+/**
+ * GenericNode for all elements of the syntax-tree
+ *
+ * @export
+ * @abstract
+ * @class GenericNode
+ */
 export abstract class GenericNode {
     private lines: string[];
 
     @Type(() => IndexRange)
     private range: IndexRange;
 
+    /**
+     * Creates an instance of GenericNode.
+     * @param {string[]} lines lines of the node
+     * @param {IndexRange} range scope of the node
+     * @memberof GenericNode
+     */
     constructor(lines: string[], range: IndexRange) {
         this.lines = lines;
         this.range = range;
     }
 
-    public getLines() {
+    public get $lines(): string[] {
         return this.lines;
     }
 
-    public setLines(value: string[]): void {
+    public set $lines(value: string[]) {
         this.lines = value;
     }
 
-    public getRange(): IndexRange {
+    public get $range(): IndexRange {
         return this.range;
     }
 
-    public setRange(value: IndexRange): void {
+    public set $range(value: IndexRange) {
         this.range = value;
     }
 
-    public getStartLineNumber(): number {
-        return this.getRange().getStart().getLine();
+    public get $startLineNumber(): number {
+        return this.$range.$start.$line;
     }
 
     abstract getChildren(): GenericNode[];
     abstract getHoverContent(): HoverContent | null;
     abstract getBeautifiedContent(aliasesHelper: AliasHelper): string;
     abstract getCompletionContainer(position: Position): CompletionContainer;
-    // abstract tokenize(): 
 
     /**
      * Generates a list of edits for formatting this element
@@ -57,14 +69,20 @@ export abstract class GenericNode {
 
         var textEdit: TextEdit = {
             newText: formattedLines.join("\n"),
-            range: this.getRange().asRange()
+            range: this.$range.asRange()
         }
         textEdits.push(textEdit);
 
         return textEdits;
     }
 
+    /**
+     * Default formatting for all nodes which is the removing of all duplcare whitespaces
+     *
+     * @returns {string} formatted lines in one string, joined by `\n`
+     * @memberof GenericNode
+     */
     public defaultFormatting(): string {
-        return this.getLines().map(line => FormattingHelper.removeDuplicateWhitespacesFromLine(line)).join("\n");
+        return this.$lines.map(line => FormattingHelper.removeDuplicateWhitespacesFromLine(line)).join("\n");
     }
 }

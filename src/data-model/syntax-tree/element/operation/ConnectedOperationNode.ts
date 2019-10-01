@@ -56,7 +56,7 @@ export class ConnectedOperationNode extends ConditionNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange(), "ConnectedOperation");
+        var content: HoverContent = new HoverContent(this.$range, "ConnectedOperation");
         return content;
     }
 
@@ -68,14 +68,14 @@ export class ConnectedOperationNode extends ConditionNode {
         for (let index = 0; index < this.getConditions().length - 1; index++) {
             const firstElement = this.getConditions()[index];
 
-            if (firstElement.getRange().includesPosition(position))
+            if (firstElement.$range.includesPosition(position))
                 return firstElement.getCompletionContainer(position);
 
             const secondElement = this.getConditions()[index + 1];
 
             // Position is between both elements
-            if (firstElement.getRange().endsBefore(position) &&
-                secondElement.getRange().startsAfter(position)) {
+            if (firstElement.$range.endsBefore(position) &&
+                secondElement.$range.startsAfter(position)) {
                 return firstElement.getCompletionContainer(position);
             }
         }
@@ -84,7 +84,7 @@ export class ConnectedOperationNode extends ConditionNode {
     }
 
     public getBeautifiedContent(aliasHelper: AliasHelper): string {
-        if (this.getConditions().length == 0) return this.getLines().join("\n");
+        if (this.getConditions().length == 0) return this.$lines.join("\n");
 
         var returnString: string = "";
 

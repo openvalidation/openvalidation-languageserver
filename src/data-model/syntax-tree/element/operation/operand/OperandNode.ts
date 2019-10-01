@@ -33,7 +33,7 @@ export class OperandNode extends BaseOperandNode {
 
     public getHoverContent(): HoverContent | null {
         var stringContent: string = "Operand " + this.getName() + ": " + this.getDataType();
-        var content: HoverContent = new HoverContent(this.getRange(), stringContent);
+        var content: HoverContent = new HoverContent(this.$range, stringContent);
         return content;
     }
 
@@ -52,7 +52,7 @@ export class OperandNode extends BaseOperandNode {
     public getPatternInformation(): SyntaxHighlightingCapture | null {
         var returnString: string | null = null;
 
-        var splittedOperand = this.getLines().join("\n").split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.getName())})`, "g"));
+        var splittedOperand = this.$lines.join("\n").split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.getName())})`, "g"));
 
         if (splittedOperand.length >= 2) {
             returnString = `(?:${splittedOperand[0]})\\s*(${StringHelper.makeStringRegExSafe(splittedOperand[1])})\\s*`;

@@ -26,11 +26,11 @@ export class VariableNameNode extends GenericNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        return new HoverContent(this.getRange(), "Variable-Name: " + this.name);
+        return new HoverContent(this.$range, "Variable-Name: " + this.name);
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        return this.getLines().join("\n");
+        return this.$lines.join("\n");
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {

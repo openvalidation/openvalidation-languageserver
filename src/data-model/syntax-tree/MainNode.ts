@@ -3,6 +3,12 @@ import { GenericNode } from "./GenericNode";
 import { Variable } from "./Variable";
 import { getGenericOptions } from "./TypeDecorator";
 
+/**
+ * MainNode for the syntax-tree
+ *
+ * @export
+ * @class MainNode
+ */
 export class MainNode {
     @Type(() => Variable)
     private declarations: Variable[] = [];
@@ -10,22 +16,26 @@ export class MainNode {
     @Type(() => GenericNode, getGenericOptions())
     private scopes: GenericNode[];
     
+    /**
+     * Creates an instance of MainNode.
+     * @memberof MainNode
+     */
     constructor() {
         this.declarations = [];
         this.scopes = [];
     }
 
-    public getDeclarations(): Variable[] {
+    public get $declarations(): Variable[] {
         return this.declarations;
     }
-    public setDeclarations(value: Variable[]) {
+    public set $declarations(value: Variable[]) {
         this.declarations = value;
     }
 
-    public getScopes(): GenericNode[] {
+    public get $scopes(): GenericNode[] {
         return this.scopes;
     }
-    public setScopes(value: GenericNode[]) {
+    public set $scopes(value: GenericNode[]) {
         this.scopes = value;
     }
 }

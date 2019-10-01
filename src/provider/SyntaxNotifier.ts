@@ -11,9 +11,9 @@ import { TextMateJson } from "./syntax-highlighting/TextMateJson";
  * which isn't part of the protocol. The notification gets send, when the validation of the changed document is finished
  *
  * @export
- * @class OvSyntaxNotifier
+ * @class SyntaxNotifier
  */
-export class OvSyntaxNotifier {
+export class SyntaxNotifier {
     private textMateGrammar: TextMateJson | null;
     private generatedCode: string | null;
     private textMateGrammarFactory: TextMateGrammarFactory;
@@ -21,7 +21,7 @@ export class OvSyntaxNotifier {
     /**
      * Creates an instance of OvSyntaxNotifier.
      * @param {OvServer} server server that contains required parameters
-     * @memberof OvSyntaxNotifier
+     * @memberof SyntaxNotifier
      */
     constructor(private readonly server: OvServer) {
         this.textMateGrammar = null;
@@ -33,7 +33,7 @@ export class OvSyntaxNotifier {
      * Checks if the textmate-grammar has changed and sends it to the client if this is the case
      *
      * @param {LintingResponse} apiResponse
-     * @memberof OvSyntaxNotifier
+     * @memberof SyntaxNotifier
      */
     public sendTextMateGrammarIfNecessary(apiResponse: LintingResponse): void {
         var textMateGrammar: TextMateJson = this.textMateGrammarFactory.generateTextMateGrammar(apiResponse, this.server);
@@ -49,7 +49,7 @@ export class OvSyntaxNotifier {
      * Checks if the code has changed and sends it to the client if this is the case
      *
      * @param {ICodeResponse} apiResponse
-     * @memberof OvSyntaxNotifier
+     * @memberof SyntaxNotifier
      */
     public sendGeneratedCodeIfNecessary(apiResponse: ICodeResponse): void {
         var newCodeNotification = this.generatedCodeDataObject(apiResponse);
@@ -67,7 +67,7 @@ export class OvSyntaxNotifier {
      * @private
      * @param {ICodeResponse} apiResponse that holds the implementation result
      * @returns  { language: string, value : string } that holds the required information
-     * @memberof OvSyntaxNotifier
+     * @memberof SyntaxNotifier
      */
     private generatedCodeDataObject(apiResponse: ICodeResponse): { language: string, value: string } {
         var json = {

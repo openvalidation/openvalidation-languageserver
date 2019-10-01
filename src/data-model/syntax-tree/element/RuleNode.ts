@@ -77,19 +77,19 @@ export class RuleNode extends GenericNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange(), "Rule");
+        var content: HoverContent = new HoverContent(this.$range, "Rule");
         return content;
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {
         // Then we are inside the error-node and we don't want completion
-        if (!!this.errorNode && !!this.errorNode.getRange() && !this.errorNode.getRange().startsAfter(position)) {
+        if (!!this.errorNode && !!this.errorNode.$range && !this.errorNode.$range.startsAfter(position)) {
             return CompletionContainer.init().emptyTransition();
         }
 
         if (!this.condition) return CompletionContainer.init().operandTransition();
 
-        if (!this.condition.getRange().startsAfter(position)) {
+        if (!this.condition.$range.startsAfter(position)) {
             var container: CompletionContainer = this.condition.getCompletionContainer(position);
 
             if (this.condition.isComplete() && this.errorNode == null) {
@@ -103,10 +103,10 @@ export class RuleNode extends GenericNode {
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        var ruleString: string = this.getLines().join("\n");
+        var ruleString: string = this.$lines.join("\n");
         if (!this.condition) return ruleString;
 
-        var splittedRule: string[] = ruleString.split(this.condition.getLines().join("\n"));
+        var splittedRule: string[] = ruleString.split(this.condition.$lines.join("\n"));
         var returnString: string = "";
 
         if (!String.IsNullOrWhiteSpace(splittedRule[0]))

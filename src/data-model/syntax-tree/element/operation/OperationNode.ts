@@ -130,7 +130,7 @@ export class OperationNode extends ConditionNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange(), "Operation");
+        var content: HoverContent = new HoverContent(this.$range, "Operation");
         return content;
     }
 
@@ -139,7 +139,7 @@ export class OperationNode extends ConditionNode {
             return CompletionContainer.init().operandTransition();
         }
 
-        if (!!this.leftOperand.getRange() && this.leftOperand.getRange().endsBefore(position) && !this.operator) {
+        if (!!this.leftOperand.$range && this.leftOperand.$range.endsBefore(position) && !this.operator) {
             var container = this.leftOperand.getCompletionContainer(position);
 
             if (container.isEmpty())
@@ -148,13 +148,13 @@ export class OperationNode extends ConditionNode {
             return container;
         }
 
-        if (!!this.operator && !!this.operator.getRange() && this.operator.getRange().endsBefore(position) && !this.rightOperand) {
+        if (!!this.operator && !!this.operator.$range && this.operator.$range.endsBefore(position) && !this.rightOperand) {
             var container = this.operator.getCompletionContainer(position);
             container.operandTransition(this.leftOperand.getDataType(), this.leftOperand.getName())
             return container;
         }
 
-        if (!!this.rightOperand && !!this.rightOperand.getRange() && this.rightOperand.getRange().endsBefore(position)) {
+        if (!!this.rightOperand && !!this.rightOperand.$range && this.rightOperand.$range.endsBefore(position)) {
             var container = this.rightOperand.getCompletionContainer(position);
 
             if (container.isEmpty())
@@ -163,7 +163,7 @@ export class OperationNode extends ConditionNode {
             return container;
         }
 
-        if (this.getRange().includesPosition(position))
+        if (this.$range.includesPosition(position))
             return CompletionContainer.init().emptyTransition();
 
         return CompletionContainer.init().connectionTransition();
@@ -208,18 +208,18 @@ export class OperationNode extends ConditionNode {
         }
 
         if (!!this.operator) {
-            var shadowOperator = this.getLines().join("\n");
-            shadowOperator = shadowOperator.replace(new RegExp(this.operator.getLines().join("\n"), "g"), "");
+            var shadowOperator = this.$lines.join("\n");
+            shadowOperator = shadowOperator.replace(new RegExp(this.operator.$lines.join("\n"), "g"), "");
 
             if (!!this.leftOperand) {
-                var operandString = this.leftOperand.getLines().join("\n");
+                var operandString = this.leftOperand.$lines.join("\n");
                 var startIndex = shadowOperator.indexOf(operandString) + operandString.length;
                 var endIndex = shadowOperator.length;
                 shadowOperator = shadowOperator.substring(startIndex, endIndex);
             }
 
             if (!!this.rightOperand) {
-                var operandString = this.rightOperand.getLines().join("\n");
+                var operandString = this.rightOperand.$lines.join("\n");
                 var startIndex = 0;
                 var endIndex = shadowOperator.indexOf(operandString);
                 shadowOperator = shadowOperator.substring(startIndex, endIndex);
@@ -235,7 +235,7 @@ export class OperationNode extends ConditionNode {
             }
         }
 
-        if (!!this.rightOperand && (!this.leftOperand || !this.leftOperand.getRange().includesRange(this.rightOperand.getRange()))) {
+        if (!!this.rightOperand && (!this.leftOperand || !this.leftOperand.$range.includesRange(this.rightOperand.$range))) {
             var tempCapture = this.rightOperand.getPatternInformation();
             if (!!tempCapture) {
                 capture.addCapture(...tempCapture.$capture);

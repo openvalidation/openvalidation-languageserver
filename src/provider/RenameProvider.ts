@@ -57,12 +57,12 @@ export class RenameProvider extends Provider {
         var textEdits: TextEdit[] = [];
 
         for (const element of ovDocument.$elementManager.$elements) {
-            var range = element.getRange();
+            var range = element.$range;
             if (!range) continue;
 
-            var lineNumber = range.getStart().getLine();
+            var lineNumber = range.$start.$line;
 
-            for (const line of element.getLines()) {
+            for (const line of element.$lines) {
                 var matches = line.match(new RegExp(oldString));
                 lineNumber++;
                 if (!matches) continue;

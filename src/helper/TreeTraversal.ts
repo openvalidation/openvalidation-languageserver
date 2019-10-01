@@ -60,7 +60,7 @@ export class TreeTraversal {
      */
     private methodFilterElements(nodes: GenericNode[], position: Position): GenericNode | null {
         for (const node of nodes) {
-            var range = node.getRange();
+            var range = node.$range;
             if (!range) continue;
 
             if (range.includesPosition(position))

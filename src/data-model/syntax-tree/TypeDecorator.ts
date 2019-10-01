@@ -9,6 +9,13 @@ import { RuleNode } from "./element/RuleNode";
 import { UnkownNode } from "./element/UnkownNode";
 import { VariableNode } from "./element/VariableNode";
 
+/**
+ * Class that tries to outsource the class-transformer generation.
+ * This currently don't workes in all classes so it need to be maintained for each class
+ *  independently (see https://github.com/typestack/class-transformer/issues/297)
+ */
+
+
 export function getOperationOptions(): TypeOptions {
     return {
         discriminator: {

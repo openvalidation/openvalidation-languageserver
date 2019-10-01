@@ -20,7 +20,7 @@ export class CommentNode extends GenericNode {
     }
 
     public getHoverContent(): HoverContent | null {
-        var content: HoverContent = new HoverContent(this.getRange(), "Comment");
+        var content: HoverContent = new HoverContent(this.$range, "Comment");
         return content;
     }
 
@@ -30,13 +30,13 @@ export class CommentNode extends GenericNode {
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         var commentKeyword: string | null = aliasesHelper.getCommentKeyword();
-        if (!commentKeyword) return this.getLines().join('\\n');
+        if (!commentKeyword) return this.$lines.join('\\n');
 
         var spaces = FormattingHelper.generateSpaces(commentKeyword.length + 1);
 
-        var returnString: string = FormattingHelper.removeDuplicateWhitespacesFromLine(this.getLines()[0]);
-        for (let index = 1; index < this.getLines().length; index++) {
-            const lineWithoutSpaces = FormattingHelper.removeDuplicateWhitespacesFromLine(this.getLines()[index]);
+        var returnString: string = FormattingHelper.removeDuplicateWhitespacesFromLine(this.$lines[0]);
+        for (let index = 1; index < this.$lines.length; index++) {
+            const lineWithoutSpaces = FormattingHelper.removeDuplicateWhitespacesFromLine(this.$lines[index]);
             const element =  "\n" + spaces + lineWithoutSpaces.trim();
             returnString += element;
         }

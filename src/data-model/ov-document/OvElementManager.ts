@@ -82,11 +82,11 @@ export class OvElementManager {
      */
     public getElementsByRange(range: Range): GenericNode[] {
         var elements = this.elements.filter(rule => {
-            var elementRange = rule.getRange();
+            var elementRange = rule.$range;
             if (!elementRange) return false;
 
-            var afterStart = range.start.line <= elementRange.getStart().getLine();
-            var beforeEnd = range.end.line >= elementRange.getEnd().getLine();
+            var afterStart = range.start.line <= elementRange.$start.$line;
+            var beforeEnd = range.end.line >= elementRange.$end.$line;
             return afterStart && beforeEnd;
         });
         return elements;

@@ -1,3 +1,4 @@
+import { ICodeResponse } from '../src/rest-interface/response/ICodeResponse';
 import * as rpc from '@sourcegraph/vscode-ws-jsonrpc';
 import axios from "axios";
 import MockAdapter from 'axios-mock-adapter';
@@ -13,15 +14,14 @@ import { FoldingRangesProvider } from "../src/provider/FoldingRangesProvider";
 import { FormattingProvider } from "../src/provider/FormattingProvider";
 import { GotoDefinitionProvider } from "../src/provider/GotoDefinitionProvider";
 import { HoverProvider } from "../src/provider/HoverProvider";
-import { OvSyntaxNotifier } from "../src/provider/OvSyntaxNotifier";
 import { RenameProvider } from "../src/provider/RenameProvider";
 import { CommentNode } from "../src/data-model/syntax-tree/element/CommentNode";
 import { RuleNode } from "../src/data-model/syntax-tree/element/RuleNode";
 import { VariableNode } from "../src/data-model/syntax-tree/element/VariableNode";
 import { MainNode } from "../src/data-model/syntax-tree/MainNode";
-import { CodeResponse } from "../src/rest-interface/response/CodeResponse";
 import { LintingResponse } from "../src/rest-interface/response/LintingResponse";
 import { CompletionResponse } from '../src/rest-interface/response/CompletionResponse';
+import { SyntaxNotifier } from '../src/provider/SyntaxNotifier';
 
 /**
  * Class that provides some useful classes and that mocks the Axios-Rest-Api
@@ -44,7 +44,7 @@ export class TestInitializer {
         } else {
             this._server.aliasHelper.$aliases = this.getAliases();
             this._server.aliasHelper.$operators = this.getOperators();
-            var document = new OvDocument(this.getCorrectParseResult().getScopes(), [], this._server.aliasHelper);
+            var document = new OvDocument(this.getCorrectParseResult().$scopes, [], this._server.aliasHelper);
             this._server.ovDocuments.addOrOverrideOvDocument("test.ov", document);
         }
     }
@@ -67,8 +67,8 @@ export class TestInitializer {
         return webSocket;
     }
 
-    public mockEmptyCode(): CodeResponse {
-        var json: CodeResponse = {
+    public mockEmptyCode(): ICodeResponse {
+        var json: ICodeResponse = {
             implementationResult: "",
             frameworkResult: ""
         };
@@ -84,7 +84,7 @@ export class TestInitializer {
                 complexData: []
             }
         };
-        
+
         var response: LintingResponse = plainToClass(LintingResponse, json);
 
         return response;
@@ -160,8 +160,8 @@ export class TestInitializer {
         return new RenameProvider(this.server);
     }
 
-    public get ovSyntaxNotifier(): OvSyntaxNotifier {
-        return new OvSyntaxNotifier(this.server);
+    public get ovSyntaxNotifier(): SyntaxNotifier {
+        return new SyntaxNotifier(this.server);
     }
 
     public getAliases(): Map<string, string> {
@@ -224,7 +224,7 @@ Kommentar das ist ein Kommentar`
         var variableNode: VariableNode = plainToClass(VariableNode, this.variableNode);
         var complexRuleNode: RuleNode = plainToClass(RuleNode, this.complexRuleNode);
         var commentNode: CommentNode = plainToClass(CommentNode, this.commentNode);
-        mainNode.setScopes([ruleNode, complexRuleNode, variableNode, commentNode]);
+        mainNode.$scopes = [ruleNode, complexRuleNode, variableNode, commentNode];
 
         return mainNode;
     }
