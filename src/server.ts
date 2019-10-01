@@ -3,7 +3,7 @@
  * ------------------------------------------------------------------------------------------ */
 
 import * as rpc from '@sourcegraph/vscode-ws-jsonrpc';
-import * as express from "express";
+import * as express from 'express';
 import * as http from "http";
 import * as net from "net";
 import "reflect-metadata";

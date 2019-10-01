@@ -6,13 +6,17 @@ var path = require('path');
 var exePath = path.join(__dirname, "/rest-interface/ov-rest.exe");
 var child: ChildProcess = exec(exePath);
 
-child.stdout.on('data', (data) => {
-    console.log('stdout: ' + data);
-});
+if (!!child.stdout) {
+    child.stdout.on('data', (data) => {
+        console.log('stdout: ' + data);
+    });
+}
 
-child.stderr.on('data', (stderr) => {
-    console.log('stderr: ' + stderr);
-});
+if (!!child.stderr) {
+    child.stderr.on('data', (stderr) => {
+        console.log('stderr: ' + stderr);
+    });
+}
 
 child.on('close', (code) => {
     console.log(`child process exited with code ${code}`);
