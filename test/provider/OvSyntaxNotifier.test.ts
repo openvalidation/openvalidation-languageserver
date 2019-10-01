@@ -1,34 +1,34 @@
 import "jest";
-import { OvSyntaxNotifier } from "../../src/provider/OvSyntaxNotifier";
+import { SyntaxNotifier } from "../../src/provider/SyntaxNotifier";
 import { TestInitializer } from "../TestInitializer";
 
 describe("OvSyntax notifier test", () => {
-    var provider: OvSyntaxNotifier;
+    var provider: SyntaxNotifier;
     var testInitializer: TestInitializer;
 
     beforeEach(() => {
         testInitializer = new TestInitializer(true);
-        provider = testInitializer.ovSyntaxNotifier;
+        provider = testInitializer.syntaxNotifier;
     });
 
     test("Verify provider exists", () => {
         expect(provider).not.toBeNull();
     });
 
-    test("sendNotificationsIfNecessary with apiResponseSuccess, expect no error", () => {
-        provider.sendNotificationsIfNecessary(testInitializer.mockNotEmptyApiResponseSuccess());
-    });
-
     test("sendNotificationsIfNecessary with empty apiResponse, expect no error", () => {
-        provider.sendNotificationsIfNecessary(testInitializer.mockEmptyApiResponse());
+        provider.sendTextMateGrammarIfNecessary(testInitializer.mockNotEmptyLintingResponse());
+        provider.sendGeneratedCodeIfNecessary(testInitializer.mockEmptyCode());
     });
 
     test("sendNotificationsIfNecessary with not empty apiResponse, expect no error", () => {
-        provider.sendNotificationsIfNecessary(testInitializer.mockNotEmptyApiResponse());
+        provider.sendTextMateGrammarIfNecessary(testInitializer.mockEmptyLintingResponse());
+        provider.sendGeneratedCodeIfNecessary(testInitializer.mockEmptyCode());
     });
 
-    test("sendNotificationsIfNecessary two times with apiResponseSuccess, expect no error", () => {
-        provider.sendNotificationsIfNecessary(testInitializer.mockNotEmptyApiResponseSuccess());
-        provider.sendNotificationsIfNecessary(testInitializer.mockNotEmptyApiResponseSuccess());
+    test("sendNotificationsIfNecessary two times with not empty apiResponse, expect no error", () => {
+        provider.sendTextMateGrammarIfNecessary(testInitializer.mockEmptyLintingResponse());
+        provider.sendGeneratedCodeIfNecessary(testInitializer.mockEmptyCode());
+        provider.sendTextMateGrammarIfNecessary(testInitializer.mockEmptyLintingResponse());
+        provider.sendGeneratedCodeIfNecessary(testInitializer.mockEmptyCode());
     });
 });

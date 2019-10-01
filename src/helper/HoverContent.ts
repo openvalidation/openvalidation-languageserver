@@ -1,24 +1,36 @@
-import { IndexRange } from "src/rest-interface/intelliSenseTree/IndexRange";
+import { IndexRange } from "src/data-model/syntax-tree/IndexRange";
 
+/**
+ * Class that contains the string-content and the range of the hovered content
+ *
+ * @export
+ * @class HoverContent
+ */
 export class HoverContent {
     private content: string;
     private range: IndexRange;
 
-    constructor(range: IndexRange) { 
-        this.content = "";
+    /**
+     * Creates an instance of HoverContent.
+     * @param {IndexRange} range range of the hovered content
+     * @param {string} content beautified content which will be shown to the user
+     * @memberof HoverContent
+     */
+    constructor(range: IndexRange, content: string) { 
+        this.content = content;
         this.range = range;
     }
 
-    public getContent(): string {
+    public get $content(): string {
         return this.content;
     }
-    public setContent(value: string) {
+    public set $content(value: string) {
         this.content = value;
     }
-    public getRange(): IndexRange {
+    public get $range(): IndexRange {
         return this.range;
     }
-    public setRange(value: IndexRange) {
+    public set $range(value: IndexRange) {
         this.range = value;
     }
 }

@@ -1,48 +1,46 @@
 import { Type } from "class-transformer";
-import { CommentNode } from "../intelliSenseTree/element/CommentNode";
-import { ArrayOperandNode } from "../intelliSenseTree/element/operation/operand/ArrayOperandNode";
-import { FunctionOperandNode } from "../intelliSenseTree/element/operation/operand/FunctionOperandNode";
-import { OperandNode } from "../intelliSenseTree/element/operation/operand/OperandNode";
-import { ConnectedOperationNode } from "../intelliSenseTree/element/operation/ConnectedOperationNode";
-import { OperationNode } from "../intelliSenseTree/element/operation/OperationNode";
-import { RuleNode } from "../intelliSenseTree/element/RuleNode";
-import { UnkownNode } from "../intelliSenseTree/element/UnkownNode";
-import { VariableNode } from "../intelliSenseTree/element/VariableNode";
-import { GenericNode } from "../intelliSenseTree/GenericNode";
-import { RuleResponseError } from "./error/RuleResponseError";
+import { MainNode } from "../../data-model/syntax-tree/MainNode";
+import { ISchemaType } from "../schema/ISchemaType";
+import { LintingError } from "./LintingError";
 
+/**
+ * Class for the response of the most-import REST-API.
+ * It consists of the parsed schema, the parsed elements inside the document and the errors.
+ *
+ * @export
+ * @class LintingResponse
+ */
 export class LintingResponse {
-    @Type(() => GenericNode, {
-        discriminator: {
-            property: "type",
-            subTypes: [
-                { value: CommentNode, name: "CommentNode" },
-                { value: VariableNode, name: "VariableNode" },
-                { value: RuleNode, name: "RuleNode" },
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
-                { value: FunctionOperandNode, name: "FunctionOperandNode" },
-                { value: OperandNode, name: "OperandNode" },
-                { value: UnkownNode, name: "UnkownNode" },
-                { value: ArrayOperandNode, name: "ArrayOperandNode"}
-            ]
-        }
-    })
-    private scope: GenericNode | null;
+    private schema: ISchemaType;
 
-    @Type(() => RuleResponseError)
-    private errors: RuleResponseError[];
+    @Type(() => MainNode)
+    private mainAstNode: MainNode;
+    
+    @Type(() => LintingError)
+    private errors: LintingError[];
 
-    constructor() {
-        this.scope = null;
+
+    /**
+     * Creates an instance of LintingResponse.
+     * @param {MainNode} mainAstNode parsed syntax-tree mainNode
+     * @param {ISchemaType} schema parsed schema
+     * @memberof LintingResponse
+     */
+    constructor(mainAstNode: MainNode, schema: ISchemaType) {
         this.errors = [];
+        this.mainAstNode = mainAstNode;
+        this.schema = schema;
     }
 
-    public getScope(): GenericNode | null {
-        return this.scope;
-    }
-
-    public getErrors(): RuleResponseError[] {
+    public get $errors(): LintingError[] {
         return this.errors;
+    }
+    
+    public get $mainAstNode(): MainNode {
+        return this.mainAstNode;
+    }
+
+    public get $schema(): ISchemaType {
+        return this.schema;
     }
 }

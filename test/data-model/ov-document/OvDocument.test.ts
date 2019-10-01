@@ -2,16 +2,18 @@ import "jest";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../src/aliases/AliasHelper";
 import { OvDocument } from "../../../src/data-model/ov-document/OvDocument";
-import { CommentNode } from "../../../src/rest-interface/intelliSenseTree/element/CommentNode";
-import { OperandNode } from "../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperandNode";
-import { OperatorNode } from "../../../src/rest-interface/intelliSenseTree/element/operation/operand/OperatorNode";
-import { OperationNode } from "../../../src/rest-interface/intelliSenseTree/element/operation/OperationNode";
-import { RuleNode } from "../../../src/rest-interface/intelliSenseTree/element/RuleNode";
-import { VariableNode } from "../../../src/rest-interface/intelliSenseTree/element/VariableNode";
-import { GenericNode } from "../../../src/rest-interface/intelliSenseTree/GenericNode";
-import { IndexPosition } from "../../../src/rest-interface/intelliSenseTree/IndexPosition";
-import { IndexRange } from "../../../src/rest-interface/intelliSenseTree/IndexRange";
+import { CommentNode } from "../../../src/data-model/syntax-tree/element/CommentNode";
+import { OperandNode } from "../../../src/data-model/syntax-tree/element/operation/operand/OperandNode";
+import { OperatorNode } from "../../../src/data-model/syntax-tree/element/operation/operand/OperatorNode";
+import { OperationNode } from "../../../src/data-model/syntax-tree/element/operation/OperationNode";
+import { RuleNode } from "../../../src/data-model/syntax-tree/element/RuleNode";
+import { VariableNode } from "../../../src/data-model/syntax-tree/element/VariableNode";
+import { GenericNode } from "../../../src/data-model/syntax-tree/GenericNode";
+import { IndexPosition } from "../../../src/data-model/syntax-tree/IndexPosition";
+import { IndexRange } from "../../../src/data-model/syntax-tree/IndexRange";
 import { TestInitializer } from "../../TestInitializer";
+import { ActionErrorNode } from "../../../src/data-model/syntax-tree/element/ActionErrorNode";
+import { VariableNameNode } from "../../../src/data-model/syntax-tree/element/VariableNameNode";
 
 describe("OvDocument Tests", () => {
     var aliasHelper: AliasHelper;
@@ -76,14 +78,14 @@ describe("OvDocument Tests", () => {
     }
 
     function getAstVariable(): VariableNode {
-        return new VariableNode("Alter", new OperandNode(["Value"], getDefaultRange(), "", ""), ["Das ist ein Alter Test"], getDefaultRange());
+        return new VariableNode(new VariableNameNode(["Als Test"], IndexRange.create(0,0,0,0), "Test"), new OperandNode(["Value"], getDefaultRange(), "", ""), ["Das ist ein Alter Test"], getDefaultRange());
     }
 
     function getAstRule(): RuleNode {
         var tmpOperand = new OperandNode(["Value"], getDefaultRange(), "", "");
-        var operator = new OperatorNode(["KLEINER"],  getDefaultRange(), "Boolean", "EQUALS", "String");
-        var operation = new OperationNode(tmpOperand, tmpOperand, operator, ["Operation"], getDefaultRange());
-        return new RuleNode("Error", operation, ["Das ist ein Alter Test"], getDefaultRange());
+        var operator = new OperatorNode(["KLEINER"], getDefaultRange(), "Boolean", "EQUALS", "String");
+        var operation = new OperationNode(tmpOperand, operator, tmpOperand, ["Operation"], getDefaultRange());
+        return new RuleNode(new ActionErrorNode(["Dann Error"], IndexRange.create(0, 0, 0, 0), "Error"), operation, ["Das ist ein Alter Test"], getDefaultRange());
     }
 
     function getAstComment(): CommentNode {

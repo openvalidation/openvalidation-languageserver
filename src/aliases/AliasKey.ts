@@ -1,3 +1,10 @@
+/**
+ * Enum which conatins the relevant alias-keys that are required
+ *  for handling with the aliases from the rest-interface
+ *
+ * @export
+ * @enum {number}
+ */
 export enum AliasKey {
     // Logical Operators
     AND = 'ʬandʬ',
@@ -6,6 +13,7 @@ export enum AliasKey {
     // Rules - Keywords
     IF = 'ʬifʬ',
     THEN = 'ʬthenʬ',
+    CONSTRAINT = 'ʬconstraintʬmust',
 
     // Comment - Keyword
     COMMENT = 'ʬcommentʬ',
@@ -13,12 +21,15 @@ export enum AliasKey {
     // Variable - Keyword
     AS = 'ʬasʬ',
 
+
+    // Operators
+    OPERATOR = 'ʬoperatorʬ',
+    EQUALS = 'ʬoperatorʬequals',
+
+    //Functions
+    FUNCTION = 'ʬfunctionʬ',
     SUMME_VON = 'ʬfunctionʬsum_of',
 
+    //Others
     OF = 'ʬofʬ',
-    OPERATOR = 'ʬoperatorʬ',
-
-    
-    FUNCTION = 'ʬfunctionʬ'
-
 }

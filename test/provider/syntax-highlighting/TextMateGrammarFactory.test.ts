@@ -15,19 +15,19 @@ describe("TextMateGrammarFactory Tests", () => {
     });
 
     test("generateTextMateGrammar with empty response and empty server, expect not null", () => {
-        var actualGrammar = textMateGrammarFactory.generateTextMateGrammar(testInitializer.mockEmptyApiResponse(), server);
+        var actualGrammar = textMateGrammarFactory.generateTextMateGrammar(testInitializer.mockEmptyLintingResponse(), server);
         expect(actualGrammar).not.toBeNull();
     });
 
     test("generateTextMateGrammar with empty response and not empty schema, expect not null", () => {
         server.schema = JSON.parse(JSON.stringify({ Alter: 20 }));
 
-        var actualGrammar = textMateGrammarFactory.generateTextMateGrammar(testInitializer.mockEmptyApiResponse(), server);
+        var actualGrammar = textMateGrammarFactory.generateTextMateGrammar(testInitializer.mockEmptyLintingResponse(), server);
         expect(actualGrammar).not.toBeNull();
     });
 
     test("generateTextMateGrammar with not empty response and empty schema, expect not null", () => {
-        var actualGrammar = textMateGrammarFactory.generateTextMateGrammar(testInitializer.mockNotEmptyApiResponse(), server);
+        var actualGrammar = textMateGrammarFactory.generateTextMateGrammar(testInitializer.mockNotEmptyLintingResponse(), server);
         expect(actualGrammar).not.toBeNull();
     });
 })

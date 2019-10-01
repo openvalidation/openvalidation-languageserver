@@ -4,24 +4,39 @@ import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for "onFoldingRanges"
+ * Response-Provider for ``onFoldingRanges``
  *
  * @export
  * @class FoldingRangesProvider
  * @extends {Provider}
  */
 export class FoldingRangesProvider extends Provider {
-    static bind(server: OvServer) {
+
+    /**
+     * Creates the provider and binds the server to it.
+     *
+     * @static
+     * @param {OvServer} server server we want to bind the provider to
+     * @returns {FoldingRangesProvider} created provider
+     * @memberof FoldingRangesProvider
+     */
+    static bind(server: OvServer): FoldingRangesProvider {
         return new FoldingRangesProvider(server);
     }
 
+    /**
+     * Creates an instance of FoldingRangesProvider.
+     * @param {OvServer} server server we want to connect to
+     * @memberof FoldingRangesProvider
+     */
     constructor(server: OvServer) {
         super(server);
         this.connection.onFoldingRanges(params => this.getFoldingRanges(params));
     }
 
     /**
-     * Generates a list of all foldable sections
+     * Generates a list of all foldable sections.
+     * This is done with the raw text and not with the syntax-tree to be more performant.
      * 
      * @param {FoldingRangeRequestParam} params parameter that defines the specific document
      * @returns {FoldingRange[]} list of a range of all foldable-sections

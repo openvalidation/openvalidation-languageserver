@@ -5,8 +5,6 @@
 _This repository is under heavy development._
 
 This is a [language-server](https://microsoft.github.io/language-server-protocol/) implementation of the domain-specific-langauge [openVALIDATION](https://github.com/openvalidation/openvalidation).
-The server currently requires an installed Java-Version because the server requires a Java-backend.
-The backend gets started automatically.
 
 ## Implemented features of the protocol
 
@@ -18,7 +16,7 @@ The backend gets started automatically.
 - [x] Documentation on hover
 - [x] Rename symbol
 - [x] Folding
-- [ ] Formatting
+- [x] Formatting
 
 ## Additional features
 
@@ -49,6 +47,12 @@ npm install ov-language-server
 ```bash
 node .\node_modules\ov-language-server\lib\server.js
 ```
+
+
+### Connect to the language server
+
+You can connect to the language server with the url `localhost:3000` for example with the [monaco-languageclient](https://github.com/TypeFox/monaco-languageclient).
+
 ### Clients
 
 The language server is currently not used in a specific client.

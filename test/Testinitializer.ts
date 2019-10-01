@@ -1,3 +1,4 @@
+import { ICodeResponse } from '../src/rest-interface/response/ICodeResponse';
 import * as rpc from '@sourcegraph/vscode-ws-jsonrpc';
 import axios from "axios";
 import MockAdapter from 'axios-mock-adapter';
@@ -5,8 +6,6 @@ import { plainToClass } from "class-transformer";
 import { createConnection } from "vscode-languageserver";
 import { AliasKey } from "../src/aliases/AliasKey";
 import { OvDocument } from "../src/data-model/ov-document/OvDocument";
-import { GeneralApiResponse } from "../src/rest-interface/response/GeneralApiResponse";
-import { ApiResponseSuccess } from "../src/rest-interface/response/success/ApiResponseSuccess";
 import { OvServer } from "../src/OvServer";
 import { CompletionProvider } from "../src/provider/CompletionProvider";
 import { DocumentActionProvider } from "../src/provider/DocumentActionProvider";
@@ -15,12 +14,14 @@ import { FoldingRangesProvider } from "../src/provider/FoldingRangesProvider";
 import { FormattingProvider } from "../src/provider/FormattingProvider";
 import { GotoDefinitionProvider } from "../src/provider/GotoDefinitionProvider";
 import { HoverProvider } from "../src/provider/HoverProvider";
-import { OvSyntaxNotifier } from "../src/provider/OvSyntaxNotifier";
 import { RenameProvider } from "../src/provider/RenameProvider";
-import { CommentNode } from "../src/rest-interface/intelliSenseTree/element/CommentNode";
-import { RuleNode } from "../src/rest-interface/intelliSenseTree/element/RuleNode";
-import { VariableNode } from "../src/rest-interface/intelliSenseTree/element/VariableNode";
-import { MainNode } from "../src/rest-interface/intelliSenseTree/MainNode";
+import { CommentNode } from "../src/data-model/syntax-tree/element/CommentNode";
+import { RuleNode } from "../src/data-model/syntax-tree/element/RuleNode";
+import { VariableNode } from "../src/data-model/syntax-tree/element/VariableNode";
+import { MainNode } from "../src/data-model/syntax-tree/MainNode";
+import { LintingResponse } from "../src/rest-interface/response/LintingResponse";
+import { CompletionResponse } from '../src/rest-interface/response/CompletionResponse';
+import { SyntaxNotifier } from '../src/provider/SyntaxNotifier';
 
 /**
  * Class that provides some useful classes and that mocks the Axios-Rest-Api
@@ -41,8 +42,9 @@ export class TestInitializer {
         if (!fullOvDocument) {
             this._server.ovDocuments.addOrOverrideOvDocument("test.ov", new OvDocument([], [], this._server.aliasHelper));
         } else {
-            this._server.aliasHelper.updateAliases(this.getAliases())
-            var document = new OvDocument(this.getCorrectParseResult().getScopes(), [], this._server.aliasHelper);
+            this._server.aliasHelper.$aliases = this.getAliases();
+            this._server.aliasHelper.$operators = this.getOperators();
+            var document = new OvDocument(this.getCorrectParseResult().$scopes, [], this._server.aliasHelper);
             this._server.ovDocuments.addOrOverrideOvDocument("test.ov", document);
         }
     }
@@ -65,55 +67,38 @@ export class TestInitializer {
         return webSocket;
     }
 
-    public mockEmptyApiResponse(): GeneralApiResponse {
-        var json: GeneralApiResponse = {
-            variableNames: [],
-            staticStrings: [],
-            ruleErrors: [],
-            mainAstNode: new MainNode(),
+    public mockEmptyCode(): ICodeResponse {
+        var json: ICodeResponse = {
+            implementationResult: "",
+            frameworkResult: ""
+        };
+
+        return json;
+    }
+
+    public mockEmptyLintingResponse(): LintingResponse {
+        var json = {
+            mainAstNode: undefined,
             schema: {
                 dataProperties: [],
                 complexData: []
             }
         };
 
-        return json;
+        var response: LintingResponse = plainToClass(LintingResponse, json);
+
+        return response;
     }
 
-    public mockNotEmptyApiResponse(): GeneralApiResponse {
-        var json = {
-            variableNames: ["Minderjährig"],
-            staticStrings: ["Dortmund"],
-            ruleErrors: ["Das ist ein Fehlertext"],
-            mainAstNode: new MainNode(),
-            schema: {
-                dataProperties: [{
-                    name: "Alter",
-                    type: "Decimal"
-                }],
-                complexData: [{
-                    parent: "Einkaufsliste",
-                    child: "Preis"
-                }]
-            }
-        };
-
-        return json;
-    }
     /**
      *
      *
      * @returns {ApiResponseSuccess}
      * @memberof TestInitializer
      */
-    public mockNotEmptyApiResponseSuccess(): ApiResponseSuccess {
+    public mockNotEmptyLintingResponse(): LintingResponse {
         var json = {
-            variableNames: ["Minderjährig"],
-            staticStrings: ["Dortmund"],
-            ruleErrors: ["Das ist ein Fehlertext"],
             mainAstNode: new MainNode(),
-            frameworkResult: "Result",
-            implementationResult: "Java-Code",
             schema: {
                 dataProperties: [{
                     name: "Alter",
@@ -126,14 +111,17 @@ export class TestInitializer {
             }
         };
 
-        return json;
+        var response: LintingResponse = plainToClass(LintingResponse, json);
+
+        return response;
     }
 
     public mockAxios(): void {
         var mockAdapter = new MockAdapter(axios);
-        mockAdapter.onPost('http://localhost:8080').reply(200, this.getCorrectParseResult());
-        mockAdapter.onPost('http://localhost:8080/aliases').reply(200, this.getAliases());
-        mockAdapter.onPost('http://localhost:8080/linting').reply(200, this.getCorrectParseResult());
+        mockAdapter.onPost('http://localhost:31057').reply(200, this.mockEmptyCode());
+        mockAdapter.onPost('http://localhost:31057/aliases').reply(200, this.getAliases());
+        mockAdapter.onPost('http://localhost:31057/linting').reply(200, this.mockEmptyLintingResponse());
+        mockAdapter.onPost('http://localhost:31057/completion').reply(200, this.getCorrectCompletionResponse());
     }
 
     public get server(): OvServer {
@@ -172,8 +160,8 @@ export class TestInitializer {
         return new RenameProvider(this.server);
     }
 
-    public get ovSyntaxNotifier(): OvSyntaxNotifier {
-        return new OvSyntaxNotifier(this.server);
+    public get syntaxNotifier(): SyntaxNotifier {
+        return new SyntaxNotifier(this.server);
     }
 
     public getAliases(): Map<string, string> {
@@ -184,6 +172,30 @@ export class TestInitializer {
         input.set("COMMENT", AliasKey.COMMENT);
         input.set("THEN", AliasKey.THEN);
         input.set("IF", AliasKey.IF);
+        input.set("EQUALS", AliasKey.EQUALS);
+        return input;
+    }
+
+    public getOperators(): Map<string, string> {
+        var input = new Map<string, string>();
+        input.set("LESS_OR_EQUALS", "Decimal");
+        input.set("SUM_OF", "String");
+        input.set("NONE_OF", "Array");
+        input.set("IS_BETWEEN", "Unknown");
+        input.set("GREATER_THAN", "Decimal");
+        input.set("GREATER_OR_EQUALS", "Decimal");
+        input.set("CONTAINS", "String");
+        input.set("IS", "Object");
+        input.set("AT_LEAST_ONE_OF", "Array");
+        input.set("LESS_THAN", "Decimal");
+        input.set("ONE_OF", "Array");
+        input.set("EQUALS", "Object");
+        input.set("ALL_OF", "Array");
+        input.set("EMPTY", "String");
+        input.set("NOT_EMPTY", "String");
+        input.set("NOT_EQUALS", "Object");
+        input.set("EXISTS", "Array");
+        input.set("NOT_EXISTS", "Array");
         return input;
     }
 
@@ -212,9 +224,14 @@ Kommentar das ist ein Kommentar`
         var variableNode: VariableNode = plainToClass(VariableNode, this.variableNode);
         var complexRuleNode: RuleNode = plainToClass(RuleNode, this.complexRuleNode);
         var commentNode: CommentNode = plainToClass(CommentNode, this.commentNode);
-        mainNode.setScopes([ruleNode, complexRuleNode, variableNode, commentNode]);
+        mainNode.$scopes = [ruleNode, complexRuleNode, variableNode, commentNode];
 
         return mainNode;
+    }
+
+    public getCorrectCompletionResponse(): CompletionResponse {
+        var ruleNode: RuleNode = plainToClass(RuleNode, this.ruleJson);
+        return new CompletionResponse(ruleNode);
     }
 
     private ruleJson = {
@@ -232,7 +249,23 @@ Kommentar das ist ein Kommentar`
                 "column": 44
             }
         },
-        "errorMessage": "Sie müssen mindestens 18 Jahre alt sein",
+        "errorNode": {
+            "lines": [
+                "DANN Sie müssen mindestens 18 Jahre alt sein"
+            ],
+            "range": {
+                "start": {
+                    "line": 1,
+                    "column": 0
+                },
+                "end": {
+                    "line": 1,
+                    "column": 44
+                }
+            },
+            "errorMessage": "Sie müssen mindestens 18 Jahre alt sein",
+            "type": "ActionErrorNode"
+        },
         "condition": {
             "lines": [
                 "das Alter des Bewerbers KLEINER 18 ist"
@@ -303,6 +336,7 @@ Kommentar das ist ein Kommentar`
                 "operator": "LESS_THAN",
                 "type": "Operator"
             },
+            "constrained": false,
             "type": "OperationNode"
         },
         "type": "RuleNode"
@@ -342,7 +376,23 @@ Kommentar das ist ein Kommentar`
                 "column": 68
             }
         },
-        "errorMessage": "Sie müssen mindestens 18 Jahre alt sein und aus Dortmund kommen",
+        "errorNode": {
+            "lines": [
+                "DANN Sie müssen mindestens 18 Jahre alt sein und aus Dortmund kommen"
+            ],
+            "range": {
+                "start": {
+                    "line": 8,
+                    "column": 0
+                },
+                "end": {
+                    "line": 8,
+                    "column": 68
+                }
+            },
+            "errorMessage": "Sie müssen mindestens 18 Jahre alt sein und aus Dortmund kommen",
+            "type": "ActionErrorNode"
+        },
         "condition": {
             "lines": [
                 "der Bewerber Minderjährig ist",
@@ -420,6 +470,7 @@ Kommentar das ist ein Kommentar`
                         "operator": "EQUALS",
                         "type": "Operator"
                     },
+                    "constrained": false,
                     "type": "OperationNode"
                 },
                 {
@@ -492,6 +543,7 @@ Kommentar das ist ein Kommentar`
                         "operator": "NOT_EQUALS",
                         "type": "Operator"
                     },
+                    "constrained": false,
                     "type": "OperationNode"
                 }
             ],
@@ -515,7 +567,23 @@ Kommentar das ist ein Kommentar`
                 "column": 16
             }
         },
-        "name": "Minderjährig",
+        "nameNode": {
+            "lines": [
+                "ALS Minderjährig"
+            ],
+            "range": {
+                "start": {
+                    "line": 4,
+                    "column": 0
+                },
+                "end": {
+                    "line": 4,
+                    "column": 16
+                }
+            },
+            "name": "Minderjährig",
+            "type": "VariableNameNode"
+        },
         "value": {
             "lines": [
                 "das Alter des Bewerbers ist KLEINER 18"
@@ -586,6 +654,7 @@ Kommentar das ist ein Kommentar`
                 "operator": "LESS_THAN",
                 "type": "Operator"
             },
+            "constrained": false,
             "type": "OperationNode"
         },
         "type": "VariableNode"

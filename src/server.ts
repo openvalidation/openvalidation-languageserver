@@ -3,7 +3,7 @@
  * ------------------------------------------------------------------------------------------ */
 
 import * as rpc from '@sourcegraph/vscode-ws-jsonrpc';
-import * as express from "express";
+import * as express from 'express';
 import * as http from "http";
 import * as net from "net";
 import "reflect-metadata";
@@ -12,6 +12,7 @@ import { createConnection } from 'vscode-languageserver';
 import * as ws from "ws";
 import { OvServer } from './OvServer';
 
+// Start the Java-Backend in a separat file
 require("./start-backend");
 
 process.on('uncaughtException', function (err: any) {
@@ -27,7 +28,7 @@ const app = express();
 // server the static content, i.e. index.html
 app.use(express.static(__dirname));
 
-
+// Used for parsing of json-objects over the websocket
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -52,6 +53,12 @@ server.on('upgrade', (request: http.IncomingMessage, socket: net.Socket, head: B
     }
 });
 
+
+/**
+ * Binds the WebSocket to our server and starts the server
+ *
+ * @param {ws} webSocket websocket we want to connect to
+ */
 function bindWebSocket(webSocket: ws): void {
     const socket: rpc.IWebSocket = {
         send: content => webSocket.send(content, error => {
@@ -73,6 +80,12 @@ function bindWebSocket(webSocket: ws): void {
     }
 }
 
+
+/**
+ * Creates the langauge-server and the connectoin to the given socket
+ *
+ * @param {rpc.IWebSocket} socket socket we want to connect to
+ */
 function launch(socket: rpc.IWebSocket) {
     const reader = new rpc.WebSocketMessageReader(socket);
     const writer = new rpc.WebSocketMessageWriter(socket);

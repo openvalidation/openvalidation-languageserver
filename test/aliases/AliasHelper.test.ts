@@ -13,7 +13,7 @@ describe("AliasHelper Tests", () => {
         input.set("COMMENT", AliasKey.COMMENT);
         input.set("THEN", AliasKey.THEN);
         input.set("IF", AliasKey.IF);
-        aliasHelper.updateAliases(input);
+        aliasHelper.$aliases = input;
     }
 
     beforeEach(() => {
@@ -57,9 +57,7 @@ describe("AliasHelper Tests", () => {
         setDefaultAliases();
 
         var expected: string[] = ["AND", "COMMENT"];
-
-        var input: AliasKey[] = [AliasKey.AND, AliasKey.COMMENT];
-        var actual: string[] = aliasHelper.getKeywordsByAliasKeys(input);
+        var actual: string[] = aliasHelper.getKeywordsByAliasKeys(AliasKey.AND, AliasKey.COMMENT);
 
         expect(actual).toEqual(expected);
     });
@@ -69,9 +67,7 @@ describe("AliasHelper Tests", () => {
         setDefaultAliases();
 
         var expected: string[] = ["AND"];
-
-        var input: AliasKey[] = [AliasKey.AND, AliasKey.SUMME_VON];
-        var actual: string[] = aliasHelper.getKeywordsByAliasKeys(input);
+        var actual: string[] = aliasHelper.getKeywordsByAliasKeys(AliasKey.AND, AliasKey.SUMME_VON);
 
         expect(actual).toEqual(expected);
     });
@@ -90,61 +86,6 @@ describe("AliasHelper Tests", () => {
 
         var expected: string = "COMMENT";
         var actual: string | null = aliasHelper.getCommentKeyword();
-
-        expect(actual).toEqual(expected);
-    });
-
-    test("isLinkingOperator with default aliases and no operator, expect false", () => {
-        setDefaultAliases();
-
-        var expected: boolean = false;
-
-        var input: string = "NoOperator";
-        var actual: boolean = aliasHelper.isLinkingOperator(input);
-
-        expect(actual).toEqual(expected);
-    });
-
-    test("isLinkingOperator with default aliases and OR, expect true", () => {
-        setDefaultAliases();
-
-        var expected: boolean = true;
-
-        var input = "OR";
-        var actual: boolean = aliasHelper.isLinkingOperator(input);
-
-        expect(actual).toEqual(expected);
-    });
-
-    test("isThen with default aliases and THEN, expect true", () => {
-        setDefaultAliases();
-
-        var expected: boolean = true;
-
-        var input = "THEN";
-        var actual: boolean = aliasHelper.isThen(input);
-
-        expect(actual).toEqual(expected);
-    });
-
-    test("isIf with default aliases and IF, expect true", () => {
-        setDefaultAliases();
-
-        var expected: boolean = true;
-
-        var input = "IF";
-        var actual: boolean = aliasHelper.isIf(input);
-
-        expect(actual).toEqual(expected);
-    });
-
-    test("isAs with default aliases and AS, expect true", () => {
-        setDefaultAliases();
-
-        var expected: boolean = true;
-
-        var input = "AS";
-        var actual: boolean = aliasHelper.isAs(input);
 
         expect(actual).toEqual(expected);
     });

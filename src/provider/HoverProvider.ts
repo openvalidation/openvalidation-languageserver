@@ -1,22 +1,36 @@
 import { HoverContent } from "src/helper/HoverContent";
-import { GenericNode } from "src/rest-interface/intelliSenseTree/GenericNode";
+import { GenericNode } from "src/data-model/syntax-tree/GenericNode";
 import { Hover, MarkupContent, MarkupKind, TextDocumentPositionParams } from "vscode-languageserver";
 import { TreeTraversal } from "../helper/TreeTraversal";
 import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for "onHover"
+ * Response-Provider for ``onHover``
  *
  * @export
  * @class HoverProvider
  * @extends {Provider}
  */
 export class HoverProvider extends Provider {
-    static bind(server: OvServer) {
+
+    /**
+     * Creates the provider and binds the server to it.
+     *
+     * @static
+     * @param {OvServer} server server we want to bind the provider to
+     * @returns {HoverProvider} created provider
+     * @memberof HoverProvider
+     */
+    static bind(server: OvServer): HoverProvider {
         return new HoverProvider(server);
     }
 
+    /**
+     * Creates an instance of HoverProvider.
+     * @param {OvServer} server server we want to connect to
+     * @memberof HoverProvider
+     */
     constructor(server: OvServer) {
         super(server);
         this.connection.onHover(params => this.hover(params));
@@ -35,21 +49,20 @@ export class HoverProvider extends Provider {
         if (!ovDocument) return Promise.resolve(null);
 
         var traversal: TreeTraversal = new TreeTraversal();
-        var foundNode: GenericNode | null = traversal.traverseTree(ovDocument.elementManager.getElements(), params.position);
+        var foundNode: GenericNode | null = traversal.traverseTree(ovDocument.$elementManager.$elements, params.position);
         if (!foundNode) return Promise.resolve(null);
 
-        var hoverContent: HoverContent = foundNode.getHoverContent();
+        var hoverContent: HoverContent | null = foundNode.getHoverContent();
+        if (!hoverContent) return Promise.resolve(null);
 
         let markdown: MarkupContent = {
             kind: MarkupKind.Markdown,
-            value: hoverContent.getContent()
+            value: hoverContent.$content
         };
 
-        var hover: Hover = {
-            range: hoverContent.getRange().asRange(),
+        return Promise.resolve({
+            range: hoverContent.$range.asRange(),
             contents: markdown
-        };
-
-        return Promise.resolve(hover);
+        });
     }
 }

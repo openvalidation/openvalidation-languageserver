@@ -1,8 +1,8 @@
-import { Diagnostic, Position, Range } from "vscode-languageserver-types";
-import { CommentNode } from "../../rest-interface/intelliSenseTree/element/CommentNode";
-import { RuleNode } from "../../rest-interface/intelliSenseTree/element/RuleNode";
-import { VariableNode } from "../../rest-interface/intelliSenseTree/element/VariableNode";
-import { GenericNode } from "../../rest-interface/intelliSenseTree/GenericNode";
+import { Range } from "vscode-languageserver-types";
+import { CommentNode } from "../syntax-tree/element/CommentNode";
+import { RuleNode } from "../syntax-tree/element/RuleNode";
+import { VariableNode } from "../syntax-tree/element/VariableNode";
+import { GenericNode } from "../syntax-tree/GenericNode";
 
 /**
  * Saves all elements of an OvDocument and provides a few methods 
@@ -12,12 +12,14 @@ import { GenericNode } from "../../rest-interface/intelliSenseTree/GenericNode";
  * @class OvElementManager
  */
 export class OvElementManager {
-    private _elements: GenericNode[];
-    private _errors: Diagnostic[][];
+    private elements: GenericNode[];
 
+    /**
+     * Creates an instance of OvElementManager.
+     * @memberof OvElementManager
+     */
     constructor() {
-        this._elements = [];
-        this._errors = [];
+        this.elements = [];
     }
 
     /**
@@ -27,105 +29,48 @@ export class OvElementManager {
      * @type {GenericNode[]}
      * @memberof OvElementManager
      */
-    public getElements(): GenericNode[] {
-        return this._elements;
+    public get $elements(): GenericNode[] {
+        return this.elements;
     }
 
     public addElement(element: GenericNode) {
-        this._elements.push(element);
-    }
-
-    public overrideElement(element: GenericNode, index: number, newRange: [number, number]) {
-        if (this._elements.length <= index) {
-            // TODO: How to calculate the range correctly?
-            this._elements.push(element);
-            if (this._elements.length <= index)
-                throw Error("Can't override Element");
-        }
-
-        element.updateRangeLines(this._elements[index].getRange().getStart().getLine());
-        this._elements[index] = element;
-
-        var lineDifference: number = newRange[1] - this._elements[index].getRange().getEnd().getLine();
-        for (let j = index + 1; j < this._elements.length; j++) {
-            this._elements[j].updateRangeLines(lineDifference);
-        }
+        this.elements.push(element);
     }
 
     public addElements(element: GenericNode[]) {
-        this._elements = this._elements.concat(element);
-    }
-
-    public getErrors(): Diagnostic[][] {
-        return this._errors;
-    }
-
-    public addError(element: Diagnostic[]) {
-        this._errors.push(element);
-    }
-
-    public overrideError(element: Diagnostic[], index: number) {
-        if (this._errors.length <= index) {
-            this._errors.push(element)
-            if (this._errors.length <= index)
-                throw Error("Can't override Error");
-        }
-        this._errors[index] = element;
+        this.elements.push(...element);
     }
 
     /**
      * Returns all known variables
      *
-     * @readonly
-     * @type {OvVariable[]}
+     * @returns {VariableNode[]} list of known variables
      * @memberof OvElementManager
      */
     public getVariables(): VariableNode[] {
-        return this._elements.filter(element => element instanceof VariableNode) as VariableNode[];
+        return this.elements.filter(element => element instanceof VariableNode) as VariableNode[];
     }
 
     /**
      * Returns all known rules
      *
      * @readonly
-     * @type {OvRule[]}
+     * @returns {RuleNode[]} list of known variables
      * @memberof OvElementManager
      */
     public getRules(): RuleNode[] {
-        return this._elements.filter(element => element instanceof RuleNode) as RuleNode[];
+        return this.elements.filter(element => element instanceof RuleNode) as RuleNode[];
     }
 
     /**
      * Returns all known comments
      *
      * @readonly
-     * @type {OvComment[]}
+     * @returns {CommentNode[]} list of known comments
      * @memberof OvElementManager
      */
     public getComments(): CommentNode[] {
-        return this._elements.filter(element => element instanceof CommentNode) as CommentNode[];
-    }
-
-    /**
-     * Finds and returns the element at an specific position in the document
-     *
-     * @param {Position} position position where the element should be found
-     * @returns {(GenericNode | undefined)} found rule
-     * @memberof OvDocument
-     */
-    public getElementByPosition(position: Position): GenericNode | undefined {
-        var lineNumber = position.line;
-
-        var element = this.getElements().filter(rule => {
-            var range = rule.getRange();
-            if (!range) return false;
-
-            return range.getStart().getLine() <= lineNumber &&
-                range.getEnd().getLine() >= lineNumber;
-        });
-        if (!element || element.length == 0) return undefined;
-
-        return element[0];
+        return this.elements.filter(element => element instanceof CommentNode) as CommentNode[];
     }
 
     /**
@@ -136,45 +81,55 @@ export class OvElementManager {
      * @memberof OvDocument
      */
     public getElementsByRange(range: Range): GenericNode[] {
-        var elements = this.getElements().filter(rule => {
-            var elementRange = rule.getRange();
+        var elements = this.elements.filter(rule => {
+            var elementRange = rule.$range;
             if (!elementRange) return false;
 
-            var afterStart = range.start.line <= elementRange.getStart().getLine();
-            var beforeEnd = range.end.line >= elementRange.getEnd().getLine();
+            var afterStart = range.start.line <= elementRange.$start.$line;
+            var beforeEnd = range.end.line >= elementRange.$end.$line;
             return afterStart && beforeEnd;
         });
         return elements;
     }
 
     /**
-     * Searches for a rule with the specified name and returns it
+     * Searches for variables with the specified name and returns it
      *
-     * @param {string} name name of the defined rule
-     * @returns {(OvVariable | null)} the found rule or null
+     * @param {string} name name of the defined varialbe
+     * @returns {(VariableNode[] | null)} the found variables or null
      * @memberof OvDocument
      */
     public getVariablesByName(name: string): VariableNode[] | null {
-        var filteredVariables: VariableNode[] = this.getVariables().filter(element => element.getName().toLowerCase() == name.toLowerCase());
+        var filteredVariables: VariableNode[] = this.getVariables().filter(element => !!element.getNameNode() && element.getNameNode()!.getName().toLowerCase() == name.toLowerCase());
         if (filteredVariables.length > 0) {
             return filteredVariables;
         }
         return null;
     }
 
-    public getLines(): string {
-        var lines: string[] = this._elements.map(element => element.getLines().join('\n'));
-        return lines.join("\n\n");
-    }
+    /**
+     * Returns all variables, that are used inside the given string
+     *
+     * @param {string} element string where we search for variables
+     * @param {(string | null)} asKeyword as-keyword is used to determine, whether the found variable is the element inside our string.
+     * We don't want to get the node which is declared inside the element
+     * @returns {VariableNode[]}
+     * @memberof OvElementManager
+     */
+    public getUsedVariables(element: string, asKeyword: string | null): VariableNode[] {
+        var returnNode: VariableNode[] = [];
 
-    public updateElementRanges(lineIndices: [number, number][]): void {
-        for (let index = 0; index < lineIndices.length; index++) {
-            const indices: [number, number] = lineIndices[index];
-            if (index >= this.getElements().length) break;
+        for (const variable of this.getVariables()) {
+            if (!variable.getNameNode() ||
+                !variable.getValue() ||
+                element.indexOf(variable.getNameNode()!.getName()) == -1)
+                continue;
 
-            var element = this.getElements()[index];
-            var difference: number = indices[0] - element.getRange().getStart().getLine();
-            element.updateRangeLines(difference)
+            if (!asKeyword || element.toLowerCase().indexOf(asKeyword.toLowerCase() + " " + variable.getNameNode()!.getName().toLowerCase()) == -1) {
+                returnNode.push(variable);
+            }
         }
+
+        return returnNode;
     }
 }

@@ -1,81 +1,149 @@
-import { AliasHelper } from "src/aliases/AliasHelper";
-import { ISchemaType } from "src/rest-interface/schema/ISchemaType";
-import { CompletionType } from "../../enums/CompletionType";
-import { Variable } from "../../rest-interface/intelliSenseTree/Variable";
-import { CompletionGenerator } from "./CompletionGenerator";
+import { CompletionBuilder } from "./CompletionGenerator";
+import { StateTransition } from "./states/StateTransition";
+import { ConnectionTransition } from "./states/ConnectionTransition";
+import { ThenKeywordTransition } from "./states/ThenKeywordTransition";
+import { OperatorTransition } from "./states/OperatorTransition";
+import { OperandTransition } from "./states/OperandTransition";
+import { AsKeywordTransition } from "./states/AsKeywordTransition";
+import { EmptyTransition } from "./states/EmptyTransition";
 
+/**
+ * This class is used for saving the valid transitions of the current state
+ *
+ * @export
+ * @class CompletionContainer
+ */
 export class CompletionContainer {
-    private dataType: string | null;
-    private filteredName: string | null;
-    private prependingText: string | null;
-    private types: CompletionType[];
+    private transitions: StateTransition[];
 
-    constructor(...types: CompletionType[]) {
-        this.dataType = null;
-        this.filteredName = null;
-        this.prependingText = null;
-        this.types = types;
+    /**
+     * Creates an instance of CompletionContainer.
+     * @memberof CompletionContainer
+     */
+    constructor() {
+        this.transitions = [];
     }
 
+    /**
+     * Returns an empty instance of the completionContainer
+     *
+     * @static
+     * @returns {CompletionContainer} this
+     * @memberof CompletionContainer
+     */
+    public static init(): CompletionContainer {
+        return new CompletionContainer();
+    }
+
+    /**
+     * Determines if transitions are allready set
+     *
+     * @returns {boolean} true, if we have no transitions
+     * @memberof CompletionContainer
+     */
     public isEmpty(): boolean {
-        return this.getTypes().filter(types => types == CompletionType.None).length > 0;
+        return this.$transitions.length == 0;
     }
 
-    public containsOperator(): boolean {
-        return this.getTypes().filter(types => types == CompletionType.Operator).length > 0;
+    public get $transitions(): StateTransition[] {
+        return this.transitions;
     }
 
-    public getTypes(): CompletionType[] {
-        return this.types;
-    }
-
-    public addType(type: CompletionType) {
-        this.types.push(type);
-    }
-
-    public specificDataType(dataType: string): CompletionContainer {
-        this.dataType = dataType;
+    /**
+     * Adds an connectionTransition to the transitions
+     *
+     * @returns {CompletionContainer} this
+     * @memberof CompletionContainer
+     */
+    public connectionTransition(): CompletionContainer {
+        this.transitions.push(new ConnectionTransition());
         return this;
     }
 
-    public specifyNameFiltering(filteredName: string | null): CompletionContainer {
-        this.filteredName = filteredName;
+    /**
+     * Adds an thenKeywordTransition to the transitions
+     *
+     * @returns {CompletionContainer} this
+     * @memberof CompletionContainer
+     */
+    public thenKeywordTransition(): CompletionContainer {
+        this.transitions.push(new ThenKeywordTransition());
         return this;
     }
 
-    public specifyPrependingText(text: string): CompletionContainer {
-        this.prependingText = text;
+    /**
+     * Adds an asKeywordTransition to the transitions
+     *
+     * @returns {CompletionContainer} this
+     * @memberof CompletionContainer
+     */
+    public asKeywordTransition(): CompletionContainer {
+        this.transitions.push(new AsKeywordTransition());
         return this;
     }
 
-    public getCompletions(declarations: Variable[], aliasHelper: AliasHelper, schema: ISchemaType): CompletionGenerator {
-        var generator: CompletionGenerator = new CompletionGenerator(declarations, aliasHelper, schema, this.prependingText);
-        let uniqueTypes = [... new Set(this.types)];
-        uniqueTypes.forEach(type => {
-            switch (type) {
-                case CompletionType.Globals:
-                    generator.addGlobals();
-                    break;
-                case CompletionType.Operand:
-                    generator.addFittingIdentifier(this.filteredName, this.dataType);
-                    break;
-                case CompletionType.Operator:
-                    generator.addFittingOperator(this.dataType);
-                    break;
-                case CompletionType.LogicalOperator:
-                    generator.addLogicalOperators();
-                    break;
-                case CompletionType.Then:
-                    generator.addThenKeyword();
-                    break;
-                case CompletionType.As:
-                    generator.addAsKeyword();
-                    break;
-                default:
-                    break;
+
+    /**
+     * Adds an operatorTransition with the given datatype to the transitions
+     *
+     * @param {string} dataType datatype that the operator should have
+     * @returns {CompletionContainer} this
+     * @memberof CompletionContainer
+     */
+    public operatorTransition(dataType: string): CompletionContainer {
+        this.transitions.push(new OperatorTransition(dataType));
+        return this;
+    }
+
+    /**
+     * Adds an operandTransition with the given datatype, namefilter and prependingText.
+     * If nothing is given, all operands will be shown in the completion
+     *
+     * @param {string} [dataType] datatype of the operand
+     * @param {string} [nameFilter] name of items that shouldn't show up
+     * @param {string} [prependingText] text that will be shown before the label incase the item get's selected
+     * @returns {CompletionContainer}
+     * @memberof CompletionContainer
+     */
+    public operandTransition(dataType?: string, nameFilter?: string, prependingText?: string): CompletionContainer {
+        this.transitions.push(new OperandTransition(dataType, !!nameFilter ? [nameFilter] : [], prependingText));
+        return this;
+    }
+
+    /**
+     * Adds an emptyTransition to the transitions
+     *
+     * @returns {CompletionContainer} this
+     * @memberof CompletionContainer
+     */
+    public emptyTransition(): CompletionContainer {
+        this.transitions.push(new EmptyTransition());
+        return this;
+    }
+
+    /**
+     * Adds a name-filter to all operand-transitions
+     *
+     * @param {string} name name of an operand that shouldn't appear
+     * @memberof CompletionContainer
+     */
+    public addNameFilterToAllOperands(name: string) {
+        this.transitions.forEach(transition => {
+            if (transition instanceof OperandTransition) {
+                transition.addNameFilter(name);
             }
-        });
+        })
+    }
 
+    /**
+     * Fills the given completionBuilder with all transitions
+     *
+     * @param {CompletionBuilder} generator generator that should be manipulated
+     * @returns {CompletionBuilder} manipulated generator
+     * @memberof CompletionContainer
+     */
+    public getCompletions(generator: CompletionBuilder): CompletionBuilder {
+        this.transitions.forEach(transition => transition.addCompletionItems(generator));
         return generator;
     }
 }

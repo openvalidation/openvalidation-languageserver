@@ -1,61 +1,73 @@
-import { AliasHelper } from "src/aliases/AliasHelper";
-import { IComplexData } from "src/rest-interface/schema/IComplexData";
+import { AliasHelper } from "../../aliases/AliasHelper";
+import { IComplexData } from "../../rest-interface/schema/IComplexData";
 import { String } from "typescript-string-operations";
 import { AliasKey } from "../../aliases/AliasKey";
-import { StringHelper } from "../../helper/StringHelper";
 import { TreeTraversal } from "../../helper/TreeTraversal";
 import { OvServer } from "../../OvServer";
-import { GeneralApiResponse } from "../../rest-interface/response/GeneralApiResponse";
+import { LintingResponse } from "../../rest-interface/response/LintingResponse";
 import { ISchemaProperty } from "../../rest-interface/schema/ISchemaProperty";
-import { OperationSyntaxStructure } from "./OperatorSyntaxStructure";
+import { Pattern } from "./TextMateJson";
+import { SyntaxHighlightingCapture } from "./SyntaxHighlightingCapture";
+import { OperationNode } from "../../data-model/syntax-tree/element/operation/OperationNode";
+import { BaseOperandNode } from "../../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
 
 export class TextMateParameter {
-    private _keywords: string[];
-    private _identifier: string[];
-    private _complexSchemaProperties: IComplexData[];
-    private _staticStrings: string[];
-    private _thenKeyword: string | null;
-    private _commentKeyword: string | null;
-    private _operations: OperationSyntaxStructure[];
+    private keywords: string[];
+    private identifier: string[];
+    private complexSchemaProperties: IComplexData[];
+    private asKeyword: string | null;
+    private thenKeyword: string | null;
+    private commentKeyword: string | null;
+
+    private operations: OperationNode[];
+    private operands: BaseOperandNode[];
 
     private aliasHelper: AliasHelper;
 
-    constructor(private readonly apiResponse: GeneralApiResponse, server: OvServer) {
+    constructor(private readonly apiResponse: LintingResponse, server: OvServer) {
         this.aliasHelper = server.aliasHelper;
 
-        this._staticStrings = !apiResponse.staticStrings ? [] : apiResponse.staticStrings;
-        this._identifier = this.getIdentifier(server.schema.dataProperties);
-        this._complexSchemaProperties = server.schema.complexData;
-        this._keywords = server.aliasHelper.getGenericKeywords();
+        this.identifier = this.getIdentifier(server.schema.dataProperties);
+        this.complexSchemaProperties = server.schema.complexData;
+        this.keywords = server.aliasHelper.getGenericKeywords();
 
-        var traversal = new TreeTraversal();
-        var tmpOperations = traversal.getOperations(apiResponse.mainAstNode.getScopes());
-        this._operations = tmpOperations.map(o => new OperationSyntaxStructure(o));
+        if (!!apiResponse.$mainAstNode) {
+            var traversal = new TreeTraversal();
+            this.operations = traversal.getOperations(apiResponse.$mainAstNode.$scopes);
+            this.operands = traversal.getLonelyOperands(apiResponse.$mainAstNode.$scopes);
+        } else {
+            this.operations = [];
+            this.operands = [];
+        }
 
-        this._thenKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.THEN);
-        this._commentKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.COMMENT);
+        this.asKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.AS);
+        this.thenKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.THEN);
+        this.commentKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.COMMENT);
     }
 
-    public get keywords(): string[] {
-        return this._keywords;
+    public get $keywords(): string[] {
+        return this.keywords;
     }
-    public get identifier(): string[] {
-        return this._identifier;
+    public get $identifier(): string[] {
+        return this.identifier;
     }
-    public get complexSchemaProperties(): IComplexData[] {
-        return this._complexSchemaProperties;
+    public get $complexSchemaProperties(): IComplexData[] {
+        return this.complexSchemaProperties;
+    } 
+    public get $asKeyword(): string | null {
+        return this.asKeyword;
     }
-    public get staticStrings(): string[] {
-        return this._staticStrings;
+    public get $thenKeyword(): string | null {
+        return this.thenKeyword;
     }
-    public get thenKeyword(): string | null {
-        return this._thenKeyword;
+    public get $commentKeyword(): string | null {
+        return this.commentKeyword;
     }
-    public get commentKeyword(): string | null {
-        return this._commentKeyword;
+    public get $operations(): OperationNode[] {
+        return this.operations;
     }
-    public get operations(): OperationSyntaxStructure[] {
-        return this._operations;
+    public get $operands(): BaseOperandNode[] {
+        return this.operands;
     }
 
     /**
@@ -70,8 +82,11 @@ export class TextMateParameter {
     private getIdentifier(schema: Array<ISchemaProperty>): string[] {
         var identifier: string[] = [];
 
-        if (!!this.apiResponse.variableNames)
-            identifier = identifier.concat(this.apiResponse.variableNames.filter(n => !String.IsNullOrWhiteSpace(n)));
+        if (!!this.apiResponse.$mainAstNode &&
+            !!this.apiResponse.$mainAstNode.$declarations) {
+            var names: string[] = this.apiResponse.$mainAstNode.$declarations.map(d => d.$name);
+            identifier = identifier.concat(names.filter(n => !String.IsNullOrWhiteSpace(n)));
+        }
 
         if (!!schema && schema.length > 0)
             identifier = identifier.concat(schema.map(property => property.name));
@@ -80,42 +95,34 @@ export class TextMateParameter {
     }
 
     /**
+     * Generates textmate-pattern that are capable for semantic parsing of operations and operands.
+     * A pattern is generated for every operation and operand which only highlights the relevant data.
+     * The relevant data is direcly transfered of the syntax-tree
      *
-     *
-     * @returns {(string | null)}
+     * @returns {Pattern[]} generated patterns
      * @memberof TextMateParameter
      */
-    public getOperationRegExp(): string | null {
-        var stringList: string[] = [];
+    public getOperationAndOperandPatterns(): Pattern[] {
+        var patternList: Pattern[] = [];
 
-        for (const operation of this.operations) {
-            var tmpString = operation.getRegExpAsString();
-            if (!tmpString) continue;
+        for (const operation of this.$operations) {
+            var tmpPattern: SyntaxHighlightingCapture | null = operation.getPatternInformation(this.aliasHelper);
+            if (!tmpPattern) continue;
 
-            stringList.push(tmpString);
+            var pattern = tmpPattern.buildPattern();
+            if (!pattern) continue;
+            patternList.push(pattern);
         }
-        if (stringList.length == 0) return null;
-        return StringHelper.getOredRegEx(stringList);
-    }
 
+        for (const operand of this.$operands) {
+            var tmpPattern: SyntaxHighlightingCapture | null = operand.getPatternInformation(this.aliasHelper);
+            if (!tmpPattern) continue;
 
-    /**
-     *
-     *
-     * @returns {(string | null)}
-     * @memberof TextMateParameter
-     */
-    public getComplexSchemaRegExp(): string | null {
-        if (!this.complexSchemaProperties) return null;
+            var pattern = tmpPattern.buildPattern(true);
+            if (!pattern) continue;
+            patternList.push(pattern);
+        }
 
-        var parents = this.complexSchemaProperties.map(p => p.parent);
-        var childs = this.complexSchemaProperties.map(p => p.child);
-        if (parents.length == 0 || childs.length == 0) return null;
-
-        var parentKeywordString = StringHelper.getOredRegExForWords(parents);
-        var ofKeywordString = "(?i)\\s*(" + StringHelper.getOredRegExForWords(this.aliasHelper.getOfKeywords()) + ")\\s*";
-        var childKeywordString = StringHelper.getOredRegExForWords(childs);
-
-        return StringHelper.getComplexRegExWithOutherBounds(childKeywordString, ofKeywordString, parentKeywordString);
+        return patternList;
     }
 }

@@ -10,6 +10,10 @@ import { OvDocument } from "./OvDocument";
 export class OvDocuments {
     private _ovDocuments: Map<string, OvDocument>;
 
+    /**
+     * Creates an instance of OvDocuments.
+     * @memberof OvDocuments
+     */
     constructor() {
         this._ovDocuments = new Map<string, OvDocument>();
     }

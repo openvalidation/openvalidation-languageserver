@@ -63,10 +63,10 @@ describe("Formatting provider test", () => {
         expect(actual).toEqual(expected);
     });
 
-    test("documentRangeFormatting with valid document and valid range, expect not empty list", () => {
-        var expectedLength: number = 8;
-        var actual = provider.documentRangeFormatting(getParams(Range.create(0, 0, 30, 0)));
+    // test("documentRangeFormatting with valid document and valid range, expect not empty list", () => {
+    //     var expectedLength: number = 8;
+    //     var actual = provider.documentRangeFormatting(getParams(Range.create(0, 0, 30, 0)));
 
-        expect(actual.length).toEqual(expectedLength);
-    });
+    //     expect(actual.length).toEqual(expectedLength);
+    // });
 });

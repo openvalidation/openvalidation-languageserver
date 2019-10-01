@@ -4,17 +4,31 @@ import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for "onRenameRequest"
+ * Response-Provider for ``onRenameRequest``
  *
  * @export
  * @class RenameProvider
  * @extends {Provider}
  */
 export class RenameProvider extends Provider {
-    static bind(server: OvServer) {
+
+    /**
+     * Creates the provider and binds the server to it.
+     *
+     * @static
+     * @param {OvServer} server server we want to bind the provider to
+     * @returns {RenameProvider} created provider
+     * @memberof RenameProvider
+     */
+    static bind(server: OvServer): RenameProvider {
         return new RenameProvider(server);
     }
 
+    /**
+     * Creates an instance of RenameProvider.
+     * @param {OvServer} server server we will connect to
+     * @memberof RenameProvider
+     */
     constructor(server: OvServer) {
         super(server);
         this.connection.onRenameRequest(params => this.rename(params));
@@ -37,18 +51,18 @@ export class RenameProvider extends Provider {
         var oldString: string = oldTuple[0];
 
         // Renaming only makes sense for variables
-        var variable = ovDocument.elementManager.getVariablesByName(oldString);
+        var variable = ovDocument.$elementManager.getVariablesByName(oldString);
         if (!variable) return {};
 
         var textEdits: TextEdit[] = [];
 
-        for (const element of ovDocument.elementManager.getElements()) {
-            var range = element.getRange();
+        for (const element of ovDocument.$elementManager.$elements) {
+            var range = element.$range;
             if (!range) continue;
 
-            var lineNumber = range.getStart().getLine();
+            var lineNumber = range.$start.$line;
 
-            for (const line of element.getLines()) {
+            for (const line of element.$lines) {
                 var matches = line.match(new RegExp(oldString));
                 lineNumber++;
                 if (!matches) continue;
@@ -60,16 +74,10 @@ export class RenameProvider extends Provider {
                     textEdits.push({
                         newText: params.newName,
                         range: Range.create(Position.create(lineNumber - 1, startIndex), Position.create(lineNumber - 1, endIndex))
-                    })
+                    });
                 });
             }
         }
-
-        var textChanges: { [uri: string]: TextEdit[] } = { [params.textDocument.uri]: textEdits };
-        var edit = {
-            changes: textChanges
-        }
-
-        return edit;
+        return { changes: { [params.textDocument.uri]: textEdits }};
     }
 }
