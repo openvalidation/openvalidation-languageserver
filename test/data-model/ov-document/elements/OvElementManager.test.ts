@@ -7,7 +7,7 @@ describe("Dummy Tests", () => {
 
     beforeEach(() => {
         var testInitializer = new TestInitializer(true);
-        elementManager = testInitializer.server.ovDocuments.get("test.ov")!.elementManager;
+        elementManager = testInitializer.server.ovDocuments.get("test.ov")!.$elementManager;
     });
 
     test("Verify elementManager exists", () => {

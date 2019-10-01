@@ -160,7 +160,7 @@ export class TestInitializer {
         return new RenameProvider(this.server);
     }
 
-    public get ovSyntaxNotifier(): SyntaxNotifier {
+    public get syntaxNotifier(): SyntaxNotifier {
         return new SyntaxNotifier(this.server);
     }
 

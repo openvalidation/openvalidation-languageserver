@@ -32,7 +32,7 @@ describe("Completion provider test", () => {
 
     test("completionForParsedElement with null, expected global items", () => {
         var expectedLength: number = 3;
-        var actual: CompletionItem[] | null = provider["completionForParsedElement"](null, [], Position.create(0, 0));
+        var actual: CompletionItem[] | null = provider["completionForParsedElement"](null, [], Position.create(0, 0), "");
 
         expect(actual!.length).toEqual(expectedLength);
     });

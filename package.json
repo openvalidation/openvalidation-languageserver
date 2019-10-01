@@ -49,7 +49,7 @@
     "build": "tsc && npm run copy:exe",
     "start": "npm run build && node lib/server.js",
     "start:watch": "nodemon",
-    "test": "jest",
+    "test": "jest --no-cache",
     "test:watch": "jest --watch",
     "debug": "nodemon --debug lib/server.js",
     "copy:exe": "cpx ./src/rest-interface/ov-rest.exe ./lib/rest-interface/"

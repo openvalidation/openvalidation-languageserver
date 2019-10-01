@@ -1,14 +1,14 @@
 import "jest";
-import { OvSyntaxNotifier } from "../../src/provider/OvSyntaxNotifier";
+import { SyntaxNotifier } from "../../src/provider/SyntaxNotifier";
 import { TestInitializer } from "../TestInitializer";
 
 describe("OvSyntax notifier test", () => {
-    var provider: OvSyntaxNotifier;
+    var provider: SyntaxNotifier;
     var testInitializer: TestInitializer;
 
     beforeEach(() => {
         testInitializer = new TestInitializer(true);
-        provider = testInitializer.ovSyntaxNotifier;
+        provider = testInitializer.syntaxNotifier;
     });
 
     test("Verify provider exists", () => {
