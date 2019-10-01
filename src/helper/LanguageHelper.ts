@@ -6,7 +6,7 @@ import { LanguageEnum } from "../enums/LanguageEnum";
  * @export
  * @class OvDocumentHelper
  */
-export class OvStringHelper {
+export class LanguageHelper {
     /**
      * Returns the monaco-representation of the ov-language
      *

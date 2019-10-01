@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { LintingResponse } from "src/rest-interface/response/LintingResponse";
-import { OvStringHelper } from "../helper/OvStringHelper";
+import { LanguageHelper } from "../helper/LanguageHelper";
 import { OvServer } from "../OvServer";
 import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
 import { TextMateGrammarFactory } from "./syntax-highlighting/TextMateGrammarFactory";
@@ -71,7 +71,7 @@ export class OvSyntaxNotifier {
      */
     private generatedCodeDataObject(apiResponse: ICodeResponse): { language: string, value: string } {
         var json = {
-            language: OvStringHelper.convertOvLanguageToMonacoLanguage(this.server.language),
+            language: LanguageHelper.convertOvLanguageToMonacoLanguage(this.server.language),
             value: apiResponse.implementationResult
         }
 

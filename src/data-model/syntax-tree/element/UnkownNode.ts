@@ -51,8 +51,8 @@ export class UnkownNode extends GenericNode {
         var hoverContent = this.content.getHoverContent();
         if (!hoverContent) return hoverContent;
 
-        var ownContent = "`Unkown-Element` with " + hoverContent.getContent();
-        hoverContent.setContent(ownContent);
+        var ownContent = "`Unkown-Element` with " + hoverContent.$content;
+        hoverContent.$content = ownContent;
         return hoverContent;
     }
     

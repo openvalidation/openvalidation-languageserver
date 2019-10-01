@@ -57,11 +57,11 @@ export class HoverProvider extends Provider {
 
         let markdown: MarkupContent = {
             kind: MarkupKind.Markdown,
-            value: hoverContent.getContent()
+            value: hoverContent.$content
         };
 
         return Promise.resolve({
-            range: hoverContent.getRange().asRange(),
+            range: hoverContent.$range.asRange(),
             contents: markdown
         });
     }

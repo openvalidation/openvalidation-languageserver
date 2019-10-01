@@ -1,3 +1,10 @@
+
+/**
+ * Class used for formatting of strings
+ *
+ * @export
+ * @class FormattingHelper
+ */
 export class FormattingHelper {
 
     /**
@@ -21,12 +28,6 @@ export class FormattingHelper {
      * @memberof FormattingHelper
      */
     public static generateSpaces(count: number): string {
-        var returnString = "";
-
-        for (let index = 0; index < count; index++) {
-            returnString += " ";
-        }
-
-        return returnString;
+        return " ".repeat(count);
     }
 }
