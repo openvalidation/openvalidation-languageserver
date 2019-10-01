@@ -4,7 +4,7 @@ import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for "onRenameRequest"
+ * Response-Provider for ``onRenameRequest``
  *
  * @export
  * @class RenameProvider
@@ -60,16 +60,10 @@ export class RenameProvider extends Provider {
                     textEdits.push({
                         newText: params.newName,
                         range: Range.create(Position.create(lineNumber - 1, startIndex), Position.create(lineNumber - 1, endIndex))
-                    })
+                    });
                 });
             }
         }
-
-        var textChanges: { [uri: string]: TextEdit[] } = { [params.textDocument.uri]: textEdits };
-        var edit = {
-            changes: textChanges
-        }
-
-        return edit;
+        return { changes: { [params.textDocument.uri]: textEdits }};
     }
 }

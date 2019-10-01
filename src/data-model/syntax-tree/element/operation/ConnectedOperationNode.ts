@@ -117,8 +117,8 @@ export class ConnectedOperationNode extends ConditionNode {
             var tmpCapture = condition.getPatternInformation();
             if (!tmpCapture) return null;
 
-            capture.addCapture(...tmpCapture.capture);
-            capture.addRegexToMatch(tmpCapture.match)
+            capture.addCapture(...tmpCapture.$capture);
+            capture.addRegexToMatch(tmpCapture.$match)
         }
 
         return capture;

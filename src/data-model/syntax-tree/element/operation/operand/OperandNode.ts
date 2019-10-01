@@ -6,7 +6,7 @@ import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { BaseOperandNode } from "./BaseOperandNode";
 import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
-import { ScopeEnum } from "../../../../../provider/syntax-highlighting/ScopeEnum";
+import { ScopeEnum } from "../../../../../enums/ScopeEnum";
 import { StringHelper } from "../../../../../helper/StringHelper";
 
 export class OperandNode extends BaseOperandNode {

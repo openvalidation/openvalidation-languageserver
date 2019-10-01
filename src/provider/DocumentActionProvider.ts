@@ -8,7 +8,8 @@ import { OvSyntaxNotifier } from "./OvSyntaxNotifier";
 import { Provider } from "./Provider";
 
 /**
- * Provider to handle every response which deals with documents. In addition, it handels
+ * Provider to handle every response which deals with documents. 
+ * In addition, it handels the `onDidOpen`, `onDidChangeContent` and `onDidClose` requests
  *
  * @export
  * @class DocumentActionProvider
@@ -35,7 +36,7 @@ export class DocumentActionProvider extends Provider {
     /**
      * Cleans current validation and starts a new validation-process
      *
-     * @param {TextDocumentChangeEvent} event parameter that holds the document
+     * @param {string} uri  parameter that holds the uri to the document
      * @memberof DocumentActionProvider
      */
     public validate(uri: string): void {
@@ -61,7 +62,7 @@ export class DocumentActionProvider extends Provider {
      * Cancels the pending validation-request for the given file
      *
      * @private
-     * @param {TextDocument} document the specific document
+     * @param {string} uri  parameter that holds the uri to the document
      * @memberof DocumentActionProvider
      */
     private cleanPendingValidation(uri: string): void {
@@ -72,12 +73,13 @@ export class DocumentActionProvider extends Provider {
         }
     }
 
-
     /**
      * Validates the given document and send the diagnostics and specific ov-notification if necessary
+     * Posts the data to the REST-API in two steps. First we parse it for the linting function which contains
+     *  only the parse-tree and the error-messages. Afterwards we only generate the code in another parsing process.
      *
      * @private
-     * @param {TextDocument} document document that should be validated
+     * @param {string} uri parameter that holds the uri to the document
      * @returns {Promise<void>}
      * @memberof DocumentActionProvider
      */
@@ -155,7 +157,7 @@ export class DocumentActionProvider extends Provider {
 
         var diagnostics: Diagnostic[] = [];
         for (const error of apiResponse.$errors) {
-            var diagnosticRange: Range =  !error.$range ? Range.create(0,0,0,1) : error.$range.asRange();
+            var diagnosticRange: Range = !error.$range ? Range.create(0, 0, 0, 1) : error.$range.asRange();
             var diagnostic: Diagnostic = Diagnostic.create(diagnosticRange, error.$message);
             diagnostic.severity = DiagnosticSeverity.Error;
             diagnostics.push(diagnostic);

@@ -3,8 +3,14 @@ import { OvServer } from "../../OvServer";
 import { TextMateJson } from "./TextMateJson";
 import { TextMateParameter } from "./TextMateParameter";
 import { LintingResponse } from "../../rest-interface/response/LintingResponse";
-import { ScopeEnum } from "./ScopeEnum";
+import { ScopeEnum } from "../../enums/ScopeEnum";
 
+/**
+ * Generates the textmate grammar which the given response of the REST-API
+ *
+ * @export
+ * @class TextMateGrammarFactory
+ */
 export class TextMateGrammarFactory {
 
     private emptyLineRegex: string = '^[ \t]*$';
@@ -14,11 +20,10 @@ export class TextMateGrammarFactory {
     /**
      * Generates and returns the TextMateGrammar
      *
-     * @private
-     * @param {GeneralApiResponse} apiResponse response that holds relevant data like variableNames
-     * @param {JSON} schema schema of the parsing-process
-     * @returns {object} JSON-Object of the TextMate-Grammar
-     * @memberof OvSyntaxNotifier
+     * @param {LintingResponse} apiResponse rest-response that holds the relevant parsed data
+     * @param {OvServer} server sever that contains additional parameter we need for generation
+     * @returns {TextMateJson} JSON-Object of the TextMate-Grammar
+     * @memberof TextMateGrammarFactory
      */
     public generateTextMateGrammar(apiResponse: LintingResponse, server: OvServer): TextMateJson {
         var parameter: TextMateParameter = new TextMateParameter(apiResponse, server);;
@@ -26,6 +31,14 @@ export class TextMateGrammarFactory {
         return returnPar;
     }
 
+    /**
+     * fills the textmate grammar which the calculated parameter
+     *
+     * @private
+     * @param {TextMateParameter} parameter previously calculated parameter that holds the data for the grammar
+     * @returns {TextMateJson}
+     * @memberof TextMateGrammarFactory
+     */
     private fillTextMateGrammar(parameter: TextMateParameter): TextMateJson {
         var json: TextMateJson = {
             scopeName: "source.ov",
@@ -38,7 +51,7 @@ export class TextMateGrammarFactory {
         json.patterns.push({
             comment: 'standard-comment',
             name: 'comment.line',
-            begin: '(?i)(' + parameter.commentKeyword + ')',
+            begin: '(?i)(' + parameter.$commentKeyword + ')',
             end: this.emptyLineRegex
         });
 
@@ -46,16 +59,16 @@ export class TextMateGrammarFactory {
         json.patterns.push({
             comment: 'pattern for actions in a rule',
             name: 'string.action.ov',
-            begin: '(?<=((?i)(' + parameter.thenKeyword + ')))',
+            begin: '(?<=((?i)(' + parameter.$thenKeyword + ')))',
             end: this.emptyLineRegex
         });
 
         // Variables
-        if (parameter.identifier.length > 0) {
+        if (parameter.$identifier.length > 0) {
             json.patterns.push({
                 comment: 'pattern for identifier (variables)',
                 name: 'variable.parameter.name.ov',
-                match: `((?i)${parameter.asKeyword}).*${StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.identifier)}`,
+                match: `((?i)${parameter.$asKeyword}).*${StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.$identifier)}`,
                 captures: {
                     '1': { name: ScopeEnum.Keyword },
                     '2': { name: ScopeEnum.Variable }
@@ -64,11 +77,11 @@ export class TextMateGrammarFactory {
         }
 
         // Keywords without Operators
-        if (parameter.keywords.length > 0) {
+        if (parameter.$keywords.length > 0) {
             json.patterns.push({
                 comment: 'pattern for general keywords',
                 name: 'keyword.ov',
-                match: StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.keywords)
+                match: StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.$keywords)
             });
         }
 

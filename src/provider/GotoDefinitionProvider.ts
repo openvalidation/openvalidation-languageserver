@@ -5,7 +5,7 @@ import { VariableNode } from "../data-model/syntax-tree/element/VariableNode";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for "onDefinition"
+ * Response-Provider for ``onDefinition``
  *
  * @export
  * @class GotoDefinitionProvider
@@ -27,7 +27,7 @@ export class GotoDefinitionProvider extends Provider {
      *
      * @private
      * @param {TextDocumentPositionParams} params parameter that defines the document and the position of the request
-     * @returns {(Definition | DefinitionLink[])} list of all found definitions
+     * @returns {(DefinitionLink[] | Definition)} list of all found definitions
      * @memberof GotoDefinitionProvider
      */
     public definition(params: TextDocumentPositionParams): DefinitionLink[] | Definition {

@@ -6,7 +6,7 @@ import { CompletionContainer } from "../../../../../provider/code-completion/Com
 import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
-import { ScopeEnum } from "../../../../../provider/syntax-highlighting/ScopeEnum";
+import { ScopeEnum } from "../../../../../enums/ScopeEnum";
 
 export class OperatorNode extends GenericNode {
     private dataType: string;

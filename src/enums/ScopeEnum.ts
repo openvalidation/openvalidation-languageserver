@@ -1,3 +1,10 @@
+
+/**
+ * Enum for the textmate-scopes we use in syntax-highlighting
+ *
+ * @export
+ * @enum {number}
+ */
 export enum ScopeEnum {
     Operation = 'operation.ov',
     Variable = 'variable.parameter.name.ov',

@@ -80,8 +80,8 @@ export class ArrayOperandNode extends BaseOperandNode {
             var tmpCapture = item.getPatternInformation();
             if (!tmpCapture) continue;
 
-            capture.addCapture(...tmpCapture.capture);
-            capture.addRegexToMatch(tmpCapture.match);
+            capture.addCapture(...tmpCapture.$capture);
+            capture.addRegexToMatch(tmpCapture.$match);
         }
 
         return capture;

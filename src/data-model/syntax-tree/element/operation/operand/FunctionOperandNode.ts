@@ -92,8 +92,8 @@ export class FunctionOperandNode extends BaseOperandNode {
             var tmpCapture = parameter.getPatternInformation();
             if (!tmpCapture) continue;
 
-            capture.addCapture(...tmpCapture.capture);
-            capture.addRegexToMatch(tmpCapture.match);
+            capture.addCapture(...tmpCapture.$capture);
+            capture.addRegexToMatch(tmpCapture.$match);
         }
 
         return capture;

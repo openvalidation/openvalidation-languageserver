@@ -6,7 +6,7 @@ import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for "onHover"
+ * Response-Provider for ``onHover``
  *
  * @export
  * @class HoverProvider
@@ -46,11 +46,9 @@ export class HoverProvider extends Provider {
             value: hoverContent.getContent()
         };
 
-        var hover: Hover = {
+        return Promise.resolve({
             range: hoverContent.getRange().asRange(),
             contents: markdown
-        };
-
-        return Promise.resolve(hover);
+        });
     }
 }

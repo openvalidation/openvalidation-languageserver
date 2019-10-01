@@ -1,14 +1,14 @@
 import * as _ from "lodash";
+import { LintingResponse } from "src/rest-interface/response/LintingResponse";
 import { OvStringHelper } from "../helper/OvStringHelper";
 import { OvServer } from "../OvServer";
 import { CodeResponse } from "../rest-interface/response/CodeResponse";
 import { TextMateGrammarFactory } from "./syntax-highlighting/TextMateGrammarFactory";
-import { LintingResponse } from "src/rest-interface/response/LintingResponse";
 import { TextMateJson } from "./syntax-highlighting/TextMateJson";
 
 /**
- * Generates the parameter of the notification "textDocument/semanticHighlighting" which isn't part of 
- * the protocol. The notification gets send, when the validation of the changed document is finished
+ * Generates the parameter of the notification ``textDocument/semanticHighlighting`` and ``textDocument/generatedCode``
+ * which isn't part of the protocol. The notification gets send, when the validation of the changed document is finished
  *
  * @export
  * @class OvSyntaxNotifier
@@ -24,6 +24,13 @@ export class OvSyntaxNotifier {
         this.textMateGrammarFactory = new TextMateGrammarFactory;
     }
 
+
+    /**
+     * Checks if the textmate-grammar has changed and sends it to the client if this is the case
+     *
+     * @param {LintingResponse} apiResponse
+     * @memberof OvSyntaxNotifier
+     */
     public sendTextMateGrammarIfNecessary(apiResponse: LintingResponse): void {
         var textMateGrammar: TextMateJson = this.textMateGrammarFactory.generateTextMateGrammar(apiResponse, this.server);
         //Check, if the new grammar is different and musst be send to the client
@@ -33,6 +40,13 @@ export class OvSyntaxNotifier {
         }
     }
 
+
+    /**
+     * Checks if the code has changed and sends it to the client if this is the case
+     *
+     * @param {CodeResponse} apiResponse
+     * @memberof OvSyntaxNotifier
+     */
     public sendGeneratedCodeIfNecessary(apiResponse: CodeResponse): void {
         var newCodeNotification = this.generatedCodeDataObject(apiResponse);
 

@@ -4,7 +4,7 @@ import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for "onFoldingRanges"
+ * Response-Provider for ``onFoldingRanges``
  *
  * @export
  * @class FoldingRangesProvider
@@ -21,7 +21,8 @@ export class FoldingRangesProvider extends Provider {
     }
 
     /**
-     * Generates a list of all foldable sections
+     * Generates a list of all foldable sections.
+     * This is done with the raw text and not with the syntax-tree to be more performant.
      * 
      * @param {FoldingRangeRequestParam} params parameter that defines the specific document
      * @returns {FoldingRange[]} list of a range of all foldable-sections

@@ -13,7 +13,7 @@ import { FunctionOperandNode } from "./operand/FunctionOperandNode";
 import { OperandNode } from "./operand/OperandNode";
 import { OperatorNode } from "./operand/OperatorNode";
 import { SyntaxHighlightingCapture } from "../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
-import { ScopeEnum } from "../../../../provider/syntax-highlighting/ScopeEnum";
+import { ScopeEnum } from "../../../../enums/ScopeEnum";
 import { String } from "typescript-string-operations";
 
 export class OperationNode extends ConditionNode {
@@ -202,8 +202,8 @@ export class OperationNode extends ConditionNode {
         if (!!this.leftOperand) {
             var tempCapture = this.leftOperand.getPatternInformation();
             if (!!tempCapture) {
-                capture.addCapture(...tempCapture.capture);
-                capture.addRegexToMatch(tempCapture.match);
+                capture.addCapture(...tempCapture.$capture);
+                capture.addRegexToMatch(tempCapture.$match);
             }
         }
 
@@ -230,16 +230,16 @@ export class OperationNode extends ConditionNode {
 
             var tempCapture = this.operator.getPatternInformation();
             if (!!tempCapture) {
-                capture.addCapture(...tempCapture.capture);
-                capture.addRegexToMatch(tempCapture.match);
+                capture.addCapture(...tempCapture.$capture);
+                capture.addRegexToMatch(tempCapture.$match);
             }
         }
 
         if (!!this.rightOperand && (!this.leftOperand || !this.leftOperand.getRange().includesRange(this.rightOperand.getRange()))) {
             var tempCapture = this.rightOperand.getPatternInformation();
             if (!!tempCapture) {
-                capture.addCapture(...tempCapture.capture);
-                capture.addRegexToMatch(tempCapture.match);
+                capture.addCapture(...tempCapture.$capture);
+                capture.addRegexToMatch(tempCapture.$match);
             }
         }
 

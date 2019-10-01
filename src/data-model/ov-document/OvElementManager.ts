@@ -77,7 +77,7 @@ export class OvElementManager {
      * @memberof OvDocument
      */
     public getElementsByRange(range: Range): GenericNode[] {
-        var elements = this.$elements.filter(rule => {
+        var elements = this.elements.filter(rule => {
             var elementRange = rule.getRange();
             if (!elementRange) return false;
 

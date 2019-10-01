@@ -9,8 +9,8 @@ import { CompletionGenerator } from "./code-completion/CompletionGenerator";
 import { Provider } from "./Provider";
 import { CompletionResponse } from "src/rest-interface/response/CompletionResponse";
 
-/*
- * Response-Provider for "onCompletion"
+/**
+ * Response-Provider for `onCompletion` and `onCompletionResolve`
  *
  * @export
  * @class CompletionProvider
@@ -32,7 +32,7 @@ export class CompletionProvider extends Provider {
      *
      * @private
      * @param {CompletionItem} params completion item to comment
-     * @returns {CompletionItem} documented completion
+     * @returns {CompletionItem} documented completion-item
      * @memberof CompletionProvider
      */
     public completionResolve(params: CompletionItem): CompletionItem {
@@ -41,11 +41,11 @@ export class CompletionProvider extends Provider {
     }
 
     /**
-     * Generates a list of completions for the given position
+     * Generates a list of completions for the given position and the given trigger
      *
      * @private
      * @param {CompletionParams} params params that specify the position of the request
-     * @returns {(Promise<CompletionList | null>)} calculated completion-items
+     * @returns {(Promise<CompletionItem[] | null>)} calculated completion-items or null if not possible
      * @memberof CompletionProvider
      */
     public async completion(params: CompletionParams): Promise<CompletionItem[] | null> {
@@ -62,6 +62,15 @@ export class CompletionProvider extends Provider {
         return null;
     }
 
+    /**
+     * Generates a completion for a schema-attribute with childs.
+     * It tries to find childs for the word at the current position and returns them
+     *
+     * @private
+     * @param {CompletionParams} params parameter that contains the textdocument and the position
+     * @returns {(Promise<CompletionItem[] | null>)} items with the found childs, null in case of an error
+     * @memberof CompletionProvider
+     */
     private async completionForSchema(params: CompletionParams): Promise<CompletionItem[] | null> {
         var document = this.server.documents.get(params.textDocument.uri);
         if (document) {
@@ -75,6 +84,15 @@ export class CompletionProvider extends Provider {
         return null;
     }
 
+    /**
+     * Generates completion for an array-expression.
+     * It returns an item for every variable or schema-attribute that has the same datatype than the current expression
+     *
+     * @private
+     * @param {CompletionParams} params parameter that contains the textdocument and the position
+     * @returns {(Promise<CompletionItem[] | null>)} items that has been found, null in case of an error
+     * @memberof CompletionProvider
+     */
     private async completionForArray(params: CompletionParams): Promise<CompletionItem[] | null> {
         var document = this.server.documents.get(params.textDocument.uri);
         if (document) {
@@ -95,12 +113,21 @@ export class CompletionProvider extends Provider {
         return null;
     }
 
+    /**
+     * General code-completion which can be triggered by the shortcut or automatically.
+     * Parsed the current element and tries to get completion-state from it
+     *
+     * @private
+     * @param {CompletionParams} params parameter that contains the textdocument and the position
+     * @returns {(Promise<CompletionItem[] | null>)} generated completionitems, null in case of an error
+     * @memberof CompletionProvider
+     */
     private async completionByText(params: CompletionParams): Promise<CompletionItem[] | null> {
         var document = this.server.documents.get(params.textDocument.uri);
         if (!document) return [];
 
         var documentText: string[] = document.getText().split("\n");
-        var itemTuple = this.extractItem(documentText, params);
+        var itemTuple = this.extractItem(documentText, params.position);
 
         var parseString: string = itemTuple[0].join("\n");
         if (!String.IsNullOrWhiteSpace(parseString)) parseString += "\n\n";
@@ -121,6 +148,17 @@ export class CompletionProvider extends Provider {
         return this.completionForParsedElement(response, declarations, relativePosition, wordAtCurrentPosition);
     }
 
+    /**
+     * Generates completion items for the parsed element
+     *
+     * @private
+     * @param {(CompletionResponse | null)} response response of the text at the current position
+     * @param {Variable[]} declarations variables of the current document
+     * @param {Position} relativePosition position inside given node. Because we only parsed that element alone it needs to be relative to it
+     * @param {string} wordAtCurrentPosition found word at the position. This is used for filtering of items
+     * @returns {(Promise<CompletionItem[] | null>)} generated completionitems, null in case of an error
+     * @memberof CompletionProvider
+     */
     private completionForParsedElement(response: CompletionResponse | null, declarations: Variable[], relativePosition: Position, wordAtCurrentPosition: string): CompletionItem[] | null {
         if (!response)
             return CompletionGenerator.default(declarations, this.server);
@@ -133,24 +171,29 @@ export class CompletionProvider extends Provider {
         return relevantElement!.getCompletionContainer(relativePosition).getCompletions(generator).build();
     }
 
-    public extractItem(text: string[], params: CompletionParams): [string[], number] {
+    /**
+     * Finds the item at the position and returns it with it's starting-number
+     *
+     * @param {string[]} text text of the current document
+     * @param {Position} position position of the completion-request
+     * @returns {[string[], number]} tuple of the lines and the starting number of the element
+     * @memberof CompletionProvider
+     */
+    private extractItem(text: string[], position: Position): [string[], number] {
         var startLine: number = -1;
         var currentLines: string[] = [];
         var foundIndex: boolean = false;
 
         for (let index = 0; index < text.length; index++) {
             const element = text[index];
-
-            if (index == params.position.line) {
+            if (index == position.line)
                 foundIndex = true;
-            }
 
             if (!String.IsNullOrWhiteSpace(element)) {
                 currentLines.push(element);
 
-                if (startLine == -1) {
+                if (startLine == -1)
                     startLine = index;
-                }
             }
             else if (!foundIndex) {
                 currentLines = [];

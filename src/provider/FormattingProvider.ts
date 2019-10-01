@@ -3,7 +3,7 @@ import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for "onDocumentRangeFormatting"
+ * Response-Provider for ``onDocumentRangeFormatting``
  *
  * @export
  * @class FormattingProvider

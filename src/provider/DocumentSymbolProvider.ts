@@ -4,7 +4,7 @@ import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for "onDocumentSymbol"
+ * Response-Provider for ``onDocumentSymbol``
  *
  * @export
  * @class DocumentSymbolProvider
