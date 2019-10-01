@@ -37,5 +37,5 @@ export abstract class BaseOperandNode extends GenericNode {
     abstract getCompletionContainer(range: Position): CompletionContainer;
     abstract isComplete(): boolean;
     abstract getBeautifiedContent(aliasesHelper: AliasHelper): string;
-    abstract getPatternInformation(): SyntaxHighlightingCapture | null;
+    abstract getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null;
 }

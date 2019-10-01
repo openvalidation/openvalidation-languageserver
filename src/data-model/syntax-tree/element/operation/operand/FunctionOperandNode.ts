@@ -1,6 +1,7 @@
 import { Type } from "class-transformer";
 import { AliasHelper } from "src/aliases/AliasHelper";
 import { Position } from "vscode-languageserver";
+import { ScopeEnum } from "../../../../../enums/ScopeEnum";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
 import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
@@ -85,17 +86,20 @@ export class FunctionOperandNode extends BaseOperandNode {
         return this.defaultFormatting();
     }
 
-    public getPatternInformation(): SyntaxHighlightingCapture | null {        
+    public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {        
         var capture = new SyntaxHighlightingCapture();
+        capture.addCapture(ScopeEnum.Keyword);
+        capture.addRegexToMatch(`((?i)${this.getName()})`);
 
         for (const parameter of this.getParameters()) {
-            var tmpCapture = parameter.getPatternInformation();
+            var tmpCapture = parameter.getPatternInformation(aliasesHelper);
             if (!tmpCapture) continue;
 
             capture.addCapture(...tmpCapture.$capture);
             capture.addRegexToMatch(tmpCapture.$match);
         }
 
+        console.log(capture);
         return capture;
     }
 }

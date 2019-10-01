@@ -67,7 +67,7 @@ export class OperatorNode extends GenericNode {
         return this.defaultFormatting();
     }
 
-    public getPatternInformation(): SyntaxHighlightingCapture | null {
+    public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
         var returnString = this.$lines.join("\n");
         if (String.IsNullOrWhiteSpace(returnString)) {
             return null;

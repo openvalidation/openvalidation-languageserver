@@ -84,17 +84,7 @@ export class TextMateGrammarFactory {
                 match: StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.$keywords)
             });
         }
-
-        // Complex Schema
-        var schemaRegex = parameter.getComplexSchemaRegExp();
-        if (!!schemaRegex) {
-            json.patterns.push({
-                comment: 'pattern for complex `of`-keywords',
-                name: 'keyword.of.ov',
-                match: schemaRegex
-            });
-        }
-
+        
         // Operator Keywords
         var operationRegex = parameter.getOperationAndOperandPatterns();
         if (!!operationRegex) {

@@ -191,7 +191,7 @@ export class OperationNode extends ConditionNode {
         return returnString;
     }
 
-    public getPatternInformation(): SyntaxHighlightingCapture | null {
+    public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
         var capture: SyntaxHighlightingCapture | null = new SyntaxHighlightingCapture();
 
         if (!!this.getConnector()) {
@@ -200,7 +200,7 @@ export class OperationNode extends ConditionNode {
         }
 
         if (!!this.leftOperand) {
-            var tempCapture = this.leftOperand.getPatternInformation();
+            var tempCapture = this.leftOperand.getPatternInformation(aliasesHelper);
             if (!!tempCapture) {
                 capture.addCapture(...tempCapture.$capture);
                 capture.addRegexToMatch(tempCapture.$match);
@@ -225,10 +225,12 @@ export class OperationNode extends ConditionNode {
                 shadowOperator = shadowOperator.substring(startIndex, endIndex);
             }
 
-            if (!String.IsNullOrWhiteSpace(shadowOperator.trim()))
-                capture.addRegexToMatch(`(?:${shadowOperator.trim()})`);
+            if (!String.IsNullOrWhiteSpace(shadowOperator.trim())) {
+                capture.addRegexToMatch(`(${shadowOperator.trim()})`);
+                capture.addCapture(ScopeEnum.Empty);
+            }
 
-            var tempCapture = this.operator.getPatternInformation();
+            var tempCapture = this.operator.getPatternInformation(aliasesHelper);
             if (!!tempCapture) {
                 capture.addCapture(...tempCapture.$capture);
                 capture.addRegexToMatch(tempCapture.$match);
@@ -236,7 +238,7 @@ export class OperationNode extends ConditionNode {
         }
 
         if (!!this.rightOperand && (!this.leftOperand || !this.leftOperand.$range.includesRange(this.rightOperand.$range))) {
-            var tempCapture = this.rightOperand.getPatternInformation();
+            var tempCapture = this.rightOperand.getPatternInformation(aliasesHelper);
             if (!!tempCapture) {
                 capture.addCapture(...tempCapture.$capture);
                 capture.addRegexToMatch(tempCapture.$match);

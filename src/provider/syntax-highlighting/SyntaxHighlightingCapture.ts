@@ -83,7 +83,7 @@ export class SyntaxHighlightingCapture {
      * @returns {(Pattern | null)} builded pattern or null, in an error-case
      * @memberof SyntaxHighlightingCapture
      */
-    public buildPattern(): Pattern | null {
+    public buildPattern(atStartOfTheLine: boolean = false): Pattern | null {
         if (!this.$match) return null;
 
         var capture: any = { };
@@ -94,8 +94,12 @@ export class SyntaxHighlightingCapture {
             }
         }
 
+        // Lonely operands should be at the start of the line
+        if (atStartOfTheLine)
+            this.$match = `^\\s*${this.$match}`;
+
         return {
-            match: this.$match!,
+            match: this.$match,
             captures: capture
         }
     }

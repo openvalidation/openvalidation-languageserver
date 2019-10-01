@@ -73,11 +73,11 @@ export class ArrayOperandNode extends BaseOperandNode {
         return this.items.length > 0;
     }
 
-    public getPatternInformation(): SyntaxHighlightingCapture | null {        
+    public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {        
         var capture = new SyntaxHighlightingCapture();
 
         for (const item of this.getItems()) {
-            var tmpCapture = item.getPatternInformation();
+            var tmpCapture = item.getPatternInformation(aliasesHelper);
             if (!tmpCapture) continue;
 
             capture.addCapture(...tmpCapture.$capture);

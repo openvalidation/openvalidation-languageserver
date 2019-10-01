@@ -109,12 +109,12 @@ export class ConnectedOperationNode extends ConditionNode {
         return this.conditions.map(cond => cond.isComplete()).every(bool => bool);
     }
 
-    public getPatternInformation(): SyntaxHighlightingCapture | null {
+    public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
         if (this.conditions.length == 0) return null;
 
         var capture = new SyntaxHighlightingCapture();
         for (const condition of this.conditions) {
-            var tmpCapture = condition.getPatternInformation();
+            var tmpCapture = condition.getPatternInformation(aliasesHelper);
             if (!tmpCapture) return null;
 
             capture.addCapture(...tmpCapture.$capture);

@@ -8,6 +8,7 @@ import { BaseOperandNode } from "./BaseOperandNode";
 import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { ScopeEnum } from "../../../../../enums/ScopeEnum";
 import { StringHelper } from "../../../../../helper/StringHelper";
+import { String } from "typescript-string-operations";
 
 export class OperandNode extends BaseOperandNode {
 
@@ -44,18 +45,31 @@ export class OperandNode extends BaseOperandNode {
     public isComplete(): boolean {
         return false;
     }
-    
+
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         return this.defaultFormatting();
     }
 
-    public getPatternInformation(): SyntaxHighlightingCapture | null {
-        var returnString: string | null = null;
+    public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
+        var joinedLines: string = this.$lines.join("\n");
+        if (String.IsNullOrWhiteSpace(joinedLines)) return null;
 
-        var splittedOperand = this.$lines.join("\n").split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.getName())})`, "g"));
+        if (this.getName().indexOf(".") != -1 && joinedLines.indexOf(".") == -1) 
+            return this.getCompletPatternInformation(aliasesHelper);
+
+        var returnString: string = "";
+        var splittedOperand = joinedLines.split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.getName())})`, "g"));
+        var capture = new SyntaxHighlightingCapture();
 
         if (splittedOperand.length >= 2) {
-            returnString = `(?:${splittedOperand[0]})\\s*(${StringHelper.makeStringRegExSafe(splittedOperand[1])})\\s*`;
+            returnString = `(${splittedOperand[0]})\\s*(${StringHelper.makeStringRegExSafe(splittedOperand[1])})\\s*`;
+
+            var scope = this.getIsStatic()
+                ? this.getDataType() == "Decimal"
+                    ? ScopeEnum.StaticNumber
+                    : ScopeEnum.StaticString
+                : ScopeEnum.Variable;
+            capture.addCapture(ScopeEnum.Empty, scope);
         }
 
         if (splittedOperand.length >= 3) {
@@ -63,21 +77,50 @@ export class OperandNode extends BaseOperandNode {
             for (let index = 3; index < splittedOperand.length; index++) {
                 const split = splittedOperand[index];
                 duplicateOperands += split;
-            } 
+            }
 
-            returnString += `(?:${duplicateOperands})`;
+            returnString += `(${duplicateOperands})`;
+            capture.addCapture(ScopeEnum.Empty);
         }
 
-        if (!returnString) return null;            
-        var scope = this.getIsStatic()
-            ? this.getDataType() == "Decimal"
-                ? ScopeEnum.StaticNumber
-                : ScopeEnum.StaticString
-            : ScopeEnum.Variable;
+        if (!returnString) return null;
 
-        var capture = new SyntaxHighlightingCapture();
-        capture.addCapture(scope);
         capture.addRegexToMatch(returnString);
+        return capture;
+    }
+
+
+    /**
+     * Completion for operands with an `Of`-keyword
+     *
+     * @param {AliasHelper} aliasesHelper
+     * @returns {(SyntaxHighlightingCapture | null)}
+     * @memberof OperandNode
+     */
+    private getCompletPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
+        if (String.IsNullOrWhiteSpace(this.$lines.join("\n"))) return null;
+
+        var splittedName = this.getName().split(".").reverse();
+        var splittedOperand = this.$lines.join("\n").split(new RegExp(`(${StringHelper.getOredRegEx(splittedName)})`, "g"));
+        var ofAliases = aliasesHelper.getOfKeywords();
+        var capture: SyntaxHighlightingCapture = new SyntaxHighlightingCapture();
+
+        var returnRegex: string = "";
+        var ofFound: boolean = false;;
+        for (const text of splittedOperand) {
+            returnRegex += `(${text})\\s*`;
+
+            splittedName.includes(text) ? ScopeEnum.Variable : ScopeEnum.Empty
+            if (splittedName.includes(text)) {
+                capture.addCapture(ScopeEnum.Variable);
+            } else if (!ofFound && ofAliases.includes(text.trim().toUpperCase())) {
+                capture.addCapture(ScopeEnum.Keyword);
+            } else {
+                capture.addCapture(ScopeEnum.Empty);
+            }
+        }
+
+        capture.$match = returnRegex;
         return capture;
     }
 }

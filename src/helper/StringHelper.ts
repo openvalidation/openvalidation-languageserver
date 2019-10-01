@@ -1,5 +1,3 @@
-import { String } from "typescript-string-operations";
-
 /**
  * Defines some useful methods for strings
  *
@@ -104,33 +102,6 @@ export class StringHelper {
         });
         return text;
     }
-
-
-    /**
-     * Generated a regular expression, where the middle-path is validated.
-     * The leftBound must appear before, and the rightBound must appear after it
-     *
-     * @static
-     * @param {string} leftBound
-     * @param {string} middle
-     * @param {string} rightBound
-     * @returns {(string | null)}
-     * @memberof StringHelper
-     */
-    public static getComplexRegExWithOutherBounds(leftBound: string, middle: string, rightBound: string): string | null {
-        var leftString = String.IsNullOrWhiteSpace(leftBound) ? "" : `(?<=(${leftBound})).*`;
-        if (String.IsNullOrWhiteSpace(leftString)) return null;
-
-        var operatorString = String.IsNullOrWhiteSpace(middle) ? "" : `(${middle}})`;
-        if (String.IsNullOrWhiteSpace(operatorString)) return null;
-
-        var rightString = String.IsNullOrWhiteSpace(rightBound) ? "" : `.*(?=(${rightBound}))`;
-
-        var regex = leftString.concat(operatorString).concat(rightString);
-        if (String.IsNullOrWhiteSpace(regex)) return null;
-        return regex;
-    }
-
 
     /**
      * Searches the word at a specfic index and returns it

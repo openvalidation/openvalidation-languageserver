@@ -2,7 +2,6 @@ import { AliasHelper } from "../../aliases/AliasHelper";
 import { IComplexData } from "../../rest-interface/schema/IComplexData";
 import { String } from "typescript-string-operations";
 import { AliasKey } from "../../aliases/AliasKey";
-import { StringHelper } from "../../helper/StringHelper";
 import { TreeTraversal } from "../../helper/TreeTraversal";
 import { OvServer } from "../../OvServer";
 import { LintingResponse } from "../../rest-interface/response/LintingResponse";
@@ -107,7 +106,7 @@ export class TextMateParameter {
         var patternList: Pattern[] = [];
 
         for (const operation of this.$operations) {
-            var tmpPattern: SyntaxHighlightingCapture | null = operation.getPatternInformation();
+            var tmpPattern: SyntaxHighlightingCapture | null = operation.getPatternInformation(this.aliasHelper);
             if (!tmpPattern) continue;
 
             var pattern = tmpPattern.buildPattern();
@@ -116,40 +115,14 @@ export class TextMateParameter {
         }
 
         for (const operand of this.$operands) {
-            var tmpPattern: SyntaxHighlightingCapture | null = operand.getPatternInformation();
+            var tmpPattern: SyntaxHighlightingCapture | null = operand.getPatternInformation(this.aliasHelper);
             if (!tmpPattern) continue;
 
-            var pattern = tmpPattern.buildPattern();
+            var pattern = tmpPattern.buildPattern(true);
             if (!pattern) continue;
             patternList.push(pattern);
         }
 
         return patternList;
-    }
-    
-    /**
-     * Generates the complex regular expression for complex schema properties.
-     * This is responsible for parsing the `of`-keyword only in a valid context.
-     * A valid context is e.g. `child of parent`.
-     *
-     * @returns {(string | null)}
-     * @memberof TextMateParameter
-     */
-    public getComplexSchemaRegExp(): string | null {
-        if (!this.$complexSchemaProperties) return null;
-       
-        var ofKeywordString = ".*" + StringHelper.getCaseUnsensitiveOredRegExForWords(...this.aliasHelper.getOfKeywords()) + ".*";
-
-        var propertyStrings: string[] = [];
-        for (const schemaProperty of this.$complexSchemaProperties) {
-            var tmpString = StringHelper.getComplexRegExWithOutherBounds(schemaProperty.child, ofKeywordString, schemaProperty.parent);
-            if (!tmpString) continue;
-            
-            propertyStrings.push(tmpString);
-        }
-
-        if (propertyStrings.length == 0) return null;
-
-        return StringHelper.getOredRegEx(propertyStrings);
     }
 }
