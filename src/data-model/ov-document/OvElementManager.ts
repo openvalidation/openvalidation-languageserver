@@ -1,4 +1,4 @@
-import { Position, Range } from "vscode-languageserver-types";
+import { Range } from "vscode-languageserver-types";
 import { CommentNode } from "../syntax-tree/element/CommentNode";
 import { RuleNode } from "../syntax-tree/element/RuleNode";
 import { VariableNode } from "../syntax-tree/element/VariableNode";
@@ -12,10 +12,10 @@ import { GenericNode } from "../syntax-tree/GenericNode";
  * @class OvElementManager
  */
 export class OvElementManager {
-    private _elements: GenericNode[];
+    private elements: GenericNode[];
 
     constructor() {
-        this._elements = [];
+        this.elements = [];
     }
 
     /**
@@ -25,81 +25,48 @@ export class OvElementManager {
      * @type {GenericNode[]}
      * @memberof OvElementManager
      */
-    public getElements(): GenericNode[] {
-        return this._elements;
+    public get $elements(): GenericNode[] {
+        return this.elements;
     }
 
     public addElement(element: GenericNode) {
-        this._elements.push(element);
-    }
-
-    public overrideElement(element: GenericNode, index: number) {
-        if (this._elements.length <= index) {
-            this._elements.push(element);
-            if (this._elements.length <= index)
-                throw Error("Can't override Element");
-        }
-
-        this._elements[index] = element;
+        this.elements.push(element);
     }
 
     public addElements(element: GenericNode[]) {
-        this._elements.push(...element);
+        this.elements.push(...element);
     }
 
     /**
      * Returns all known variables
      *
-     * @readonly
-     * @type {OvVariable[]}
+     * @returns {VariableNode[]} list of known variables
      * @memberof OvElementManager
      */
     public getVariables(): VariableNode[] {
-        return this._elements.filter(element => element instanceof VariableNode) as VariableNode[];
+        return this.elements.filter(element => element instanceof VariableNode) as VariableNode[];
     }
 
     /**
      * Returns all known rules
      *
      * @readonly
-     * @type {OvRule[]}
+     * @returns {RuleNode[]} list of known variables
      * @memberof OvElementManager
      */
     public getRules(): RuleNode[] {
-        return this._elements.filter(element => element instanceof RuleNode) as RuleNode[];
+        return this.elements.filter(element => element instanceof RuleNode) as RuleNode[];
     }
 
     /**
      * Returns all known comments
      *
      * @readonly
-     * @type {OvComment[]}
+     * @returns {CommentNode[]} list of known comments
      * @memberof OvElementManager
      */
     public getComments(): CommentNode[] {
-        return this._elements.filter(element => element instanceof CommentNode) as CommentNode[];
-    }
-
-    /**
-     * Finds and returns the element at an specific position in the document
-     *
-     * @param {Position} position position where the element should be found
-     * @returns {(GenericNode | undefined)} found rule
-     * @memberof OvDocument
-     */
-    public getElementByPosition(position: Position): GenericNode | undefined {
-        var lineNumber = position.line;
-
-        var element = this.getElements().filter(rule => {
-            var range = rule.getRange();
-            if (!range) return false;
-
-            return range.getStart().getLine() <= lineNumber &&
-                range.getEnd().getLine() >= lineNumber;
-        });
-        if (!element || element.length == 0) return undefined;
-
-        return element[0];
+        return this.elements.filter(element => element instanceof CommentNode) as CommentNode[];
     }
 
     /**
@@ -110,7 +77,7 @@ export class OvElementManager {
      * @memberof OvDocument
      */
     public getElementsByRange(range: Range): GenericNode[] {
-        var elements = this.getElements().filter(rule => {
+        var elements = this.$elements.filter(rule => {
             var elementRange = rule.getRange();
             if (!elementRange) return false;
 
@@ -122,10 +89,10 @@ export class OvElementManager {
     }
 
     /**
-     * Searches for a rule with the specified name and returns it
+     * Searches for variables with the specified name and returns it
      *
-     * @param {string} name name of the defined rule
-     * @returns {(OvVariable | null)} the found rule or null
+     * @param {string} name name of the defined varialbe
+     * @returns {(VariableNode[] | null)} the found variables or null
      * @memberof OvDocument
      */
     public getVariablesByName(name: string): VariableNode[] | null {
@@ -137,10 +104,12 @@ export class OvElementManager {
     }
 
     /**
-     * Returns all known variables
+     * Returns all variables, that are used inside the given string
      *
-     * @readonly
-     * @type {OvVariable[]}
+     * @param {string} element string where we search for variables
+     * @param {(string | null)} asKeyword as-keyword is used to determine, whether the found variable is the element inside our string.
+     * We don't want to get the node which is declared inside the element
+     * @returns {VariableNode[]}
      * @memberof OvElementManager
      */
     public getUsedVariables(element: string, asKeyword: string | null): VariableNode[] {
@@ -158,10 +127,5 @@ export class OvElementManager {
         }
 
         return returnNode;
-    }
-
-    public getLines(): string {
-        var lines: string[] = this._elements.map(element => element.getLines().join('\n'));
-        return lines.join("\n\n");
     }
 }

@@ -212,8 +212,8 @@ export class OvServer {
         }
 
         if (aliases) {
-            this.aliasHelper.updateAliases(aliases);
-            this.aliasHelper.updateOperators(returnAliases.data.getOperators());
+            this.aliasHelper.$aliases = aliases;
+            this.aliasHelper.$operators = returnAliases.data.getOperators();
 
             var commentKeyword = this.aliasHelper.getCommentKeyword();
             if (!!commentKeyword)

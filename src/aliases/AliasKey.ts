@@ -1,3 +1,10 @@
+/**
+ * Enum which conatins the relevant alias-keys that are required
+ *  for handling with the aliases from the rest-interface
+ *
+ * @export
+ * @enum {number}
+ */
 export enum AliasKey {
     // Logical Operators
     AND = 'ʬandʬ',

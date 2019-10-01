@@ -40,7 +40,7 @@ export class GotoDefinitionProvider extends Provider {
         var referenceString: string = referenceTuple[0];
         // var referenceRange: Range = referenceTuple[1];
 
-        var foundVariables = ovDocument.elementManager.getVariablesByName(referenceString);
+        var foundVariables = ovDocument.$elementManager.getVariablesByName(referenceString);
         if (!foundVariables || foundVariables.length == 0) return [];
 
         var locationList: Location[] = [];

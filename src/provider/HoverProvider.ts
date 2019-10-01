@@ -35,7 +35,7 @@ export class HoverProvider extends Provider {
         if (!ovDocument) return Promise.resolve(null);
 
         var traversal: TreeTraversal = new TreeTraversal();
-        var foundNode: GenericNode | null = traversal.traverseTree(ovDocument.elementManager.getElements(), params.position);
+        var foundNode: GenericNode | null = traversal.traverseTree(ovDocument.$elementManager.$elements, params.position);
         if (!foundNode) return Promise.resolve(null);
 
         var hoverContent: HoverContent | null = foundNode.getHoverContent();

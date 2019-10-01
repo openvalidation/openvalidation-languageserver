@@ -37,12 +37,12 @@ export class RenameProvider extends Provider {
         var oldString: string = oldTuple[0];
 
         // Renaming only makes sense for variables
-        var variable = ovDocument.elementManager.getVariablesByName(oldString);
+        var variable = ovDocument.$elementManager.getVariablesByName(oldString);
         if (!variable) return {};
 
         var textEdits: TextEdit[] = [];
 
-        for (const element of ovDocument.elementManager.getElements()) {
+        for (const element of ovDocument.$elementManager.$elements) {
             var range = element.getRange();
             if (!range) continue;
 

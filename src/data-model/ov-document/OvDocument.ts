@@ -15,24 +15,24 @@ import { OvElementManager } from "./OvElementManager";
  */
 export class OvDocument {
 
-    private _elementManager: OvElementManager;
-    private _declarations: Variable[];
+    private elementManager: OvElementManager;
+    private declarations: Variable[];
 
     constructor(astElements: GenericNode[], declarations: Variable[], private _aliaseHelper: AliasHelper) {
-        this._elementManager = new OvElementManager();
-        this._declarations = declarations;
+        this.elementManager = new OvElementManager();
+        this.declarations = declarations;
         this.create(astElements);
     }
 
-    public get declarations(): Variable[] {
-        return this._declarations;
+    public get $declarations(): Variable[] {
+        return this.declarations;
     }
 
-    public get elementManager(): OvElementManager {
-        return this._elementManager;
+    public get $elementManager(): OvElementManager {
+        return this.elementManager;
     }
 
-    public get aliaseHelper(): AliasHelper {
+    public get $aliaseHelper(): AliasHelper {
         return this._aliaseHelper;
     }
 
@@ -89,10 +89,10 @@ export class OvDocument {
      * @returns {string} found line
      * @memberof OvDocument
      */
-    public getLineByLineNumber(lineNumber: number): string {
-        if (this.elementManager.getElements().length == 0) return "";
+    private getLineByLineNumber(lineNumber: number): string {
+        if (this.elementManager.$elements.length == 0) return "";
 
-        var elementList = this.elementManager.getElements().filter(rule => {
+        var elementList = this.elementManager.$elements.filter(rule => {
             var range = rule.getRange();
             if (!range) return false;
 

@@ -1,4 +1,4 @@
-import { AliasKey } from "./AliasKey";
+import {AliasKey} from './AliasKey';
 
 /**
  * Maintains the available aliases and defines getter-methods
@@ -15,11 +15,11 @@ export class AliasHelper {
         this.operators = new Map<string, string>();
     }
 
-    public updateAliases(aliases: Map<string, string>) {
+    public set $aliases(aliases: Map<string, string>) {
         this.aliases = aliases;
     }
 
-    public updateOperators(operators: Map<string, string>) {
+    public set $operators(operators: Map<string, string>) {
         this.operators = operators;
     }
 
@@ -76,8 +76,15 @@ export class AliasHelper {
         return returnList;
     }
 
-    private getKeys(): string[] {
-        return Array.from(this.aliases.keys());
+    /**
+     * Tries to find aliases for the given key
+     *
+     * @param {AliasKey} keywordToFind key of the aliases you want to find
+     * @returns {string[]} list of the found aliases
+     * @memberof AliasHelper
+     */
+    public getKeywordsByAliasKey(keywordToFind: AliasKey): string[] {
+        return this.getKeys().filter(key => this.aliases.get(key)!.indexOf(keywordToFind) != -1);
     }
 
     /**
@@ -95,34 +102,85 @@ export class AliasHelper {
         });
     }
 
+
+    /**
+     * Returns a list of of-keywords (e.g. `must`)
+     *
+     * @returns {string[]} list of found-keywords
+     * @memberof AliasHelper
+     */
     public getOfKeywords(): string[] {
         return this.getKeywordsByAliasKey(AliasKey.OF);
     }
 
-    public getKeywordsByAliasKey(keywordToFind: AliasKey): string[] {
-        return this.getKeys().filter(key => this.aliases.get(key)!.indexOf(keywordToFind) != -1);
-    }
-
+    /**
+     * Returns the logical-operators, currently only `or` and `and`
+     *
+     * @returns {string[]} found operators
+     * @memberof AliasHelper
+     */
     public getLogicalOperators(): string[] {
         return this.getKeywordsByAliasKeys(AliasKey.OR, AliasKey.AND);
     }
 
+    /**
+     * Returns the as-keyword
+     *
+     * @returns {(string | null)} as-keyword, or null if not in the alias list
+     * @memberof AliasHelper
+     */
     public getAsKeyword(): string | null {
         return this.getKeywordByAliasKey(AliasKey.AS);
     }
 
+    /**
+     * Returns the if-keyword
+     *
+     * @returns {(string | null)} if-keyword, or null if not in the alias list
+     * @memberof AliasHelper
+     */
     public getIfKeyword(): string | null {
         return this.getKeywordByAliasKey(AliasKey.IF);
     }
 
+    /**
+     * Returns the then-keyword
+     *
+     * @returns {(string | null)} then keyword, or null if not in the alias-list
+     * @memberof AliasHelper
+     */
     public getThenKeyword(): string | null {
         return this.getKeywordByAliasKey(AliasKey.THEN);
     }
 
+
+    /**
+     * Returns the keywords that indicate a constrained condition
+     *
+     * @returns {string[]} constrained keywords
+     * @memberof AliasHelper
+     */
     public getConstrainedKeyword(): string[] {
         return this.getKeywordsByAliasKey(AliasKey.CONSTRAINT);
     }
+   
+    /**
+     * Returns the comment-keyword
+     *
+     * @returns {(string | null)} comment keyword, or null if not in the alias-list
+     * @memberof AliasHelper
+     */
+    public getCommentKeyword(): string | null {
+        return this.getKeywordByAliasKey(AliasKey.COMMENT);
+    }
 
+    /**
+     * Returns all operators that are found inside the current alias-list
+     *
+     * @param {string} [startingWord] optional parameter, that is used for filtering of the operators
+     * @returns {Map<string, string>}
+     * @memberof AliasHelper
+     */
     public getOperators(startingWord?: string): Map<string, string> {
         var keys: [string, string][] = [];
 
@@ -145,6 +203,13 @@ export class AliasHelper {
         return returnMap;
     }
 
+
+    /**
+     * Returns all functions that are found inside the alias-list
+     *
+     * @returns {string[]} functions that are found in the allias-list
+     * @memberof AliasHelper
+     */
     public getFunctions(): string[] {
         var returnList: string[] = [];
 
@@ -157,59 +222,11 @@ export class AliasHelper {
         return returnList;
     }
 
-    public getCommentKeyword(): string | null {
-        return this.getKeywordByAliasKey(AliasKey.COMMENT);
-    }
-
     public getLengthOfLongestLogicalOperator() {
         return Math.max(...this.getLogicalOperators().map(o => o.length)) + 1;
-    }
+    }   
 
-    /**
-     * Validates, if the given word is an boolean operator
-     *
-     * @param {string} value string to validate
-     * @returns {boolean} returns true, if the given word is an operator
-     * @memberof AliasHelper
-     */
-    public isLinkingOperator(value: string): boolean {
-        var key = this.aliases.get(value.toUpperCase());
-        return key == AliasKey.AND || key == AliasKey.OR;
-    }
-
-    /**
-     * Validates, if the given word is a keyword for rule-end (e.g. 'THEN')
-     *
-     * @param {string} value string to validate
-     * @returns {boolean} returns true, if the given word is a keyword for rule-end
-     * @memberof AliasHelper
-     */
-    public isThen(value: string): boolean {
-        var key = this.aliases.get(value.toUpperCase());
-        return key == AliasKey.THEN;
-    }
-
-    /**
-     * Validates, if the given word is a keyword for rule-start (e.g. 'IF')
-     *
-     * @param {string} value string to validate
-     * @returns {boolean} returns true, if the given word is a keyword for rule-start
-     * @memberof AliasHelper
-     */
-    public isIf(value: string): boolean {
-        var key = this.aliases.get(value.toUpperCase());
-        return key == AliasKey.IF;
-    }
-
-    /**
-     * Validates, if the given word is a keyword for variable-naming (e.g. 'AS')
-     *
-     * @param {string} value string to validate
-     * @returns {boolean} returns true, if the given word is a keyword for variable-naming
-     * @memberof AliasHelper
-     */
-    public isAs(value: string): boolean {
-        var key = this.aliases.get(value.toUpperCase());
-        return key == AliasKey.AS;
+    private getKeys(): string[] {
+        return Array.from(this.aliases.keys());
     }
 }

@@ -35,7 +35,7 @@ export class FormattingProvider extends Provider {
 
         var textEdits: TextEdit[] = [];
 
-        var elements = ovDocument.elementManager.getElementsByRange(params.range);
+        var elements = ovDocument.$elementManager.getElementsByRange(params.range);
         for (let i = 0; i < elements.length; i++) {
             const element = elements[i];
 

@@ -85,7 +85,7 @@ export class CompletionProvider extends Provider {
             var declarations: Variable[] = [];
             var ovDocument = this.ovDocuments.get(params.textDocument.uri);
             if (!!ovDocument) {
-                declarations = ovDocument.declarations;
+                declarations = ovDocument.$declarations;
             }
 
             var generator = new CompletionGenerator(declarations, this.server.aliasHelper, this.server.schema)
@@ -109,7 +109,7 @@ export class CompletionProvider extends Provider {
 
         var ovDocument = this.ovDocuments.get(params.textDocument.uri);
         if (!!ovDocument) {
-            declarations = ovDocument.declarations;
+            declarations = ovDocument.$declarations;
         }
 
         var response = await ApiProxy.postCompletionData(parseString, this.server.restParameter, ovDocument);

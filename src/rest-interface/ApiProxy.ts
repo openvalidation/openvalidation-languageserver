@@ -109,7 +109,7 @@ export class ApiProxy {
     public static async postCompletionData(rule: string, parameter: RestParameter, ovDocument: OvDocument | undefined): Promise<CompletionResponse | null> {
         if (!!ovDocument) {
             var asKeyword: string | null = parameter.aliasHelper.getAsKeyword();
-            var relevantVariables: VariableNode[] = ovDocument.elementManager.getUsedVariables(rule, asKeyword);
+            var relevantVariables: VariableNode[] = ovDocument.$elementManager.getUsedVariables(rule, asKeyword);
             rule += "\n\n" + relevantVariables.map(variable => variable.getLines().join('\n')).join('\n\n');
         }
 

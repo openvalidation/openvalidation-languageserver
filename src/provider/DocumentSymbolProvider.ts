@@ -34,7 +34,7 @@ export class DocumentSymbolProvider extends Provider {
 
         var symbolInformationList: SymbolInformation[] = [];
 
-        ovDocument.elementManager.getVariables().forEach(variable => {
+        ovDocument.$elementManager.getVariables().forEach(variable => {
             var variableNameRange = variable.getRangeOfVariableName();
             var symbolInformation: SymbolInformation = {
                 name: variable.getNameNode()!.getName(),
