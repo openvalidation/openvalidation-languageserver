@@ -99,7 +99,6 @@ export class FunctionOperandNode extends BaseOperandNode {
             capture.addRegexToMatch(tmpCapture.$match);
         }
 
-        console.log(capture);
         return capture;
     }
 }

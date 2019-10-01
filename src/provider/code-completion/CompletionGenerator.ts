@@ -86,8 +86,8 @@ export class CompletionBuilder {
      */
     public addFittingOperator(transition: OperatorTransition): CompletionBuilder {
         for (const operator of this.aliasHelper.getOperators(this.startingWord)) {
-            if (transition.$dataType == operator[1] || "Object" == operator[1])
-                this.addKeyword(operator[0], "a", transition.$prependingText);
+            if (transition.$dataType == operator[1][0] || "Object" == operator[1][0])
+                this.addKeyword(operator[0], operator[1][1], transition.$prependingText, operator[1][0]);
         }
 
         return this;
@@ -259,14 +259,20 @@ export class CompletionBuilder {
      * @param {(string | null)} label label that will be shown as a title
      * @param {string} sortText text which decide in which order the items appear
      * @param {string} prependedText text which will be added before the label in case the item gets selected
+     * @param {string} [documentation] extra documentation text
      * @returns {CompletionBuilder}
      * @memberof CompletionBuilder
      */
-    private addKeyword(label: string | null, sortText: string, prependedText: string): CompletionBuilder {
+    private addKeyword(label: string | null, sortText: string, prependedText: string, documentation?: string): CompletionBuilder {
         if (!label) return this;
 
         var completionItem = this.createCompletionItem(label, sortText, prependedText);
         completionItem.kind = CompletionItemKind.Keyword;
+        completionItem.preselect = true;
+
+        if (!!documentation)
+            completionItem.detail = documentation;
+
         this.completionList.push(completionItem);
         return this;
     }
@@ -324,6 +330,6 @@ export class CompletionBuilder {
      * @memberof CompletionItemHelper
      */
     private createCompletionItem(text: string, sortText: string, prependedText: string): CompletionItem {
-        return this.createCompletionItemWithTextInsertion(text, text + " ", sortText, prependedText);
+        return this.createCompletionItemWithTextInsertion(text, text, sortText, prependedText);
     }
 }

@@ -1,4 +1,4 @@
-import {AliasKey} from './AliasKey';
+import { AliasKey } from './AliasKey';
 
 /**
  * Maintains the available aliases and defines getter-methods
@@ -167,7 +167,7 @@ export class AliasHelper {
     public getConstrainedKeyword(): string[] {
         return this.getKeywordsByAliasKey(AliasKey.CONSTRAINT);
     }
-   
+
     /**
      * Returns the comment-keyword
      *
@@ -182,26 +182,33 @@ export class AliasHelper {
      * Returns all operators that are found inside the current alias-list
      *
      * @param {string} [startingWord] optional parameter, that is used for filtering of the operators
-     * @returns {Map<string, string>}
+     * @returns {Map<string, [string, string]>} Map that consists a map with the name and a tuple of the datatype and the proposed sorting-text
      * @memberof AliasHelper
      */
-    public getOperators(startingWord?: string): Map<string, string> {
+    public getOperators(startingWord?: string): Map<string, [string, string]> {
         var keys: [string, string][] = [];
+        var sortingList: string[] = [];
 
         this.aliases.forEach((value: string, key: string) => {
-            var aliasInList = !keys.some(key => key[1] == value);
-            if (value.indexOf(AliasKey.OPERATOR) !== -1 && aliasInList &&
-                    (!startingWord || value.startsWith(startingWord.toUpperCase())))
+            var aliasInList = keys.some(key => key[1] == value);
+            if (value.indexOf(AliasKey.OPERATOR) !== -1 &&
+                (!startingWord || key.startsWith(startingWord))) {
+
+                sortingList.push(aliasInList ? "z" : "a");
                 keys.push([key, value]);
+            }
         });
 
-        var returnMap: Map<string, string> = new Map<string, string>();
-        for (const key of keys) {
+        var returnMap: Map<string, [string, string]> = new Map<string, [string, string]>();
+        for (let index = 0; index < keys.length; index++) {
+            const key = keys[index];
+            const sortingText = sortingList[index];
+
             let tmpKey = key[1].replace(AliasKey.OPERATOR, '').replace('ʬ', '');
             let dataType = this.operators.get(tmpKey.toUpperCase());
-            
+
             if (!!dataType && !returnMap.has(key[0]))
-                returnMap.set(key[0], dataType);
+                returnMap.set(key[0], [dataType, sortingText]);
         }
 
         return returnMap;
@@ -228,7 +235,7 @@ export class AliasHelper {
 
     public getLengthOfLongestLogicalOperator() {
         return Math.max(...this.getLogicalOperators().map(o => o.length)) + 1;
-    }   
+    }
 
     private getKeys(): string[] {
         return Array.from(this.aliases.keys());

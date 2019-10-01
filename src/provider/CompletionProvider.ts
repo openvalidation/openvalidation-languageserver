@@ -156,7 +156,6 @@ export class CompletionProvider extends Provider {
         var response = await ApiProxy.postCompletionData(parseString, this.server.restParameter, ovDocument);
         var relativePosition: Position = Position.create(params.position.line - itemTuple[1], params.position.character);
         
-        
         var line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
         var wordAtCurrentPosition = StringHelper.getWordAt(line, params.position.character).trim();
         return this.completionForParsedElement(response, declarations, relativePosition, wordAtCurrentPosition);
