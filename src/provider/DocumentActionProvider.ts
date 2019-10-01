@@ -132,12 +132,12 @@ export class DocumentActionProvider extends Provider {
      */
     private generateDocumentWithAst(apiResponse: LintingResponse | null, text: string): OvDocument | undefined {
         if (!apiResponse ||
-            !apiResponse.getMainAstNode() ||
-            !apiResponse.getMainAstNode()!.getScopes())
+            !apiResponse.$mainAstNode ||
+            !apiResponse.$mainAstNode.getScopes())
             return undefined;
 
-        return new OvDocument(apiResponse.getMainAstNode()!.getScopes(),
-            apiResponse.getMainAstNode()!.getDeclarations(),
+        return new OvDocument(apiResponse.$mainAstNode.getScopes(),
+            apiResponse.$mainAstNode.getDeclarations(),
             this.server.aliasHelper);
     }
 
@@ -154,9 +154,9 @@ export class DocumentActionProvider extends Provider {
         if (apiResponse == null) return [];
 
         var diagnostics: Diagnostic[] = [];
-        for (const error of apiResponse.getErrors()) {
-            var diagnosticRange: Range =  !error.getRange() ? Range.create(0,0,0,1) : error.getRange().asRange();
-            var diagnostic: Diagnostic = Diagnostic.create(diagnosticRange, error.getMessage());
+        for (const error of apiResponse.$errors) {
+            var diagnosticRange: Range =  !error.$range ? Range.create(0,0,0,1) : error.$range.asRange();
+            var diagnostic: Diagnostic = Diagnostic.create(diagnosticRange, error.$message);
             diagnostic.severity = DiagnosticSeverity.Error;
             diagnostics.push(diagnostic);
         }

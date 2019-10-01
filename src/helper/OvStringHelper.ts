@@ -1,5 +1,4 @@
-import { AstKey } from "../data-model/AstKeyEnum";
-import { Language } from "../rest-interface/ParsingEnums";
+import { LanguageEnum } from "../enums/LanguageEnum";
 
 /**
  * Beautifies the generic string from the parse (e.g. astrule -> rule)
@@ -8,21 +7,6 @@ import { Language } from "../rest-interface/ParsingEnums";
  * @class OvDocumentHelper
  */
 export class OvStringHelper {
-    public static getTypeFromAstType(astType: string) {
-        switch (astType) {
-            case AstKey.Rule:
-                return "Rule";
-            case AstKey.Variable:
-                return "Variable";
-            case AstKey.Comment:
-                return "Comment";
-            case AstKey.Unknown:
-                return "Unknown";
-            default:
-                return astType;
-        }
-    }
-
     /**
      * Returns the monaco-representation of the ov-language
      *
@@ -31,9 +15,9 @@ export class OvStringHelper {
      * @returns {string} the language-identifier of monaco
      * @memberof OvSyntaxNotifier
      */
-    public static convertOvLanguageToMonacoLanguage(language: Language): string {
+    public static convertOvLanguageToMonacoLanguage(language: LanguageEnum): string {
         switch (language) {
-            case Language.Node:
+            case LanguageEnum.Node:
                 return "JavaScript";
             default:
                 return language;

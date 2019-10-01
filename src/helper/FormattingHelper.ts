@@ -1,5 +1,3 @@
-import { String } from "typescript-string-operations";
-
 export class FormattingHelper {
 
     /**
@@ -30,9 +28,5 @@ export class FormattingHelper {
         }
 
         return returnString;
-    }
-
-    public static getKeywordRegEx(regex: string): RegExp {
-        return new RegExp(String.Format('(?={0})', regex), "g");
     }
 }

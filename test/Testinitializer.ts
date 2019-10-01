@@ -42,8 +42,8 @@ export class TestInitializer {
         if (!fullOvDocument) {
             this._server.ovDocuments.addOrOverrideOvDocument("test.ov", new OvDocument([], [], this._server.aliasHelper));
         } else {
-            this._server.aliasHelper.updateAliases(this.getAliases());
-            this._server.aliasHelper.updateOperators(this.getOperators());
+            this._server.aliasHelper.$aliases = this.getAliases();
+            this._server.aliasHelper.$operators = this.getOperators();
             var document = new OvDocument(this.getCorrectParseResult().getScopes(), [], this._server.aliasHelper);
             this._server.ovDocuments.addOrOverrideOvDocument("test.ov", document);
         }
@@ -69,8 +69,6 @@ export class TestInitializer {
 
     public mockEmptyCode(): CodeResponse {
         var json: CodeResponse = {
-            variableNames: [],
-            ruleErrors: [],
             implementationResult: "",
             frameworkResult: ""
         };

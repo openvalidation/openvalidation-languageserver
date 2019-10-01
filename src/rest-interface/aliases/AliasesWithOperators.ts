@@ -1,5 +1,13 @@
 import { Type } from "class-transformer";
 
+
+/**
+ * Data-class that is used for the transfer of aliases.
+ * Especially it is used for operators, which receive the valid-datatype whith them
+ *
+ * @export
+ * @class AliasesWithOperators
+ */
 export class AliasesWithOperators {
     @Type(() => Map)
     private aliases: Map<string, string>;
@@ -12,11 +20,11 @@ export class AliasesWithOperators {
         this.operators = operators;
     }
 
-    public getAliases(): Map<string, string> {
+    public get $aliases(): Map<string, string> {
         return this.aliases;
     }
 
-    public getOperators(): Map<string, string> {
+    public get $operators(): Map<string, string> {
         return this.operators;
     }
 }

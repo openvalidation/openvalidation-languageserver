@@ -1,6 +1,6 @@
 import { String } from "typescript-string-operations";
 import { CompletionItem, CompletionParams, CompletionTriggerKind, Position, Range } from "vscode-languageserver";
-import { CompletionKey } from "../Constants";
+import { CompletionKeyEnum } from "../enums/CompletionKeyEnum";
 import { StringHelper } from "../helper/StringHelper";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
@@ -53,9 +53,9 @@ export class CompletionProvider extends Provider {
             return this.completionByText(params);
         }
         else {
-            if (params.context.triggerCharacter == CompletionKey.ComplexSchema) {
+            if (params.context.triggerCharacter == CompletionKeyEnum.ComplexSchema) {
                 return this.completionForSchema(params);
-            } else if (params.context.triggerCharacter == CompletionKey.Array) {
+            } else if (params.context.triggerCharacter == CompletionKeyEnum.Array) {
                 return this.completionForArray(params);
             }
         }
@@ -125,7 +125,7 @@ export class CompletionProvider extends Provider {
         if (!response)
             return CompletionGenerator.default(declarations, this.server);
 
-        var relevantElement = response.getScope();
+        var relevantElement = response.$scope;
         if (!relevantElement)
             return CompletionGenerator.default(declarations, this.server);
 

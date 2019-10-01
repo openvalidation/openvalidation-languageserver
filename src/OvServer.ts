@@ -2,8 +2,10 @@ import * as YAML from "js-yaml";
 import { IConnection, InitializeParams, InitializeResult, ServerCapabilities, TextDocuments } from 'vscode-languageserver';
 import Uri from 'vscode-uri';
 import { AliasHelper } from './aliases/AliasHelper';
-import { CompletionKey } from './Constants';
 import { OvDocuments } from "./data-model/ov-document/OvDocuments";
+import { CompletionKeyEnum } from './enums/CompletionKeyEnum';
+import { CultureEnum } from "./enums/CultureEnum";
+import { LanguageEnum } from "./enums/LanguageEnum";
 import { CompletionProvider } from "./provider/CompletionProvider";
 import { DocumentActionProvider } from "./provider/DocumentActionProvider";
 import { DocumentSymbolProvider } from "./provider/DocumentSymbolProvider";
@@ -13,10 +15,9 @@ import { GotoDefinitionProvider } from "./provider/GotoDefinitionProvider";
 import { HoverProvider } from "./provider/HoverProvider";
 import { RenameProvider } from "./provider/RenameProvider";
 import { ApiProxy } from './rest-interface/ApiProxy';
-import { Culture, Language } from "./rest-interface/ParsingEnums";
+import { LintingResponse } from "./rest-interface/response/LintingResponse";
 import { RestParameter } from './rest-interface/RestParameter';
 import { ISchemaType } from './rest-interface/schema/ISchemaType';
-import { LintingResponse } from "./rest-interface/response/LintingResponse";
 
 /**
  * Main-object to bind the websocket connection to the function-providers
@@ -33,15 +34,15 @@ export class OvServer {
     private readonly documentActionProvider: DocumentActionProvider;
     protected workspaceRoot: Uri | undefined;
 
-    public language: Language;
-    public culture: Culture;
+    public language: LanguageEnum;
+    public culture: CultureEnum;
 
     public schema: ISchemaType;
     public jsonSchema: JSON;
 
     constructor(public readonly connection: IConnection) {
-        this.language = Language.Java;
-        this.culture = Culture.German;
+        this.language = LanguageEnum.Java;
+        this.culture = CultureEnum.German;
         this.schema = { complexData: [], dataProperties: [] };
         this.jsonSchema = JSON.parse(JSON.stringify({}));
 
@@ -59,12 +60,11 @@ export class OvServer {
         FoldingRangesProvider.bind(this);
         GotoDefinitionProvider.bind(this);
 
-        //Own Listener for every additional notifications we need for ov-parsing
+        //Own Listener for every additional paramater we need for ov-parsing
         this.connection.onNotification("textDocument/schemaChanged", (params: { schema: string, uri: string }) => this.validateAndSetSchemaDefinition(params));
         this.connection.onNotification("textDocument/languageChanged", (params: { language: string, uri: string }) => this.setLanguage(params));
         this.connection.onNotification("textDocument/cultureChanged", (params: { culture: string, uri: string }) => this.setCulture(params));
     }
-
 
     /**
      * Generates and returns the Parameter for the Rest-Api
@@ -102,7 +102,7 @@ export class OvServer {
             codeActionProvider: false,
             completionProvider: {
                 resolveProvider: true,
-                triggerCharacters: [CompletionKey.Array, CompletionKey.ComplexSchema]
+                triggerCharacters: [CompletionKeyEnum.Array, CompletionKeyEnum.ComplexSchema]
             },
             definitionProvider: true,
             renameProvider: {
@@ -131,8 +131,7 @@ export class OvServer {
      * Sets the received schema as our new schema and validates the current file
      *
      * @private
-     * @param { schema: string, uri: string } params schema that we received from the client and uri of the corresponding document
-     * @param {OvServer} _this
+     * @param {{ schema: string, uri: string }} params schema that we received from the client and uri of the corresponding document
      * @returns {void}
      * @memberof OvServer
      */
@@ -156,7 +155,7 @@ export class OvServer {
     private async setLanguage(params: { language: string, uri: string }): Promise<void> {
         if (!params) return;
 
-        var languageEnum = params.language as Language;
+        var languageEnum = params.language as LanguageEnum;
         this.language = languageEnum;
 
         this.documentActionProvider.validate(params.uri);
@@ -166,14 +165,14 @@ export class OvServer {
      * Sets the received culture as our culture and validates the current file
      * 
      * @private
-     * @param {{ language: string, uri: string }} params that contains the langauge and the uri of the current document
+     * @param {{ culture: string, uri: string }} params that contains the langauge and the uri of the current document
      * @returns {void}
      * @memberof OvServer
      */
     private async setCulture(params: { culture: string, uri: string }): Promise<void> {
         if (!params) return;
 
-        var cultureEnum = params.culture as Culture;
+        var cultureEnum = params.culture as CultureEnum;
         this.culture = cultureEnum;
         this.setAliases();
 
@@ -187,8 +186,8 @@ export class OvServer {
      * @memberof OvServer
      */
     public setGeneratedSchema(data: LintingResponse) {
-        if (!!data.getSchema())
-            this.schema = data.getSchema();
+        if (!!data.$schema)
+            this.schema = data.$schema;
     }
 
     /**
@@ -205,7 +204,7 @@ export class OvServer {
 
         // Because of strange error, where the keys are not displayed as a string
         var aliases = new Map<string, string>();
-        for (const aliasPair of returnAliases.data.getAliases()) {
+        for (const aliasPair of returnAliases.data.$aliases) {
             if (!new RegExp("^$|[\(\)\*\+\-\/\^]").test(aliasPair[0])) {
                 aliases.set(aliasPair[0], aliasPair[1]);
             }
@@ -213,7 +212,7 @@ export class OvServer {
 
         if (aliases) {
             this.aliasHelper.$aliases = aliases;
-            this.aliasHelper.$operators = returnAliases.data.getOperators();
+            this.aliasHelper.$operators = returnAliases.data.$operators;
 
             var commentKeyword = this.aliasHelper.getCommentKeyword();
             if (!!commentKeyword)

@@ -1,6 +1,14 @@
 import { IndexRange } from "../../data-model/syntax-tree/IndexRange";
 import { Type } from "class-transformer";
 
+
+/**
+ * Class for linting-messages we received from the REST-API.
+ * It consists of the message and the range of the error source.
+ *
+ * @export
+ * @class LintingError
+ */
 export class LintingError {
     private message: string;
 
@@ -12,11 +20,11 @@ export class LintingError {
         this.range = range;
     }
 
-    public getMessage(): string {
+    public get $message(): string {
         return this.message;
     }
 
-    public getRange(): IndexRange {
+    public get $range(): IndexRange {
         return this.range;
     }
 }

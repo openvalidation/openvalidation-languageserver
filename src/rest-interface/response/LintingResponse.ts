@@ -3,6 +3,13 @@ import { MainNode } from "../../data-model/syntax-tree/MainNode";
 import { ISchemaType } from "../schema/ISchemaType";
 import { LintingError } from "./LintingError";
 
+/**
+ * Class for the response of the most-import REST-API.
+ * It consists of the parsed schema, the parsed elements inside the document and the errors.
+ *
+ * @export
+ * @class LintingResponse
+ */
 export class LintingResponse {
     private schema: ISchemaType;
 
@@ -18,15 +25,15 @@ export class LintingResponse {
         this.schema = schema;
     }
 
-    public getErrors(): LintingError[] {
+    public get $errors(): LintingError[] {
         return this.errors;
     }
     
-    public getMainAstNode(): MainNode {
+    public get $mainAstNode(): MainNode {
         return this.mainAstNode;
     }
 
-    public getSchema(): ISchemaType {
+    public get $schema(): ISchemaType {
         return this.schema;
     }
 }

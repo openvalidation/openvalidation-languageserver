@@ -1,6 +1,6 @@
-var path = require('path');
+import { ChildProcess, exec } from 'child_process';
 
-import { exec, ChildProcess } from 'child_process';
+var path = require('path');
 
 // Starts the spring-boot-backend
 var exePath = path.join(__dirname, "/rest-interface/ov-rest.exe");

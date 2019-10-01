@@ -10,6 +10,13 @@ import { UnkownNode } from "../../data-model/syntax-tree/element/UnkownNode";
 import { VariableNode } from "../../data-model/syntax-tree/element/VariableNode";
 import { GenericNode } from "../../data-model/syntax-tree/GenericNode";
 
+/**
+ * Response of a completion-request.
+ * It contains only one element which should be positioned at the current cursor-position
+ *
+ * @export
+ * @class CompletionResponse
+ */
 export class CompletionResponse {
     @Type(() => GenericNode, {
         discriminator: {
@@ -33,7 +40,7 @@ export class CompletionResponse {
         this.scope = scope;
     }
     
-    public getScope(): GenericNode {
+    public get $scope(): GenericNode {
         return this.scope;
     }
 }

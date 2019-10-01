@@ -3,7 +3,7 @@ import { plainToClass } from "class-transformer";
 import { VariableNode } from "src/data-model/syntax-tree/element/VariableNode";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
 import { AliasesWithOperators } from "./aliases/AliasesWithOperators";
-import { Culture } from "./ParsingEnums";
+import { CultureEnum } from "../enums/CultureEnum";
 import { CodeResponse } from "./response/CodeResponse";
 import { CompletionResponse } from "./response/CompletionResponse";
 import { LintingResponse } from "./response/LintingResponse";
@@ -20,14 +20,12 @@ export class ApiProxy {
     private static readonly apiUrl = "http://localhost:31057";
 
     /**
-     * Posts the given data to the REST-API and return the response
+     * Send the whole file to the REST-API to receive the generated code
      *
      * @static
-     * @param {string} rule one or more rules which should be posted to the rest-interface
-     * @param {JSON} schema schema-definition as a JSON
-     * @param {Culture} culture culture of the used natural languages
-     * @param {Language} language programming-language where the rules should be parsed in
-     * @returns {Promise<CodeResponse>}
+     * @param {string} rule  one or more rules which should be posted to the rest-interface
+     * @param {RestParameter} parameter parameter with the necessary parsing-data
+     * @returns {(Promise<CodeResponse | null>)} parsed code or null if an error appeared
      * @memberof ApiProxy
      */
     public static async postData(rule: string, parameter: RestParameter): Promise<CodeResponse | null> {
@@ -55,11 +53,11 @@ export class ApiProxy {
      * Asks the REST-API for Aliases for the given culture
      *
      * @static
-     * @param {Culture} culture culture we want to get the aliases of
-     * @returns {(Promise<Map<string, string> | null>)}
+     * @param {CultureEnum} culture culture we want to get the aliases of
+     * @returns {(Promise<AxiosResponse<AliasesWithOperators> | null>)} aliases we got from the rest-interface, null if an error appeared
      * @memberof ApiProxy
      */
-    public static async getAliases(culture: Culture): Promise<AxiosResponse<AliasesWithOperators> | null> {
+    public static async getAliases(culture: CultureEnum): Promise<AxiosResponse<AliasesWithOperators> | null> {
         var data = {
             "culture": culture
         };
@@ -81,6 +79,16 @@ export class ApiProxy {
         }
     }
 
+    /**
+     * Posts the whole data to the REST-API which is used for the linting function.
+     * We receive the parsed syntax-tree and the appeared errors.
+     *
+     * @static
+     * @param {string} rule  one or more rules which should be posted to the rest-interface
+     * @param {RestParameter} parameter parameter with the necessary parsing-data
+     * @returns {(Promise<LintingResponse | null>)} parsed content which the errors
+     * @memberof ApiProxy
+     */
     public static async postLintingData(rule: string, parameter: RestParameter): Promise<LintingResponse | null> {
         var data = {
             "rule": rule,
@@ -106,6 +114,17 @@ export class ApiProxy {
         }
     }
 
+    /**
+     * Posts the given rule to the REST-API and receives only the parsed node.
+     * Before parsing, we look for used variables inside the element, that we can parse it properly
+     *
+     * @static
+     * @param {string} rule  one which should be posted to the rest-interface
+     * @param {RestParameter} parameter parameter with the necessary parsing-data
+     * @param {(OvDocument | undefined)} ovDocument document, which is used for the 
+     * @returns {(Promise<CompletionResponse | null>)} response or null if an error appeared
+     * @memberof ApiProxy
+     */
     public static async postCompletionData(rule: string, parameter: RestParameter, ovDocument: OvDocument | undefined): Promise<CompletionResponse | null> {
         if (!!ovDocument) {
             var asKeyword: string | null = parameter.aliasHelper.getAsKeyword();

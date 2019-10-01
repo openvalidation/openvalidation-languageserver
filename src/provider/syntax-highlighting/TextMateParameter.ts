@@ -32,10 +32,10 @@ export class TextMateParameter {
         this._complexSchemaProperties = server.schema.complexData;
         this._keywords = server.aliasHelper.getGenericKeywords();
 
-        if (apiResponse.getMainAstNode() != null) {
+        if (!!apiResponse.$mainAstNode) {
             var traversal = new TreeTraversal();
-            this._operations = traversal.getOperations(apiResponse.getMainAstNode().getScopes());
-            this._operands = traversal.getLonelyOperands(apiResponse.getMainAstNode().getScopes());
+            this._operations = traversal.getOperations(apiResponse.$mainAstNode.getScopes());
+            this._operands = traversal.getLonelyOperands(apiResponse.$mainAstNode.getScopes());
         } else {
             this._operations = [];
             this._operands = [];
@@ -83,9 +83,9 @@ export class TextMateParameter {
     private getIdentifier(schema: Array<ISchemaProperty>): string[] {
         var identifier: string[] = [];
 
-        if (!!this.apiResponse.getMainAstNode() &&
-            !!this.apiResponse.getMainAstNode().getDeclarations()) {
-            var names: string[] = this.apiResponse.getMainAstNode().getDeclarations().map(d => d.name);
+        if (!!this.apiResponse.$mainAstNode &&
+            !!this.apiResponse.$mainAstNode.getDeclarations()) {
+            var names: string[] = this.apiResponse.$mainAstNode.getDeclarations().map(d => d.name);
             identifier = identifier.concat(names.filter(n => !String.IsNullOrWhiteSpace(n)));
         }
 
