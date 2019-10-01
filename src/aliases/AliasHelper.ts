@@ -123,12 +123,13 @@ export class AliasHelper {
         return this.getKeywordsByAliasKey(AliasKey.CONSTRAINT);
     }
 
-    public getOperators(): Map<string, string> {
+    public getOperators(startingWord?: string): Map<string, string> {
         var keys: [string, string][] = [];
 
         this.aliases.forEach((value: string, key: string) => {
-            var aliasKey = this.aliases.get(key)!;
-            if (aliasKey.indexOf(AliasKey.OPERATOR) !== -1)
+            var aliasInList = !keys.some(key => key[1] == value);
+            if (value.indexOf(AliasKey.OPERATOR) !== -1 && aliasInList &&
+                    (!startingWord || value.startsWith(startingWord.toUpperCase())))
                 keys.push([key, value]);
         });
 

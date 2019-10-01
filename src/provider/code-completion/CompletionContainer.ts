@@ -1,6 +1,3 @@
-import { AliasHelper } from "../../aliases/AliasHelper";
-import { ISchemaType } from "../../rest-interface/schema/ISchemaType";
-import { Variable } from "../../data-model/syntax-tree/Variable";
 import { CompletionGenerator } from "./CompletionGenerator";
 import { StateTransition } from "./states/StateTransition";
 import { ConnectionTransition } from "./states/ConnectionTransition";
@@ -59,10 +56,8 @@ export class CompletionContainer {
         return this;
     }
 
-    public getCompletions(declarations: Variable[], aliasHelper: AliasHelper, schema: ISchemaType): CompletionGenerator {
-        var generator: CompletionGenerator = new CompletionGenerator(declarations, aliasHelper, schema);
+    public getCompletions(generator: CompletionGenerator): CompletionGenerator {
         this.transitions.forEach(transition => transition.addCompletionItems(generator));
-
         return generator;
     }
 

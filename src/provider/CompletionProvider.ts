@@ -49,11 +49,8 @@ export class CompletionProvider extends Provider {
      * @memberof CompletionProvider
      */
     public async completion(params: CompletionParams): Promise<CompletionItem[] | null> {
-        var document = this.server.documents.get(params.textDocument.uri);
-        if (!document) return [];
-
         if (!params.context || params.context.triggerKind != CompletionTriggerKind.TriggerCharacter) {
-            return this.completionByText(document.getText(), params);
+            return this.completionByText(params);
         }
         else {
             if (params.context.triggerCharacter == CompletionKey.ComplexSchema) {
@@ -98,8 +95,11 @@ export class CompletionProvider extends Provider {
         return null;
     }
 
-    private async completionByText(text: string, params: CompletionParams): Promise<CompletionItem[] | null> {
-        var documentText: string[] = text.split("\n");
+    private async completionByText(params: CompletionParams): Promise<CompletionItem[] | null> {
+        var document = this.server.documents.get(params.textDocument.uri);
+        if (!document) return [];
+
+        var documentText: string[] = document.getText().split("\n");
         var itemTuple = this.extractItem(documentText, params);
 
         var parseString: string = itemTuple[0].join("\n");
@@ -114,10 +114,14 @@ export class CompletionProvider extends Provider {
 
         var response = await ApiProxy.postCompletionData(parseString, this.server.restParameter, ovDocument);
         var relativePosition: Position = Position.create(params.position.line - itemTuple[1], params.position.character);
-        return this.completionForParsedElement(response, declarations, relativePosition);
+        
+        
+        var line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
+        var wordAtCurrentPosition = StringHelper.getWordAt(line, params.position.character).trim();
+        return this.completionForParsedElement(response, declarations, relativePosition, wordAtCurrentPosition);
     }
 
-    private completionForParsedElement(response: CompletionResponse | null, declarations: Variable[], relativePosition: Position): CompletionItem[] | null {
+    private completionForParsedElement(response: CompletionResponse | null, declarations: Variable[], relativePosition: Position, wordAtCurrentPosition: string): CompletionItem[] | null {
         if (!response)
             return CompletionGenerator.default(declarations, this.server);
 
@@ -125,7 +129,8 @@ export class CompletionProvider extends Provider {
         if (!relevantElement)
             return CompletionGenerator.default(declarations, this.server);
 
-        return relevantElement!.getCompletionContainer(relativePosition).getCompletions(declarations, this.server.aliasHelper, this.server.schema).build();
+        var generator: CompletionGenerator = new CompletionGenerator(declarations, this.server.aliasHelper, this.server.schema, wordAtCurrentPosition);
+        return relevantElement!.getCompletionContainer(relativePosition).getCompletions(generator).build();
     }
 
     public extractItem(text: string[], params: CompletionParams): [string[], number] {

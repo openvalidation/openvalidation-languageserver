@@ -10,8 +10,20 @@ import { ScopeEnum } from "../../../../../provider/syntax-highlighting/ScopeEnum
 import { StringHelper } from "../../../../../helper/StringHelper";
 
 export class OperandNode extends BaseOperandNode {
+
+    private isStatic: boolean;
+
     constructor(lines: string[], range: IndexRange, dataType: string, name: string) {
         super(lines, range, dataType, name);
+        this.isStatic = false;
+    }
+
+    /**
+     * Getter isStatic
+     * @return {string}
+     */
+    public getIsStatic(): boolean {
+        return this.isStatic;
     }
 
     public getChildren(): GenericNode[] {

@@ -9,13 +9,11 @@ import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highli
 export abstract class BaseOperandNode extends GenericNode {
     private dataType: string;
     private name: string;
-    private isStatic: boolean;
 
     constructor(lines: string[], range: IndexRange, dataType: string, name: string) {
         super(lines, range);
         this.dataType = dataType;
         this.name = name;
-        this.isStatic = false;
     }
 
     /**
@@ -33,15 +31,7 @@ export abstract class BaseOperandNode extends GenericNode {
     public getName(): string {
         return this.name;
     }
-
-    /**
-     * Getter isStatic
-     * @return {string}
-     */
-    public getIsStatic(): boolean {
-        return this.isStatic;
-    }
-    
+   
     abstract getChildren(): GenericNode[];
     abstract getHoverContent(): HoverContent | null;
     abstract getCompletionContainer(range: Position): CompletionContainer;

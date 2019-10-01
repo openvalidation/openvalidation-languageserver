@@ -17,7 +17,8 @@ export class CompletionGenerator {
     constructor(
         private readonly declarations: Variable[],
         private readonly aliasHelper: AliasHelper,
-        private readonly schema: ISchemaType
+        private readonly schema: ISchemaType,
+        private readonly startingWord?: string
     ) {
         this.completionList = []
     }
@@ -52,7 +53,7 @@ export class CompletionGenerator {
     }
 
     public addFittingOperator(transition: OperatorTransition): CompletionGenerator {
-        for (const operator of this.aliasHelper.getOperators()) {
+        for (const operator of this.aliasHelper.getOperators(this.startingWord)) {
             if (transition.getDataType() == operator[1] || "Object" == operator[1])
                 this.addKeyword(operator[0], "a", transition.getPrependingText());
         }
@@ -76,7 +77,7 @@ export class CompletionGenerator {
         var functions = this.aliasHelper.getFunctions();
         functions.forEach(func => {
             this.addFunction(func, "", "c", transition.getPrependingText());
-        })
+        });
         return this;
     }
 

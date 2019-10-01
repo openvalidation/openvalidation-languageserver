@@ -1,8 +1,7 @@
 import { Position } from "vscode-languageserver";
+import { BaseOperandNode } from "../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
 import { OperationNode } from "../data-model/syntax-tree/element/operation/OperationNode";
 import { GenericNode } from "../data-model/syntax-tree/GenericNode";
-import { OperandNode } from "../data-model/syntax-tree/element/operation/operand/OperandNode";
-import { BaseOperandNode } from "../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
 
 export class TreeTraversal {
     constructor() { }
@@ -58,9 +57,9 @@ export class TreeTraversal {
         return operations;
     }
 
-    public getLonelyOperands(genericNodes: GenericNode[]): OperandNode[] {
+    public getLonelyOperands(genericNodes: GenericNode[]): BaseOperandNode[] {
         var childs: GenericNode[] = genericNodes;
-        var operands: OperandNode[] = [];
+        var operands: BaseOperandNode[] = [];
 
         for (const child of childs) {
             if (child instanceof OperationNode) {
