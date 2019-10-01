@@ -4,7 +4,7 @@
 
 _This repository is under heavy development._
 
-This is a [language-server](https://microsoft.github.io/language-server-protocol/) implementation of the domain-specific-langauge [openVALIDATION](https://github.com/openvalidation/openvalidation).
+This is a [language-server](https://microsoft.github.io/language-server-protocol/) implementation of the domain-specific-language [openVALIDATION](https://github.com/openvalidation/openvalidation).
 
 ## Implemented features of the protocol
 
@@ -42,7 +42,7 @@ This can be done by the client by sending notifications over the methods `textDo
 npm install ov-language-server
 ```
 
-### Run the langauge server
+### Run the language server
 
 ```bash
 node .\node_modules\ov-language-server\lib\server.js
