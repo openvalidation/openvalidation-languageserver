@@ -13,7 +13,7 @@ import * as ws from "ws";
 import { OvServer } from './OvServer';
 
 // Start the Java-Backend in a separat file
-// require("./start-backend");
+require("./start-backend");
 
 process.on('uncaughtException', function (err: any) {
     console.error('Uncaught Exception: ', err.toString());
