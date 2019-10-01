@@ -21,7 +21,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 0);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -31,7 +31,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 0);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -42,7 +42,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 
@@ -54,7 +54,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -68,7 +68,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
@@ -88,7 +88,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 36);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
@@ -107,7 +107,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -126,7 +126,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 32);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -144,7 +144,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 32);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -162,7 +162,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 36);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
@@ -180,7 +180,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -198,7 +198,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 36);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -215,7 +215,7 @@ describe("ConnectedOperationNode Tests", () => {
 
         var positionParameter = Position.create(0, 36);
 
-        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 });

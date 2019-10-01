@@ -1,12 +1,30 @@
 import { StateTransition } from "./StateTransition";
-import { CompletionGenerator } from "../CompletionGenerator";
+import { CompletionBuilder } from "../CompletionGenerator";
 
+/**
+ * Transition for the logical connections like `or` or `and`
+ *
+ * @export
+ * @class ConnectionTransition
+ * @extends {StateTransition}
+ */
 export class ConnectionTransition extends StateTransition {
+
+    /**
+     * Creates an instance of ConnectionTransition.
+     * @memberof ConnectionTransition
+     */
     constructor() {
         super()
     }
     
-    public addCompletionItems(generator: CompletionGenerator): void {
-        generator.addLogicalOperators(this);
+    /**
+     * Adds the logical operators to the builder
+     *
+     * @param {CompletionBuilder} builder builder that should be manipulated
+     * @memberof ConnectionTransition
+     */
+    public addCompletionItems(builder: CompletionBuilder): void {
+        builder.addLogicalOperators(this);
     }
 }

@@ -11,10 +11,24 @@ import { Provider } from "./Provider";
  * @extends {Provider}
  */
 export class DocumentSymbolProvider extends Provider {
-    static bind(server: OvServer) {
+
+    /**
+     * Creates the provider and binds the server to it.
+     *
+     * @static
+     * @param {OvServer} server server we want to bind the provider to
+     * @returns {DocumentSymbolProvider} created provider
+     * @memberof DocumentSymbolProvider
+     */
+    static bind(server: OvServer): DocumentSymbolProvider {
         return new DocumentSymbolProvider(server);
     }
 
+    /**
+     * Creates an instance of DocumentSymbolProvider.
+     * @param {OvServer} server server we want to connect to
+     * @memberof DocumentSymbolProvider 
+     */
     constructor(server: OvServer) {
         super(server);
         this.connection.onDocumentSymbol(params => this.findDocumentSymbols(params));

@@ -36,6 +36,11 @@ export class CompletionResponse {
     })
     private scope: GenericNode;
 
+    /**
+     * Creates an instance of CompletionResponse.
+     * @param {GenericNode} scope parsed scope
+     * @memberof CompletionResponse
+     */
     constructor(scope: GenericNode) {
         this.scope = scope;
     }

@@ -14,7 +14,7 @@ describe("CommentNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var actual: StateTransition[] = comment.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = comment.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -23,7 +23,7 @@ describe("CommentNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var actual: StateTransition[] = comment.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = comment.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 });

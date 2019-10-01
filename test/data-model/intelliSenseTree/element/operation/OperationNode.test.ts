@@ -21,7 +21,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 0);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -31,7 +31,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 
@@ -43,7 +43,7 @@ describe("Operation Tests", () => {
         var positionParameter = Position.create(0, 6);
 
         var expected: string = "Decimal";
-        var actual: string | undefined = (operation.getCompletionContainer(positionParameter).getTransitions()[0] as OperatorTransition)!.getDataType();
+        var actual: string | undefined = (operation.getCompletionContainer(positionParameter).$transitions[0] as OperatorTransition)!.$dataType;
 
         expect(actual).toEqual(expected);
     });
@@ -55,7 +55,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 
@@ -66,7 +66,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 
@@ -77,7 +77,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, "Summe von Einkaufsliste.Preis".length + 1);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 
@@ -88,7 +88,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -101,8 +101,8 @@ describe("Operation Tests", () => {
 
         var expected: string = "Decimal";
 
-        var transition = (operation.getCompletionContainer(positionParameter).getTransitions()[0] as OperatorTransition);
-        var actual: string | null = transition.getDataType();
+        var transition = (operation.getCompletionContainer(positionParameter).$transitions[0] as OperatorTransition);
+        var actual: string | null = transition.$dataType;
 
         expect(actual).toEqual(expected);
     });
@@ -115,7 +115,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
@@ -128,7 +128,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 40);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
@@ -141,7 +141,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
@@ -153,7 +153,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -165,7 +165,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -178,7 +178,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 1);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -189,7 +189,7 @@ describe("Operation Tests", () => {
 
         var positionParameter = Position.create(0, 7);
 
-        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -201,7 +201,7 @@ describe("Operation Tests", () => {
         var positionParameter = Position.create(0, 15);
 
         var expected: string[] = ["Alter"];
-        var actual: string[] | undefined | null = (operation.getCompletionContainer(positionParameter).getTransitions()[0] as OperandTransition).getNameFilter();
+        var actual: string[] | undefined | null = (operation.getCompletionContainer(positionParameter).$transitions[0] as OperandTransition).$nameFilter;
         expect(actual).toEqual(expected);
     });
 

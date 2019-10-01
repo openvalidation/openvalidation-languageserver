@@ -22,7 +22,7 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 0);
 
-        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -34,7 +34,7 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 
@@ -46,7 +46,7 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 15);
 
-        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -62,7 +62,7 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -78,7 +78,7 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 23);
 
-        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -99,7 +99,7 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -120,7 +120,7 @@ describe("VariableNode Tests", () => {
 
         var positionParameter = Position.create(0, 45);
 
-        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 });

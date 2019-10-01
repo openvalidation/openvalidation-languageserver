@@ -1,11 +1,24 @@
 import { StateTransition } from "./StateTransition";
-import { CompletionGenerator } from "../CompletionGenerator";
+import { CompletionBuilder } from "../CompletionGenerator";
 
+/**
+ * Empty-transition which is used as a placeholder for a state where no items should be aded
+ *
+ * @export
+ * @class EmptyTransition
+ * @extends {StateTransition}
+ */
 export class EmptyTransition extends StateTransition {
     constructor() {
         super()
     }
 
-    public addCompletionItems(generator: CompletionGenerator): void {
+    /**
+     * Adds nothing to the builder
+     *
+     * @param {CompletionBuilder} builder builder that should be manipulated
+     * @memberof EmptyTransition
+     */
+    public addCompletionItems(builder: CompletionBuilder): void {
     }
 }

@@ -11,9 +11,25 @@ import { ConnectionTransition } from "./states/ConnectionTransition";
 import { OperandTransition } from "./states/OperandTransition";
 import { OperatorTransition } from "./states/OperatorTransition";
 
-export class CompletionGenerator {
+/**
+ * This class is used for the building of the actual completion-items.
+ * We use the generated transitions to do so.
+ *
+ * @export
+ * @class CompletionBuilder
+ */
+export class CompletionBuilder {
     private completionList: CompletionItem[];
 
+    /**
+     * Creates an instance of CompletionBuilder.
+     * 
+     * @param {Variable[]} declarations variables of the current document
+     * @param {AliasHelper} aliasHelper helper that contains a list of all available aliases
+     * @param {ISchemaType} schema parsed schema
+     * @param {string} [startingWord] word at the current position which is used for filtering
+     * @memberof CompletionBuilder
+     */
     constructor(
         private readonly declarations: Variable[],
         private readonly aliasHelper: AliasHelper,
@@ -23,17 +39,26 @@ export class CompletionGenerator {
         this.completionList = []
     }
 
+    /**
+     * Creates an default completionBuilder which only contains the global elements
+     *
+     * @static
+     * @param {Variable[]} declarations variables of the current document
+     * @param {OvServer} server server that has the aliasHelper and given schema as attributes
+     * @returns
+     * @memberof CompletionBuilder
+     */
     public static default(declarations: Variable[], server: OvServer) {
-        return new CompletionGenerator(declarations, server.aliasHelper, server.schema).addGlobals().build();
+        return new CompletionBuilder(declarations, server.aliasHelper, server.schema).addGlobals().build();
     }
 
-    // Generic completion
     /**
      * Adds all Keywords that should be globally available
      *
-     * @memberof CompletionBuilder
+     * @returns {CompletionBuilder} builder-class
+     * @memberof CompletionGenerator
      */
-    public addGlobals(): CompletionGenerator {
+    public addGlobals(): CompletionBuilder {
         this.addKeyword(this.aliasHelper.getKeywordByString("if"), "a", "");
 
         var asWord = this.aliasHelper.getAsKeyword();
@@ -52,55 +77,96 @@ export class CompletionGenerator {
         return this;
     }
 
-    public addFittingOperator(transition: OperatorTransition): CompletionGenerator {
+    /**
+     * Adds all operators which fit to the parameters of the transition
+     *
+     * @param {OperatorTransition} transition transition that contains necessary parameters
+     * @returns {CompletionBuilder} builder-class
+     * @memberof CompletionBuilder
+     */
+    public addFittingOperator(transition: OperatorTransition): CompletionBuilder {
         for (const operator of this.aliasHelper.getOperators(this.startingWord)) {
-            if (transition.getDataType() == operator[1] || "Object" == operator[1])
-                this.addKeyword(operator[0], "a", transition.getPrependingText());
+            if (transition.$dataType == operator[1] || "Object" == operator[1])
+                this.addKeyword(operator[0], "a", transition.$prependingText);
         }
 
         return this;
     }
 
-    public addFittingIdentifier(transition: OperandTransition): CompletionGenerator {
+    /**
+     * Adds all operands which fit to the parameters of the transition
+     *
+     * @param {OperandTransition} transition transition that contains necessary parameters
+     * @returns {CompletionBuilder} builder-class
+     * @memberof CompletionBuilder
+     */
+    public addFittingIdentifier(transition: OperandTransition): CompletionBuilder {
         this.declarations.forEach(variable => {
             if (transition.isValid(variable.name, variable.dataType)) {
-                this.addVariable(variable.name, variable.dataType, "a", transition.getPrependingText());
+                this.addVariable(variable.name, variable.dataType, "a", transition.$prependingText);
             }
         });
 
         this.schema.dataProperties.forEach(property => {
             if (transition.isValid(property.name, property.type)) {
-                this.addVariable(property.name, property.type, "b", transition.getPrependingText());
+                this.addVariable(property.name, property.type, "b", transition.$prependingText);
             }
         });
 
         var functions = this.aliasHelper.getFunctions();
         functions.forEach(func => {
-            this.addFunction(func, "", "c", transition.getPrependingText());
+            this.addFunction(func, "", "c", transition.$prependingText);
         });
         return this;
     }
 
-    public addLogicalOperators(transition: ConnectionTransition): CompletionGenerator {
+    /**
+     * Adds all logical operators which fit to the parameters of the transition
+     *
+     * @param {ConnectionTransition} transition transition that contains necessary parameters
+     * @returns {CompletionBuilder} builder-class
+     * @memberof CompletionBuilder
+     */
+    public addLogicalOperators(transition: ConnectionTransition): CompletionBuilder {
         for (const logicalOperator of this.aliasHelper.getLogicalOperators()) {
-            this.addKeyword(logicalOperator, "a", transition.getPrependingText());
+            this.addKeyword(logicalOperator, "a", transition.$prependingText);
         }
         return this;
     }
 
-    public addThenKeyword(transition: ThenKeywordTransition): CompletionGenerator {
-        this.addKeyword(this.aliasHelper.getKeywordByString(AliasKey.THEN), "a", transition.getPrependingText());
+    /**
+     * Adds the then-keyword
+     *
+     * @param {ThenKeywordTransition} transition
+     * @returns {CompletionBuilder} builder-class
+     * @memberof CompletionBuilder
+     */
+    public addThenKeyword(transition: ThenKeywordTransition): CompletionBuilder {
+        this.addKeyword(this.aliasHelper.getKeywordByString(AliasKey.THEN), "a", transition.$prependingText);
         return this;
     }
 
-    public addAsKeyword(transition: AsKeywordTransition): CompletionGenerator {
+    /**
+     * Adds the as-keyword
+     *
+     * @param {AsKeywordTransition} transition
+     * @returns {CompletionBuilder} builder-class
+     * @memberof CompletionBuilder
+     */
+    public addAsKeyword(transition: AsKeywordTransition): CompletionBuilder {
         var keyword = this.aliasHelper.getKeywordByString(AliasKey.AS);
-        this.addSnippet(keyword, keyword + " ${1:variable}", "a", transition.getPrependingText());
+        this.addSnippet(keyword, keyword + " ${1:variable}", "a", transition.$prependingText);
         return this;
     }
 
-    // Schema completion
-    public addFittingChilds(parentName: string): CompletionGenerator {
+    /**
+     * Generates completion for an complex-schema where the parents is the given name
+     *
+     * @param {string} parentName name of the given parent
+     * @returns {CompletionBuilder} builder-class
+     * @memberof CompletionBuilder
+     */
+    public addFittingChilds(parentName: string): CompletionBuilder {
         this.schema.complexData.forEach(property => {
             var manipulatedParent = parentName.endsWith('.') ? parentName.substring(0, parentName.length - 1) : parentName;
             if (property.parent == manipulatedParent) {
@@ -113,8 +179,14 @@ export class CompletionGenerator {
         return this;
     }
 
-    // Array completion
-    public addOperandsWithTypeOfGivenOperand(operandName: string): CompletionGenerator {
+    /**
+     * Generates completion for array items, where the given operandName should not be appended
+     *
+     * @param {string} operandName name of an operand that shouldn't appear
+     * @returns {CompletionBuilder} builder-class
+     * @memberof CompletionBuilder
+     */
+    public addOperandsWithTypeOfGivenOperand(operandName: string): CompletionBuilder {
         var variables: Variable | undefined = this.declarations.find(declaration => declaration.name == operandName);
         if (!!variables) {
             return this.addFittingIdentifier(new OperandTransition(variables.dataType, [operandName], " "))
@@ -128,12 +200,28 @@ export class CompletionGenerator {
         return this;
     }
 
-
+    /**
+     * Last method of the build whicgh returns all generated items
+     *
+     * @returns {CompletionItem[]} returns all generated completion-items
+     * @memberof CompletionBuilder
+     */
     public build(): CompletionItem[] {
         return this.completionList;
     }
 
-    private addVariable(label: string | null, dataType: string, sortText: string, prependedText: string): CompletionGenerator {
+    /**
+     * Method for adding a variable
+     *
+     * @private
+     * @param {(string | null)} label label that will be shown as a title
+     * @param {string} dataType datatype as a documentation-text
+     * @param {string} sortText text which decide in which order the items appear
+     * @param {string} prependedText text which will be added before the label in case the item gets selected
+     * @returns {CompletionBuilder}
+     * @memberof CompletionBuilder
+     */
+    private addVariable(label: string | null, dataType: string, sortText: string, prependedText: string): CompletionBuilder {
         if (!label) return this;
 
         var completionItem = this.createCompletionItem(label, sortText, prependedText);
@@ -143,7 +231,18 @@ export class CompletionGenerator {
         return this;
     }
 
-    private addFunction(label: string | null, dataType: string, sortText: string, prependedText: string): CompletionGenerator {
+    /**
+     * Method for adding a function
+     *
+     * @private
+     * @param {(string | null)} label label that will be shown as a title
+     * @param {string} dataType datatype as a documentation-text
+     * @param {string} sortText text which decide in which order the items appear
+     * @param {string} prependedText text which will be added before the label in case the item gets selected
+     * @returns {CompletionBuilder}
+     * @memberof CompletionBuilder
+     */
+    private addFunction(label: string | null, dataType: string, sortText: string, prependedText: string): CompletionBuilder {
         if (!label) return this;
 
         var completionItem = this.createCompletionItem(label, sortText, prependedText);
@@ -153,7 +252,17 @@ export class CompletionGenerator {
         return this;
     }
 
-    private addKeyword(label: string | null, sortText: string, prependedText: string): CompletionGenerator {
+    /**
+     * Method for adding a keyword
+     *
+     * @private
+     * @param {(string | null)} label label that will be shown as a title
+     * @param {string} sortText text which decide in which order the items appear
+     * @param {string} prependedText text which will be added before the label in case the item gets selected
+     * @returns {CompletionBuilder}
+     * @memberof CompletionBuilder
+     */
+    private addKeyword(label: string | null, sortText: string, prependedText: string): CompletionBuilder {
         if (!label) return this;
 
         var completionItem = this.createCompletionItem(label, sortText, prependedText);
@@ -162,7 +271,18 @@ export class CompletionGenerator {
         return this;
     }
 
-    private addSnippet(label: string | null, text: string, sortText: string, prependedText: string): CompletionGenerator {
+    /**
+     * Method for adding a snipped
+     *
+     * @private
+     * @param {(string | null)} label label that will be shown as a title
+     * @param {string} text text that will be insered in case the item gets selected
+     * @param {string} sortText text which decide in which order the items appear
+     * @param {string} prependedText text which will be added before the label in case the item gets selected
+     * @returns {CompletionBuilder}
+     * @memberof CompletionBuilder
+     */
+    private addSnippet(label: string | null, text: string, sortText: string, prependedText: string): CompletionBuilder {
         if (!label) return this;
 
         var completionItem = this.createCompletionItemWithTextInsertion(label, text, sortText, prependedText);
@@ -205,11 +325,5 @@ export class CompletionGenerator {
      */
     private createCompletionItem(text: string, sortText: string, prependedText: string): CompletionItem {
         return this.createCompletionItemWithTextInsertion(text, text + " ", sortText, prependedText);
-    }
-
-    public getSortText(optional: boolean, trueCase?: string, falseCase?: string) {
-        trueCase = !trueCase ? "z" : trueCase;
-        falseCase = !falseCase ? "a" : falseCase;
-        return optional ? trueCase : falseCase;
     }
 }

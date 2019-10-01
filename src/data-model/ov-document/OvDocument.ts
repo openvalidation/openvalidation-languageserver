@@ -18,7 +18,14 @@ export class OvDocument {
     private elementManager: OvElementManager;
     private declarations: Variable[];
 
-    constructor(astElements: GenericNode[], declarations: Variable[], private _aliaseHelper: AliasHelper) {
+    /**
+     * Creates an instance of OvDocument.
+     * @param {GenericNode[]} astElements parsed elements
+     * @param {Variable[]} declarations found variables inside the document
+     * @param {AliasHelper} aliasesHelper helper that contains the available aliases
+     * @memberof OvDocument
+     */
+    constructor(astElements: GenericNode[], declarations: Variable[], private aliasesHelper: AliasHelper) {
         this.elementManager = new OvElementManager();
         this.declarations = declarations;
         this.create(astElements);
@@ -32,8 +39,8 @@ export class OvDocument {
         return this.elementManager;
     }
 
-    public get $aliaseHelper(): AliasHelper {
-        return this._aliaseHelper;
+    public get $aliasesHelper(): AliasHelper {
+        return this.aliasesHelper;
     }
 
     /**

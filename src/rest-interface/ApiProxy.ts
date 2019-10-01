@@ -4,7 +4,7 @@ import { VariableNode } from "src/data-model/syntax-tree/element/VariableNode";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
 import { AliasesWithOperators } from "./aliases/AliasesWithOperators";
 import { CultureEnum } from "../enums/CultureEnum";
-import { CodeResponse } from "./response/CodeResponse";
+import { ICodeResponse } from "./response/ICodeResponse";
 import { CompletionResponse } from "./response/CompletionResponse";
 import { LintingResponse } from "./response/LintingResponse";
 import { RestParameter } from "./RestParameter";
@@ -25,19 +25,19 @@ export class ApiProxy {
      * @static
      * @param {string} rule  one or more rules which should be posted to the rest-interface
      * @param {RestParameter} parameter parameter with the necessary parsing-data
-     * @returns {(Promise<CodeResponse | null>)} parsed code or null if an error appeared
+     * @returns {(Promise<ICodeResponse | null>)} parsed code or null if an error appeared
      * @memberof ApiProxy
      */
-    public static async postData(rule: string, parameter: RestParameter): Promise<CodeResponse | null> {
+    public static async postData(rule: string, parameter: RestParameter): Promise<ICodeResponse | null> {
         var data = {
             "rule": rule,
-            "schema": JSON.stringify(parameter.schema),
-            "culture": parameter.culture,
-            "language": parameter.language
+            "schema": JSON.stringify(parameter.$schema),
+            "culture": parameter.$culture,
+            "language": parameter.$language
         };
 
         try {
-            var response: AxiosResponse<CodeResponse> = await axios.post(this.apiUrl, data, {
+            var response: AxiosResponse<ICodeResponse> = await axios.post(this.apiUrl, data, {
                 validateStatus: (status) => { return status == 418 || status == 200; },
                 headers: { "content-type": "application/json" }
             });    
@@ -92,9 +92,9 @@ export class ApiProxy {
     public static async postLintingData(rule: string, parameter: RestParameter): Promise<LintingResponse | null> {
         var data = {
             "rule": rule,
-            "schema": JSON.stringify(parameter.schema),
-            "culture": parameter.culture,
-            "language": parameter.language
+            "schema": JSON.stringify(parameter.$schema),
+            "culture": parameter.$culture,
+            "language": parameter.$language
         };
 
         try {
@@ -127,16 +127,16 @@ export class ApiProxy {
      */
     public static async postCompletionData(rule: string, parameter: RestParameter, ovDocument: OvDocument | undefined): Promise<CompletionResponse | null> {
         if (!!ovDocument) {
-            var asKeyword: string | null = parameter.aliasHelper.getAsKeyword();
+            var asKeyword: string | null = parameter.$aliasHelper.getAsKeyword();
             var relevantVariables: VariableNode[] = ovDocument.$elementManager.getUsedVariables(rule, asKeyword);
             rule += "\n\n" + relevantVariables.map(variable => variable.getLines().join('\n')).join('\n\n');
         }
 
         var data = {
             "rule": rule,
-            "schema": JSON.stringify(parameter.schema),
-            "culture": parameter.culture,
-            "language": parameter.language
+            "schema": JSON.stringify(parameter.$schema),
+            "culture": parameter.$culture,
+            "language": parameter.$language
         };
 
         try {

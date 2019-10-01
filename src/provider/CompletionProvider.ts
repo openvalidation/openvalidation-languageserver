@@ -5,7 +5,7 @@ import { StringHelper } from "../helper/StringHelper";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
 import { Variable } from "../data-model/syntax-tree/Variable";
-import { CompletionGenerator } from "./code-completion/CompletionGenerator";
+import { CompletionBuilder } from "./code-completion/CompletionGenerator";
 import { Provider } from "./Provider";
 import { CompletionResponse } from "src/rest-interface/response/CompletionResponse";
 
@@ -17,10 +17,24 @@ import { CompletionResponse } from "src/rest-interface/response/CompletionRespon
  * @extends {Provider}
  */
 export class CompletionProvider extends Provider {
-    static bind(server: OvServer) {
+
+    /**
+     * Creates the provider and binds the server to it.
+     *
+     * @static
+     * @param {OvServer} server server we want to bind the provider to
+     * @returns {CompletionProvider} created provider
+     * @memberof CompletionProvider
+     */
+    static bind(server: OvServer): CompletionProvider {
         return new CompletionProvider(server);
     }
 
+    /**
+     * Creates an instance of CompletionProvider.
+     * @param {OvServer} server server we will connect to
+     * @memberof CompletionProvider
+     */
     constructor(server: OvServer) {
         super(server);
         this.connection.onCompletionResolve(params => this.completionResolve(params));
@@ -78,7 +92,7 @@ export class CompletionProvider extends Provider {
             var currentWord = StringHelper.getWordAt(line, params.position.character);
             if (String.IsNullOrWhiteSpace(currentWord)) return null;
 
-            var generator = new CompletionGenerator([], this.server.aliasHelper, this.server.schema).addFittingChilds(currentWord);
+            var generator = new CompletionBuilder([], this.server.aliasHelper, this.server.schema).addFittingChilds(currentWord);
             return generator.build();
         }
         return null;
@@ -106,7 +120,7 @@ export class CompletionProvider extends Provider {
                 declarations = ovDocument.$declarations;
             }
 
-            var generator = new CompletionGenerator(declarations, this.server.aliasHelper, this.server.schema)
+            var generator = new CompletionBuilder(declarations, this.server.aliasHelper, this.server.schema)
                 .addOperandsWithTypeOfGivenOperand(currentWord.replace(',', ''));
             return generator.build();
         }
@@ -161,13 +175,13 @@ export class CompletionProvider extends Provider {
      */
     private completionForParsedElement(response: CompletionResponse | null, declarations: Variable[], relativePosition: Position, wordAtCurrentPosition: string): CompletionItem[] | null {
         if (!response)
-            return CompletionGenerator.default(declarations, this.server);
+            return CompletionBuilder.default(declarations, this.server);
 
         var relevantElement = response.$scope;
         if (!relevantElement)
-            return CompletionGenerator.default(declarations, this.server);
+            return CompletionBuilder.default(declarations, this.server);
 
-        var generator: CompletionGenerator = new CompletionGenerator(declarations, this.server.aliasHelper, this.server.schema, wordAtCurrentPosition);
+        var generator: CompletionBuilder = new CompletionBuilder(declarations, this.server.aliasHelper, this.server.schema, wordAtCurrentPosition);
         return relevantElement!.getCompletionContainer(relativePosition).getCompletions(generator).build();
     }
 

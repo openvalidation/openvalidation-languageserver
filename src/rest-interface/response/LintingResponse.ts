@@ -19,6 +19,13 @@ export class LintingResponse {
     @Type(() => LintingError)
     private errors: LintingError[];
 
+
+    /**
+     * Creates an instance of LintingResponse.
+     * @param {MainNode} mainAstNode parsed syntax-tree mainNode
+     * @param {ISchemaType} schema parsed schema
+     * @memberof LintingResponse
+     */
     constructor(mainAstNode: MainNode, schema: ISchemaType) {
         this.errors = [];
         this.mainAstNode = mainAstNode;

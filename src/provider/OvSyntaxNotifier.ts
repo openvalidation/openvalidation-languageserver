@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { LintingResponse } from "src/rest-interface/response/LintingResponse";
 import { OvStringHelper } from "../helper/OvStringHelper";
 import { OvServer } from "../OvServer";
-import { CodeResponse } from "../rest-interface/response/CodeResponse";
+import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
 import { TextMateGrammarFactory } from "./syntax-highlighting/TextMateGrammarFactory";
 import { TextMateJson } from "./syntax-highlighting/TextMateJson";
 
@@ -18,12 +18,16 @@ export class OvSyntaxNotifier {
     private generatedCode: string | null;
     private textMateGrammarFactory: TextMateGrammarFactory;
 
+    /**
+     * Creates an instance of OvSyntaxNotifier.
+     * @param {OvServer} server server that contains required parameters
+     * @memberof OvSyntaxNotifier
+     */
     constructor(private readonly server: OvServer) {
         this.textMateGrammar = null;
         this.generatedCode = null;
         this.textMateGrammarFactory = new TextMateGrammarFactory;
     }
-
 
     /**
      * Checks if the textmate-grammar has changed and sends it to the client if this is the case
@@ -44,10 +48,10 @@ export class OvSyntaxNotifier {
     /**
      * Checks if the code has changed and sends it to the client if this is the case
      *
-     * @param {CodeResponse} apiResponse
+     * @param {ICodeResponse} apiResponse
      * @memberof OvSyntaxNotifier
      */
-    public sendGeneratedCodeIfNecessary(apiResponse: CodeResponse): void {
+    public sendGeneratedCodeIfNecessary(apiResponse: ICodeResponse): void {
         var newCodeNotification = this.generatedCodeDataObject(apiResponse);
 
         //Check, if the new code is different and musst be send to the client
@@ -61,11 +65,11 @@ export class OvSyntaxNotifier {
      * Generates the data-object for the generated code
      *
      * @private
-     * @param {CodeResponse} apiResponse that holds the implementation result
+     * @param {ICodeResponse} apiResponse that holds the implementation result
      * @returns  { language: string, value : string } that holds the required information
      * @memberof OvSyntaxNotifier
      */
-    private generatedCodeDataObject(apiResponse: CodeResponse): { language: string, value: string } {
+    private generatedCodeDataObject(apiResponse: ICodeResponse): { language: string, value: string } {
         var json = {
             language: OvStringHelper.convertOvLanguageToMonacoLanguage(this.server.language),
             value: apiResponse.implementationResult

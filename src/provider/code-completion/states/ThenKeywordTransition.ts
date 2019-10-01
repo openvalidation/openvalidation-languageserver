@@ -1,12 +1,30 @@
 import { StateTransition } from "./StateTransition";
-import { CompletionGenerator } from "../CompletionGenerator";
+import { CompletionBuilder } from "../CompletionGenerator";
 
+/**
+ * Transition of an `then`-keyword
+ *
+ * @export
+ * @class ThenKeywordTransition
+ * @extends {StateTransition}
+ */
 export class ThenKeywordTransition extends StateTransition {
+
+    /**
+     * Creates an instance of ThenKeywordTransition.
+     * @memberof ThenKeywordTransition
+     */
     constructor() {
         super()
     }
 
-    public addCompletionItems(generator: CompletionGenerator): void {
-        generator.addThenKeyword(this);
+    /**
+     * Adds the then-keyword to the builder
+     *
+     * @param {CompletionBuilder} builder builder that need to be manipulated
+     * @memberof ThenKeywordTransition
+     */
+    public addCompletionItems(builder: CompletionBuilder): void {
+        builder.addThenKeyword(this);
     }
 }

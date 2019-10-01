@@ -4,7 +4,7 @@
  * @export
  * @interface CodeResponse
  */
-export interface CodeResponse {
+export interface ICodeResponse {
     frameworkResult: string;
     implementationResult: string;
 }

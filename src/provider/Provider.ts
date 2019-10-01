@@ -14,6 +14,11 @@ export abstract class Provider {
 	protected connection: IConnection;
 	protected server: OvServer;
 
+    /**
+     * Creates an instance of Provider.
+     * @param {OvServer} server server we will connect to
+     * @memberof RenameProvider
+     */
 	constructor(server: OvServer) {
 		this.server = server;
 		this.ovDocuments = server.ovDocuments;

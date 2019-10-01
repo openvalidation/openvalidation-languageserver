@@ -15,6 +15,12 @@ export class LintingError {
     @Type(() => IndexRange)
     private range: IndexRange;
 
+    /**
+     * Creates an instance of LintingError.
+     * @param {string} message error-messsage
+     * @param {IndexRange} range range of the error-source
+     * @memberof LintingError
+     */
     constructor(message: string, range: IndexRange) {
         this.message = message;
         this.range = range;

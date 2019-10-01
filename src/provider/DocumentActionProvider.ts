@@ -1,4 +1,4 @@
-import { CodeResponse } from "src/rest-interface/response/CodeResponse";
+import { ICodeResponse } from "src/rest-interface/response/ICodeResponse";
 import { LintingResponse } from "src/rest-interface/response/LintingResponse";
 import { Diagnostic, DiagnosticSeverity, TextDocument, TextDocumentChangeEvent, Range } from "vscode-languageserver-types";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
@@ -16,13 +16,28 @@ import { Provider } from "./Provider";
  * @extends {Provider}
  */
 export class DocumentActionProvider extends Provider {
-    static bind(server: OvServer) {
+
+    /**
+     * Creates the provider and binds the server to it.
+     *
+     * @static
+     * @param {OvServer} server server we want to bind the provider to
+     * @returns {DocumentActionProvider}
+     * @memberof DocumentActionProvider
+     */
+    static bind(server: OvServer): DocumentActionProvider {
         return new DocumentActionProvider(server);
     }
 
     private readonly pendingValidationRequests: Map<string, number>;
     private readonly syntaxNotifier: OvSyntaxNotifier;
 
+
+    /**
+     * Creates an instance of DocumentActionProvider.
+     * @param {OvServer} server server we will connect to
+     * @memberof DocumentActionProvider
+     */
     constructor(server: OvServer) {
         super(server);
         this.pendingValidationRequests = new Map<string, number>();
@@ -113,7 +128,7 @@ export class DocumentActionProvider extends Provider {
         this.server.setGeneratedSchema(apiResponse);
         this.syntaxNotifier.sendTextMateGrammarIfNecessary(apiResponse);
 
-        var codeGenerationResponse: CodeResponse | null = null;
+        var codeGenerationResponse: ICodeResponse | null = null;
         try {
             codeGenerationResponse = await ApiProxy.postData(document.getText(), this.server.restParameter);
         }

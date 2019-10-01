@@ -1,23 +1,30 @@
 import { StateTransition } from "./StateTransition";
-import { CompletionGenerator } from "../CompletionGenerator";
+import { CompletionBuilder } from "../CompletionGenerator";
 import { String } from "typescript-string-operations";
 
+/**
+ * Transition for operands
+ *
+ * @export
+ * @class OperandTransition
+ * @extends {StateTransition}
+ */
 export class OperandTransition extends StateTransition {
     private dataType: string | undefined;
-    private nameFilter: string[] | undefined;
+    private nameFilter: string[];
 
     constructor(datatype?: string, nameFilter?: string[], prependingText?: string) {
         super(prependingText);
 
         this.dataType = datatype;
-        this.nameFilter = nameFilter;
+        this.nameFilter = !nameFilter ? [] : nameFilter;
     }
 
-    public getDataType(): string | undefined {
+    public get $dataType(): string | undefined {
         return this.dataType;
     }
 
-    public getNameFilter(): string[] | undefined {
+    public get $nameFilter(): string[] | undefined {
         if (!this.nameFilter) return undefined;
 
         var filterList: string[] = this.nameFilter;
@@ -30,6 +37,25 @@ export class OperandTransition extends StateTransition {
         return filterList;
     }
 
+    /**
+     * Adds a name to the list of name-filter
+     *
+     * @param {string} filter
+     * @memberof OperandTransition
+     */
+    public addNameFilter(filter: string): void {
+        this.nameFilter.push(filter);
+    }
+
+    /**
+     * Verifies weather the given name and datatype are valid for this transition.
+     * It is valid, if the datatype fits the datatype of this transition and if the name is `not` inside the filter.
+     *
+     * @param {string} name name that will be compared to the name-filter
+     * @param {string} datatype datatype that will be compared to the datatype
+     * @returns {boolean}
+     * @memberof OperandTransition
+     */
     public isValid(name: string, datatype: string): boolean {
         if (!this.dataType && !this.nameFilter) return true;
 
@@ -42,7 +68,13 @@ export class OperandTransition extends StateTransition {
         return true;
     }
 
-    public addCompletionItems(generator: CompletionGenerator): void {
-        generator.addFittingIdentifier(this);
+    /**
+     * Adds the fitting identifier to the given builder
+     *
+     * @param {CompletionBuilder} builder builder that need to be manipulated
+     * @memberof OperandTransition
+     */
+    public addCompletionItems(builder: CompletionBuilder): void {
+        builder.addFittingIdentifier(this);
     }
 }

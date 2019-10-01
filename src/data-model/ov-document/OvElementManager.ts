@@ -14,6 +14,10 @@ import { GenericNode } from "../syntax-tree/GenericNode";
 export class OvElementManager {
     private elements: GenericNode[];
 
+    /**
+     * Creates an instance of OvElementManager.
+     * @memberof OvElementManager
+     */
     constructor() {
         this.elements = [];
     }

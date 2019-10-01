@@ -12,10 +12,24 @@ import { Provider } from "./Provider";
  * @extends {Provider}
  */
 export class GotoDefinitionProvider extends Provider {
-    static bind(server: OvServer) {
+
+    /**
+     * Creates the provider and binds the server to it.
+     *
+     * @static
+     * @param {OvServer} server server we want to bind the provider to
+     * @returns {GotoDefinitionProvider} created provider
+     * @memberof GotoDefinitionProvider
+     */
+    static bind(server: OvServer): GotoDefinitionProvider {
         return new GotoDefinitionProvider(server);
     }
 
+    /**
+     * Creates an instance of GotoDefinitionProvider.
+     * @param {OvServer} server server we want to connect to
+     * @memberof GotoDefinitionProvider
+     */
     constructor(server: OvServer) {
         super(server);
         this.connection.onDefinition(params => this.definition(params));

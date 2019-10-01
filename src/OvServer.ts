@@ -40,6 +40,12 @@ export class OvServer {
     public schema: ISchemaType;
     public jsonSchema: JSON;
 
+
+    /**
+     * Creates an instance of OvServer.
+     * @param {IConnection} connection connection the server should connect to
+     * @memberof OvServer
+     */
     constructor(public readonly connection: IConnection) {
         this.language = LanguageEnum.Java;
         this.culture = CultureEnum.German;

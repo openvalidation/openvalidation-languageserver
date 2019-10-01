@@ -10,6 +10,10 @@ export class AliasHelper {
     private aliases: Map<string, string>;
     private operators: Map<string, string>;
 
+    /**
+     * Creates an instance of AliasHelper.
+     * @memberof AliasHelper
+     */
     constructor() {
         this.aliases = new Map<string, string>();
         this.operators = new Map<string, string>();

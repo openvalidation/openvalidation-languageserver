@@ -22,7 +22,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -32,7 +32,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -46,7 +46,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -60,7 +60,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 21);
 
-        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
         expect(actual[1]).toBeInstanceOf(ThenKeywordTransition);
     });
@@ -76,7 +76,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 27);
 
-        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -91,7 +91,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 21);
 
-        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
@@ -106,7 +106,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 5);
 
-        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -128,7 +128,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 47);
 
-        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 
@@ -150,7 +150,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 41);
 
-        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
@@ -172,7 +172,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 21);
 
-        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
     
@@ -194,7 +194,7 @@ describe("RuleNode Tests", () => {
 
         var positionParameter = Position.create(0, 26);
 
-        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
 });

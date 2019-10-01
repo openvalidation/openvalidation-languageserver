@@ -10,10 +10,24 @@ import { Provider } from "./Provider";
  * @extends {Provider}
  */
 export class FormattingProvider extends Provider {
-    static bind(server: OvServer) {
+
+    /**
+     * Creates the provider and binds the server to it.
+     *
+     * @static
+     * @param {OvServer} server server we want to bind the provider to
+     * @returns {FormattingProvider} created provider
+     * @memberof FormattingProvider
+     */
+    static bind(server: OvServer): FormattingProvider {
         return new FormattingProvider(server);
     }
 
+    /**
+     * Creates an instance of FormattingProvider.
+     * @param {OvServer} server server we want to connect to
+     * @memberof FormattingProvider
+     */
     constructor(server: OvServer) {
         super(server);
         this.connection.onDocumentRangeFormatting(params => this.documentRangeFormatting(params));

@@ -1,20 +1,39 @@
 import { StateTransition } from "./StateTransition";
-import { CompletionGenerator } from "../CompletionGenerator";
+import { CompletionBuilder } from "../CompletionGenerator";
 
+/**
+ * Transition for operator-transitions.
+ * This transition depends on the given datatype.
+ *
+ * @export
+ * @class OperatorTransition
+ * @extends {StateTransition}
+ */
 export class OperatorTransition extends StateTransition {
     private dataType: string;
 
+    /**
+     * Creates an instance of OperatorTransition.
+     * @param {string} dataType datatype the operator should have
+     * @memberof OperatorTransition
+     */
     constructor(dataType: string) {
         super();
 
         this.dataType = dataType;
     }
 
-    public getDataType(): string {
+    public get $dataType(): string {
         return this.dataType;
     }
     
-    public addCompletionItems(generator: CompletionGenerator): void {
-        generator.addFittingOperator(this);
+    /**
+     * Adds the fitting operators to the builder
+     *
+     * @param {CompletionBuilder} builder builder that need to be manipulated
+     * @memberof OperatorTransition
+     */
+    public addCompletionItems(builder: CompletionBuilder): void {
+        builder.addFittingOperator(this);
     }
 }

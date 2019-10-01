@@ -11,10 +11,24 @@ import { Provider } from "./Provider";
  * @extends {Provider}
  */
 export class RenameProvider extends Provider {
-    static bind(server: OvServer) {
+
+    /**
+     * Creates the provider and binds the server to it.
+     *
+     * @static
+     * @param {OvServer} server server we want to bind the provider to
+     * @returns {RenameProvider} created provider
+     * @memberof RenameProvider
+     */
+    static bind(server: OvServer): RenameProvider {
         return new RenameProvider(server);
     }
 
+    /**
+     * Creates an instance of RenameProvider.
+     * @param {OvServer} server server we will connect to
+     * @memberof RenameProvider
+     */
     constructor(server: OvServer) {
         super(server);
         this.connection.onRenameRequest(params => this.rename(params));

@@ -13,10 +13,24 @@ import { Provider } from "./Provider";
  * @extends {Provider}
  */
 export class HoverProvider extends Provider {
-    static bind(server: OvServer) {
+
+    /**
+     * Creates the provider and binds the server to it.
+     *
+     * @static
+     * @param {OvServer} server server we want to bind the provider to
+     * @returns {HoverProvider} created provider
+     * @memberof HoverProvider
+     */
+    static bind(server: OvServer): HoverProvider {
         return new HoverProvider(server);
     }
 
+    /**
+     * Creates an instance of HoverProvider.
+     * @param {OvServer} server server we want to connect to
+     * @memberof HoverProvider
+     */
     constructor(server: OvServer) {
         super(server);
         this.connection.onHover(params => this.hover(params));

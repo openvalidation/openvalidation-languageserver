@@ -22,7 +22,7 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 0);
 
-        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -32,7 +32,7 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 6);
 
-        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperatorTransition);
         expect(actual[1]).toBeInstanceOf(AsKeywordTransition);
 
@@ -46,7 +46,7 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 13);
 
-        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -60,7 +60,7 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
         expect(actual[1]).toBeInstanceOf(ThenKeywordTransition);
         expect(actual[2]).toBeInstanceOf(AsKeywordTransition);
@@ -76,7 +76,7 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 16);
 
-        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(ConnectionTransition);
         expect(actual[1]).toBeInstanceOf(ThenKeywordTransition);
         expect(actual[2]).toBeInstanceOf(AsKeywordTransition);
@@ -96,7 +96,7 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 22);
 
-        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
@@ -115,7 +115,7 @@ describe("UnkownNode Tests", () => {
 
         var positionParameter = Position.create(0, 36);
 
-        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).getTransitions();
+        var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
 });
