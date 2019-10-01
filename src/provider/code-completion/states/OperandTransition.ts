@@ -57,13 +57,13 @@ export class OperandTransition extends StateTransition {
      * @memberof OperandTransition
      */
     public isValid(name: string, datatype: string): boolean {
-        if (!this.dataType && !this.nameFilter) return true;
+        if (!this.dataType && !this.$nameFilter) return true;
 
         // Wrong Datatype
         if (!String.IsNullOrWhiteSpace(this.dataType!) && datatype != this.dataType) return false;
 
         // The Attribute with the name is not allowed
-        if (!!this.nameFilter && this.nameFilter.includes(name)) return false;
+        if (!!this.$nameFilter && this.$nameFilter.includes(name)) return false;
 
         return true;
     }
