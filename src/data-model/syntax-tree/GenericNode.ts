@@ -51,9 +51,44 @@ export abstract class GenericNode {
         return this.$range.$start.$line;
     }
 
+    /**
+     * Generates a list of all relevant children for tree-traversal
+     *
+     * @abstract
+     * @returns {GenericNode[]}
+     * @memberof GenericNode
+     */
     abstract getChildren(): GenericNode[];
+
+    /**
+     * Generates the hovering content which should be shown to the user
+     *
+     * @abstract
+     * @returns {(HoverContent | null)}
+     * @memberof GenericNode
+     */
     abstract getHoverContent(): HoverContent | null;
+
+    /**
+     * Generates the beautified content and returns it as a string
+     * This is used for the formatting-function
+     *
+     * @abstract
+     * @param {AliasHelper} aliasesHelper aliashelper if the aliases are required
+     * @returns {string} beautified content
+     * @memberof GenericNode
+     */
     abstract getBeautifiedContent(aliasesHelper: AliasHelper): string;
+
+
+    /**
+     * Calculates the completion-state with the completion-container
+     *
+     * @abstract
+     * @param {Position} position position of the request
+     * @returns {CompletionContainer}
+     * @memberof GenericNode
+     */
     abstract getCompletionContainer(position: Position): CompletionContainer;
 
     /**
