@@ -13,7 +13,7 @@ import * as ws from "ws";
 import { OvServer } from './OvServer';
 
 // Start the Java-Backend in a separat file
-// require("./start-backend");
+require("./start-backend");
 
 process.on('uncaughtException', function (err: any) {
     console.error('Uncaught Exception: ', err.toString());
@@ -82,7 +82,7 @@ function bindWebSocket(webSocket: ws): void {
 
 
 /**
- * Creates the langauge-server and the connectoin to the given socket
+ * Creates the language-server and the connectoin to the given socket
  *
  * @param {rpc.IWebSocket} socket socket we want to connect to
  */

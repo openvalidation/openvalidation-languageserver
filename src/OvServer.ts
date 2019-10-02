@@ -154,7 +154,7 @@ export class OvServer {
      * Sets the received language as our language and validates the current file
      *
      * @private
-     * @param {{ language: string, uri: string }} params that contains the langauge and the uri of the current document
+     * @param {{ language: string, uri: string }} params that contains the language and the uri of the current document
      * @returns {void}
      * @memberof OvServer
      */
@@ -171,7 +171,7 @@ export class OvServer {
      * Sets the received culture as our culture and validates the current file
      * 
      * @private
-     * @param {{ culture: string, uri: string }} params that contains the langauge and the uri of the current document
+     * @param {{ culture: string, uri: string }} params that contains the language and the uri of the current document
      * @returns {void}
      * @memberof OvServer
      */
