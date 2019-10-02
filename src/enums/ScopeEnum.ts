@@ -6,12 +6,12 @@
  * @enum {number}
  */
 export enum ScopeEnum {
-    Operation = 'operation.ov',
-    Variable = 'variable.parameter.name.ov',
+    Variable = 'variable.parameter.ov',
     Keyword = 'keyword.ov',
+    Comment = 'comment.block.ov',
     
-    StaticString = 'string.static.operand.ov',
-    StaticNumber = 'constant.numeric.integer.decimal.ov',
+    StaticString = 'string.unquoted.ov',
+    StaticNumber = 'constant.numeric.ov',
 
     Empty = 'semantical.sugar.ov'
 }

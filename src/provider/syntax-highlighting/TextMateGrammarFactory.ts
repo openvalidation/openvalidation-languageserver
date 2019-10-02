@@ -50,7 +50,7 @@ export class TextMateGrammarFactory {
         // Comments
         json.patterns.push({
             comment: 'standard-comment',
-            name: 'comment.line',
+            name: ScopeEnum.Comment,
             begin: '(?i)(' + parameter.$commentKeyword + ')',
             end: this.emptyLineRegex
         });
@@ -58,10 +58,19 @@ export class TextMateGrammarFactory {
         // Error-Message / Action
         json.patterns.push({
             comment: 'pattern for actions in a rule',
-            name: 'string.action.ov',
+            name: ScopeEnum.StaticString,
             begin: '(?<=((?i)(' + parameter.$thenKeyword + ')))',
             end: this.emptyLineRegex
         });
+        
+        // Keywords without Operators
+        if (parameter.$keywords.length > 0) {
+            json.patterns.push({
+                comment: 'pattern for general keywords',
+                name: 'keyword.ov',
+                match: StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.$keywords)
+            });
+        }
 
         // Variables
         if (parameter.$identifier.length > 0) {
@@ -74,18 +83,9 @@ export class TextMateGrammarFactory {
                 } 
             });
         }
-
-        // Keywords without Operators
-        if (parameter.$keywords.length > 0) {
-            json.patterns.push({
-                comment: 'pattern for general keywords',
-                name: 'keyword.ov',
-                match: StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.$keywords)
-            });
-        }
         
         // Operator Keywords
-        var operationRegex = parameter.getOperationAndOperandPatterns();
+        var operationRegex = parameter.getOperationAndOperandPatterns(parameter.$asKeyword);
         if (!!operationRegex) {
             json.patterns.push(...operationRegex);
         }

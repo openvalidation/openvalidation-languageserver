@@ -55,7 +55,7 @@ export class OperandNode extends BaseOperandNode {
         if (String.IsNullOrWhiteSpace(joinedLines)) return null;
 
         if (this.getName().indexOf(".") != -1 && joinedLines.indexOf(".") == -1)
-            return this.getCompletPatternInformation(aliasesHelper);
+            return this.getPatternInformationForComplexSchema(aliasesHelper);
 
         var splittedOperand = joinedLines.split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.getName())})`, "gi"));
         var capture = new SyntaxHighlightingCapture();
@@ -104,7 +104,7 @@ export class OperandNode extends BaseOperandNode {
      * @returns {(SyntaxHighlightingCapture | null)}
      * @memberof OperandNode
      */
-    private getCompletPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
+    private getPatternInformationForComplexSchema(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
         if (String.IsNullOrWhiteSpace(this.$lines.join("\n"))) return null;
 
         var splittedName = this.getName().split(".").reverse();

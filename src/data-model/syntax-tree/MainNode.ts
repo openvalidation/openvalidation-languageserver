@@ -2,6 +2,7 @@ import { Type } from "class-transformer";
 import { GenericNode } from "./GenericNode";
 import { Variable } from "./Variable";
 import { getGenericOptions } from "./TypeDecorator";
+import { IndexRange } from "./IndexRange";
 
 /**
  * MainNode for the syntax-tree
@@ -15,14 +16,18 @@ export class MainNode {
 
     @Type(() => GenericNode, getGenericOptions())
     private scopes: GenericNode[];
-    
+
+    @Type(() => IndexRange)
+    private range: IndexRange;
+
     /**
      * Creates an instance of MainNode.
      * @memberof MainNode
      */
-    constructor() {
+    constructor(range: IndexRange) {
         this.declarations = [];
         this.scopes = [];
+        this.range = range;
     }
 
     public get $declarations(): Variable[] {
@@ -38,4 +43,12 @@ export class MainNode {
     public set $scopes(value: GenericNode[]) {
         this.scopes = value;
     }
+    
+    public get $range(): IndexRange {
+        return this.range;
+    }
+    public set $range(value: IndexRange) {
+        this.range = value;
+    }
+    
 }

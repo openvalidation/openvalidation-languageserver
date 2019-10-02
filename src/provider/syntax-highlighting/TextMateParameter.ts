@@ -28,7 +28,7 @@ export class TextMateParameter {
 
         this.identifier = this.getIdentifier();
         this.complexSchemaProperties = server.schema.complexData;
-        this.keywords = server.aliasHelper.getGenericKeywords();
+        this.keywords = server.aliasHelper.getFilteredKeywords(AliasKey.OPERATOR, AliasKey.OF, AliasKey.AS, AliasKey.FUNCTION);
 
         if (!!apiResponse.$mainAstNode) {
             var traversal = new TreeTraversal();
@@ -95,10 +95,11 @@ export class TextMateParameter {
      * A pattern is generated for every operation and operand which only highlights the relevant data.
      * The relevant data is direcly transfered of the syntax-tree
      *
+     * @param {string} asKeyword `as`-keyword, used for the operand-regex
      * @returns {Pattern[]} generated patterns
      * @memberof TextMateParameter
      */
-    public getOperationAndOperandPatterns(): Pattern[] {
+    public getOperationAndOperandPatterns(asKeyword: string | null): Pattern[] {
         var patternList: Pattern[] = [];
 
         for (const operation of this.$operations) {
@@ -114,7 +115,10 @@ export class TextMateParameter {
             var tmpPattern: SyntaxHighlightingCapture | null = operand.getPatternInformation(this.aliasHelper);
             if (!tmpPattern) continue;
 
-            var pattern = tmpPattern.buildPattern(true);
+            var operandRegex = `^\\s*${tmpPattern.$match}\\s*$|^\\s*${tmpPattern.$match}\\s*(?=(?i)${asKeyword})`;
+            tmpPattern.$match = operandRegex;
+            tmpPattern.addCapture(...tmpPattern.$capture);
+            var pattern = tmpPattern.buildPattern();
             if (!pattern) continue;
             patternList.push(pattern);
         }

@@ -97,12 +97,10 @@ export class AliasHelper {
      * @returns {string[]}
      * @memberof AliasHelper
      */
-    public getGenericKeywords(): string[] {
-        var nonGenericKeywords: AliasKey[] = [AliasKey.OPERATOR, AliasKey.OF, AliasKey.AS, AliasKey.FUNCTION];
-
+    public getFilteredKeywords(...keywordFilter: AliasKey[]): string[] {
         return this.getKeys().filter(key => {
             var aliasKey = this.aliases.get(key)!;
-            return nonGenericKeywords.every(keyword => aliasKey.indexOf(keyword) == -1);
+            return keywordFilter.every(keyword => aliasKey.indexOf(keyword) == -1);
         });
     }
 

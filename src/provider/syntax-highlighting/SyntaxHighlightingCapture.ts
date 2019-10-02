@@ -84,7 +84,7 @@ export class SyntaxHighlightingCapture {
      * @returns {(Pattern | null)} builded pattern or null, in an error-case
      * @memberof SyntaxHighlightingCapture
      */
-    public buildPattern(atStartOfTheLine: boolean = false): Pattern | null {
+    public buildPattern(): Pattern | null {
         if (!this.$match) return null;
 
         var capture: any = {};
@@ -94,11 +94,6 @@ export class SyntaxHighlightingCapture {
 
             capture[`${index}`] = { name: scope }
         }
-
-        // Lonely operands should be at the start of a line
-        if (atStartOfTheLine)
-            this.$match = `^\\s*${this.$match}`;
-
         return {
             match: this.$match,
             captures: capture
