@@ -1,15 +1,14 @@
-import { AliasHelper } from "../../aliases/AliasHelper";
-import { IComplexData } from "../../rest-interface/schema/IComplexData";
 import { String } from "typescript-string-operations";
+import { AliasHelper } from "../../aliases/AliasHelper";
 import { AliasKey } from "../../aliases/AliasKey";
+import { BaseOperandNode } from "../../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
 import { TreeTraversal } from "../../helper/TreeTraversal";
 import { OvServer } from "../../OvServer";
 import { LintingResponse } from "../../rest-interface/response/LintingResponse";
-import { ISchemaProperty } from "../../rest-interface/schema/ISchemaProperty";
-import { Pattern } from "./TextMateJson";
+import { IComplexData } from "../../rest-interface/schema/IComplexData";
 import { SyntaxHighlightingCapture } from "./SyntaxHighlightingCapture";
-import { OperationNode } from "../../data-model/syntax-tree/element/operation/OperationNode";
-import { BaseOperandNode } from "../../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
+import { Pattern } from "./TextMateJson";
+import { ConditionNode } from "src/data-model/syntax-tree/element/operation/ConditionNode";
 
 export class TextMateParameter {
     private keywords: string[];
@@ -19,7 +18,7 @@ export class TextMateParameter {
     private thenKeyword: string | null;
     private commentKeyword: string | null;
 
-    private operations: OperationNode[];
+    private operations: ConditionNode[];
     private operands: BaseOperandNode[];
 
     private aliasHelper: AliasHelper;
@@ -27,7 +26,7 @@ export class TextMateParameter {
     constructor(private readonly apiResponse: LintingResponse, server: OvServer) {
         this.aliasHelper = server.aliasHelper;
 
-        this.identifier = this.getIdentifier(server.schema.dataProperties);
+        this.identifier = this.getIdentifier();
         this.complexSchemaProperties = server.schema.complexData;
         this.keywords = server.aliasHelper.getGenericKeywords();
 
@@ -63,7 +62,7 @@ export class TextMateParameter {
     public get $commentKeyword(): string | null {
         return this.commentKeyword;
     }
-    public get $operations(): OperationNode[] {
+    public get $operations(): ConditionNode[] {
         return this.operations;
     }
     public get $operands(): BaseOperandNode[] {
@@ -79,7 +78,7 @@ export class TextMateParameter {
      * @returns {string[]} list of all identifiers
      * @memberof OvSyntaxNotifier
      */
-    private getIdentifier(schema: Array<ISchemaProperty>): string[] {
+    private getIdentifier(): string[] {
         var identifier: string[] = [];
 
         if (!!this.apiResponse.$mainAstNode &&
@@ -87,9 +86,6 @@ export class TextMateParameter {
             var names: string[] = this.apiResponse.$mainAstNode.$declarations.map(d => d.$name);
             identifier = identifier.concat(names.filter(n => !String.IsNullOrWhiteSpace(n)));
         }
-
-        if (!!schema && schema.length > 0)
-            identifier = identifier.concat(schema.map(property => property.name));
 
         return identifier;
     }

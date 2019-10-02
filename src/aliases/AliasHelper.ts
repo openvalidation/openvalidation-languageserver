@@ -98,7 +98,7 @@ export class AliasHelper {
      * @memberof AliasHelper
      */
     public getGenericKeywords(): string[] {
-        var nonGenericKeywords: AliasKey[] = [AliasKey.OPERATOR, AliasKey.OF, AliasKey.AS, AliasKey.AND, AliasKey.OR, AliasKey.FUNCTION];
+        var nonGenericKeywords: AliasKey[] = [AliasKey.OPERATOR, AliasKey.OF, AliasKey.AS, AliasKey.FUNCTION];
 
         return this.getKeys().filter(key => {
             var aliasKey = this.aliases.get(key)!;

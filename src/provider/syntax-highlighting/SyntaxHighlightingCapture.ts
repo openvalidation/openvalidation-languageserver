@@ -1,5 +1,6 @@
 import { Pattern } from './TextMateJson';
 import { ScopeEnum } from "../../enums/ScopeEnum";
+import { String } from 'typescript-string-operations';
 
 /**
  * Class that is used for semantic parsing.
@@ -69,7 +70,7 @@ export class SyntaxHighlightingCapture {
      * @memberof SyntaxHighlightingCapture
      */
     public addRegexToMatch(regex: string | null): void {
-        if (!regex) return;
+        if (!regex || String.IsNullOrWhiteSpace(regex)) return;
 
         if (!this.match)
             this.match = regex;
@@ -86,15 +87,15 @@ export class SyntaxHighlightingCapture {
     public buildPattern(atStartOfTheLine: boolean = false): Pattern | null {
         if (!this.$match) return null;
 
-        var capture: any = { };
+        var capture: any = {};
         for (let index = 1; index <= this.capture.length; index++) {
             const scope = this.capture[index - 1];
-            capture[`${index}`] = {
-                name: scope
-            }
+            if (scope == ScopeEnum.Empty) continue;
+
+            capture[`${index}`] = { name: scope }
         }
 
-        // Lonely operands should be at the start of the line
+        // Lonely operands should be at the start of a line
         if (atStartOfTheLine)
             this.$match = `^\\s*${this.$match}`;
 

@@ -26,7 +26,7 @@ export class TextMateGrammarFactory {
      * @memberof TextMateGrammarFactory
      */
     public generateTextMateGrammar(apiResponse: LintingResponse, server: OvServer): TextMateJson {
-        var parameter: TextMateParameter = new TextMateParameter(apiResponse, server);;
+        var parameter: TextMateParameter = new TextMateParameter(apiResponse, server);
         var returnPar = this.fillTextMateGrammar(parameter);
         return returnPar;
     }
@@ -67,7 +67,6 @@ export class TextMateGrammarFactory {
         if (parameter.$identifier.length > 0) {
             json.patterns.push({
                 comment: 'pattern for identifier (variables)',
-                name: 'variable.parameter.name.ov',
                 match: `((?i)${parameter.$asKeyword}).*${StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.$identifier)}`,
                 captures: {
                     '1': { name: ScopeEnum.Keyword },

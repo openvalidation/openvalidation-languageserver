@@ -54,38 +54,45 @@ export class OperandNode extends BaseOperandNode {
         var joinedLines: string = this.$lines.join("\n");
         if (String.IsNullOrWhiteSpace(joinedLines)) return null;
 
-        if (this.getName().indexOf(".") != -1 && joinedLines.indexOf(".") == -1) 
+        if (this.getName().indexOf(".") != -1 && joinedLines.indexOf(".") == -1)
             return this.getCompletPatternInformation(aliasesHelper);
 
-        var returnString: string = "";
-        var splittedOperand = joinedLines.split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.getName())})`, "g"));
+        var splittedOperand = joinedLines.split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.getName())})`, "gi"));
         var capture = new SyntaxHighlightingCapture();
+        if (splittedOperand.length < 2) return capture;
 
-        if (splittedOperand.length >= 2) {
-            returnString = `(${splittedOperand[0]})\\s*(${StringHelper.makeStringRegExSafe(splittedOperand[1])})\\s*`;
-
-            var scope = this.getIsStatic()
-                ? this.getDataType() == "Decimal"
-                    ? ScopeEnum.StaticNumber
-                    : ScopeEnum.StaticString
-                : ScopeEnum.Variable;
-            capture.addCapture(ScopeEnum.Empty, scope);
-        }
-
-        if (splittedOperand.length >= 3) {
-            var duplicateOperands: string = splittedOperand[2];
-            for (let index = 3; index < splittedOperand.length; index++) {
-                const split = splittedOperand[index];
-                duplicateOperands += split;
-            }
-
-            returnString += `(${duplicateOperands})`;
+        var semanticalSugar = splittedOperand[0];
+        if (!String.IsNullOrWhiteSpace(semanticalSugar)) {
+            capture.addRegexToMatch(`(${splittedOperand[0]})`);
             capture.addCapture(ScopeEnum.Empty);
         }
 
-        if (!returnString) return null;
+        var scope: ScopeEnum;
+        if (this.getIsStatic()) {
+            if (this.getDataType() == "Decimal") {
+                scope = ScopeEnum.StaticNumber;
+            } else {
+                scope = ScopeEnum.StaticString;
+            }
+        } else {
+            scope = ScopeEnum.Variable;
+        }
 
-        capture.addRegexToMatch(returnString);
+        capture.addRegexToMatch(`(${StringHelper.makeStringRegExSafe(splittedOperand[1])})`);
+        capture.addCapture(scope);
+
+        if (splittedOperand.length < 3) return capture;
+        var duplicateOperands: string = splittedOperand[2];
+        for (let index = 3; index < splittedOperand.length; index++) {
+            const split = splittedOperand[index];
+            duplicateOperands += split;
+        }
+
+        if (!String.IsNullOrWhiteSpace(duplicateOperands)) {
+            capture.addRegexToMatch(`(${duplicateOperands})`);
+            capture.addCapture(ScopeEnum.Empty);
+        }
+
         return capture;
     }
 
@@ -101,16 +108,13 @@ export class OperandNode extends BaseOperandNode {
         if (String.IsNullOrWhiteSpace(this.$lines.join("\n"))) return null;
 
         var splittedName = this.getName().split(".").reverse();
-        var splittedOperand = this.$lines.join("\n").split(new RegExp(`(${StringHelper.getOredRegEx(splittedName)})`, "g"));
+        var splittedOperand = this.$lines.join("\n").split(new RegExp(`(${StringHelper.getOredRegEx(splittedName)})`, "gi"));
         var ofAliases = aliasesHelper.getOfKeywords();
         var capture: SyntaxHighlightingCapture = new SyntaxHighlightingCapture();
 
-        var returnRegex: string = "";
         var ofFound: boolean = false;;
         for (const text of splittedOperand) {
-            returnRegex += `(${text})\\s*`;
-
-            splittedName.includes(text) ? ScopeEnum.Variable : ScopeEnum.Empty
+            capture.addRegexToMatch(`(${text})`);
             if (splittedName.includes(text)) {
                 capture.addCapture(ScopeEnum.Variable);
             } else if (!ofFound && ofAliases.includes(text.trim().toUpperCase())) {
@@ -120,7 +124,6 @@ export class OperandNode extends BaseOperandNode {
             }
         }
 
-        capture.$match = returnRegex;
         return capture;
     }
 }

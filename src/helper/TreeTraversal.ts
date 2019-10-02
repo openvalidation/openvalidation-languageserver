@@ -2,6 +2,7 @@ import { Position } from "vscode-languageserver";
 import { BaseOperandNode } from "../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
 import { OperationNode } from "../data-model/syntax-tree/element/operation/OperationNode";
 import { GenericNode } from "../data-model/syntax-tree/GenericNode";
+import { ConditionNode } from "../data-model/syntax-tree/element/operation/ConditionNode";
 
 /**
  * Class for the traversal of the syntax-tree
@@ -71,10 +72,10 @@ export class TreeTraversal {
     }
 
     /**
-     * Tries to find all operationNodes recursive
+     * Tries to find all conditions recursive
      *
      * @param {GenericNode[]} genericNodes all known nodes
-     * @returns {OperationNode[]} found operationNodes
+     * @returns {ConditionNode[]} found conditions
      * @memberof TreeTraversal
      */
     public getOperations(genericNodes: GenericNode[]): OperationNode[] {
@@ -110,7 +111,7 @@ export class TreeTraversal {
         var operands: BaseOperandNode[] = [];
 
         for (const child of childs) {
-            if (child instanceof OperationNode) {
+            if (child instanceof ConditionNode) {
                 continue;
             } else if (child instanceof BaseOperandNode) {
                 operands.push(child);

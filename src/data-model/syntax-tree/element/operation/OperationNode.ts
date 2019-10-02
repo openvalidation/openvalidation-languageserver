@@ -194,11 +194,6 @@ export class OperationNode extends ConditionNode {
     public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
         var capture: SyntaxHighlightingCapture | null = new SyntaxHighlightingCapture();
 
-        if (!!this.getConnector()) {
-            capture.addCapture(ScopeEnum.Keyword);
-            capture.addRegexToMatch(`((?i)${this.getConnector()})`);
-        }
-
         if (!!this.leftOperand) {
             var tempCapture = this.leftOperand.getPatternInformation(aliasesHelper);
             if (!!tempCapture) {
