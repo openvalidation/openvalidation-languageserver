@@ -1,6 +1,6 @@
 import "jest";
-import { OvElementManager } from "../../../../src/data-model/ov-document/OvElementManager";
-import { TestInitializer } from "../../../TestInitializer";
+import { OvElementManager } from "../../../src/data-model/ov-document/OvElementManager";
+import { TestInitializer } from "../../TestInitializer";
 
 describe("Dummy Tests", () => {
     var elementManager: OvElementManager;
