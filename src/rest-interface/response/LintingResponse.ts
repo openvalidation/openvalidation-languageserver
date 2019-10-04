@@ -34,8 +34,12 @@ export class LintingResponse {
 
     public get $errors(): LintingError[] {
         return this.errors;
-    }
+    }    
     
+    public set $errors(errors: LintingError[]) {
+        this.errors = errors;
+    }
+        
     public get $mainAstNode(): MainNode {
         return this.mainAstNode;
     }
