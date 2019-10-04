@@ -122,6 +122,7 @@ export class OvServer {
             },
             colorProvider: false,
             foldingRangeProvider: true,
+            
 
             // Boolean for the OV-specific features
             semanticNotification: true,

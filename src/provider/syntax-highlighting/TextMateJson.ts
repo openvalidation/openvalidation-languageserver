@@ -56,6 +56,6 @@ export interface PatternBeginEnd extends GenericPattern {
  * @extends {GenericPattern}
  */
 export interface PatternCapture extends GenericPattern {
-    name?: string;
+    match: string;
     captures: any;
 }

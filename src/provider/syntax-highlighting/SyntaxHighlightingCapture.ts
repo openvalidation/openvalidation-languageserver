@@ -1,4 +1,4 @@
-import { Pattern } from './TextMateJson';
+import { PatternCapture } from './TextMateJson';
 import { ScopeEnum } from "../../enums/ScopeEnum";
 import { String } from 'typescript-string-operations';
 
@@ -84,8 +84,8 @@ export class SyntaxHighlightingCapture {
      * @returns {(Pattern | null)} builded pattern or null, in an error-case
      * @memberof SyntaxHighlightingCapture
      */
-    public buildPattern(): Pattern | null {
-        if (!this.$match) return null;
+    public buildPattern(): PatternCapture | null {
+        if (!this.$match || this.$capture.length == 0) return null;
 
         var capture: any = {};
         for (let index = 1; index <= this.capture.length; index++) {
