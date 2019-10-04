@@ -22,6 +22,7 @@ import { MainNode } from "../src/data-model/syntax-tree/MainNode";
 import { LintingResponse } from "../src/rest-interface/response/LintingResponse";
 import { CompletionResponse } from '../src/rest-interface/response/CompletionResponse';
 import { SyntaxNotifier } from '../src/provider/SyntaxNotifier';
+import { IndexRange } from '../src/data-model/syntax-tree/IndexRange';
 
 /**
  * Class that provides some useful classes and that mocks the Axios-Rest-Api
@@ -98,7 +99,7 @@ export class TestInitializer {
      */
     public mockNotEmptyLintingResponse(): LintingResponse {
         var json = {
-            mainAstNode: new MainNode(),
+            mainAstNode: new MainNode(IndexRange.create(0, 0, 0, 0)),
             schema: {
                 dataProperties: [{
                     name: "Alter",

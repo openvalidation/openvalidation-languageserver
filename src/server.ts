@@ -25,7 +25,7 @@ process.on('uncaughtException', function (err: any) {
 // create the express application
 const app = express();
 
-// server the static content, i.e. index.html
+// serve the static content, i.e. index.html
 app.use(express.static(__dirname));
 
 // Used for parsing of json-objects over the websocket
@@ -82,7 +82,7 @@ function bindWebSocket(webSocket: ws): void {
 
 
 /**
- * Creates the language-server and the connectoin to the given socket
+ * Creates the language-server and the connection to the given socket
  *
  * @param {rpc.IWebSocket} socket socket we want to connect to
  */

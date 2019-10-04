@@ -1,6 +1,6 @@
 import * as YAML from "js-yaml";
 import { IConnection, InitializeParams, InitializeResult, ServerCapabilities, TextDocuments } from 'vscode-languageserver';
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import { AliasHelper } from './aliases/AliasHelper';
 import { OvDocuments } from "./data-model/ov-document/OvDocuments";
 import { CompletionKeyEnum } from './enums/CompletionKeyEnum';
@@ -32,7 +32,7 @@ export class OvServer {
     public aliasHelper = new AliasHelper();
 
     private readonly documentActionProvider: DocumentActionProvider;
-    protected workspaceRoot: Uri | undefined;
+    protected workspaceRoot: URI | undefined;
 
     public language: LanguageEnum;
     public culture: CultureEnum;
@@ -93,9 +93,9 @@ export class OvServer {
      */
     private async initialize(params: InitializeParams): Promise<InitializeResult> {
         if (params.rootPath) {
-            this.workspaceRoot = Uri.file(params.rootPath);
+            this.workspaceRoot = URI.file(params.rootPath);
         } else if (params.rootUri) {
-            this.workspaceRoot = Uri.parse(params.rootUri);
+            this.workspaceRoot = URI.parse(params.rootUri);
         }
 
         this.setAliases();
