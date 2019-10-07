@@ -29,6 +29,10 @@ describe("OvSyntax notifier test", () => {
         provider.sendTextMateGrammarIfNecessary(testInitializer.mockEmptyLintingResponse());
         provider.sendGeneratedCodeIfNecessary(testInitializer.mockEmptyCode());
         provider.sendTextMateGrammarIfNecessary(testInitializer.mockEmptyLintingResponse());
-        provider.sendGeneratedCodeIfNecessary(testInitializer.mockEmptyCode());
+
+        var changedCode = testInitializer.mockEmptyCode();
+        changedCode.frameworkResult = "Blabla";
+        changedCode.implementationResult = "Blablabla";
+        provider.sendGeneratedCodeIfNecessary(changedCode);
     });
 });

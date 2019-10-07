@@ -43,24 +43,6 @@ export class AliasHelper {
     }
 
     /**
-     * Returns the first natural-word that fits the keyword
-     *
-     * @private
-     * @param {string} keywordToFind keyword which should be found
-     * @returns {string | null} found natural word or null
-     * @memberof TextMateParameter
-     */
-    public getKeywordByString(keywordToFind: string): string | null {
-        var foundKeyword = this.getKeys().find(key => {
-            var foundValue = this.aliases.get(key);
-            return foundValue ? foundValue.toLowerCase().indexOf(keywordToFind.toLowerCase()) !== -1 : false;
-        });
-        if (!foundKeyword) return null;
-
-        return foundKeyword;
-    }
-
-    /**
      * Tries to find the natural words (e.g. 'AS') for the given parser-keys (e.g. 'ʬasʬ')
      *
      * @private

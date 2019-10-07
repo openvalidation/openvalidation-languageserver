@@ -23,6 +23,8 @@ import { LintingResponse } from "../src/rest-interface/response/LintingResponse"
 import { CompletionResponse } from '../src/rest-interface/response/CompletionResponse';
 import { SyntaxNotifier } from '../src/provider/SyntaxNotifier';
 import { IndexRange } from '../src/data-model/syntax-tree/IndexRange';
+import { AliasesWithOperators } from '../src/rest-interface/aliases/AliasesWithOperators';
+import { OperandNode } from '../src/data-model/syntax-tree/element/operation/operand/OperandNode';
 
 /**
  * Class that provides some useful classes and that mocks the Axios-Rest-Api
@@ -120,7 +122,7 @@ export class TestInitializer {
     public mockAxios(): void {
         var mockAdapter = new MockAdapter(axios);
         mockAdapter.onPost('http://localhost:31057').reply(200, this.mockEmptyCode());
-        mockAdapter.onPost('http://localhost:31057/aliases').reply(200, this.getAliases());
+        mockAdapter.onPost('http://localhost:31057/aliases').reply(200, this.getRestAliases());
         mockAdapter.onPost('http://localhost:31057/linting').reply(200, this.mockEmptyLintingResponse());
         mockAdapter.onPost('http://localhost:31057/completion').reply(200, this.getCorrectCompletionResponse());
     }
@@ -174,6 +176,7 @@ export class TestInitializer {
         input.set("THEN", AliasKey.THEN);
         input.set("IF", AliasKey.IF);
         input.set("EQUALS", AliasKey.EQUALS);
+        input.set("SUM OF", AliasKey.SUM_OF);
         return input;
     }
 
@@ -225,7 +228,8 @@ Kommentar das ist ein Kommentar`
         var variableNode: VariableNode = plainToClass(VariableNode, this.variableNode);
         var complexRuleNode: RuleNode = plainToClass(RuleNode, this.complexRuleNode);
         var commentNode: CommentNode = plainToClass(CommentNode, this.commentNode);
-        mainNode.$scopes = [ruleNode, complexRuleNode, variableNode, commentNode];
+        var invalidCondition: OperandNode = plainToClass(OperandNode, this.invalidCondition);
+        mainNode.$scopes = [ruleNode, complexRuleNode, variableNode, commentNode, invalidCondition];
 
         return mainNode;
     }
@@ -234,6 +238,137 @@ Kommentar das ist ein Kommentar`
         var ruleNode: RuleNode = plainToClass(RuleNode, this.ruleJson);
         return new CompletionResponse(ruleNode);
     }
+
+    public getRestAliases() {
+        var aliases: AliasesWithOperators = plainToClass(AliasesWithOperators, this.aliasesJson);
+        return aliases;
+    }
+
+    private aliasesJson = {
+        "aliases": {
+            "HÖHER ALS": "ʬoperatorʬgreater_than",
+            "GEGEBEN": "ʬoperatorʬexists",
+            "MINUS": "ʬarithmoperatorʬsubtract",
+            "MÜSSEN": "ʬconstraintʬmust",
+            "KLEINER ALS": "ʬoperatorʬless_than",
+            "ERRORCODE": "ʬerrorcodeʬ",
+            "EIN TESTFALL": "TESTCASE",
+            "GLEICH": "ʬoperatorʬequals",
+            "TESTFALL MULTI": "TESTCASE_MULTI",
+            "MAXIMUM": "ʬoperatorʬless_or_equals",
+            "SORTIERT NACH": "ʬorderedʬ",
+            "UNGLEICH": "ʬoperatorʬnot_equals",
+            "WENN": "ʬifʬ",
+            "*": "ʬarithmoperatorʬmultiply",
+            "MULTIPLIZIERT MIT": "ʬarithmoperatorʬmultiply",
+            "+": "ʬarithmoperatorʬadd",
+            "NIEDRIGER ALS": "ʬoperatorʬless_than",
+            "MUSS": "ʬconstraintʬmust",
+            "ÜBERSTEIGEN": "ʬoperatorʬgreater_than",
+            "-": "ʬarithmoperatorʬsubtract",
+            "/": "ʬarithmoperatorʬdivide",
+            "MEHR ALS": "ʬoperatorʬgreater_than",
+            "MIT": "ʬwithʬ",
+            "MAL": "ʬarithmoperatorʬmultiply",
+            "NICHT VORHANDEN": "ʬoperatorʬnot_exists",
+            "MIT CODE": "ʬerrorcodeʬ",
+            "EXISTIERT": "ʬoperatorʬexists",
+            "SOLLTE": "ʬifʬ",
+            "NOCHEINER": "TESTCASE_MULTI",
+            "ADDIERT MIT": "ʬarithmoperatorʬadd",
+            "KÜRZER": "ʬoperatorʬless_than",
+            "MÜSSEN NICHT": "ʬconstraintʬmustnot",
+            "^": "ʬarithmoperatorʬpower",
+            "MULTIPLIZIERT": "ʬarithmoperatorʬmultiply",
+            "ODER": "ʬorʬ",
+            "IST": "ʬoperatorʬequals",
+            "EINS VON": "ʬoperatorʬat_least_one_of",
+            "SUMME VON": "ʬfunctionʬsum_of",
+            "DARF": "ʬconstraintʬmust",
+            "KÜRZER ALS": "ʬoperatorʬless_than",
+            "DARF NICHT": "ʬconstraintʬmustnot",
+            "LÄNGER ALS": "ʬoperatorʬgreater_than",
+            "ANGEGEBEN": "ʬoperatorʬexists",
+            "LÄNGER": "ʬoperatorʬgreater_than",
+            "VON DEM": "ʬofʬ",
+            "KLEINER": "ʬoperatorʬless_than",
+            "MEHR": "ʬoperatorʬgreater_than",
+            "NICHT ANGEGEBEN": "ʬoperatorʬnot_exists",
+            "VON DER": "ʬofʬ",
+            "ALS": "ʬasʬ",
+            "HOCH": "ʬarithmoperatorʬpower",
+            "NIEDRIGER": "ʬoperatorʬless_than",
+            "DIVIDIERT DURCH": "ʬarithmoperatorʬdivide",
+            "GIBT": "ʬoperatorʬexists",
+            "GERINGER ALS": "ʬoperatorʬless_than",
+            "NICHT": "ʬoperatorʬnot_equals",
+            "SOLL NICHT": "ʬconstraintʬmustnot",
+            "SOLLEN": "ʬconstraintʬmust",
+            "AUS": "ʬfromʬ",
+            "VORHANDEN": "ʬoperatorʬexists",
+            "GERINGER": "ʬoperatorʬless_than",
+            "MINDESTENS": "ʬoperatorʬgreater_or_equals",
+            "MUSS NICHT": "ʬconstraintʬmustnot",
+            "KOMMENTAR": "ʬcommentʬ",
+            "MODULO": "ʬarithmoperatorʬmodulo",
+            "NICHT GIBT": "ʬoperatorʬnot_exists",
+            "GETEILT DURCH": "ʬarithmoperatorʬdivide",
+            "SOLLEN NICHT": "ʬconstraintʬmustnot",
+            "GRÖßER": "ʬoperatorʬgreater_than",
+            "VON": "ʬofʬ",
+            "VOM": "ʬofʬ",
+            "MAXIMAL": "ʬoperatorʬless_or_equals",
+            "DÜRFEN": "ʬconstraintʬmust",
+            "PLUS": "ʬarithmoperatorʬadd",
+            "NIMM": "ʬfunctionʬʬtake",
+            "GRÖßER ODER GLEICH": "ʬoperatorʬgreater_or_equals",
+            "UND": "ʬandʬ",
+            "WENIGER ALS": "ʬoperatorʬless_than",
+            "KLEINER ODER GLEICH": "ʬoperatorʬless_or_equals",
+            "ÜBERSTEIGT": "ʬoperatorʬgreater_than",
+            "NICHT GEGEBEN": "ʬoperatorʬnot_exists",
+            "IMPORTIERE": "INCLUDE",
+            "KEINS VON": "ʬoperatorʬnone_of",
+            "WENIGER ALS ODER GLEICH": "ʬoperatorʬless_or_equals",
+            "KEIN": "ʬoperatorʬnot_equals",
+            "DÜRFEN NICHT": "ʬconstraintʬmustnot",
+            "DURCH": "ʬarithmoperatorʬdivide",
+            "MIT ERRORCODE": "ʬerrorcodeʬ",
+            "DANN": "ʬthenʬ",
+            "WENIGER": "ʬoperatorʬless_than",
+            "MOD": "ʬarithmoperatorʬmodulo",
+            "SORTIERE NACH": "ʬorderedʬ",
+            "NICHT GLEICH": "ʬoperatorʬnot_equals",
+            "GRÖßER ALS": "ʬoperatorʬgreater_than",
+            "DER": "ʬofʬ",
+            "DES": "ʬofʬ",
+            "MEHR ODER GLEICH": "ʬoperatorʬgreater_or_equals",
+            "ES SEI DENN": "ʬunlessʬ",
+            "SOLL": "ʬconstraintʬmust",
+            "NICHT EXISTIERT": "ʬoperatorʬnot_exists",
+            "HÖHER": "ʬoperatorʬgreater_than"
+        },
+        "operators": {
+            "AT_LEAST_ONE_OF": "Array",
+            "IS_BETWEEN": "Unknown",
+            "EXISTS": "Array",
+            "ONE_OF": "Array",
+            "CONTAINS": "String",
+            "NOT_EXISTS": "Array",
+            "GREATER_THAN": "Decimal",
+            "LESS_OR_EQUALS": "Decimal",
+            "EQUALS": "Object",
+            "IS": "Object",
+            "NOT_EMPTY": "String",
+            "ALL_OF": "Array",
+            "EMPTY": "String",
+            "GREATER_OR_EQUALS": "Decimal",
+            "NONE_OF": "Array",
+            "NOT_EQUALS": "Object",
+            "SUM_OF": "String",
+            "LESS_THAN": "Decimal"
+        }
+    };
 
     private ruleJson = {
         "lines": [
@@ -660,4 +795,12 @@ Kommentar das ist ein Kommentar`
         },
         "type": "VariableNode"
     };
+
+    private invalidCondition = {
+        "lines": [
+            "Something invalid"
+        ],
+        "range": null,
+        "type": "OperandNode"
+    }
 }

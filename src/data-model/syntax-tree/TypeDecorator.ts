@@ -15,37 +15,38 @@ import { VariableNode } from "./element/VariableNode";
  *  independently (see https://github.com/typestack/class-transformer/issues/297)
  */
 
+export class TypeDecorator {
+    public static getOperationOptions(): TypeOptions {
+        return {
+            discriminator: {
+                property: "type",
+                subTypes: [
+                    { value: OperationNode, name: "OperationNode" },
+                    { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
+                    { value: FunctionOperandNode, name: "FunctionOperandNode" },
+                    { value: OperandNode, name: "OperandNode" },
+                    { value: ArrayOperandNode, name: "ArrayOperandNode" }
+                ]
+            }
+        };
+    }
 
-export function getOperationOptions(): TypeOptions {
-    return {
-        discriminator: {
-            property: "type",
-            subTypes: [
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
-                { value: FunctionOperandNode, name: "FunctionOperandNode" },
-                { value: OperandNode, name: "OperandNode" },
-                { value: ArrayOperandNode, name: "ArrayOperandNode" }
-            ]
-        }
-    };
-}
-
-export function getGenericOptions(): TypeOptions {
-    return {
-        discriminator: {
-            property: "type",
-            subTypes: [
-                { value: CommentNode, name: "CommentNode" },
-                { value: VariableNode, name: "VariableNode" },
-                { value: RuleNode, name: "RuleNode" },
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
-                { value: FunctionOperandNode, name: "FunctionOperandNode" },
-                { value: OperandNode, name: "OperandNode" },
-                { value: UnkownNode, name: "UnkownNode" },
-                { value: ArrayOperandNode, name: "ArrayOperandNode" }
-            ]
-        }
-    };
+    public static getGenericOptions(): TypeOptions {
+        return {
+            discriminator: {
+                property: "type",
+                subTypes: [
+                    { value: CommentNode, name: "CommentNode" },
+                    { value: VariableNode, name: "VariableNode" },
+                    { value: RuleNode, name: "RuleNode" },
+                    { value: OperationNode, name: "OperationNode" },
+                    { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
+                    { value: FunctionOperandNode, name: "FunctionOperandNode" },
+                    { value: OperandNode, name: "OperandNode" },
+                    { value: UnkownNode, name: "UnkownNode" },
+                    { value: ArrayOperandNode, name: "ArrayOperandNode" }
+                ]
+            }
+        };
+    }
 }

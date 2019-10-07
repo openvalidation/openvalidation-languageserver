@@ -13,12 +13,6 @@ import { VariableNode } from "../../src/data-model/syntax-tree/element/VariableN
 
 describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
 
-    // var initializer: TestInitializer;
-
-    // beforeEach(() => {
-    //     initializer = new TestInitializer(true);
-    // });
-
     test("check type of OperandNodeJson, expect OperandNode", async () => {
         var actual = plainToClass(OperandNode, operandNodeJson());
         var expectedType = OperandNode;
@@ -67,7 +61,7 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
             expect((condition as OperationNode).getRightOperand()).toBeInstanceOf(OperandNode);
         }
     });
-    
+
     test("check type of an CommentJson, expect CommendNode", async () => {
         var actual = plainToClass(CommentNode, commentJson());
         var expectedType = CommentNode;
@@ -120,7 +114,7 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
             expect(parameter).toBeInstanceOf(OperandNode);
         }
     });
-
+    
     //#region JSON-Definitions
     function operandNodeJson() {
         return {

@@ -1,4 +1,4 @@
-import { CompletionBuilder } from "../CompletionGenerator";
+import { CompletionBuilder } from "../CompletionBuilder";
 
 /**
  * Generic class for all transitions that provides methods for all transitions

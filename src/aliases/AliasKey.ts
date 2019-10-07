@@ -28,7 +28,7 @@ export enum AliasKey {
 
     //Functions
     FUNCTION = 'ʬfunctionʬ',
-    SUMME_VON = 'ʬfunctionʬsum_of',
+    SUM_OF = 'ʬfunctionʬsum_of',
 
     //Others
     OF = 'ʬofʬ',

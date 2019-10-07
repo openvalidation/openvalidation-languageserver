@@ -48,7 +48,7 @@ export class CompletionBuilder {
      * @returns
      * @memberof CompletionBuilder
      */
-    public static default(declarations: Variable[], server: OvServer) {
+    public static default(declarations: Variable[], server: OvServer): CompletionItem[] {
         return new CompletionBuilder(declarations, server.aliasHelper, server.schema).addGlobals().build();
     }
 
@@ -59,7 +59,7 @@ export class CompletionBuilder {
      * @memberof CompletionGenerator
      */
     public addGlobals(): CompletionBuilder {
-        this.addKeyword(this.aliasHelper.getKeywordByString("if"), "a", "");
+        this.addKeyword(this.aliasHelper.getKeywordByAliasKey(AliasKey.IF), "a", "");
 
         var asWord = this.aliasHelper.getAsKeyword();
         if (!!asWord)
@@ -142,7 +142,7 @@ export class CompletionBuilder {
      * @memberof CompletionBuilder
      */
     public addThenKeyword(transition: ThenKeywordTransition): CompletionBuilder {
-        this.addKeyword(this.aliasHelper.getKeywordByString(AliasKey.THEN), "a", transition.$prependingText);
+        this.addKeyword(this.aliasHelper.getKeywordByAliasKey(AliasKey.THEN), "a", transition.$prependingText);
         return this;
     }
 
@@ -154,7 +154,7 @@ export class CompletionBuilder {
      * @memberof CompletionBuilder
      */
     public addAsKeyword(transition: AsKeywordTransition): CompletionBuilder {
-        var keyword = this.aliasHelper.getKeywordByString(AliasKey.AS);
+        var keyword = this.aliasHelper.getKeywordByAliasKey(AliasKey.AS);
         this.addSnippet(keyword, keyword + " ${1:variable}", "a", transition.$prependingText);
         return this;
     }
@@ -224,7 +224,7 @@ export class CompletionBuilder {
     private addVariable(label: string | null, dataType: string, sortText: string, prependedText: string): CompletionBuilder {
         if (!label) return this;
 
-        var completionItem = this.createCompletionItem(label, sortText, prependedText);
+        var completionItem = this.createCompletionItemWithTextInsertion(label, label, sortText, prependedText);
         completionItem.kind = CompletionItemKind.Variable;
         completionItem.detail = dataType;
         this.completionList.push(completionItem);
@@ -245,7 +245,7 @@ export class CompletionBuilder {
     private addFunction(label: string | null, dataType: string, sortText: string, prependedText: string): CompletionBuilder {
         if (!label) return this;
 
-        var completionItem = this.createCompletionItem(label, sortText, prependedText);
+        var completionItem = this.createCompletionItemWithTextInsertion(label, label, sortText, prependedText);
         completionItem.kind = CompletionItemKind.Function;
         completionItem.detail = dataType;
         this.completionList.push(completionItem);
@@ -266,7 +266,7 @@ export class CompletionBuilder {
     private addKeyword(label: string | null, sortText: string, prependedText: string, documentation?: string): CompletionBuilder {
         if (!label) return this;
 
-        var completionItem = this.createCompletionItem(label, sortText, prependedText);
+        var completionItem = this.createCompletionItemWithTextInsertion(label, label, sortText, prependedText);
         completionItem.kind = CompletionItemKind.Keyword;
         completionItem.preselect = true;
 
@@ -307,6 +307,8 @@ export class CompletionBuilder {
      * @static
      * @param {string} label label to show in the suggestion-list
      * @param {string} text text to insert, when suggestion gets picked
+     * @param {string} sortText text, that is used for special sorting of items
+     * @param {string} prependedText text that gets inserted after the completionItem
      * @returns {CompletionItem} created CompletionItem
      * @memberof CompletionItemHelper
      */
@@ -318,18 +320,5 @@ export class CompletionBuilder {
         item.insertText = tmpPrepended + text;
 
         return item;
-    }
-
-    /**
-     * Creates a CompletionItem, that holds the information for code-completion,
-     * with the same label and text to insert
-     *
-     * @static
-     * @param {string} text label of the item and text to insert, when suggestion gets picked
-     * @returns {CompletionItem} created CompletionItem
-     * @memberof CompletionItemHelper
-     */
-    private createCompletionItem(text: string, sortText: string, prependedText: string): CompletionItem {
-        return this.createCompletionItemWithTextInsertion(text, text, sortText, prependedText);
     }
 }

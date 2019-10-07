@@ -60,4 +60,22 @@ describe("Rename provider test", () => {
 
         expect(actual).toEqual(expected);
     });
+
+    test("rename with valid document and valid position of variable definition, expect old name don't appears anymore", () => {
+        var expected: WorkspaceEdit = {};
+
+        var variablePosition: Position = Position.create(6, 20);
+        var actual = provider.rename(getParams("NewText", variablePosition));
+
+        expect(actual).not.toEqual(expected);
+    });
+
+    test("rename with valid document and valid position of variable definition, expect old name don't appears anymore", () => {
+        var expected: WorkspaceEdit = {};
+
+        var variablePosition: Position = Position.create(6, 20);
+        var actual = provider.rename(getParams("NewText", variablePosition));
+
+        expect(actual).not.toEqual(expected);
+    });
 });

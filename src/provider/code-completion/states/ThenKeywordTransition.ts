@@ -1,5 +1,5 @@
 import { StateTransition } from "./StateTransition";
-import { CompletionBuilder } from "../CompletionGenerator";
+import { CompletionBuilder } from "../CompletionBuilder";
 
 /**
  * Transition of an `then`-keyword

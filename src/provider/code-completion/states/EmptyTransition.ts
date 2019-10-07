@@ -1,5 +1,5 @@
 import { StateTransition } from "./StateTransition";
-import { CompletionBuilder } from "../CompletionGenerator";
+import { CompletionBuilder } from "../CompletionBuilder";
 
 /**
  * Empty-transition which is used as a placeholder for a state where no items should be aded

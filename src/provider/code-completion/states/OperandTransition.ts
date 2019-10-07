@@ -1,5 +1,5 @@
 import { StateTransition } from "./StateTransition";
-import { CompletionBuilder } from "../CompletionGenerator";
+import { CompletionBuilder } from "../CompletionBuilder";
 import { String } from "typescript-string-operations";
 
 /**
@@ -25,8 +25,6 @@ export class OperandTransition extends StateTransition {
     }
 
     public get $nameFilter(): string[] | undefined {
-        if (!this.nameFilter) return undefined;
-
         var filterList: string[] = this.nameFilter;
         for (const filter of this.nameFilter) {
             var complexChild: string[] = filter.split('.');

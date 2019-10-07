@@ -1,4 +1,4 @@
-import { CompletionBuilder } from "./CompletionGenerator";
+import { CompletionBuilder } from "./CompletionBuilder";
 import { StateTransition } from "./states/StateTransition";
 import { ConnectionTransition } from "./states/ConnectionTransition";
 import { ThenKeywordTransition } from "./states/ThenKeywordTransition";
@@ -49,6 +49,11 @@ export class CompletionContainer {
         return this.transitions;
     }
 
+    public addTransition(transition: StateTransition): CompletionContainer {
+        this.transitions.push(transition);
+        return this;
+    }
+
     /**
      * Adds an connectionTransition to the transitions
      *
@@ -81,7 +86,6 @@ export class CompletionContainer {
         this.transitions.push(new AsKeywordTransition());
         return this;
     }
-
 
     /**
      * Adds an operatorTransition with the given datatype to the transitions

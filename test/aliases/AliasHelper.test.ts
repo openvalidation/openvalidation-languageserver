@@ -13,7 +13,14 @@ describe("AliasHelper Tests", () => {
         input.set("COMMENT", AliasKey.COMMENT);
         input.set("THEN", AliasKey.THEN);
         input.set("IF", AliasKey.IF);
+        input.set("OF", AliasKey.OF);
+        input.set("EQUALS", AliasKey.OPERATOR);
+        input.set("SUM OF", AliasKey.SUM_OF);
         aliasHelper.$aliases = input;
+
+        var operatorInput = new Map<string, string>();
+        operatorInput.set("EQUALS", "Object");
+        aliasHelper.$operators = operatorInput;
     }
 
     beforeEach(() => {
@@ -25,7 +32,7 @@ describe("AliasHelper Tests", () => {
 
         var expected: string | null = null;
 
-        var input: AliasKey = AliasKey.SUMME_VON;
+        var input: AliasKey = AliasKey.CONSTRAINT;
         var actual: string | null = aliasHelper.getKeywordByAliasKey(input);
 
         expect(actual).toEqual(expected);
@@ -66,8 +73,8 @@ describe("AliasHelper Tests", () => {
     test("getKeywordByAliasKey with one valid and one invalid key, expect one found value", () => {
         setDefaultAliases();
 
-        var expected: string[] = ["AND"];
-        var actual: string[] = aliasHelper.getKeywordsByAliasKeys(AliasKey.AND, AliasKey.SUMME_VON);
+        var expected: string[] = ["AND" ];
+        var actual: string[] = aliasHelper.getKeywordsByAliasKeys(AliasKey.AND, AliasKey.CONSTRAINT);
 
         expect(actual).toEqual(expected);
     });
@@ -81,7 +88,7 @@ describe("AliasHelper Tests", () => {
         expect(actual).toEqual(expected);
     });
 
-    test("isLinkingOperator with default aliases, expect comment keyword", () => {
+    test("getCommentKeyword with default aliases, expect comment keyword", () => {
         setDefaultAliases();
 
         var expected: string = "COMMENT";
@@ -89,4 +96,41 @@ describe("AliasHelper Tests", () => {
 
         expect(actual).toEqual(expected);
     });
+
+    test("getOfKeywords with default aliases, expect comment keyword", () => {
+        setDefaultAliases();
+
+        var expected: string[] = ["OF"];
+        var actual: string[] = aliasHelper.getOfKeywords();
+
+        expect(actual).toEqual(expected);
+    });
+
+    test("getFunctions with default aliases, expect comment keyword", () => {
+        setDefaultAliases();
+
+        var expected: string[] = ["SUM OF"];
+        var actual: string[] = aliasHelper.getFunctions();
+
+        expect(actual).toEqual(expected);
+    });
+
+    test("getLengthOfLongestLogicalOperator with default aliases, expect comment keyword", () => {
+        setDefaultAliases();
+
+        var expected: number = 4;
+        var actual: number = aliasHelper.getLengthOfLongestLogicalOperator();
+
+        expect(actual).toEqual(expected);
+    });
+
+    // test("getOperators, expect null", () => {
+    //     setDefaultAliases();
+
+    //     var expected: number = 1;
+    //     var actualMap: Map<string, [string, string]> = aliasHelper.getOperators();
+    //     var actual: number = actualMap.size;
+
+    //     expect(actual).toEqual(expected);
+    // });
 })

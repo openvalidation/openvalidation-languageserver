@@ -1,7 +1,7 @@
 import { Type } from "class-transformer";
 import { GenericNode } from "./GenericNode";
 import { Variable } from "./Variable";
-import { getGenericOptions } from "./TypeDecorator";
+import { TypeDecorator } from "./TypeDecorator";
 import { IndexRange } from "./IndexRange";
 
 /**
@@ -14,7 +14,7 @@ export class MainNode {
     @Type(() => Variable)
     private declarations: Variable[] = [];
 
-    @Type(() => GenericNode, getGenericOptions())
+    @Type(() => GenericNode, TypeDecorator.getGenericOptions())
     private scopes: GenericNode[];
 
     @Type(() => IndexRange)
