@@ -10,5 +10,10 @@ module.exports = {
     "setupFiles": [
         "./test/globals.js"
     ],
-    "collectCoverage": true
+    "collectCoverage": true,
+    "coverageReporters": [
+        "json-summary",
+        "text",
+        "lcov"
+    ]
 }

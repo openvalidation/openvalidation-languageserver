@@ -14,6 +14,7 @@
     "class-transformer": "^0.2.3",
     "cpx": "^1.5.0",
     "express": "^4.15.2",
+    "jest-coverage-badges": "^1.1.2",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.13",
     "reflect-metadata": "^0.1.13",
@@ -45,6 +46,7 @@
     "start:watch": "nodemon",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:badges": "npm run test  && jest-coverage-badges",
     "debug": "nodemon --debug lib/server.js",
     "copy:exe": "cpx ./src/rest-interface/ov-rest.exe ./lib/rest-interface/"
   },

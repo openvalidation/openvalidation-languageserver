@@ -89,7 +89,7 @@ describe("OvDocument Tests", () => {
     }
 
     function getAstComment(): CommentNode {
-        return new CommentNode("test", ["Kommentar test"], getDefaultRange());
+        return new CommentNode(["Kommentar test"], getDefaultRange(), "test");
     }
 
     function getAstElement(): OperandNode {
