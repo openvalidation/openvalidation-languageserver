@@ -58,7 +58,7 @@ export class DocumentActionProvider extends Provider {
         this.cleanPendingValidation(uri);
         this.pendingValidationRequests.set(uri, setTimeout(() => {
             this.pendingValidationRequests.delete(uri);
-            this.doValidate(uri);
+            this.validateDocumentWithUri(uri);
         }));
     }
 
@@ -98,44 +98,49 @@ export class DocumentActionProvider extends Provider {
      * @returns {Promise<void>}
      * @memberof DocumentActionProvider
      */
-    private async doValidate(uri: string): Promise<void> {
+    private async validateDocumentWithUri(uri: string): Promise<void> {
         var document = this.server.documents.get(uri);
-        if (document == null) {
+        if (!document) {
             this.cleanDiagnostics(document);
             return;
         }
 
+        return this.validateText(uri, document.getText())
+    }
+
+    private async validateText(uri: string, documentText: string): Promise<void> {        
         var apiResponse: LintingResponse | null = null;
         var ovDocument: OvDocument | undefined = this.server.ovDocuments.get(uri);
 
         try {
-            apiResponse = await ApiProxy.postLintingData(document.getText(), this.server.restParameter);
+            apiResponse = await ApiProxy.postLintingData(documentText, this.server.restParameter);
         } catch (err) {
             console.error("doValidate: " + err);
             return;
         }
 
         if (!apiResponse) return;
-        ovDocument = this.generateDocumentWithAst(apiResponse, document.getText());
+        ovDocument = this.generateDocumentWithAst(apiResponse);
 
         if (!ovDocument) return;
         var diagnostics: Diagnostic[] = this.generateDiagnostics(apiResponse);
         if (diagnostics !== [])
-            this.sendDiagnostics(document, diagnostics);
+            this.sendDiagnostics(uri, diagnostics);
 
         if (!ovDocument) return;
-        this.server.ovDocuments.addOrOverrideOvDocument(document.uri, ovDocument);
+        this.server.ovDocuments.addOrOverrideOvDocument(uri, ovDocument);
         this.server.setGeneratedSchema(apiResponse);
         this.syntaxNotifier.sendTextMateGrammarIfNecessary(apiResponse);
 
         var codeGenerationResponse: ICodeResponse | null = null;
         try {
-            codeGenerationResponse = await ApiProxy.postData(document.getText(), this.server.restParameter);
+            codeGenerationResponse = await ApiProxy.postData(documentText, this.server.restParameter);
         }
         catch (err) { console.error("Code generation Error: " + err); }
 
         if (!codeGenerationResponse) return;
         this.syntaxNotifier.sendGeneratedCodeIfNecessary(codeGenerationResponse);
+
     }
 
     /**
@@ -143,11 +148,10 @@ export class DocumentActionProvider extends Provider {
      *
      * @private
      * @param {(LintingResponse | null)} apiResponse response that holds the ast
-     * @param {string} documentText test that is in the corresponding document
      * @returns {(OvDocument | null)} generated document
      * @memberof DocumentActionProvider
      */
-    private generateDocumentWithAst(apiResponse: LintingResponse | null, text: string): OvDocument | undefined {
+    private generateDocumentWithAst(apiResponse: LintingResponse | null): OvDocument | undefined {
         if (!apiResponse ||
             !apiResponse.$mainAstNode ||
             !apiResponse.$mainAstNode.$scopes)
@@ -190,7 +194,7 @@ export class DocumentActionProvider extends Provider {
      */
     private cleanDiagnostics(document: TextDocument | undefined): void {
         if (document != undefined)
-            this.sendDiagnostics(document, []);
+            this.sendDiagnostics(document.uri, []);
     }
 
     /**
@@ -201,9 +205,9 @@ export class DocumentActionProvider extends Provider {
      * @param {Diagnostic[]} diagnostics diagnostics that are generated
      * @memberof DocumentActionProvider
      */
-    private sendDiagnostics(document: TextDocument, diagnostics: Diagnostic[]): void {
+    private sendDiagnostics(documentUri: string, diagnostics: Diagnostic[]): void {
         this.server.connection.sendDiagnostics({
-            uri: document.uri, diagnostics
+            uri: documentUri, diagnostics
         });
     }
 }

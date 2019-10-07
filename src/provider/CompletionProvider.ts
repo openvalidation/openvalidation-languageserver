@@ -1,5 +1,5 @@
 import { String } from "typescript-string-operations";
-import { CompletionItem, CompletionParams, CompletionTriggerKind, Position, Range } from "vscode-languageserver";
+import { CompletionItem, CompletionParams, CompletionTriggerKind, Position, Range, TextDocument } from "vscode-languageserver";
 import { CompletionKeyEnum } from "../enums/CompletionKeyEnum";
 import { StringHelper } from "../helper/StringHelper";
 import { OvServer } from "../OvServer";
@@ -63,14 +63,21 @@ export class CompletionProvider extends Provider {
      * @memberof CompletionProvider
      */
     public async completion(params: CompletionParams): Promise<CompletionItem[] | null> {
+        var document = this.server.documents.get(params.textDocument.uri);
+        if (!document) return null;
+
+        return this.completionMethodSwitch(document, params)
+    }
+
+    private async completionMethodSwitch(document: TextDocument, params: CompletionParams): Promise<CompletionItem[] | null> {
         if (!params.context || params.context.triggerKind != CompletionTriggerKind.TriggerCharacter) {
-            return this.completionByText(params);
+            return this.completionByText(document, params);
         }
         else {
             if (params.context.triggerCharacter == CompletionKeyEnum.ComplexSchema) {
-                return this.completionForSchema(params);
+                return this.completionForSchema(document, params);
             } else if (params.context.triggerCharacter == CompletionKeyEnum.Array) {
-                return this.completionForArray(params);
+                return this.completionForArray(document, params);
             }
         }
         return null;
@@ -85,17 +92,13 @@ export class CompletionProvider extends Provider {
      * @returns {(Promise<CompletionItem[] | null>)} items with the found childs, null in case of an error
      * @memberof CompletionProvider
      */
-    private async completionForSchema(params: CompletionParams): Promise<CompletionItem[] | null> {
-        var document = this.server.documents.get(params.textDocument.uri);
-        if (document) {
-            var line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
-            var currentWord = StringHelper.getWordAt(line, params.position.character);
-            if (String.IsNullOrWhiteSpace(currentWord)) return null;
+    private async completionForSchema(document: TextDocument, params: CompletionParams): Promise<CompletionItem[] | null> {
+        var line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
+        var currentWord = StringHelper.getWordAt(line, params.position.character);
+        if (String.IsNullOrWhiteSpace(currentWord)) return null;
 
-            var generator = new CompletionBuilder([], this.server.aliasHelper, this.server.schema).addFittingChilds(currentWord);
-            return generator.build();
-        }
-        return null;
+        var generator = new CompletionBuilder([], this.server.aliasHelper, this.server.schema).addFittingChilds(currentWord);
+        return generator.build();
     }
 
     /**
@@ -107,24 +110,20 @@ export class CompletionProvider extends Provider {
      * @returns {(Promise<CompletionItem[] | null>)} items that has been found, null in case of an error
      * @memberof CompletionProvider
      */
-    private async completionForArray(params: CompletionParams): Promise<CompletionItem[] | null> {
-        var document = this.server.documents.get(params.textDocument.uri);
-        if (document) {
-            var line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
-            var currentWord = StringHelper.getWordAt(line, params.position.character);
-            if (String.IsNullOrWhiteSpace(currentWord)) return null;
+    private async completionForArray(document: TextDocument, params: CompletionParams): Promise<CompletionItem[] | null> {
+        var line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
+        var currentWord = StringHelper.getWordAt(line, params.position.character);
+        if (String.IsNullOrWhiteSpace(currentWord)) return null;
 
-            var declarations: Variable[] = [];
-            var ovDocument = this.ovDocuments.get(params.textDocument.uri);
-            if (!!ovDocument) {
-                declarations = ovDocument.$declarations;
-            }
-
-            var generator = new CompletionBuilder(declarations, this.server.aliasHelper, this.server.schema)
-                .addOperandsWithTypeOfGivenOperand(currentWord.replace(',', ''));
-            return generator.build();
+        var declarations: Variable[] = [];
+        var ovDocument = this.ovDocuments.get(params.textDocument.uri);
+        if (!!ovDocument) {
+            declarations = ovDocument.$declarations;
         }
-        return null;
+
+        var generator = new CompletionBuilder(declarations, this.server.aliasHelper, this.server.schema)
+            .addOperandsWithTypeOfGivenOperand(currentWord.replace(',', ''));
+        return generator.build();
     }
 
     /**
@@ -136,10 +135,7 @@ export class CompletionProvider extends Provider {
      * @returns {(Promise<CompletionItem[] | null>)} generated completionitems, null in case of an error
      * @memberof CompletionProvider
      */
-    private async completionByText(params: CompletionParams): Promise<CompletionItem[] | null> {
-        var document = this.server.documents.get(params.textDocument.uri);
-        if (!document) return [];
-
+    private async completionByText(document: TextDocument, params: CompletionParams): Promise<CompletionItem[] | null> {
         var documentText: string[] = document.getText().split("\n");
         var itemTuple = this.extractItem(documentText, params.position);
 
@@ -155,7 +151,7 @@ export class CompletionProvider extends Provider {
 
         var response = await ApiProxy.postCompletionData(parseString, this.server.restParameter, ovDocument);
         var relativePosition: Position = Position.create(params.position.line - itemTuple[1], params.position.character);
-        
+
         var line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
         var wordAtCurrentPosition = StringHelper.getWordAt(line, params.position.character).trim();
         return this.completionForParsedElement(response, declarations, relativePosition, wordAtCurrentPosition);

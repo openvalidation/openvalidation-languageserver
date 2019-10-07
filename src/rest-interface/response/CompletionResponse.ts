@@ -34,18 +34,18 @@ export class CompletionResponse {
             ]
         }
     })
-    private scope: GenericNode;
+    private scope: GenericNode | null;
 
     /**
      * Creates an instance of CompletionResponse.
      * @param {GenericNode} scope parsed scope
      * @memberof CompletionResponse
      */
-    constructor(scope: GenericNode) {
+    constructor(scope: GenericNode | null) {
         this.scope = scope;
     }
     
-    public get $scope(): GenericNode {
+    public get $scope(): GenericNode | null {
         return this.scope;
     }
 }

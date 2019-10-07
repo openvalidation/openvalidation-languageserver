@@ -1,6 +1,7 @@
 import { String } from "typescript-string-operations";
 import { AliasHelper } from "../../aliases/AliasHelper";
 import { AliasKey } from "../../aliases/AliasKey";
+import { ConditionNode } from "../../data-model/syntax-tree/element/operation/ConditionNode";
 import { BaseOperandNode } from "../../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
 import { TreeTraversal } from "../../helper/TreeTraversal";
 import { OvServer } from "../../OvServer";
@@ -8,7 +9,7 @@ import { LintingResponse } from "../../rest-interface/response/LintingResponse";
 import { IComplexData } from "../../rest-interface/schema/IComplexData";
 import { SyntaxHighlightingCapture } from "./SyntaxHighlightingCapture";
 import { Pattern } from "./TextMateJson";
-import { ConditionNode } from "src/data-model/syntax-tree/element/operation/ConditionNode";
+
 
 export class TextMateParameter {
     private keywords: string[];

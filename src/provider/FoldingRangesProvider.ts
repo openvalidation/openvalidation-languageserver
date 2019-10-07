@@ -58,7 +58,6 @@ export class FoldingRangesProvider extends Provider {
         var foldingRanges: FoldingRange[] = [];
 
         for (const line of documentText) {
-            console.log(line);
             if (String.IsNullOrWhiteSpace(line) && startLine != -1) {
                 var foldingRange = FoldingRange.create(startLine, currentLine - 1);
                 foldingRange.kind = FoldingRangeKind.Region;

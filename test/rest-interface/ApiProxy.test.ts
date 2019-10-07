@@ -2,7 +2,7 @@ import "jest";
 import { ApiProxy } from "../../src/rest-interface/ApiProxy";
 import { TestInitializer } from "../Testinitializer";
 
-describe("ApiProxy Tests", () => {
+describe("ApiProxy Tests with moked axios", () => {
 
     var initializer: TestInitializer;
 
@@ -34,5 +34,4 @@ describe("ApiProxy Tests", () => {
         var response = await ApiProxy.postCompletionData(initializer.getDocumentText(), initializer.server.restParameter, initializer.server.ovDocuments.get("test.ov"));
         expect(response).not.toBeNull();
     });
-
-})
+});

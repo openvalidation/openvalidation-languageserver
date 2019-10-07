@@ -1,3 +1,5 @@
+import { String } from "typescript-string-operations";
+
 /**
  * Defines some useful methods for strings
  *
@@ -59,33 +61,6 @@ export class StringHelper {
     }
 
     /**
-     * Creates a RegExp, where all parameters are ored
-     *
-     * @private
-     * @param {string[]} params parameters that should be ored
-     * @returns {string} ored RegExp
-     * @memberof StringHelper
-     */
-    public static getOredRegEx(params: string[]): string {
-        var returnString: string = "";
-
-        params = Array.from(new Set(params).keys());
-
-        for (let index = 0; index < params.length; index++) {
-            const element = params[index];
-            returnString += element;
-
-            // Don't at an "|" at the last word
-            if (index < params.length - 1) {
-                returnString += "|";
-            }
-        }
-
-        return returnString;
-    }
-
-
-    /**
      * Replaces all regex-critical symbols with the symbol with a backspace-symbol
      *
      * @static
@@ -95,7 +70,7 @@ export class StringHelper {
      */
     public static makeStringRegExSafe(text: string): string {
         var criticalSymbols: string[] = ['(', ')', '*'];
-        if (!text) return text;
+        if (String.IsNullOrWhiteSpace(text)) return text;
 
         criticalSymbols.forEach(symbol => {
             text = text.replace(symbol, '\\' + symbol);

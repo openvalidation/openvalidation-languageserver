@@ -12,6 +12,8 @@ module.exports = {
     ],
     "collectCoverage": true,
     "coverageReporters": [
-        "json-summary"
+        "json-summary",
+        "text",
+        "lcov"
     ]
 }

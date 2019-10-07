@@ -22,7 +22,6 @@ import { MainNode } from "../src/data-model/syntax-tree/MainNode";
 import { LintingResponse } from "../src/rest-interface/response/LintingResponse";
 import { CompletionResponse } from '../src/rest-interface/response/CompletionResponse';
 import { SyntaxNotifier } from '../src/provider/SyntaxNotifier';
-import { IndexRange } from '../src/data-model/syntax-tree/IndexRange';
 import { AliasesWithOperators } from '../src/rest-interface/aliases/AliasesWithOperators';
 import { OperandNode } from '../src/data-model/syntax-tree/element/operation/operand/OperandNode';
 import { UnkownNode } from '../src/data-model/syntax-tree/element/UnkownNode';
@@ -102,7 +101,15 @@ export class TestInitializer {
      */
     public mockNotEmptyLintingResponse(): LintingResponse {
         var json = {
-            mainAstNode: new MainNode(IndexRange.create(0, 0, 0, 0)),
+            mainAstNode: {
+                "scope": [this.ruleJson],
+                "declarations": [
+                    {
+                        "name": "Minderjährig",
+                        "dataType": "Boolean"
+                    }
+                ]
+            },
             schema: {
                 dataProperties: [{
                     name: "Alter",
@@ -112,7 +119,20 @@ export class TestInitializer {
                     parent: "Einkaufsliste",
                     child: "Preis"
                 }]
-            }
+            },
+            errors: [{
+                message: "Hard error!",
+                range: {
+                    start: {
+                        "line": 0,
+                        "column": 0
+                    },
+                    end: {
+                        "line": 1,
+                        "column": 44
+                    }
+                }
+            }]
         };
 
         var response: LintingResponse = plainToClass(LintingResponse, json);
@@ -238,6 +258,11 @@ Alter`
 
         return mainNode;
     }
+
+    public getInorrectCompletionResponse(): CompletionResponse {
+        return new CompletionResponse(null);
+    }
+
 
     public getCorrectCompletionResponse(): CompletionResponse {
         var ruleNode: RuleNode = plainToClass(RuleNode, this.ruleJson);

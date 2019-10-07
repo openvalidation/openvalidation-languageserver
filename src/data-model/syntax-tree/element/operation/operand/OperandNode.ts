@@ -100,7 +100,7 @@ export class OperandNode extends BaseOperandNode {
      */
     private getPatternInformationForComplexSchema(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
         var splittedName = this.getName().split(".").reverse();
-        var splittedOperand = this.$lines.join("\n").split(new RegExp(`(${StringHelper.getOredRegEx(splittedName)})`, "gi"));
+        var splittedOperand = this.$lines.join("\n").split(new RegExp(`(${StringHelper.getOredRegExForWords(...splittedName)})`, "gi"));
         var ofAliases = aliasesHelper.getOfKeywords();
         var capture: SyntaxHighlightingCapture = new SyntaxHighlightingCapture();
 

@@ -42,7 +42,7 @@ export class TreeTraversal {
      * @returns {(GenericNode | null)} found node or null if we found nothing
      * @memberof TreeTraversal
      */
-    public traverseNode(node: GenericNode, position: Position): GenericNode | null {
+    private traverseNode(node: GenericNode, position: Position): GenericNode | null {
         var nextChild = this.methodFilterElements(node.getChildren(), position);
         if (!nextChild) {
             return node;
