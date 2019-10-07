@@ -72,15 +72,15 @@ export class OvDocument {
         var indexOfWord = line.indexOf(currentWord);
         var wordRange = Range.create(position.line, indexOfWord, position.line, indexOfWord + currentWord.length);
 
-        if (this.elementManager.getVariables().find(v => !!v.getNameNode() && v.getNameNode()!.getName() == currentWord)) {
+        if (this.elementManager.getVariables().find(v => !!v.getNameNode() && v.getNameNode()!.$name == currentWord)) {
             return [currentWord, wordRange];
         } else {
             // If this word is inside a variable name
             var variableContainsWord = this.elementManager.getVariables()
-                .find(v => v.getNameNode()!.getName().search(new RegExp('\\b' + currentWord + '\\b')) !== -1);
+                .find(v => v.getNameNode()!.$name.search(new RegExp('\\b' + currentWord + '\\b')) !== -1);
             if (!variableContainsWord) return [currentWord, wordRange];
 
-            var variableName = variableContainsWord.getNameNode()!.getName();
+            var variableName = variableContainsWord.getNameNode()!.$name;
             var indexOfName = line.indexOf(variableName);
             if (indexOfName == -1) return [currentWord, wordRange];
 
@@ -101,7 +101,7 @@ export class OvDocument {
 
         var elementList = this.elementManager.$elements.filter(rule => {
             var range = rule.$range;
-            if (!range) return false;
+            if (!range || !range.$start || !range.$end) return false;
 
             return range.$start.$line <= lineNumber &&
                 range.$end.$line >= lineNumber;
@@ -109,6 +109,8 @@ export class OvDocument {
         if (!elementList || elementList.length == 0) return "";
 
         var element = elementList[0];
+        if (!element.$range || !element.$range.$start || !element.$range.$end) 
+            return "";
         return element.$lines[lineNumber - element.$range.$start.$line];
     }
 }

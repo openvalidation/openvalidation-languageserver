@@ -1,10 +1,14 @@
 import "jest"
+import { Variable } from "../../../src/data-model/syntax-tree/Variable";
 
-describe("Dummy Tests", () => {
-    beforeEach(() => {
-    });
+describe("Variable Tests", () => {
+    test("Variable getter/setter test", () => {
+        var variable: Variable = new Variable("Name", "String");
 
-    test("Verify Tests Work", () => {
-        expect(true).toBeTruthy()
+        variable.$dataType = "Decimal";
+        variable.$name = "Test";
+
+        expect(variable.$dataType).toEqual("Decimal");
+        expect(variable.$name).toEqual("Test");
     })
 });

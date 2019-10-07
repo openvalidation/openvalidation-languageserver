@@ -51,7 +51,7 @@ export class DocumentSymbolProvider extends Provider {
         ovDocument.$elementManager.getVariables().forEach(variable => {
             var variableNameRange = variable.getRangeOfVariableName();
             var symbolInformation: SymbolInformation = {
-                name: variable.getNameNode()!.getName(),
+                name: variable.getNameNode()!.$name,
                 kind: SymbolKind.Variable,
                 location: Location.create(params.textDocument.uri, variableNameRange)
             }

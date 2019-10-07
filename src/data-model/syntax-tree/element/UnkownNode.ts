@@ -32,7 +32,7 @@ export class UnkownNode extends GenericNode {
         this.content = content;
     }
 
-    public getContent(): BaseOperandNode | null {
+    public get $content(): BaseOperandNode | null {
         return this.content;
     }
 
@@ -45,12 +45,10 @@ export class UnkownNode extends GenericNode {
         return children;
     }
 
-    public getHoverContent(): HoverContent | null {
+    public getHoverContent(): HoverContent {
         if (!this.content) return new HoverContent(this.$range, "Unkown-Element");
         
         var hoverContent = this.content.getHoverContent();
-        if (!hoverContent) return hoverContent;
-
         var ownContent = "`Unkown-Element` with " + hoverContent.$content;
         hoverContent.$content = ownContent;
         return hoverContent;

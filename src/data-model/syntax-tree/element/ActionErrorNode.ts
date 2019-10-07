@@ -14,24 +14,20 @@ export class ActionErrorNode extends GenericNode {
         this.errorMessage = errorMessage;
     }
 
-    public getErrorMessage(): string {
+    public get $errorMessage(): string {
         return this.errorMessage;
-    }
-
-    public setErrorMessage(errorMessage: string) {
-        this.errorMessage = errorMessage;
     }
 
     public getChildren(): GenericNode[] {
         return [];
     }
 
-    public getHoverContent(): HoverContent | null {
+    public getHoverContent(): HoverContent {
         return new HoverContent(this.$range, "Error-Message: " + this.errorMessage);
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        return this.$lines.join("\n");
+        return this.defaultFormatting();
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {

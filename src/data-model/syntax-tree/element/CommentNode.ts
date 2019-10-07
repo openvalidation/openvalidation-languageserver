@@ -9,7 +9,7 @@ import { IndexRange } from "../IndexRange";
 export class CommentNode extends GenericNode {
     public content: string;
 
-    constructor(content: string, lines: string[], range: IndexRange) {
+    constructor(lines: string[], range: IndexRange, content: string) {
         super(lines, range)
         this.content = content;
     }
@@ -19,7 +19,7 @@ export class CommentNode extends GenericNode {
         return childList;
     }
 
-    public getHoverContent(): HoverContent | null {
+    public getHoverContent(): HoverContent {
         var content: HoverContent = new HoverContent(this.$range, "Comment");
         return content;
     }

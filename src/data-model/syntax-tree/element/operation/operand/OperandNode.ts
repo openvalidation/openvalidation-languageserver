@@ -14,16 +14,12 @@ export class OperandNode extends BaseOperandNode {
 
     private isStatic: boolean;
 
-    constructor(lines: string[], range: IndexRange, dataType: string, name: string) {
+    constructor(lines: string[], range: IndexRange, dataType: string, name: string, isStatic?: boolean) {
         super(lines, range, dataType, name);
-        this.isStatic = false;
+        this.isStatic = !isStatic ? false : isStatic;
     }
 
-    /**
-     * Getter isStatic
-     * @return {string}
-     */
-    public getIsStatic(): boolean {
+    public get $isStatic(): boolean {
         return this.isStatic;
     }
 
@@ -32,7 +28,7 @@ export class OperandNode extends BaseOperandNode {
         return childList;
     }
 
-    public getHoverContent(): HoverContent | null {
+    public getHoverContent(): HoverContent {
         var stringContent: string = "Operand " + this.getName() + ": " + this.getDataType();
         var content: HoverContent = new HoverContent(this.$range, stringContent);
         return content;
@@ -59,7 +55,6 @@ export class OperandNode extends BaseOperandNode {
 
         var splittedOperand = joinedLines.split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.getName())})`, "gi"));
         var capture = new SyntaxHighlightingCapture();
-        if (splittedOperand.length < 2) return capture;
 
         var semanticalSugar = splittedOperand[0];
         if (!String.IsNullOrWhiteSpace(semanticalSugar)) {
@@ -68,7 +63,7 @@ export class OperandNode extends BaseOperandNode {
         }
 
         var scope: ScopeEnum;
-        if (this.getIsStatic()) {
+        if (this.$isStatic) {
             if (this.getDataType() == "Decimal") {
                 scope = ScopeEnum.StaticNumber;
             } else {
@@ -81,7 +76,6 @@ export class OperandNode extends BaseOperandNode {
         capture.addRegexToMatch(`(${StringHelper.makeStringRegExSafe(splittedOperand[1])})`);
         capture.addCapture(scope);
 
-        if (splittedOperand.length < 3) return capture;
         var duplicateOperands: string = splittedOperand[2];
         for (let index = 3; index < splittedOperand.length; index++) {
             const split = splittedOperand[index];
@@ -105,8 +99,6 @@ export class OperandNode extends BaseOperandNode {
      * @memberof OperandNode
      */
     private getPatternInformationForComplexSchema(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
-        if (String.IsNullOrWhiteSpace(this.$lines.join("\n"))) return null;
-
         var splittedName = this.getName().split(".").reverse();
         var splittedOperand = this.$lines.join("\n").split(new RegExp(`(${StringHelper.getOredRegEx(splittedName)})`, "gi"));
         var ofAliases = aliasesHelper.getOfKeywords();

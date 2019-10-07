@@ -11,10 +11,16 @@ import { OperandTransition } from "../../../../../src/provider/code-completion/s
 import { StateTransition } from "../../../../../src/provider/code-completion/states/StateTransition";
 import { ConnectionTransition } from "../../../../../src/provider/code-completion/states/ConnectionTransition";
 import { EmptyTransition } from "../../../../../src/provider/code-completion/states/EmptyTransition";
+import { GenericNode } from "../../../../../src/data-model/syntax-tree/GenericNode";
+import { TestInitializer } from "../../../../Testinitializer";
 
 describe("Operation Tests", () => {
+    var initializer: TestInitializer;
+
     beforeEach(() => {
+        initializer = new TestInitializer(true);
     });
+
 
     test("getCompletionContainer with empty OperationNode, expected Empty", () => {
         var operation: OperationNode = new OperationNode(null, null, null, [], IndexRange.create(0, 0, 0, 0));
@@ -205,4 +211,108 @@ describe("Operation Tests", () => {
         expect(actual).toEqual(expected);
     });
 
+
+    test("OperationNode getter test", () => {
+        var errorMessage: string = "This is an error";
+        var operationNode: OperationNode = new OperationNode(null, null, null, [errorMessage], IndexRange.create(0, 0, 0, errorMessage.length));
+
+        expect(operationNode.$leftOperand).toEqual(null);
+        expect(operationNode.$rightOperand).toEqual(null);
+        expect(operationNode.$operator).toEqual(null);
+    })
+
+    test("getChildren without child, expect no children", () => {
+        var errorMessage: string = "This is an error";
+        var operationNode: OperationNode = new OperationNode(null, null, null, [errorMessage], IndexRange.create(0, 0, 0, errorMessage.length));
+
+        var actual: GenericNode[] = operationNode.getChildren();
+        var expected: GenericNode[] = [];
+
+        expect(actual).toEqual(expected);
+    })
+
+    test("getChildren with left operand, expect one child", () => {
+        var operand: string = "Test";
+        var operandNode: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var operationNode: OperationNode = new OperationNode(operandNode, null, null, [operand], IndexRange.create(0, 0, 0, operand.length));
+
+        var actual: GenericNode[] = operationNode.getChildren();
+        var expected: GenericNode[] = [operandNode];
+
+        expect(actual).toEqual(expected);
+    })
+
+    test("getChildren with left operand, expect one child", () => {
+        var operand: string = "Test";
+        var left: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var operator: OperatorNode = new OperatorNode(["kleiner"], IndexRange.create(0, 0, 0, 0), "Boolean", "kleiner", "Decimal");
+        var operationNode: OperationNode = new OperationNode(left, operator, null, ["Test kleiner"], IndexRange.create(0, 0, 0, "Test kleiner".length));
+
+        var actual: GenericNode[] = operationNode.getChildren();
+        var expected: GenericNode[] = [left, operator];
+
+        expect(actual).toEqual(expected);
+    })
+
+    test("getChildren with left operand, expect one child", () => {
+        var operand: string = "Test";
+        var left: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var operator: OperatorNode = new OperatorNode(["kleiner"], IndexRange.create(0, 0, 0, 0), "Boolean", "kleiner", "Decimal");
+        var right: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var operationNode: OperationNode = new OperationNode(left, operator, right, ["Test kleiner Test"], IndexRange.create(0, 0, 0, "Test kleiner Test".length));
+
+        var actual: GenericNode[] = operationNode.getChildren();
+        var expected: GenericNode[] = [left, operator, right];
+
+        expect(actual).toEqual(expected);
+    })
+
+    test("getHoverContent without content, expect not empty content", () => {
+        var errorMessage: string = "This is an error";
+        var operationNode: OperationNode = new OperationNode(null, null, null, [errorMessage], IndexRange.create(0, 0, 0, errorMessage.length));
+
+        var actual = operationNode.getHoverContent();
+
+        expect(actual).not.toBeNull();
+    })
+
+    test("getHoverContent with content which is incomplete, expect not empty content", () => {
+        var operand: string = "Test";
+        var operandNode: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var operationNode: OperationNode = new OperationNode(operandNode, null, null, [operand], IndexRange.create(0, 0, 0, operand.length));
+
+        var actual = operationNode.getHoverContent();
+
+        expect(actual).not.toBeNull();
+    })
+
+    test("getHoverContent with content which is complete, expect not empty content", () => {
+        var operand: string = "Test";
+        var operandNode: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var arrayOperandNode: ArrayOperandNode = new ArrayOperandNode([operandNode], [operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var operationNode: OperationNode = new OperationNode(arrayOperandNode, null, null, [operand], IndexRange.create(0, 0, 0, operand.length));
+
+        var actual = operationNode.getHoverContent();
+
+        expect(actual).not.toBeNull();
+    })
+
+    test("getBeautifiedContent without children, expect not empty content", () => {
+        var errorMessage: string = "This is an error";
+        var operationNode: OperationNode = new OperationNode(null, null, null, [errorMessage], IndexRange.create(0, 0, 0, errorMessage.length));
+
+        var actual = operationNode.getBeautifiedContent(initializer.server.aliasHelper);
+
+        expect(actual).toEqual(errorMessage);
+    })
+
+    test("getBeautifiedContent with children, expect not empty content", () => {
+        var operand: string = "Test";
+        var operandNode: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var operationNode: OperationNode = new OperationNode(operandNode, null, null, [operand], IndexRange.create(0, 0, 0, operand.length));
+
+        var actual = operationNode.getBeautifiedContent(initializer.server.aliasHelper);
+
+        expect(actual).toEqual(operand);
+    })
 });

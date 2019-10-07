@@ -67,7 +67,7 @@ export abstract class GenericNode {
      * @returns {(HoverContent | null)}
      * @memberof GenericNode
      */
-    abstract getHoverContent(): HoverContent | null;
+    abstract getHoverContent(): HoverContent;
 
     /**
      * Generates the beautified content and returns it as a string
@@ -118,6 +118,6 @@ export abstract class GenericNode {
      * @memberof GenericNode
      */
     public defaultFormatting(): string {
-        return this.$lines.map(line => FormattingHelper.removeDuplicateWhitespacesFromLine(line)).join("\n");
+        return this.$lines.map(line => FormattingHelper.removeDuplicateWhitespacesFromLine(line).trim()).join("\n");
     }
 }

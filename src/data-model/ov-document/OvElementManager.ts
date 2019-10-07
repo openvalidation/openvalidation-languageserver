@@ -83,7 +83,7 @@ export class OvElementManager {
     public getElementsByRange(range: Range): GenericNode[] {
         var elements = this.elements.filter(rule => {
             var elementRange = rule.$range;
-            if (!elementRange) return false;
+            if (!elementRange || !elementRange.$end || !elementRange.$start) return false;
 
             var afterStart = range.start.line <= elementRange.$start.$line;
             var beforeEnd = range.end.line >= elementRange.$end.$line;
@@ -100,7 +100,7 @@ export class OvElementManager {
      * @memberof OvDocument
      */
     public getVariablesByName(name: string): VariableNode[] | null {
-        var filteredVariables: VariableNode[] = this.getVariables().filter(element => !!element.getNameNode() && element.getNameNode()!.getName().toLowerCase() == name.toLowerCase());
+        var filteredVariables: VariableNode[] = this.getVariables().filter(element => !!element.getNameNode() && element.getNameNode()!.$name.toLowerCase() == name.toLowerCase());
         if (filteredVariables.length > 0) {
             return filteredVariables;
         }
@@ -122,10 +122,10 @@ export class OvElementManager {
         for (const variable of this.getVariables()) {
             if (!variable.getNameNode() ||
                 !variable.getValue() ||
-                element.indexOf(variable.getNameNode()!.getName()) == -1)
+                element.indexOf(variable.getNameNode()!.$name) == -1)
                 continue;
 
-            if (!asKeyword || element.toLowerCase().indexOf(asKeyword.toLowerCase() + " " + variable.getNameNode()!.getName().toLowerCase()) == -1) {
+            if (!asKeyword || element.toLowerCase().indexOf(asKeyword.toLowerCase() + " " + variable.getNameNode()!.$name.toLowerCase()) == -1) {
                 returnNode.push(variable);
             }
         }

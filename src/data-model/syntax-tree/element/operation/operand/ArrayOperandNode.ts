@@ -36,12 +36,12 @@ export class ArrayOperandNode extends BaseOperandNode {
      * Getter parameters
      * @return {BaseOperandNode[]}
      */
-    public getItems(): BaseOperandNode[] {
+    public get $items(): BaseOperandNode[] {
         return this.items;
     }
 
     public getChildren(): GenericNode[] {
-        return this.getItems().map(i => i as unknown as GenericNode);
+        return this.$items.map(i => i as unknown as GenericNode);
     }
 
     /**
@@ -52,7 +52,7 @@ export class ArrayOperandNode extends BaseOperandNode {
         this.items = value;
     }
 
-    public getHoverContent(): HoverContent | null {
+    public getHoverContent(): HoverContent {
         var content: HoverContent = new HoverContent(this.$range, "Operand: " + this.getDataType() + "[]");
         return content;
     }
@@ -76,7 +76,7 @@ export class ArrayOperandNode extends BaseOperandNode {
     public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {        
         var capture = new SyntaxHighlightingCapture();
 
-        for (const item of this.getItems()) {
+        for (const item of this.$items) {
             var tmpCapture = item.getPatternInformation(aliasesHelper);
             if (!tmpCapture) continue;
 

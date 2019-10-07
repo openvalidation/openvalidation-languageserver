@@ -47,13 +47,18 @@ export class FoldingRangesProvider extends Provider {
         if (!document)
             return [];
 
-        var documentText: string[] = document.getText().split("\n");
+        return this.getFoldingRangesByText(document.getText());
+    }
+
+    private getFoldingRangesByText(text: string): FoldingRange[] {
+        var documentText: string[] = text.split("\n");
         var currentLine: number = 0;
         var startLine: number = -1;
 
         var foldingRanges: FoldingRange[] = [];
 
         for (const line of documentText) {
+            console.log(line);
             if (String.IsNullOrWhiteSpace(line) && startLine != -1) {
                 var foldingRange = FoldingRange.create(startLine, currentLine - 1);
                 foldingRange.kind = FoldingRangeKind.Region;

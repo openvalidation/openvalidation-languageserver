@@ -47,4 +47,31 @@ describe("FoldingRanges provider test", () => {
 
         expect(actual).toEqual(expected);
     });
+
+    test("getFoldingRangesByText with wrong uri, expected not empty list", () => {
+        var expected: FoldingRange[] = [];
+
+        var input: string = `Kommentar das ist ein Test`
+        var actual = provider["getFoldingRangesByText"](input);
+
+        expect(actual).toEqual(expected);
+    });
+
+    // test("getFoldingRangesByText with wrong uri, expected not empty list", () => {
+    //     var expected: FoldingRange[] = [FoldingRange.create(0, 1, undefined, undefined, "region")];
+
+    //     var input: string = "Kommentar das ist ein Test\nBla bla";
+    //     var actual = provider["getFoldingRangesByText"](input);
+
+    //     expect(actual).toEqual(expected);
+    // });
+
+    // test("getFoldingRangesByText with wrong uri, expected not empty list", () => {
+    //     var expected: FoldingRange[] = [FoldingRange.create(0, 0, undefined, undefined, "region"), FoldingRange.create(2, 3, undefined, undefined, "region")];
+
+    //     var input: string = "Kommentar das ist ein Test\nHier gehts weiter\n\nAlter kleiner 30\n Dann dwadwad"
+    //     var actual = provider["getFoldingRangesByText"](input);
+
+    //     expect(actual).toEqual(expected);
+    // });
 });

@@ -24,7 +24,7 @@ export class OperandTransition extends StateTransition {
         return this.dataType;
     }
 
-    public get $nameFilter(): string[] | undefined {
+    public get $nameFilter(): string[] {
         var filterList: string[] = this.nameFilter;
         for (const filter of this.nameFilter) {
             var complexChild: string[] = filter.split('.');
@@ -55,7 +55,7 @@ export class OperandTransition extends StateTransition {
      * @memberof OperandTransition
      */
     public isValid(name: string, datatype: string): boolean {
-        if (!this.dataType && !this.$nameFilter) return true;
+        if (!this.dataType && this.$nameFilter.length == 0) return true;
 
         // Wrong Datatype
         if (!String.IsNullOrWhiteSpace(this.dataType!) && datatype != this.dataType) return false;

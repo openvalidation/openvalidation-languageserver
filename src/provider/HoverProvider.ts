@@ -52,9 +52,8 @@ export class HoverProvider extends Provider {
         var foundNode: GenericNode | null = traversal.traverseTree(ovDocument.$elementManager.$elements, params.position);
         if (!foundNode) return Promise.resolve(null);
 
-        var hoverContent: HoverContent | null = foundNode.getHoverContent();
-        if (!hoverContent) return Promise.resolve(null);
-
+        var hoverContent: HoverContent = foundNode.getHoverContent();
+        
         let markdown: MarkupContent = {
             kind: MarkupKind.Markdown,
             value: hoverContent.$content

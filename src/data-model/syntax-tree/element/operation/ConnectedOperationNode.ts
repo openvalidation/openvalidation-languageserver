@@ -43,8 +43,8 @@ export class ConnectedOperationNode extends ConditionNode {
         this.conditions = value;
     }
 
-    public isConstrained(): boolean {
-        return this.getConditions().map(cond => cond.isConstrained()).some(bool => bool);
+    public get $constrained(): boolean {
+        return this.getConditions().map(cond => cond.$constrained).some(bool => bool);
     }
 
     public getChildren(): GenericNode[] {
@@ -55,7 +55,7 @@ export class ConnectedOperationNode extends ConditionNode {
         return childList;
     }
 
-    public getHoverContent(): HoverContent | null {
+    public getHoverContent(): HoverContent {
         var content: HoverContent = new HoverContent(this.$range, "ConnectedOperation");
         return content;
     }
@@ -88,8 +88,8 @@ export class ConnectedOperationNode extends ConditionNode {
 
         var returnString: string = "";
 
-        var extraSpacesForNestedOperation: string = !!this.getConnector()
-            ? FormattingHelper.generateSpaces(this.getConnector()!.length + 1)
+        var extraSpacesForNestedOperation: string = !!this.$connector
+            ? FormattingHelper.generateSpaces(this.$connector!.length + 1)
             : "";
 
         for (let index = 0; index < this.getConditions().length; index++) {

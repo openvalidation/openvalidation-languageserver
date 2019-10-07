@@ -76,7 +76,7 @@ export class RuleNode extends GenericNode {
         return childList;
     }
 
-    public getHoverContent(): HoverContent | null {
+    public getHoverContent(): HoverContent {
         var content: HoverContent = new HoverContent(this.$range, "Rule");
         return content;
     }
@@ -86,7 +86,7 @@ export class RuleNode extends GenericNode {
         if (!!this.errorNode
                 && !!this.errorNode.$range
                 && !this.errorNode.$range.startsAfter(position)
-                && (!this.condition || !this.condition.isConstrained())) {
+                && (!this.condition || !this.condition.$constrained)) {
             return CompletionContainer.init().emptyTransition();
         }
 
@@ -100,7 +100,7 @@ export class RuleNode extends GenericNode {
             }
 
             return container;
-        } else if (this.condition.isConstrained()) {
+        } else if (this.condition.$constrained) {
             return this.condition.getCompletionContainer(position);
         }
 
@@ -123,7 +123,7 @@ export class RuleNode extends GenericNode {
         if (!String.IsNullOrWhiteSpace(splittedRule[1]))
             returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(splittedRule[1]);
 
-        if (this.condition.isConstrained()) return returnString;
+        if (this.condition.$constrained) return returnString;
 
         //keywords inside a not constrained rule should be right-justified
         var relevantKeywords: string[] = aliasesHelper.getKeywordsByAliasKeys(AliasKey.AND, AliasKey.OR, AliasKey.THEN, AliasKey.IF);

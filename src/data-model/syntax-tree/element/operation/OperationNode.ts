@@ -58,59 +58,35 @@ export class OperationNode extends ConditionNode {
         this.constrained = false;
     }
 
-    /**
-     * Getter leftOperand
-     * @return {BaseOperandNode}
-     */
-    public getLeftOperand(): BaseOperandNode | null {
+    public get $leftOperand(): BaseOperandNode | null {
         return this.leftOperand;
     }
 
-    /**
-     * Getter rightOperand
-     * @return {BaseOperandNode}
-     */
-    public getRightOperand(): BaseOperandNode | null {
-        return this.rightOperand;
-    }
-
-    /**
-     * Getter operator
-     * @return {string}
-     */
-    public getOperator(): OperatorNode | null {
-        return this.operator;
-    }
-
-    public isConstrained(): boolean {
-        return this.constrained;
-    }
-
-    /**
-     * Setter leftOperand
-     * @param {BaseOperandNode} value
-     */
-    public setLeftOperand(value: BaseOperandNode) {
+    public set $leftOperand(value: BaseOperandNode | null) {
         this.leftOperand = value;
     }
 
-    /**
-     * Setter rightOperand
-     * @param {BaseOperandNode} value
-     */
-    public setRightOperand(value: BaseOperandNode) {
+    public get $rightOperand(): BaseOperandNode | null {
+        return this.rightOperand;
+    }
+
+    public set $rightOperand(value: BaseOperandNode | null) {
         this.rightOperand = value;
     }
 
-    /**
-     * Setter operator
-     * @param {string} value
-     */
-    public setOperator(value: OperatorNode) {
+    public get $operator(): OperatorNode | null {
+        return this.operator;
+    }
+
+    public set $operator(value: OperatorNode | null) {
         this.operator = value;
     }
 
-    public setConstrained(value: boolean) {
+    public get $constrained(): boolean {
+        return this.constrained;
+    }
+
+    public set $constrained(value: boolean) {
         this.constrained = value;
     }
 
@@ -120,16 +96,16 @@ export class OperationNode extends ConditionNode {
         if (!!this.leftOperand)
             childList.push(this.leftOperand);
 
-        if (!!this.rightOperand)
-            childList.push(this.rightOperand);
-
         if (!!this.operator)
             childList.push(this.operator);
+
+        if (!!this.rightOperand)
+            childList.push(this.rightOperand);
 
         return childList;
     }
 
-    public getHoverContent(): HoverContent | null {
+    public getHoverContent(): HoverContent {
         var content: HoverContent = new HoverContent(this.$range, "Operation");
         return content;
     }
@@ -176,17 +152,14 @@ export class OperationNode extends ConditionNode {
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
         var returnString = this.defaultFormatting();
 
-        if (!!this.leftOperand) {
+        if (!!this.leftOperand)
             returnString = returnString.replace(this.leftOperand.defaultFormatting(), this.leftOperand.getBeautifiedContent(aliasesHelper));
-        }
 
-        if (!!this.rightOperand) {
-            returnString = returnString.replace(this.rightOperand.defaultFormatting(), this.rightOperand.getBeautifiedContent(aliasesHelper));
-        }
-
-        if (!!this.operator) {
+        if (!!this.operator)
             returnString = returnString.replace(this.operator.defaultFormatting(), this.operator.getBeautifiedContent(aliasesHelper));
-        }
+
+        if (!!this.rightOperand)
+            returnString = returnString.replace(this.rightOperand.defaultFormatting(), this.rightOperand.getBeautifiedContent(aliasesHelper));
 
         return returnString;
     }

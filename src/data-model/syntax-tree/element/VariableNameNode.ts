@@ -13,19 +13,15 @@ export class VariableNameNode extends GenericNode {
         this.name = name;
     }
 
-    public getName(): string {
+    public get $name(): string {
         return this.name;
-    }
-
-    public setName(name: string) {
-        this.name = name;
     }
 
     public getChildren(): GenericNode[] {
         return [];
     }
 
-    public getHoverContent(): HoverContent | null {
+    public getHoverContent(): HoverContent {
         return new HoverContent(this.$range, "Variable-Name: " + this.name);
     }
 

@@ -6,15 +6,21 @@ import { OperatorNode } from "../../../../src/data-model/syntax-tree/element/ope
 import { OperationNode } from "../../../../src/data-model/syntax-tree/element/operation/OperationNode";
 import { UnkownNode } from "../../../../src/data-model/syntax-tree/element/UnkownNode";
 import { IndexRange } from "../../../../src/data-model/syntax-tree/IndexRange";
-import { StateTransition } from "../../../../src/provider/code-completion/states/StateTransition";
-import { OperandTransition } from "../../../../src/provider/code-completion/states/OperandTransition";
-import { OperatorTransition } from "../../../../src/provider/code-completion/states/OperatorTransition";
 import { AsKeywordTransition } from "../../../../src/provider/code-completion/states/AsKeywordTransition";
 import { ConnectionTransition } from "../../../../src/provider/code-completion/states/ConnectionTransition";
+import { OperandTransition } from "../../../../src/provider/code-completion/states/OperandTransition";
+import { OperatorTransition } from "../../../../src/provider/code-completion/states/OperatorTransition";
+import { StateTransition } from "../../../../src/provider/code-completion/states/StateTransition";
 import { ThenKeywordTransition } from "../../../../src/provider/code-completion/states/ThenKeywordTransition";
+import { TestInitializer } from "../../../Testinitializer";
+import { GenericNode } from "../../../../src/data-model/syntax-tree/GenericNode";
+import { ArrayOperandNode } from "../../../../src/data-model/syntax-tree/element/operation/operand/ArrayOperandNode";
 
 describe("UnkownNode Tests", () => {
+    var initializer: TestInitializer;
+
     beforeEach(() => {
+        initializer = new TestInitializer(true);
     });
 
     test("getCompletionContainer with empty UnkownNode, expected OperandMissing", () => {
@@ -118,4 +124,81 @@ describe("UnkownNode Tests", () => {
         var actual: StateTransition[] = unkown.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperatorTransition);
     });
+    
+    test("UnkownNode get content test", () => {
+        var errorMessage: string = "This is an error";
+        var unkownNode: UnkownNode = new UnkownNode(null, [errorMessage], IndexRange.create(0, 0, 0, errorMessage.length));
+
+        expect(unkownNode.$content).toEqual(null);
+    })
+
+    test("getChildren without child, expect no children", () => {
+        var errorMessage: string = "This is an error";
+        var unkownNode: UnkownNode = new UnkownNode(null, [errorMessage], IndexRange.create(0, 0, 0, errorMessage.length));
+
+        var actual: GenericNode[] = unkownNode.getChildren();
+        var expected: GenericNode[] = [];
+
+        expect(actual).toEqual(expected);
+    })
+
+    test("getChildren with one child, expect one child", () => {
+        var operand: string = "Test";
+        var operandNode: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var unkownNode: UnkownNode = new UnkownNode(operandNode, [operand], IndexRange.create(0, 0, 0, operand.length));
+
+        var actual: GenericNode[] = unkownNode.getChildren();
+        var expected: GenericNode[] = [operandNode];
+
+        expect(actual).toEqual(expected);
+    })
+
+    test("getHoverContent without content, expect not empty content", () => {
+        var errorMessage: string = "This is an error";
+        var unkownNode: UnkownNode = new UnkownNode(null, [errorMessage], IndexRange.create(0, 0, 0, errorMessage.length));
+
+        var actual = unkownNode.getHoverContent();
+
+        expect(actual).not.toBeNull();
+    })   
+
+    test("getHoverContent with content which is incomplete, expect not empty content", () => {
+        var operand: string = "Test";
+        var operandNode: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var unkownNode: UnkownNode = new UnkownNode(operandNode, [operand], IndexRange.create(0, 0, 0, operand.length));
+
+        var actual = unkownNode.getHoverContent();
+
+        expect(actual).not.toBeNull();
+    }) 
+
+    test("getHoverContent with content which is complete, expect not empty content", () => {
+        var operand: string = "Test";
+        var operandNode: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var arrayOperandNode: ArrayOperandNode = new ArrayOperandNode([operandNode], [operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var unkownNode: UnkownNode = new UnkownNode(arrayOperandNode, [operand], IndexRange.create(0, 0, 0, operand.length));
+
+        var actual = unkownNode.getHoverContent();
+
+        expect(actual).not.toBeNull();
+    }) 
+    
+    test("getBeautifiedContent without children, expect not empty content", () => {
+        var errorMessage: string = "This is an error";
+        var unkownNode: UnkownNode = new UnkownNode(null, [errorMessage], IndexRange.create(0, 0, 0, errorMessage.length));
+
+        var actual = unkownNode.getBeautifiedContent(initializer.server.aliasHelper);
+
+        expect(actual).toEqual(errorMessage);
+    })
+
+    test("getBeautifiedContent with children, expect not empty content", () => {
+        var operand: string = "Test";
+        var operandNode: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
+        var unkownNode: UnkownNode = new UnkownNode(operandNode, [operand], IndexRange.create(0, 0, 0, operand.length));
+
+        var actual = unkownNode.getBeautifiedContent(initializer.server.aliasHelper);
+
+        expect(actual).toEqual(operand);
+    })
 });

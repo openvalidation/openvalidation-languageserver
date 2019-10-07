@@ -24,7 +24,7 @@ export class OperatorNode extends GenericNode {
      * Getter dataType
      * @return {string}
      */
-    public getDataType(): string {
+    public get $dataType(): string {
         return this.dataType;
     }
 
@@ -32,7 +32,7 @@ export class OperatorNode extends GenericNode {
      * Getter validType
      * @return {string}
      */
-    public getValidType(): string {
+    public get $validType(): string {
         return this.validType;
     }
 
@@ -49,8 +49,8 @@ export class OperatorNode extends GenericNode {
         return childList;
     }
 
-    public getHoverContent(): HoverContent | null {
-        var content: string = "Operator " + this.getOperator() + ": " + this.getDataType();
+    public getHoverContent(): HoverContent {
+        var content: string = "Operator " + this.getOperator() + ": " + this.$dataType;
         var hoverContent: HoverContent = new HoverContent(this.$range, content);
         return hoverContent;
     }
@@ -72,8 +72,8 @@ export class OperatorNode extends GenericNode {
         if (String.IsNullOrWhiteSpace(returnString)) {
             return null;
         } else {
-            var capture = new SyntaxHighlightingCapture()
-            capture.addCapture(ScopeEnum.Keyword)
+            var capture = new SyntaxHighlightingCapture();
+            capture.addCapture(ScopeEnum.Keyword);
             capture.addRegexToMatch(`(${returnString})`);
             return capture;
         }

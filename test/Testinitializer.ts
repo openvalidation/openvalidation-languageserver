@@ -25,6 +25,7 @@ import { SyntaxNotifier } from '../src/provider/SyntaxNotifier';
 import { IndexRange } from '../src/data-model/syntax-tree/IndexRange';
 import { AliasesWithOperators } from '../src/rest-interface/aliases/AliasesWithOperators';
 import { OperandNode } from '../src/data-model/syntax-tree/element/operation/operand/OperandNode';
+import { UnkownNode } from '../src/data-model/syntax-tree/element/UnkownNode';
 
 /**
  * Class that provides some useful classes and that mocks the Axios-Rest-Api
@@ -177,6 +178,7 @@ export class TestInitializer {
         input.set("IF", AliasKey.IF);
         input.set("EQUALS", AliasKey.EQUALS);
         input.set("SUM OF", AliasKey.SUM_OF);
+        input.set("OF", AliasKey.OF);
         return input;
     }
 
@@ -214,7 +216,9 @@ WENN der Bewerber Minderjährig ist
     UND sein Wohnort ist NICHT Dortmund
 DANN Sie müssen mindestens 18 Jahre alt sein und aus Dortmund kommen
 
-Kommentar das ist ein Kommentar`
+Kommentar das ist ein Kommentar
+
+Alter`
     }
 
     public getCorrectParseResult(): MainNode {
@@ -229,7 +233,8 @@ Kommentar das ist ein Kommentar`
         var complexRuleNode: RuleNode = plainToClass(RuleNode, this.complexRuleNode);
         var commentNode: CommentNode = plainToClass(CommentNode, this.commentNode);
         var invalidCondition: OperandNode = plainToClass(OperandNode, this.invalidCondition);
-        mainNode.$scopes = [ruleNode, complexRuleNode, variableNode, commentNode, invalidCondition];
+        var unkownNode: UnkownNode = plainToClass(UnkownNode, this.unkownNode)
+        mainNode.$scopes = [ruleNode, complexRuleNode, variableNode, commentNode, unkownNode, invalidCondition];
 
         return mainNode;
     }
@@ -796,11 +801,49 @@ Kommentar das ist ein Kommentar`
         "type": "VariableNode"
     };
 
+    private unkownNode = {
+        "lines": [
+            "Alter"
+        ],
+        "range": {
+            "start": {
+                "line": 12,
+                "column": 0
+            },
+            "end": {
+                "line": 12,
+                "column": 5
+            }
+        },
+        "keywords": [],
+        "content": {
+            "lines": [
+                "Alter"
+            ],
+            "range": {
+                "start": {
+                    "line": 12,
+                    "column": 0
+                },
+                "end": {
+                    "line": 12,
+                    "column": 5
+                }
+            },
+            "keywords": [],
+            "dataType": "String",
+            "name": "Alter",
+            "isStatic": true,
+            "type": "OperandNode"
+        },
+        "type": "UnkownNode"
+    }
+
     private invalidCondition = {
         "lines": [
             "Something invalid"
         ],
         "range": null,
         "type": "OperandNode"
-    }
+    };
 }

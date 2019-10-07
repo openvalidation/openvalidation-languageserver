@@ -30,9 +30,13 @@ export abstract class ConditionNode extends BaseOperandNode {
      * @returns {boolean}
      * @memberof ConditionNode
      */
-    abstract isConstrained(): boolean;
+    abstract get $constrained(): boolean;
 
-    public getConnector(): string | null {
+    public get $connector(): string | null {
         return this.connector;
+    }
+
+    public set $connector(connector: string | null) {
+        this.connector = connector;
     }
 }

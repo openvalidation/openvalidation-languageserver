@@ -40,20 +40,16 @@ export class FunctionOperandNode extends BaseOperandNode {
      * Getter parameters
      * @return {BaseOperandNode[]}
      */
-    public getParameters(): BaseOperandNode[] {
+    public get $parameters(): BaseOperandNode[] {
         return this.parameters;
     }
 
-    public getChildren(): GenericNode[] {
-        return this.getParameters();
-    }
-
-    public getAcceptedType(): string {
+    public get $acceptedType(): string {
         return this.acceptedType;
     }   
     
-    public getType(): string {
-        return this.acceptedType;
+    public getChildren(): GenericNode[] {
+        return this.$parameters;
     }
 
     /**
@@ -64,7 +60,7 @@ export class FunctionOperandNode extends BaseOperandNode {
         this.parameters = value;
     }
 
-    public getHoverContent(): HoverContent | null {
+    public getHoverContent(): HoverContent {
         var stringContent: string = "Function " + this.getName() + ": " + this.getDataType();
         var content: HoverContent = new HoverContent(this.$range, stringContent);
         return content;
@@ -91,7 +87,7 @@ export class FunctionOperandNode extends BaseOperandNode {
         capture.addCapture(ScopeEnum.Keyword);
         capture.addRegexToMatch(`((?i)${this.getName()})`);
 
-        for (const parameter of this.getParameters()) {
+        for (const parameter of this.$parameters) {
             var tmpCapture = parameter.getPatternInformation(aliasesHelper);
             if (!tmpCapture) continue;
 

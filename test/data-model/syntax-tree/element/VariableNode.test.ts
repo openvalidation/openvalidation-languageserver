@@ -123,4 +123,5 @@ describe("VariableNode Tests", () => {
         var actual: StateTransition[] = variable.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
+
 });

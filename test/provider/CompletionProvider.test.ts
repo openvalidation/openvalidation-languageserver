@@ -36,36 +36,4 @@ describe("Completion provider test", () => {
 
         expect(actual!.length).toEqual(expectedLength);
     });
-
-    // test("completionForParsedElement with OperandNode, expected one operator", () => {
-    //     var expectedLength: number = 1;
-    //     var expectedType: CompletionItemKind = CompletionItemKind.Keyword;
-    //     var expectedName: string = "EQUALS";
-
-    //     var line: string = "Alter";
-    //     var linesLength: number = line.length;
-    //     var parameter: GenericNode = new OperandNode([line], IndexRange.create(0, 0, 0, linesLength), "Decimal", "Alter");
-    //     var responseParameter: CompletionResponse | null = new CompletionResponse(parameter);
-    //     var actual: CompletionItem[] | null = provider["completionForParsedElement"](responseParameter, [], Position.create(0, linesLength + 1));
-
-    //     expect(actual!.length).toEqual(expectedLength);
-    //     expect(actual![0].kind).toEqual(expectedType);
-    //     expect(actual![0].label).toEqual(expectedName);
-    // });
-
-    // test("completionForParsedElement with OperatorNode, expected one operator", () => {
-    //     var expectedLength: number = 1;
-    //     var expectedType: CompletionItemKind = CompletionItemKind.Variable;
-    //     var expectedName: string = "Something";
-
-    //     var line: string = "GLEICH";
-    //     var linesLength: number = line.length;
-    //     var parameter: GenericNode = new OperatorNode([line], IndexRange.create(0, 0, 0, linesLength), "Boolean", "EQUALS", "Object");
-    //     var responseParameter: CompletionResponse | null = new CompletionResponse(parameter);
-    //     var actual: CompletionItem[] | null = provider["completionForParsedElement"](responseParameter, [new Variable(expectedName, "Decimal")], Position.create(0, linesLength + 1));
-
-    //     expect(actual!.length).toEqual(expectedLength);
-    //     expect(actual![0].kind).toEqual(expectedType);
-    //     expect(actual![0].label).toEqual(expectedName);
-    // });
 });

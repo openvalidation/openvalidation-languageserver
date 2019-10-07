@@ -93,8 +93,8 @@ export class VariableNode extends GenericNode {
         return this.getNameNode()!.$range.asRange();
     }
 
-    public getHoverContent(): HoverContent | null {
-        var contentText = "Variable" + (!this.getNameNode() ? " " : " "  + this.getNameNode()!.getName());
+    public getHoverContent(): HoverContent {
+        var contentText = "Variable" + (!this.getNameNode() ? " " : " "  + this.getNameNode()!.$name);
         if (!!this.getValue())
             contentText += ": " + this.getValue()!.getDataType();
 
@@ -106,7 +106,7 @@ export class VariableNode extends GenericNode {
         if (!!this.getNameNode() && !this.getNameNode()!.$range.startsAfter(position))
             return CompletionContainer.init().emptyTransition();
 
-        var nameFilter: string | undefined = !this.getNameNode() ? undefined : this.getNameNode()!.getName();
+        var nameFilter: string | undefined = !this.getNameNode() ? undefined : this.getNameNode()!.$name;
 
         if (!this.value)
             return CompletionContainer.init().operandTransition(undefined, nameFilter);

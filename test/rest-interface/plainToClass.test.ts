@@ -32,9 +32,9 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
         var expectedType = OperationNode;
 
         expect(actual).toBeInstanceOf(expectedType);
-        expect(actual.getOperator()).toBeInstanceOf(OperatorNode);
-        expect(actual.getLeftOperand()).toBeInstanceOf(OperandNode);
-        expect(actual.getRightOperand()).toBeInstanceOf(OperandNode);
+        expect(actual.$operator).toBeInstanceOf(OperatorNode);
+        expect(actual.$leftOperand).toBeInstanceOf(OperandNode);
+        expect(actual.$rightOperand).toBeInstanceOf(OperandNode);
     });
 
     test("check type of another OperationJson, expect OperationNode", async () => {
@@ -42,9 +42,9 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
         var expectedType = OperationNode;
 
         expect(actual).toBeInstanceOf(expectedType);
-        expect(actual.getOperator()).toBeInstanceOf(OperatorNode);
-        expect(actual.getLeftOperand()).toBeInstanceOf(OperandNode);
-        expect(actual.getRightOperand()).toBeInstanceOf(OperandNode);
+        expect(actual.$operator).toBeInstanceOf(OperatorNode);
+        expect(actual.$leftOperand).toBeInstanceOf(OperandNode);
+        expect(actual.$rightOperand).toBeInstanceOf(OperandNode);
     });
 
     test("check type of an ConnectedOperationJson, expect ConnectedOperationNode", async () => {
@@ -56,9 +56,9 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
         for (let index = 0; index < actual.getConditions().length; index++) {
             const condition = actual.getConditions()[index];
             expect(condition).toBeInstanceOf(OperationNode);
-            expect((condition as OperationNode).getOperator()).toBeInstanceOf(OperatorNode);
-            expect((condition as OperationNode).getLeftOperand()).toBeInstanceOf(OperandNode);
-            expect((condition as OperationNode).getRightOperand()).toBeInstanceOf(OperandNode);
+            expect((condition as OperationNode).$operator).toBeInstanceOf(OperatorNode);
+            expect((condition as OperationNode).$leftOperand).toBeInstanceOf(OperandNode);
+            expect((condition as OperationNode).$rightOperand).toBeInstanceOf(OperandNode);
         }
     });
 
@@ -75,9 +75,9 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
 
         expect(actual).toBeInstanceOf(expectedType);
         expect(actual.getValue()).toBeInstanceOf(OperationNode);
-        expect((actual.getValue() as OperationNode).getOperator()).toBeInstanceOf(OperatorNode);
-        expect((actual.getValue() as OperationNode).getRightOperand()).toBeInstanceOf(OperandNode);
-        expect((actual.getValue() as OperationNode).getLeftOperand()).toBeInstanceOf(OperandNode);
+        expect((actual.getValue() as OperationNode).$operator).toBeInstanceOf(OperatorNode);
+        expect((actual.getValue() as OperationNode).$rightOperand).toBeInstanceOf(OperandNode);
+        expect((actual.getValue() as OperationNode).$leftOperand).toBeInstanceOf(OperandNode);
     });
 
     test("check type of an RuleJson, expect RuleNode", async () => {
@@ -86,9 +86,9 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
 
         expect(actual).toBeInstanceOf(expectedType);
         expect(actual.getCondition()).toBeInstanceOf(OperationNode);
-        expect((actual.getCondition() as OperationNode).getOperator()).toBeInstanceOf(OperatorNode);
-        expect((actual.getCondition() as OperationNode).getRightOperand()).toBeInstanceOf(OperandNode);
-        expect((actual.getCondition() as OperationNode).getLeftOperand()).toBeInstanceOf(OperandNode);
+        expect((actual.getCondition() as OperationNode).$operator).toBeInstanceOf(OperatorNode);
+        expect((actual.getCondition() as OperationNode).$rightOperand).toBeInstanceOf(OperandNode);
+        expect((actual.getCondition() as OperationNode).$leftOperand).toBeInstanceOf(OperandNode);
     });
 
     test("check type of an FunctionJson, expect FunctionOperandNode", async () => {
@@ -97,8 +97,8 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
 
         expect(actual).toBeInstanceOf(expectedType);
 
-        for (let index = 0; index < actual.getParameters().length; index++) {
-            const parameter = actual.getParameters()[index];
+        for (let index = 0; index < actual.$parameters.length; index++) {
+            const parameter = actual.$parameters[index];
             expect(parameter).toBeInstanceOf(OperandNode);
         }
     });
@@ -109,8 +109,8 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
 
         expect(actual).toBeInstanceOf(expectedType);
 
-        for (let index = 0; index < actual.getItems().length; index++) {
-            const parameter = actual.getItems()[index];
+        for (let index = 0; index < actual.$items.length; index++) {
+            const parameter = actual.$items[index];
             expect(parameter).toBeInstanceOf(OperandNode);
         }
     });

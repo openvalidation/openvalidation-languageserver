@@ -197,4 +197,5 @@ describe("RuleNode Tests", () => {
         var actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
     });
+
 });
