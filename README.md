@@ -1,7 +1,7 @@
 # openVALIDATION Language Server
 
 [![npm version](https://badge.fury.io/js/ov-language-server.svg)](https://badge.fury.io/js/ov-language-server)
-[![statement coverage](/coverage/badge-statements.svg)](/coverage/badge.svg)
+[![coverage](/coverage/badge.svg)](/coverage/badge.svg)
 
 _This repository is under heavy development._
 
