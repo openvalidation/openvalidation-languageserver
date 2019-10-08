@@ -58,7 +58,7 @@ export class RenameProvider extends Provider {
 
         for (const element of ovDocument.$elementManager.$elements) {
             var range = element.$range;
-            if (!range) continue;
+            if (!range || !range.$start) continue;
 
             var lineNumber = range.$start.$line;
 

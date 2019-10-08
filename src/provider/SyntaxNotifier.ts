@@ -30,12 +30,16 @@ export class SyntaxNotifier {
     }
 
     /**
-     * Checks if the textmate-grammar has changed and sends it to the client if this is the case
+     * Checks if the textmate-grammar has changed and sends it to the client if this is the case.
+     * This is only done, when the mainNode contains scopes.
      *
      * @param {LintingResponse} apiResponse
      * @memberof SyntaxNotifier
      */
     public sendTextMateGrammarIfNecessary(apiResponse: LintingResponse): void {
+        // If this is the case, we have a parsing-error
+        if (apiResponse.$mainAstNode.$scopes.length == 0) return;
+
         var textMateGrammar: TextMateJson = this.textMateGrammarFactory.generateTextMateGrammar(apiResponse, this.server);
         //Check, if the new grammar is different and musst be send to the client
         if (!_.isEqual(textMateGrammar, this.textMateGrammar)) {

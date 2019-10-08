@@ -132,6 +132,9 @@ export class DocumentActionProvider extends Provider {
         this.server.setGeneratedSchema(apiResponse);
         this.syntaxNotifier.sendTextMateGrammarIfNecessary(apiResponse);
 
+        // Then we can't generate code anyway
+        if (apiResponse.$errors.length > 0) return;
+
         var codeGenerationResponse: ICodeResponse | null = null;
         try {
             codeGenerationResponse = await ApiProxy.postData(documentText, this.server.restParameter);
