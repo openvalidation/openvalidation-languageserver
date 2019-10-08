@@ -78,11 +78,11 @@ export class OvServer {
         GotoDefinitionProvider.bind(this);
 
         // Own Listener for every additional paramater we need for ov-parsing
-        this.connection.onNotification('textDocument/schemaChanged',
+        this.connection.onNotification(NotificationEnum.SchemaChanged,
             (params: { schema: string, uri: string }) => this.validateAndSetSchemaDefinition(params));
-        this.connection.onNotification('textDocument/languageChanged',
+        this.connection.onNotification(NotificationEnum.LanguageChanged,
             (params: { language: string, uri: string }) => this.setLanguage(params));
-        this.connection.onNotification('textDocument/cultureChanged',
+        this.connection.onNotification(NotificationEnum.CommentKeywordChanged,
             (params: { culture: string, uri: string }) => this.setCulture(params));
     }
 
