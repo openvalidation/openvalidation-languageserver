@@ -73,8 +73,7 @@ export class OperatorNode extends GenericNode {
             return null;
         } else {
             var capture = new SyntaxHighlightingCapture();
-            capture.addCapture(ScopeEnum.Keyword);
-            capture.addRegexToMatch(`(${returnString})`);
+            capture.addRegexGroupAndCapture(returnString, ScopeEnum.Keyword);
             return capture;
         }
     }

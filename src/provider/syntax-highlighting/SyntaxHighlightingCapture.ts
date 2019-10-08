@@ -52,30 +52,54 @@ export class SyntaxHighlightingCapture {
     }
 
     /**
-     * Adds a new capture string to the list.
-     * This will be used for highlighting for the `n`-th group in the regex
-     *
-     * @param {...ScopeEnum[]} scopes
-     * @memberof SyntaxHighlightingCapture
-     */
-    public addCapture(...scopes: ScopeEnum[]): void {
-        this.capture.push(...scopes);
-    }
-
-    /**
-     * Adds the given regex to the string
+     * Adds the given regex to the string.
      *
      * @param {(string | null)} regex string that will be added
      * @returns {void}
      * @memberof SyntaxHighlightingCapture
      */
-    public addRegexToMatch(regex: string | null): void {
+    private addRegexToMatch(regex: string | null): void {
         if (!regex || String.IsNullOrWhiteSpace(regex)) return;
 
         if (!this.match)
             this.match = regex;
         else
             this.match += `\\s*${regex}`;
+    }
+
+    /**
+     * Adds a new capture string to the list and adds the given regex to the string.
+     * The string will be surround by brackets, so is added as a group itself.
+     * This will be used for highlighting for the `n`-th group in the regex
+     *
+     * @param {(string | null)} regex that will be added
+     * @param {ScopeEnum} scope scope of the regex
+     * @returns {void}
+     * @memberof SyntaxHighlightingCapture
+     */
+    public addRegexGroupAndCapture(regex: string | null, scope: ScopeEnum): void {
+        if (!regex || String.IsNullOrWhiteSpace(regex) || scope.length == 0) return;
+
+        this.capture.push(scope);
+        this.addRegexToMatch(`(${regex})`);
+    }
+
+    /**
+     * Adds the content of the given capture to this object
+     *
+     * @param {(SyntaxHighlightingCapture | null)} capture object to merge
+     * @returns {void}
+     * @memberof SyntaxHighlightingCapture
+     */
+    public merge(capture: SyntaxHighlightingCapture | null): void {
+        if (!capture ||
+            !capture.$match || 
+            String.IsNullOrWhiteSpace(capture.$match) || 
+            capture.$capture.length == 0) 
+            return;
+        
+        this.capture.push(...capture.$capture);
+        this.addRegexToMatch(capture.$match);
     }
 
     /**

@@ -77,11 +77,7 @@ export class ArrayOperandNode extends BaseOperandNode {
         var capture = new SyntaxHighlightingCapture();
 
         for (const item of this.$items) {
-            var tmpCapture = item.getPatternInformation(aliasesHelper);
-            if (!tmpCapture) continue;
-
-            capture.addCapture(...tmpCapture.$capture);
-            capture.addRegexToMatch(tmpCapture.$match);
+            capture.merge(item.getPatternInformation(aliasesHelper));
         }
 
         return capture;

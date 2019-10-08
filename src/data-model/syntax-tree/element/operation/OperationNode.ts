@@ -1,8 +1,10 @@
 import { Type } from "class-transformer";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../../aliases/AliasHelper";
+import { ScopeEnum } from "../../../../enums/ScopeEnum";
 import { HoverContent } from "../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../provider/code-completion/CompletionContainer";
+import { SyntaxHighlightingCapture } from "../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../GenericNode";
 import { IndexRange } from "../../IndexRange";
 import { ConditionNode } from "./ConditionNode";
@@ -12,9 +14,6 @@ import { BaseOperandNode } from "./operand/BaseOperandNode";
 import { FunctionOperandNode } from "./operand/FunctionOperandNode";
 import { OperandNode } from "./operand/OperandNode";
 import { OperatorNode } from "./operand/OperatorNode";
-import { SyntaxHighlightingCapture } from "../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
-import { ScopeEnum } from "../../../../enums/ScopeEnum";
-import { String } from "typescript-string-operations";
 
 export class OperationNode extends ConditionNode {
     @Type(() => BaseOperandNode, {
@@ -167,52 +166,39 @@ export class OperationNode extends ConditionNode {
     public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
         var capture: SyntaxHighlightingCapture | null = new SyntaxHighlightingCapture();
 
-        if (!!this.leftOperand) {
-            var tempCapture = this.leftOperand.getPatternInformation(aliasesHelper);
-            if (!!tempCapture) {
-                capture.addCapture(...tempCapture.$capture);
-                capture.addRegexToMatch(tempCapture.$match);
-            }
-        }
+        if (!!this.leftOperand)
+            capture.merge(this.leftOperand.getPatternInformation(aliasesHelper));
 
         if (!!this.operator) {
-            var shadowOperator = this.$lines.join("\n");
-            shadowOperator = shadowOperator.replace(new RegExp(this.operator.$lines.join("\n"), "g"), "");
-
-            if (!!this.leftOperand) {
-                var operandString = this.leftOperand.$lines.join("\n");
-                var startIndex = shadowOperator.indexOf(operandString) + operandString.length;
-                var endIndex = shadowOperator.length;
-                shadowOperator = shadowOperator.substring(startIndex, endIndex);
-            }
-
-            if (!!this.rightOperand) {
-                var operandString = this.rightOperand.$lines.join("\n");
-                var startIndex = 0;
-                var endIndex = shadowOperator.indexOf(operandString);
-                shadowOperator = shadowOperator.substring(startIndex, endIndex);
-            }
-
-            if (!String.IsNullOrWhiteSpace(shadowOperator.trim())) {
-                capture.addRegexToMatch(`(${shadowOperator.trim()})`);
-                capture.addCapture(ScopeEnum.Empty);
-            }
-
-            var tempCapture = this.operator.getPatternInformation(aliasesHelper);
-            if (!!tempCapture) {
-                capture.addCapture(...tempCapture.$capture);
-                capture.addRegexToMatch(tempCapture.$match);
-            }
+            capture.addRegexGroupAndCapture(this.getSemanticalSugarOfOperator(), ScopeEnum.Empty);
+            capture.merge(this.operator.getPatternInformation(aliasesHelper));
         }
 
-        if (!!this.rightOperand && (!this.leftOperand || !this.leftOperand.$range.includesRange(this.rightOperand.$range))) {
-            var tempCapture = this.rightOperand.getPatternInformation(aliasesHelper);
-            if (!!tempCapture) {
-                capture.addCapture(...tempCapture.$capture);
-                capture.addRegexToMatch(tempCapture.$match);
-            }
-        }
+        if (!!this.rightOperand && (!this.leftOperand || !this.leftOperand.$range.includesRange(this.rightOperand.$range)))
+            capture.merge(this.rightOperand.getPatternInformation(aliasesHelper));
 
         return capture;
+    }
+
+    private getSemanticalSugarOfOperator(): string {
+        if (!this.operator) return "";
+
+        var shadowOperator = this.$lines.join("\n");
+        shadowOperator = shadowOperator.replace(new RegExp(this.operator.$lines.join("\n"), "g"), "");
+
+        if (!!this.leftOperand) {
+            var operandString = this.leftOperand.$lines.join("\n");
+            var startIndex = shadowOperator.indexOf(operandString) + operandString.length;
+            var endIndex = shadowOperator.length;
+            shadowOperator = shadowOperator.substring(startIndex, endIndex);
+        }
+
+        if (!!this.rightOperand) {
+            var operandString = this.rightOperand.$lines.join("\n");
+            var startIndex = 0;
+            var endIndex = shadowOperator.indexOf(operandString);
+            shadowOperator = shadowOperator.substring(startIndex, endIndex);
+        }
+        return shadowOperator.trim();
     }
 }

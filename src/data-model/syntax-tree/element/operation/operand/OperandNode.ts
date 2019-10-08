@@ -56,25 +56,8 @@ export class OperandNode extends BaseOperandNode {
         var splittedOperand = joinedLines.split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.$name)})`, "gi"));
         var capture = new SyntaxHighlightingCapture();
 
-        var semanticalSugar = splittedOperand[0];
-        if (!String.IsNullOrWhiteSpace(semanticalSugar)) {
-            capture.addRegexToMatch(`(${splittedOperand[0]})`);
-            capture.addCapture(ScopeEnum.Empty);
-        }
-
-        var scope: ScopeEnum;
-        if (this.$isStatic) {
-            if (this.$dataType == "Decimal") {
-                scope = ScopeEnum.StaticNumber;
-            } else {
-                scope = ScopeEnum.StaticString;
-            }
-        } else {
-            scope = ScopeEnum.Variable;
-        }
-
-        capture.addRegexToMatch(`(${StringHelper.makeStringRegExSafe(splittedOperand[1])})`);
-        capture.addCapture(scope);
+        capture.addRegexGroupAndCapture(splittedOperand[0], ScopeEnum.Empty);
+        capture.addRegexGroupAndCapture(StringHelper.makeStringRegExSafe(splittedOperand[1]), this.getOperandScope());
 
         var duplicateOperands: string = splittedOperand[2];
         for (let index = 3; index < splittedOperand.length; index++) {
@@ -82,10 +65,7 @@ export class OperandNode extends BaseOperandNode {
             duplicateOperands += split;
         }
 
-        if (!String.IsNullOrWhiteSpace(duplicateOperands)) {
-            capture.addRegexToMatch(`(${duplicateOperands})`);
-            capture.addCapture(ScopeEnum.Empty);
-        }
+        capture.addRegexGroupAndCapture(duplicateOperands, ScopeEnum.Empty);
 
         return capture;
     }
@@ -104,18 +84,28 @@ export class OperandNode extends BaseOperandNode {
         var ofAliases = aliasesHelper.getOfKeywords();
         var capture: SyntaxHighlightingCapture = new SyntaxHighlightingCapture();
 
-        var ofFound: boolean = false;;
         for (const text of splittedOperand) {
-            capture.addRegexToMatch(`(${text})`);
+            var scope: ScopeEnum = ScopeEnum.Empty;
             if (splittedName.includes(text)) {
-                capture.addCapture(ScopeEnum.Variable);
-            } else if (!ofFound && ofAliases.includes(text.trim().toUpperCase())) {
-                capture.addCapture(ScopeEnum.Keyword);
-            } else {
-                capture.addCapture(ScopeEnum.Empty);
+                scope = ScopeEnum.Variable;
+            } else if (ofAliases.includes(text.trim().toUpperCase())) {
+                scope = ScopeEnum.Keyword;
             }
+            capture.addRegexGroupAndCapture(text, scope);
         }
 
         return capture;
+    }
+
+    private getOperandScope(): ScopeEnum {
+        if (this.$isStatic) {
+            if (this.$dataType == "Decimal") {
+                return ScopeEnum.StaticNumber;
+            } else {
+                return ScopeEnum.StaticString;
+            }
+        } else {
+            return ScopeEnum.Variable;
+        }
     }
 }

@@ -53,7 +53,7 @@ export class TextMateParameter {
     }
     public get $complexSchemaProperties(): IComplexData[] {
         return this.complexSchemaProperties;
-    } 
+    }
     public get $asKeyword(): string | null {
         return this.asKeyword;
     }
@@ -118,7 +118,8 @@ export class TextMateParameter {
 
             var operandRegex = `^\\s*${tmpPattern.$match}\\s*$|^\\s*${tmpPattern.$match}\\s*(?=(?i)${asKeyword})`;
             tmpPattern.$match = operandRegex;
-            tmpPattern.addCapture(...tmpPattern.$capture);
+            tmpPattern.$capture = tmpPattern.$capture.concat(tmpPattern.$capture);
+
             var pattern = tmpPattern.buildPattern();
             if (!pattern) continue;
             patternList.push(pattern);

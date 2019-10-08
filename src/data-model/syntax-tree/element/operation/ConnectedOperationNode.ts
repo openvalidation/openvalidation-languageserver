@@ -114,11 +114,7 @@ export class ConnectedOperationNode extends ConditionNode {
 
         var capture = new SyntaxHighlightingCapture();
         for (const condition of this.conditions) {
-            var tmpCapture = condition.getPatternInformation(aliasesHelper);
-            if (!tmpCapture) return null;
-
-            capture.addCapture(...tmpCapture.$capture);
-            capture.addRegexToMatch(tmpCapture.$match)
+            capture.merge(condition.getPatternInformation(aliasesHelper));
         }
 
         return capture;
