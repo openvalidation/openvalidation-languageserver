@@ -5,8 +5,8 @@
  * @enum {number}
  */
 export enum LanguageEnum {
-    Java = "Java",
-    CSharp = "CSharp",
-    JavaScript = "JavaScript",
-    Node = "Node"
+    Java = 'Java',
+    CSharp = 'CSharp',
+    JavaScript = 'JavaScript',
+    Node = 'Node'
 }

@@ -1,4 +1,4 @@
-import { CompletionBuilder } from "../CompletionBuilder";
+import { CompletionBuilder } from '../CompletionBuilder';
 
 /**
  * Generic class for all transitions that provides methods for all transitions
@@ -16,7 +16,7 @@ export abstract class StateTransition {
      * @memberof StateTransition
      */
     constructor(prependingText?: string) {
-        this.prependingText = !prependingText ? "" : prependingText;
+        this.prependingText = !prependingText ? '' : prependingText;
     }
 
     public get $prependingText(): string {
@@ -30,5 +30,5 @@ export abstract class StateTransition {
      * @param {CompletionBuilder} builder builder that need to be manipulated
      * @memberof StateTransition
      */
-    abstract addCompletionItems(builder: CompletionBuilder): void;
+    public abstract addCompletionItems(builder: CompletionBuilder): void;
 }

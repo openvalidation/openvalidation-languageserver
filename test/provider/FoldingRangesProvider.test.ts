@@ -1,58 +1,57 @@
-import "jest";
-import { FoldingRange, FoldingRangeRequestParam } from "vscode-languageserver";
-import { FoldingRangesProvider } from "../../src/provider/FoldingRangesProvider";
-import { TestInitializer } from "../TestInitializer";
+import 'jest';
+import { FoldingRange, FoldingRangeRequestParam } from 'vscode-languageserver';
+import { FoldingRangesProvider } from '../../src/provider/FoldingRangesProvider';
+import { TestInitializer } from '../TestInitializer';
 
-describe("FoldingRanges provider test", () => {
-    var provider: FoldingRangesProvider;
-    var testInitializer: TestInitializer;
+describe('FoldingRanges provider test', () => {
+    let provider: FoldingRangesProvider;
+    let testInitializer: TestInitializer;
 
     beforeEach(() => {
         testInitializer = new TestInitializer(true);
         provider = testInitializer.foldingRangesProvider;
     });
 
-
     function getEmptyParams(): FoldingRangeRequestParam {
         return {
             textDocument: {
-                uri: "test.ov"
+                uri: 'test.ov'
             }
-        }
+        };
     }
 
-    test("Verify provider exists", () => {
+    test('Verify provider exists', () => {
         expect(provider).not.toBeNull();
     });
 
-    test("getFoldingRanges with empty document, expect empty array", () => {
-        var tmpTestInitializer = new TestInitializer(false);
-        var tmpProvider = tmpTestInitializer.foldingRangesProvider;
+    test('getFoldingRanges with empty document, expect empty array', () => {
+        const tmpTestInitializer = new TestInitializer(false);
+        const tmpProvider = tmpTestInitializer.foldingRangesProvider;
 
-        var expected: FoldingRange[] = [];
-        var actual = tmpProvider.getFoldingRanges(getEmptyParams());
+        const expected: FoldingRange[] = [];
+        const actual = tmpProvider.getFoldingRanges(getEmptyParams());
 
         expect(actual).toEqual(expected);
     });
 
-    test("getFoldingRanges with wrong uri, expected empty list", () => {
-        var expected: FoldingRange[] = [];
+    test('getFoldingRanges with wrong uri, expected empty list', () => {
+        const expected: FoldingRange[] = [];
 
-        var input = {
+        const input = {
             textDocument: {
-                uri: "wrongUri"
+                uri: 'wrongUri'
             }
         };
-        var actual = provider.getFoldingRanges(input);
+        const actual = provider.getFoldingRanges(input);
 
         expect(actual).toEqual(expected);
     });
 
-    test("getFoldingRangesByText with wrong uri, expected not empty list", () => {
-        var expected: FoldingRange[] = [];
+    test('getFoldingRangesByText with wrong uri, expected not empty list', () => {
+        const expected: FoldingRange[] = [];
 
-        var input: string = `Kommentar das ist ein Test`
-        var actual = provider["getFoldingRangesByText"](input);
+        const input: string = `Kommentar das ist ein Test`;
+        const actual = provider.getFoldingRangesByText(input);
 
         expect(actual).toEqual(expected);
     });
@@ -67,7 +66,8 @@ describe("FoldingRanges provider test", () => {
     // });
 
     // test("getFoldingRangesByText with wrong uri, expected not empty list", () => {
-    //     var expected: FoldingRange[] = [FoldingRange.create(0, 0, undefined, undefined, "region"), FoldingRange.create(2, 3, undefined, undefined, "region")];
+    //     var expected: FoldingRange[] = [FoldingRange.create(0, 0, undefined, undefined, "region"),
+    // FoldingRange.create(2, 3, undefined, undefined, 'region');]
 
     //     var input: string = "Kommentar das ist ein Test\nHier gehts weiter\n\nAlter kleiner 30\n Dann dwadwad"
     //     var actual = provider["getFoldingRangesByText"](input);

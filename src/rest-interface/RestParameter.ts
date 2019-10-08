@@ -1,6 +1,6 @@
-import { CultureEnum } from "../enums/CultureEnum";
-import { LanguageEnum } from "../enums/LanguageEnum";
-import { AliasHelper } from "src/aliases/AliasHelper";
+import { AliasHelper } from 'src/aliases/AliasHelper';
+import { CultureEnum } from '../enums/CultureEnum';
+import { LanguageEnum } from '../enums/LanguageEnum';
 
 /**
  * Class that is used inside the REST-API which contains all the necessary parameters for parsing.
@@ -18,7 +18,12 @@ export class RestParameter {
      * @param {AliasHelper} aliasHelper helper that contains a list of all available aliases
      * @memberof RestParameter
      */
-    constructor(private schema: JSON, private culture: CultureEnum, private language: LanguageEnum, private aliasHelper: AliasHelper) {
+    constructor(
+        private schema: JSON,
+        private culture: CultureEnum,
+        private language: LanguageEnum,
+        private aliasHelper: AliasHelper
+    ) {
     }
 
     public get $language(): LanguageEnum {
@@ -30,7 +35,6 @@ export class RestParameter {
     public get $schema(): JSON {
         return this.schema;
     }
-
     public get $aliasHelper(): AliasHelper {
         return this.aliasHelper;
     }

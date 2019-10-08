@@ -1,49 +1,16 @@
-import { String } from "typescript-string-operations";
-import { AliasHelper } from "../../aliases/AliasHelper";
-import { AliasKey } from "../../aliases/AliasKey";
-import { ConditionNode } from "../../data-model/syntax-tree/element/operation/ConditionNode";
-import { BaseOperandNode } from "../../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
-import { TreeTraversal } from "../../helper/TreeTraversal";
-import { OvServer } from "../../OvServer";
-import { LintingResponse } from "../../rest-interface/response/LintingResponse";
-import { IComplexData } from "../../rest-interface/schema/IComplexData";
-import { SyntaxHighlightingCapture } from "./SyntaxHighlightingCapture";
-import { Pattern } from "./TextMateJson";
-
+import { String } from 'typescript-string-operations';
+import { AliasHelper } from '../../aliases/AliasHelper';
+import { AliasKey } from '../../aliases/AliasKey';
+import { ConditionNode } from '../../data-model/syntax-tree/element/operation/ConditionNode';
+import { BaseOperandNode } from '../../data-model/syntax-tree/element/operation/operand/BaseOperandNode';
+import { TreeTraversal } from '../../helper/TreeTraversal';
+import { OvServer } from '../../OvServer';
+import { LintingResponse } from '../../rest-interface/response/LintingResponse';
+import { IComplexData } from '../../rest-interface/schema/IComplexData';
+import { SyntaxHighlightingCapture } from './SyntaxHighlightingCapture';
+import { Pattern } from './TextMateJson';
 
 export class TextMateParameter {
-    private keywords: string[];
-    private identifier: string[];
-    private complexSchemaProperties: IComplexData[];
-    private asKeyword: string | null;
-    private thenKeyword: string | null;
-    private commentKeyword: string | null;
-
-    private operations: ConditionNode[];
-    private operands: BaseOperandNode[];
-
-    private aliasHelper: AliasHelper;
-
-    constructor(private readonly apiResponse: LintingResponse, server: OvServer) {
-        this.aliasHelper = server.aliasHelper;
-
-        this.identifier = this.getIdentifier();
-        this.complexSchemaProperties = server.schema.complexData;
-        this.keywords = server.aliasHelper.getFilteredKeywords(AliasKey.OPERATOR, AliasKey.OF, AliasKey.AS, AliasKey.FUNCTION);
-
-        if (!!apiResponse.$mainAstNode) {
-            var traversal = new TreeTraversal();
-            this.operations = traversal.getOperations(apiResponse.$mainAstNode.$scopes);
-            this.operands = traversal.getLonelyOperands(apiResponse.$mainAstNode.$scopes);
-        } else {
-            this.operations = [];
-            this.operands = [];
-        }
-
-        this.asKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.AS);
-        this.thenKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.THEN);
-        this.commentKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.COMMENT);
-    }
 
     public get $keywords(): string[] {
         return this.keywords;
@@ -69,26 +36,39 @@ export class TextMateParameter {
     public get $operands(): BaseOperandNode[] {
         return this.operands;
     }
+    private keywords: string[];
+    private identifier: string[];
+    private complexSchemaProperties: IComplexData[];
+    private asKeyword: string | null;
+    private thenKeyword: string | null;
+    private commentKeyword: string | null;
 
-    /**
-     * Generates a list of all identifiers which includes the schema and variableNames
-     *
-     * @private
-     * @param {GeneralApiResponse} apiResponse response, that holds the variableNames
-     * @param {JSON} schema schema that contains the identifiers
-     * @returns {string[]} list of all identifiers
-     * @memberof OvSyntaxNotifier
-     */
-    private getIdentifier(): string[] {
-        var identifier: string[] = [];
+    private operations: ConditionNode[];
+    private operands: BaseOperandNode[];
 
-        if (!!this.apiResponse.$mainAstNode &&
-            !!this.apiResponse.$mainAstNode.$declarations) {
-            var names: string[] = this.apiResponse.$mainAstNode.$declarations.map(d => d.$name);
-            identifier = identifier.concat(names.filter(n => !String.IsNullOrWhiteSpace(n)));
+    private aliasHelper: AliasHelper;
+
+    constructor(private readonly apiResponse: LintingResponse, server: OvServer) {
+        this.aliasHelper = server.aliasHelper;
+
+        this.identifier = this.getIdentifier();
+        this.complexSchemaProperties = server.schema.complexData;
+
+        const keywordFilter: AliasKey[] = [AliasKey.OPERATOR, AliasKey.OF, AliasKey.AS, AliasKey.FUNCTION];
+        this.keywords = server.aliasHelper.getFilteredKeywords(...keywordFilter);
+
+        if (!!apiResponse.$mainAstNode) {
+            const traversal = new TreeTraversal();
+            this.operations = traversal.getOperations(apiResponse.$mainAstNode.$scopes);
+            this.operands = traversal.getLonelyOperands(apiResponse.$mainAstNode.$scopes);
+        } else {
+            this.operations = [];
+            this.operands = [];
         }
 
-        return identifier;
+        this.asKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.AS);
+        this.thenKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.THEN);
+        this.commentKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.COMMENT);
     }
 
     /**
@@ -101,30 +81,51 @@ export class TextMateParameter {
      * @memberof TextMateParameter
      */
     public getOperationAndOperandPatterns(asKeyword: string | null): Pattern[] {
-        var patternList: Pattern[] = [];
+        const patternList: Pattern[] = [];
 
         for (const operation of this.$operations) {
-            var tmpPattern: SyntaxHighlightingCapture | null = operation.getPatternInformation(this.aliasHelper);
-            if (!tmpPattern) continue;
+            const tmpPattern: SyntaxHighlightingCapture | null = operation.getPatternInformation(this.aliasHelper);
+            if (!tmpPattern) { continue; }
 
-            var pattern = tmpPattern.buildPattern();
-            if (!pattern) continue;
+            const pattern = tmpPattern.buildPattern();
+            if (!pattern) { continue; }
             patternList.push(pattern);
         }
 
         for (const operand of this.$operands) {
-            var tmpPattern: SyntaxHighlightingCapture | null = operand.getPatternInformation(this.aliasHelper);
-            if (!tmpPattern) continue;
+            const tmpPattern: SyntaxHighlightingCapture | null = operand.getPatternInformation(this.aliasHelper);
+            if (!tmpPattern) { continue; }
 
-            var operandRegex = `^\\s*${tmpPattern.$match}\\s*$|^\\s*${tmpPattern.$match}\\s*(?=(?i)${asKeyword})`;
+            const operandRegex = `^\\s*${tmpPattern.$match}\\s*$|^\\s*${tmpPattern.$match}\\s*(?=(?i)${asKeyword})`;
             tmpPattern.$match = operandRegex;
             tmpPattern.$capture = tmpPattern.$capture.concat(tmpPattern.$capture);
 
-            var pattern = tmpPattern.buildPattern();
-            if (!pattern) continue;
+            const pattern = tmpPattern.buildPattern();
+            if (!pattern) { continue; }
             patternList.push(pattern);
         }
 
         return patternList;
+    }
+
+    /**
+     * Generates a list of all identifiers which includes the schema and variableNames
+     *
+     * @private
+     * @param {GeneralApiResponse} apiResponse response, that holds the variableNames
+     * @param {JSON} schema schema that contains the identifiers
+     * @returns {string[]} list of all identifiers
+     * @memberof OvSyntaxNotifier
+     */
+    private getIdentifier(): string[] {
+        let identifier: string[] = [];
+
+        if (!!this.apiResponse.$mainAstNode &&
+            !!this.apiResponse.$mainAstNode.$declarations) {
+            const names: string[] = this.apiResponse.$mainAstNode.$declarations.map(d => d.$name);
+            identifier = identifier.concat(names.filter(n => !String.IsNullOrWhiteSpace(n)));
+        }
+
+        return identifier;
     }
 }

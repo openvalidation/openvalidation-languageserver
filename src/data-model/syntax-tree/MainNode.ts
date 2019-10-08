@@ -1,8 +1,8 @@
-import { Type } from "class-transformer";
-import { GenericNode } from "./GenericNode";
-import { Variable } from "./Variable";
-import { TypeDecorator } from "./TypeDecorator";
-import { IndexRange } from "./IndexRange";
+import { Type } from 'class-transformer';
+import { GenericNode } from './GenericNode';
+import { IndexRange } from './IndexRange';
+import { TypeDecorator } from './TypeDecorator';
+import { Variable } from './Variable';
 
 /**
  * MainNode for the syntax-tree
@@ -43,12 +43,12 @@ export class MainNode {
     public set $scopes(value: GenericNode[]) {
         this.scopes = value;
     }
-    
+
     public get $range(): IndexRange {
         return this.range;
     }
     public set $range(value: IndexRange) {
         this.range = value;
     }
-    
+
 }

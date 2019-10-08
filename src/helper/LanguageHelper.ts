@@ -1,4 +1,4 @@
-import { LanguageEnum } from "../enums/LanguageEnum";
+import { LanguageEnum } from '../enums/LanguageEnum';
 
 /**
  * Beautifies the generic string from the parse (e.g. astrule -> rule)
@@ -18,7 +18,7 @@ export class LanguageHelper {
     public static convertOvLanguageToMonacoLanguage(language: LanguageEnum): string {
         switch (language) {
             case LanguageEnum.Node:
-                return "JavaScript";
+                return 'JavaScript';
             default:
                 return language;
         }

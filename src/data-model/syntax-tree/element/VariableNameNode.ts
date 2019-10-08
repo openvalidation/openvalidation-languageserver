@@ -1,9 +1,9 @@
-import { Position } from "vscode-languageserver";
-import { AliasHelper } from "../../../aliases/AliasHelper";
-import { HoverContent } from "../../../helper/HoverContent";
-import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
-import { GenericNode } from "../GenericNode";
-import { IndexRange } from "../IndexRange";
+import { Position } from 'vscode-languageserver';
+import { AliasHelper } from '../../../aliases/AliasHelper';
+import { HoverContent } from '../../../helper/HoverContent';
+import { CompletionContainer } from '../../../provider/code-completion/CompletionContainer';
+import { GenericNode } from '../GenericNode';
+import { IndexRange } from '../IndexRange';
 
 export class VariableNameNode extends GenericNode {
     private name: string;
@@ -22,11 +22,11 @@ export class VariableNameNode extends GenericNode {
     }
 
     public getHoverContent(): HoverContent {
-        return new HoverContent(this.$range, "Variable-Name: " + this.name);
+        return new HoverContent(this.$range, 'Variable-Name: ' + this.name);
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        return this.$lines.join("\n");
+        return this.$lines.join('\n');
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {

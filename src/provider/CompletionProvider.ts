@@ -1,13 +1,13 @@
-import { String } from "typescript-string-operations";
-import { CompletionItem, CompletionParams, CompletionTriggerKind, Position, Range, TextDocument } from "vscode-languageserver";
-import { CompletionKeyEnum } from "../enums/CompletionKeyEnum";
-import { StringHelper } from "../helper/StringHelper";
-import { OvServer } from "../OvServer";
-import { ApiProxy } from "../rest-interface/ApiProxy";
-import { Variable } from "../data-model/syntax-tree/Variable";
-import { CompletionBuilder } from "./code-completion/CompletionBuilder";
-import { Provider } from "./Provider";
-import { CompletionResponse } from "src/rest-interface/response/CompletionResponse";
+import { CompletionResponse } from 'src/rest-interface/response/CompletionResponse';
+import { String } from 'typescript-string-operations';
+import { CompletionItem, CompletionParams, CompletionTriggerKind, Position, Range, TextDocument } from 'vscode-languageserver';
+import { Variable } from '../data-model/syntax-tree/Variable';
+import { CompletionKeyEnum } from '../enums/CompletionKeyEnum';
+import { StringHelper } from '../helper/StringHelper';
+import { OvServer } from '../OvServer';
+import { ApiProxy } from '../rest-interface/ApiProxy';
+import { CompletionBuilder } from './code-completion/CompletionBuilder';
+import { Provider } from './Provider';
 
 /**
  * Response-Provider for `onCompletion` and `onCompletionResolve`
@@ -26,7 +26,7 @@ export class CompletionProvider extends Provider {
      * @returns {CompletionProvider} created provider
      * @memberof CompletionProvider
      */
-    static bind(server: OvServer): CompletionProvider {
+    public static bind(server: OvServer): CompletionProvider {
         return new CompletionProvider(server);
     }
 
@@ -37,8 +37,8 @@ export class CompletionProvider extends Provider {
      */
     constructor(server: OvServer) {
         super(server);
-        this.connection.onCompletionResolve(params => this.completionResolve(params));
-        this.connection.onCompletion(params => this.completion(params));
+        this.connection.onCompletionResolve((params) => this.completionResolve(params));
+        this.connection.onCompletion((params) => this.completion(params));
     }
 
     /**
@@ -50,7 +50,7 @@ export class CompletionProvider extends Provider {
      * @memberof CompletionProvider
      */
     public completionResolve(params: CompletionItem): CompletionItem {
-        //TODO: More documentation
+        // TODO: More documentation
         return params;
     }
 
@@ -63,20 +63,22 @@ export class CompletionProvider extends Provider {
      * @memberof CompletionProvider
      */
     public async completion(params: CompletionParams): Promise<CompletionItem[] | null> {
-        var document = this.server.documents.get(params.textDocument.uri);
-        if (!document) return null;
+        const document = this.server.documents.get(params.textDocument.uri);
+        if (!document) { return null; }
 
-        return this.completionMethodSwitch(document, params)
+        return this.completionMethodSwitch(document, params);
     }
 
-    private async completionMethodSwitch(document: TextDocument, params: CompletionParams): Promise<CompletionItem[] | null> {
-        if (!params.context || params.context.triggerKind != CompletionTriggerKind.TriggerCharacter) {
+    private async completionMethodSwitch(
+        document: TextDocument,
+        params: CompletionParams
+    ): Promise<CompletionItem[] | null> {
+        if (!params.context || params.context.triggerKind !== CompletionTriggerKind.TriggerCharacter) {
             return this.completionByText(document, params);
-        }
-        else {
-            if (params.context.triggerCharacter == CompletionKeyEnum.ComplexSchema) {
+        } else {
+            if (params.context.triggerCharacter === CompletionKeyEnum.ComplexSchema) {
                 return this.completionForSchema(document, params);
-            } else if (params.context.triggerCharacter == CompletionKeyEnum.Array) {
+            } else if (params.context.triggerCharacter === CompletionKeyEnum.Array) {
                 return this.completionForArray(document, params);
             }
         }
@@ -92,12 +94,16 @@ export class CompletionProvider extends Provider {
      * @returns {(Promise<CompletionItem[] | null>)} items with the found childs, null in case of an error
      * @memberof CompletionProvider
      */
-    private async completionForSchema(document: TextDocument, params: CompletionParams): Promise<CompletionItem[] | null> {
-        var line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
-        var currentWord = StringHelper.getWordAt(line, params.position.character);
-        if (String.IsNullOrWhiteSpace(currentWord)) return null;
+    private async completionForSchema(
+        document: TextDocument,
+        params: CompletionParams
+    ): Promise<CompletionItem[] | null> {
+        const line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
+        const currentWord = StringHelper.getWordAt(line, params.position.character);
+        if (String.IsNullOrWhiteSpace(currentWord)) { return null; }
 
-        var generator = new CompletionBuilder([], this.server.aliasHelper, this.server.schema).addFittingChilds(currentWord);
+        const generator =
+            new CompletionBuilder([], this.server.aliasHelper, this.server.schema).addFittingChilds(currentWord);
         return generator.build();
     }
 
@@ -110,18 +116,21 @@ export class CompletionProvider extends Provider {
      * @returns {(Promise<CompletionItem[] | null>)} items that has been found, null in case of an error
      * @memberof CompletionProvider
      */
-    private async completionForArray(document: TextDocument, params: CompletionParams): Promise<CompletionItem[] | null> {
-        var line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
-        var currentWord = StringHelper.getWordAt(line, params.position.character);
-        if (String.IsNullOrWhiteSpace(currentWord)) return null;
+    private async completionForArray(
+        document: TextDocument,
+        params: CompletionParams
+    ): Promise<CompletionItem[] | null> {
+        const line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
+        const currentWord = StringHelper.getWordAt(line, params.position.character);
+        if (String.IsNullOrWhiteSpace(currentWord)) { return null; }
 
-        var declarations: Variable[] = [];
-        var ovDocument = this.ovDocuments.get(params.textDocument.uri);
+        let declarations: Variable[] = [];
+        const ovDocument = this.ovDocuments.get(params.textDocument.uri);
         if (!!ovDocument) {
             declarations = ovDocument.$declarations;
         }
 
-        var generator = new CompletionBuilder(declarations, this.server.aliasHelper, this.server.schema)
+        const generator = new CompletionBuilder(declarations, this.server.aliasHelper, this.server.schema)
             .addOperandsWithTypeOfGivenOperand(currentWord.replace(',', ''));
         return generator.build();
     }
@@ -136,24 +145,25 @@ export class CompletionProvider extends Provider {
      * @memberof CompletionProvider
      */
     private async completionByText(document: TextDocument, params: CompletionParams): Promise<CompletionItem[] | null> {
-        var documentText: string[] = document.getText().split("\n");
-        var itemTuple = this.extractItem(documentText, params.position);
+        const documentText: string[] = document.getText().split('\n');
+        const itemTuple = this.extractItem(documentText, params.position);
 
-        var parseString: string = itemTuple[0].join("\n");
-        if (!String.IsNullOrWhiteSpace(parseString)) parseString += "\n\n";
+        let parseString: string = itemTuple[0].join('\n');
+        if (!String.IsNullOrWhiteSpace(parseString)) { parseString += '\n\n'; }
 
-        var declarations: Variable[] = [];
+        let declarations: Variable[] = [];
 
-        var ovDocument = this.ovDocuments.get(params.textDocument.uri);
+        const ovDocument = this.ovDocuments.get(params.textDocument.uri);
         if (!!ovDocument) {
             declarations = ovDocument.$declarations;
         }
 
-        var response = await ApiProxy.postCompletionData(parseString, this.server.restParameter, ovDocument);
-        var relativePosition: Position = Position.create(params.position.line - itemTuple[1], params.position.character);
+        const response = await ApiProxy.postCompletionData(parseString, this.server.restParameter, ovDocument);
+        const relativePosition: Position =
+            Position.create(params.position.line - itemTuple[1], params.position.character);
 
-        var line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
-        var wordAtCurrentPosition = StringHelper.getWordAt(line, params.position.character).trim();
+        const line = document.getText(Range.create(Position.create(params.position.line, 0), params.position));
+        const wordAtCurrentPosition = StringHelper.getWordAt(line, params.position.character).trim();
         return this.completionForParsedElement(response, declarations, relativePosition, wordAtCurrentPosition);
     }
 
@@ -163,20 +173,29 @@ export class CompletionProvider extends Provider {
      * @private
      * @param {(CompletionResponse | null)} response response of the text at the current position
      * @param {Variable[]} declarations variables of the current document
-     * @param {Position} relativePosition position inside given node. Because we only parsed that element alone it needs to be relative to it
+     * @param {Position} relativePosition position inside given node.
+     *  Because we only parsed that element alone it needs to be relative to it
      * @param {string} wordAtCurrentPosition found word at the position. This is used for filtering of items
      * @returns {(Promise<CompletionItem[] | null>)} generated completionitems, null in case of an error
      * @memberof CompletionProvider
      */
-    private completionForParsedElement(response: CompletionResponse | null, declarations: Variable[], relativePosition: Position, wordAtCurrentPosition: string): CompletionItem[] | null {
-        if (!response)
+    private completionForParsedElement(
+        response: CompletionResponse | null,
+        declarations: Variable[],
+        relativePosition: Position,
+        wordAtCurrentPosition: string
+    ): CompletionItem[] | null {
+        if (!response) {
             return CompletionBuilder.default(declarations, this.server);
+        }
 
-        var relevantElement = response.$scope;
-        if (!relevantElement)
+        const relevantElement = response.$scope;
+        if (!relevantElement) {
             return CompletionBuilder.default(declarations, this.server);
+        }
 
-        var generator: CompletionBuilder = new CompletionBuilder(declarations, this.server.aliasHelper, this.server.schema, wordAtCurrentPosition);
+        const generator: CompletionBuilder =
+            new CompletionBuilder(declarations, this.server.aliasHelper, this.server.schema, wordAtCurrentPosition);
         return relevantElement!.getCompletionContainer(relativePosition).getCompletions(generator).build();
     }
 
@@ -189,22 +208,23 @@ export class CompletionProvider extends Provider {
      * @memberof CompletionProvider
      */
     private extractItem(text: string[], position: Position): [string[], number] {
-        var startLine: number = -1;
-        var currentLines: string[] = [];
-        var foundIndex: boolean = false;
+        let startLine: number = -1;
+        let currentLines: string[] = [];
+        let foundIndex: boolean = false;
 
         for (let index = 0; index < text.length; index++) {
             const element = text[index];
-            if (index == position.line)
+            if (index === position.line) {
                 foundIndex = true;
+            }
 
             if (!String.IsNullOrWhiteSpace(element)) {
                 currentLines.push(element);
 
-                if (startLine == -1)
+                if (startLine === -1) {
                     startLine = index;
-            }
-            else if (!foundIndex) {
+                }
+            } else if (!foundIndex) {
                 currentLines = [];
                 startLine = -1;
             } else {

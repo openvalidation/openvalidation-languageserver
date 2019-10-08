@@ -1,4 +1,4 @@
-import { String } from "typescript-string-operations";
+import { String } from 'typescript-string-operations';
 
 /**
  * Defines some useful methods for strings
@@ -17,22 +17,21 @@ export class StringHelper {
      * @memberof StringHelper
      */
     public static getCaseUnsensitiveOredRegExForWords(...params: string[]): string {
-        var returnString: string = "";
+        let returnString: string = '';
 
         params = Array.from(new Set(params).keys());
 
         for (let index = 0; index < params.length; index++) {
             const element = params[index];
-            returnString += "\\b" + element + "\\b"; //To Make sure we only match whole words
+            returnString += '\\b' + element + '\\b'; // To Make sure we only match whole words
 
             // Don't at an "|" at the last word
             if (index < params.length - 1) {
-                returnString += "|";
+                returnString += '|';
             }
         }
-        return "(?i)(" + returnString + ")";
+        return '(?i)(' + returnString + ')';
     }
-
 
     /**
      * Creates a RegExp, where all parameters are ored
@@ -43,17 +42,17 @@ export class StringHelper {
      * @memberof StringHelper
      */
     public static getOredRegExForWords(...params: string[]): string {
-        var returnString: string = "";
+        let returnString: string = '';
 
         params = Array.from(new Set(params).keys());
 
         for (let index = 0; index < params.length; index++) {
             const element = params[index];
-            returnString += "\\b" + element + "\\b";
+            returnString += '\\b' + element + '\\b';
 
             // Don't at an "|" at the last word
             if (index < params.length - 1) {
-                returnString += "|";
+                returnString += '|';
             }
         }
 
@@ -69,8 +68,8 @@ export class StringHelper {
      * @memberof StringHelper
      */
     public static makeStringRegExSafe(text: string): string {
-        var criticalSymbols: string[] = ['(', ')', '*'];
-        if (String.IsNullOrWhiteSpace(text)) return text;
+        const criticalSymbols: string[] = ['(', ')', '*'];
+        if (String.IsNullOrWhiteSpace(text)) { return text; }
 
         criticalSymbols.forEach(symbol => {
             text = text.replace(symbol, '\\' + symbol);
@@ -82,22 +81,22 @@ export class StringHelper {
      * Searches the word at a specfic index and returns it
      *
      * @static
-     * @param {string} string string were we try to search a word
+     * @param {string} searchString string were we try to search a word
      * @param {number} index index in the string where the word should be found
      * @returns {string} found word
      * @memberof StringHelper
      */
-    public static getWordAt(string: string, index: number): string {
+    public static getWordAt(searchString: string, index: number): string {
         // Search for the word's beginning and end.
-        var left = string.slice(0, index + 1).search(/\S+$/);
-        var right = string.slice(index).search(/\s/);
+        const left = searchString.slice(0, index + 1).search(/\S+$/);
+        const right = searchString.slice(index).search(/\s/);
 
         // The last word in the string is a special case.
         if (right < 0) {
-            return string.slice(left);
+            return searchString.slice(left);
         }
 
         // Return the word, using the located bounds to extract it from the string.
-        return string.slice(left, right + index);
+        return searchString.slice(left, right + index);
     }
 }

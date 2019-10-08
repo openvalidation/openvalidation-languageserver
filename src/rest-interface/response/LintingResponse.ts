@@ -1,7 +1,7 @@
-import { Type } from "class-transformer";
-import { MainNode } from "../../data-model/syntax-tree/MainNode";
-import { ISchemaType } from "../schema/ISchemaType";
-import { LintingError } from "./LintingError";
+import { Type } from 'class-transformer';
+import { MainNode } from '../../data-model/syntax-tree/MainNode';
+import { ISchemaType } from '../schema/ISchemaType';
+import { LintingError } from './LintingError';
 
 /**
  * Class for the response of the most-import REST-API.
@@ -15,10 +15,9 @@ export class LintingResponse {
 
     @Type(() => MainNode)
     private mainAstNode: MainNode;
-    
+
     @Type(() => LintingError)
     private errors: LintingError[];
-
 
     /**
      * Creates an instance of LintingResponse.
@@ -34,12 +33,12 @@ export class LintingResponse {
 
     public get $errors(): LintingError[] {
         return this.errors;
-    }    
-    
+    }
+
     public set $errors(errors: LintingError[]) {
         this.errors = errors;
     }
-        
+
     public get $mainAstNode(): MainNode {
         return this.mainAstNode;
     }

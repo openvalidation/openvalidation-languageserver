@@ -1,10 +1,10 @@
 import { ChildProcess, exec } from 'child_process';
 
-var path = require('path');
+const path = require('path');
 
 // Starts the spring-boot-backend
-var exePath = path.join(__dirname, "/rest-interface/ov-rest.exe");
-var child: ChildProcess = exec(exePath);
+const exePath = path.join(__dirname, '/rest-interface/ov-rest.exe');
+const child: ChildProcess = exec(exePath);
 
 if (!!child.stdout) {
     child.stdout.on('data', (data) => {

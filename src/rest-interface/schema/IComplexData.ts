@@ -7,5 +7,5 @@
  */
 export interface IComplexData {
     parent: string;
-    child: string;   
+    child: string;
 }

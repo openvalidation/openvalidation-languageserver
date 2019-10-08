@@ -1,10 +1,11 @@
-import * as _ from "lodash";
-import { LintingResponse } from "src/rest-interface/response/LintingResponse";
-import { LanguageHelper } from "../helper/LanguageHelper";
-import { OvServer } from "../OvServer";
-import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
-import { TextMateGrammarFactory } from "./syntax-highlighting/TextMateGrammarFactory";
-import { TextMateJson } from "./syntax-highlighting/TextMateJson";
+import * as _ from 'lodash';
+import { NotificationEnum } from '../enums/NotificationEnum';
+import { LanguageHelper } from '../helper/LanguageHelper';
+import { OvServer } from '../OvServer';
+import { ICodeResponse } from '../rest-interface/response/ICodeResponse';
+import { LintingResponse } from '../rest-interface/response/LintingResponse';
+import { TextMateGrammarFactory } from './syntax-highlighting/TextMateGrammarFactory';
+import { ITextMateJson } from './syntax-highlighting/TextMateJson';
 
 /**
  * Generates the parameter of the notification ``textDocument/semanticHighlighting`` and ``textDocument/generatedCode``
@@ -14,7 +15,7 @@ import { TextMateJson } from "./syntax-highlighting/TextMateJson";
  * @class SyntaxNotifier
  */
 export class SyntaxNotifier {
-    private textMateGrammar: TextMateJson | null;
+    private textMateGrammar: ITextMateJson | null;
     private generatedCode: string | null;
     private textMateGrammarFactory: TextMateGrammarFactory;
 
@@ -26,7 +27,7 @@ export class SyntaxNotifier {
     constructor(private readonly server: OvServer) {
         this.textMateGrammar = null;
         this.generatedCode = null;
-        this.textMateGrammarFactory = new TextMateGrammarFactory;
+        this.textMateGrammarFactory = new TextMateGrammarFactory();
     }
 
     /**
@@ -38,16 +39,17 @@ export class SyntaxNotifier {
      */
     public sendTextMateGrammarIfNecessary(apiResponse: LintingResponse): void {
         // If this is the case, we have a parsing-error
-        if (apiResponse.$mainAstNode.$scopes.length == 0) return;
+        if (!apiResponse.$mainAstNode || apiResponse.$mainAstNode.$scopes.length === 0) { return; }
 
-        var textMateGrammar: TextMateJson = this.textMateGrammarFactory.generateTextMateGrammar(apiResponse, this.server);
-        //Check, if the new grammar is different and musst be send to the client
+        const textMateGrammar: ITextMateJson =
+            this.textMateGrammarFactory.generateTextMateGrammar(apiResponse, this.server);
+        // Check, if the new grammar is different and musst be send to the client
         if (!_.isEqual(textMateGrammar, this.textMateGrammar)) {
             this.textMateGrammar = textMateGrammar;
-            this.server.connection.sendNotification("textDocument/semanticHighlighting", JSON.stringify(textMateGrammar));
+            this.server.connection.sendNotification(
+                NotificationEnum.SemanticHighlighting, JSON.stringify(textMateGrammar));
         }
     }
-
 
     /**
      * Checks if the code has changed and sends it to the client if this is the case
@@ -56,12 +58,13 @@ export class SyntaxNotifier {
      * @memberof SyntaxNotifier
      */
     public sendGeneratedCodeIfNecessary(apiResponse: ICodeResponse): void {
-        var newCodeNotification = this.generatedCodeDataObject(apiResponse);
+        const newCodeNotification = this.generatedCodeDataObject(apiResponse);
 
-        //Check, if the new code is different and musst be send to the client
+        // Check, if the new code is different and musst be send to the client
         if (newCodeNotification.value && !_.isEqual(newCodeNotification.value, this.generatedCode)) {
             this.generatedCode = newCodeNotification.value;
-            this.server.connection.sendNotification("textDocument/generatedCode", JSON.stringify(newCodeNotification));
+            this.server.connection.sendNotification(
+                NotificationEnum.GeneratedCode, JSON.stringify(newCodeNotification));
         }
     }
 
@@ -74,10 +77,10 @@ export class SyntaxNotifier {
      * @memberof SyntaxNotifier
      */
     private generatedCodeDataObject(apiResponse: ICodeResponse): { language: string, value: string } {
-        var json = {
+        const json = {
             language: LanguageHelper.convertOvLanguageToMonacoLanguage(this.server.language),
             value: apiResponse.implementationResult
-        }
+        };
 
         return json;
     }

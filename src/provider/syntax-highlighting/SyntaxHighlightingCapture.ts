@@ -1,6 +1,6 @@
-import { PatternCapture } from './TextMateJson';
-import { ScopeEnum } from "../../enums/ScopeEnum";
 import { String } from 'typescript-string-operations';
+import { ScopeEnum } from '../../enums/ScopeEnum';
+import { IPatternCapture } from './TextMateJson';
 
 /**
  * Class that is used for semantic parsing.
@@ -11,13 +11,6 @@ import { String } from 'typescript-string-operations';
  * @class SyntaxHighlightingCapture
  */
 export class SyntaxHighlightingCapture {
-    private capture: ScopeEnum[];
-    private match: string | null;
-
-    constructor() {
-        this.capture = [];
-        this.match = null;
-    }
 
     /**
      * Getter capture
@@ -25,14 +18,6 @@ export class SyntaxHighlightingCapture {
      */
     public get $capture(): ScopeEnum[] {
         return this.capture;
-    }
-
-    /**
-     * Getter match
-     * @return {string}
-     */
-    public get $match(): string | null {
-        return this.match;
     }
 
     /**
@@ -44,6 +29,14 @@ export class SyntaxHighlightingCapture {
     }
 
     /**
+     * Getter match
+     * @return {string}
+     */
+    public get $match(): string | null {
+        return this.match;
+    }
+
+    /**
      * Setter match
      * @param {string} value
      */
@@ -51,20 +44,12 @@ export class SyntaxHighlightingCapture {
         this.match = value;
     }
 
-    /**
-     * Adds the given regex to the string.
-     *
-     * @param {(string | null)} regex string that will be added
-     * @returns {void}
-     * @memberof SyntaxHighlightingCapture
-     */
-    private addRegexToMatch(regex: string | null): void {
-        if (!regex || String.IsNullOrWhiteSpace(regex)) return;
+    private capture: ScopeEnum[];
+    private match: string | null;
 
-        if (!this.match)
-            this.match = regex;
-        else
-            this.match += `\\s*${regex}`;
+    constructor() {
+        this.capture = [];
+        this.match = null;
     }
 
     /**
@@ -78,7 +63,7 @@ export class SyntaxHighlightingCapture {
      * @memberof SyntaxHighlightingCapture
      */
     public addRegexGroupAndCapture(regex: string | null, scope: ScopeEnum): void {
-        if (!regex || String.IsNullOrWhiteSpace(regex) || scope.length == 0) return;
+        if (!regex || String.IsNullOrWhiteSpace(regex) || scope.length === 0) { return; }
 
         this.capture.push(scope);
         this.addRegexToMatch(`(${regex})`);
@@ -93,11 +78,12 @@ export class SyntaxHighlightingCapture {
      */
     public merge(capture: SyntaxHighlightingCapture | null): void {
         if (!capture ||
-            !capture.$match || 
-            String.IsNullOrWhiteSpace(capture.$match) || 
-            capture.$capture.length == 0) 
+            !capture.$match ||
+            String.IsNullOrWhiteSpace(capture.$match) ||
+            capture.$capture.length === 0) {
             return;
-        
+        }
+
         this.capture.push(...capture.$capture);
         this.addRegexToMatch(capture.$match);
     }
@@ -108,19 +94,36 @@ export class SyntaxHighlightingCapture {
      * @returns {(Pattern | null)} builded pattern or null, in an error-case
      * @memberof SyntaxHighlightingCapture
      */
-    public buildPattern(): PatternCapture | null {
-        if (!this.$match || this.$capture.length == 0) return null;
+    public buildPattern(): IPatternCapture | null {
+        if (!this.$match || this.$capture.length === 0) { return null; }
 
-        var capture: any = {};
+        const capture: any = {};
         for (let index = 1; index <= this.capture.length; index++) {
             const scope = this.capture[index - 1];
-            if (scope == ScopeEnum.Empty) continue;
+            if (scope === ScopeEnum.Empty) { continue; }
 
-            capture[`${index}`] = { name: scope }
+            capture[`${index}`] = { name: scope };
         }
         return {
-            match: this.$match,
-            captures: capture
+            captures: capture,
+            match: this.$match
+        };
+    }
+
+    /**
+     * Adds the given regex to the string.
+     *
+     * @param {(string | null)} regex string that will be added
+     * @returns {void}
+     * @memberof SyntaxHighlightingCapture
+     */
+    private addRegexToMatch(regex: string | null): void {
+        if (!regex || String.IsNullOrWhiteSpace(regex)) { return; }
+
+        if (!this.match) {
+            this.match = regex;
+        } else {
+            this.match += `\\s*${regex}`;
         }
     }
 

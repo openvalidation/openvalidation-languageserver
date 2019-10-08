@@ -4,18 +4,18 @@
 
 import * as rpc from '@sourcegraph/vscode-ws-jsonrpc';
 import * as express from 'express';
-import * as http from "http";
-import * as net from "net";
-import "reflect-metadata";
-import * as url from "url";
+import * as http from 'http';
+import * as net from 'net';
+import 'reflect-metadata';
+import * as url from 'url';
 import { createConnection } from 'vscode-languageserver';
-import * as ws from "ws";
+import * as ws from 'ws';
 import { OvServer } from './OvServer';
 
 // Start the Java-Backend in a separat file
 // require("./start-backend");
 
-process.on('uncaughtException', function (err: any) {
+process.on('uncaughtException', (err: any) => {
     console.error('Uncaught Exception: ', err.toString());
     if (err.stack) {
         console.error(err.stack);
@@ -28,13 +28,8 @@ const app = express();
 // serve the static content, i.e. index.html
 app.use(express.static(__dirname));
 
-// Used for parsing of json-objects over the websocket
-var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
 // start the server
-const server = app.listen(3000, () => console.log("Server running on 3000!"));
+const server = app.listen(3000, () => console.log('Server running on 3000!'));
 
 // create the web socket
 const wss = new ws.Server({
@@ -45,14 +40,13 @@ const wss = new ws.Server({
 server.on('upgrade', (request: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
     const pathname = request.url ? url.parse(request.url).pathname : undefined;
 
-    //Binding of the lsp-socket to the given socket
+    // Binding of the lsp-socket to the given socket
     if (pathname === '/ovLanguage') {
         wss.handleUpgrade(request, socket, head, webSocket => {
             bindWebSocket(webSocket);
         });
     }
 });
-
 
 /**
  * Binds the WebSocket to our server and starts the server
@@ -80,7 +74,6 @@ function bindWebSocket(webSocket: ws): void {
     }
 }
 
-
 /**
  * Creates the language-server and the connection to the given socket
  *
@@ -90,6 +83,6 @@ function launch(socket: rpc.IWebSocket) {
     const reader = new rpc.WebSocketMessageReader(socket);
     const writer = new rpc.WebSocketMessageWriter(socket);
     const connection = createConnection(reader, writer);
-    const server = new OvServer(connection);
-    server.start();
+    const ovServer = new OvServer(connection);
+    ovServer.start();
 }

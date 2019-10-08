@@ -1,11 +1,11 @@
-import { CompletionBuilder } from "./CompletionBuilder";
-import { StateTransition } from "./states/StateTransition";
-import { ConnectionTransition } from "./states/ConnectionTransition";
-import { ThenKeywordTransition } from "./states/ThenKeywordTransition";
-import { OperatorTransition } from "./states/OperatorTransition";
-import { OperandTransition } from "./states/OperandTransition";
-import { AsKeywordTransition } from "./states/AsKeywordTransition";
-import { EmptyTransition } from "./states/EmptyTransition";
+import { CompletionBuilder } from './CompletionBuilder';
+import { AsKeywordTransition } from './states/AsKeywordTransition';
+import { ConnectionTransition } from './states/ConnectionTransition';
+import { EmptyTransition } from './states/EmptyTransition';
+import { OperandTransition } from './states/OperandTransition';
+import { OperatorTransition } from './states/OperatorTransition';
+import { StateTransition } from './states/StateTransition';
+import { ThenKeywordTransition } from './states/ThenKeywordTransition';
 
 /**
  * This class is used for saving the valid transitions of the current state
@@ -14,14 +14,9 @@ import { EmptyTransition } from "./states/EmptyTransition";
  * @class CompletionContainer
  */
 export class CompletionContainer {
-    private transitions: StateTransition[];
 
-    /**
-     * Creates an instance of CompletionContainer.
-     * @memberof CompletionContainer
-     */
-    constructor() {
-        this.transitions = [];
+    public get $transitions(): StateTransition[] {
+        return this.transitions;
     }
 
     /**
@@ -34,6 +29,15 @@ export class CompletionContainer {
     public static init(): CompletionContainer {
         return new CompletionContainer();
     }
+    private transitions: StateTransition[];
+
+    /**
+     * Creates an instance of CompletionContainer.
+     * @memberof CompletionContainer
+     */
+    constructor() {
+        this.transitions = [];
+    }
 
     /**
      * Determines if transitions are allready set
@@ -42,11 +46,7 @@ export class CompletionContainer {
      * @memberof CompletionContainer
      */
     public isEmpty(): boolean {
-        return this.$transitions.length == 0;
-    }
-
-    public get $transitions(): StateTransition[] {
-        return this.transitions;
+        return this.$transitions.length === 0;
     }
 
     public addTransition(transition: StateTransition): CompletionContainer {
@@ -136,7 +136,7 @@ export class CompletionContainer {
             if (transition instanceof OperandTransition) {
                 transition.addNameFilter(name);
             }
-        })
+        });
     }
 
     /**

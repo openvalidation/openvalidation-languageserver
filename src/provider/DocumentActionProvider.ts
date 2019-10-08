@@ -1,14 +1,14 @@
-import { ICodeResponse } from "src/rest-interface/response/ICodeResponse";
-import { LintingResponse } from "src/rest-interface/response/LintingResponse";
-import { Diagnostic, DiagnosticSeverity, TextDocument, TextDocumentChangeEvent, Range } from "vscode-languageserver-types";
-import { OvDocument } from "../data-model/ov-document/OvDocument";
-import { OvServer } from "../OvServer";
-import { ApiProxy } from "../rest-interface/ApiProxy";
-import { SyntaxNotifier } from "./SyntaxNotifier";
-import { Provider } from "./Provider";
+import { ICodeResponse } from 'src/rest-interface/response/ICodeResponse';
+import { LintingResponse } from 'src/rest-interface/response/LintingResponse';
+import { Diagnostic, DiagnosticSeverity, Range, TextDocument, TextDocumentChangeEvent } from 'vscode-languageserver-types';
+import { OvDocument } from '../data-model/ov-document/OvDocument';
+import { OvServer } from '../OvServer';
+import { ApiProxy } from '../rest-interface/ApiProxy';
+import { Provider } from './Provider';
+import { SyntaxNotifier } from './SyntaxNotifier';
 
 /**
- * Provider to handle every response which deals with documents. 
+ * Provider to handle every response which deals with documents.
  * In addition, it handels the `onDidOpen`, `onDidChangeContent` and `onDidClose` requests
  *
  * @export
@@ -25,13 +25,12 @@ export class DocumentActionProvider extends Provider {
      * @returns {DocumentActionProvider}
      * @memberof DocumentActionProvider
      */
-    static bind(server: OvServer): DocumentActionProvider {
+    public static bind(server: OvServer): DocumentActionProvider {
         return new DocumentActionProvider(server);
     }
 
     private readonly pendingValidationRequests: Map<string, number>;
     private readonly syntaxNotifier: SyntaxNotifier;
-
 
     /**
      * Creates an instance of DocumentActionProvider.
@@ -74,6 +73,42 @@ export class DocumentActionProvider extends Provider {
     }
 
     /**
+     * Generates the diagnostics for the given document
+     *
+     * @private
+     * @param {(LintingResponse | null)} apiResponse response of the REST-Api
+     * @param {OvDocument} ovDocument document das should be validated
+     * @returns {Diagnostic[]}
+     * @memberof DocumentActionProvider
+     */
+    public generateDiagnostics(apiResponse: LintingResponse | null): Diagnostic[] {
+        if (apiResponse == null) { return []; }
+
+        const diagnostics: Diagnostic[] = [];
+        for (const error of apiResponse.$errors) {
+            const diagnosticRange: Range = !error.$range ? Range.create(0, 0, 0, 1) : error.$range.asRange();
+            const diagnostic: Diagnostic = Diagnostic.create(diagnosticRange, error.$message);
+            diagnostic.severity = DiagnosticSeverity.Error;
+            diagnostics.push(diagnostic);
+        }
+
+        return diagnostics;
+    }
+
+    /**
+     * Deletes the diagnostics completely
+     *
+     * @private
+     * @param {TextDocument} document document for which the diagnostics should be deleted
+     * @memberof DocumentActionProvider
+     */
+    public cleanDiagnostics(document: TextDocument | undefined): void {
+        if (!!document) {
+            this.sendDiagnostics(document.uri, []);
+        }
+    }
+
+    /**
      * Cancels the pending validation-request for the given file
      *
      * @private
@@ -99,49 +134,49 @@ export class DocumentActionProvider extends Provider {
      * @memberof DocumentActionProvider
      */
     private async validateDocumentWithUri(uri: string): Promise<void> {
-        var document = this.server.documents.get(uri);
+        const document = this.server.documents.get(uri);
         if (!document) {
             this.cleanDiagnostics(document);
             return;
         }
 
-        return this.validateText(uri, document.getText())
+        return this.validateText(uri, document.getText());
     }
 
-    private async validateText(uri: string, documentText: string): Promise<void> {        
-        var apiResponse: LintingResponse | null = null;
-        var ovDocument: OvDocument | undefined = this.server.ovDocuments.get(uri);
+    private async validateText(uri: string, documentText: string): Promise<void> {
+        let apiResponse: LintingResponse | null = null;
+        let ovDocument: OvDocument | undefined = this.server.ovDocuments.get(uri);
 
         try {
             apiResponse = await ApiProxy.postLintingData(documentText, this.server.restParameter);
         } catch (err) {
-            console.error("doValidate: " + err);
+            console.error('doValidate: ' + err);
             return;
         }
 
-        if (!apiResponse) return;
+        if (!apiResponse) { return; }
         ovDocument = this.generateDocumentWithAst(apiResponse);
 
-        if (!ovDocument) return;
-        var diagnostics: Diagnostic[] = this.generateDiagnostics(apiResponse);
-        if (diagnostics !== [])
+        if (!ovDocument) { return; }
+        const diagnostics: Diagnostic[] = this.generateDiagnostics(apiResponse);
+        if (diagnostics !== []) {
             this.sendDiagnostics(uri, diagnostics);
+        }
 
-        if (!ovDocument) return;
+        if (!ovDocument) { return; }
         this.server.ovDocuments.addOrOverrideOvDocument(uri, ovDocument);
         this.server.setGeneratedSchema(apiResponse);
         this.syntaxNotifier.sendTextMateGrammarIfNecessary(apiResponse);
 
         // Then we can't generate code anyway
-        if (apiResponse.$errors.length > 0) return;
+        if (apiResponse.$errors.length > 0) { return; }
 
-        var codeGenerationResponse: ICodeResponse | null = null;
+        let codeGenerationResponse: ICodeResponse | null = null;
         try {
             codeGenerationResponse = await ApiProxy.postData(documentText, this.server.restParameter);
-        }
-        catch (err) { console.error("Code generation Error: " + err); }
+        } catch (err) { console.error('Code generation Error: ' + err); }
 
-        if (!codeGenerationResponse) return;
+        if (!codeGenerationResponse) { return; }
         this.syntaxNotifier.sendGeneratedCodeIfNecessary(codeGenerationResponse);
 
     }
@@ -157,47 +192,13 @@ export class DocumentActionProvider extends Provider {
     private generateDocumentWithAst(apiResponse: LintingResponse | null): OvDocument | undefined {
         if (!apiResponse ||
             !apiResponse.$mainAstNode ||
-            !apiResponse.$mainAstNode.$scopes)
+            !apiResponse.$mainAstNode.$scopes) {
             return undefined;
+        }
 
         return new OvDocument(apiResponse.$mainAstNode.$scopes,
             apiResponse.$mainAstNode.$declarations,
             this.server.aliasHelper);
-    }
-
-    /**
-     * Generates the diagnostics for the given document
-     *
-     * @private
-     * @param {(LintingResponse | null)} apiResponse response of the REST-Api
-     * @param {OvDocument} ovDocument document das should be validated
-     * @returns {Diagnostic[]}
-     * @memberof DocumentActionProvider
-     */
-    private generateDiagnostics(apiResponse: LintingResponse | null): Diagnostic[] {
-        if (apiResponse == null) return [];
-
-        var diagnostics: Diagnostic[] = [];
-        for (const error of apiResponse.$errors) {
-            var diagnosticRange: Range = !error.$range ? Range.create(0, 0, 0, 1) : error.$range.asRange();
-            var diagnostic: Diagnostic = Diagnostic.create(diagnosticRange, error.$message);
-            diagnostic.severity = DiagnosticSeverity.Error;
-            diagnostics.push(diagnostic);
-        }
-
-        return diagnostics;
-    }
-
-    /**
-     * Deletes the diagnostics completely
-     *
-     * @private
-     * @param {TextDocument} document document for which the diagnostics should be deleted
-     * @memberof DocumentActionProvider
-     */
-    private cleanDiagnostics(document: TextDocument | undefined): void {
-        if (document != undefined)
-            this.sendDiagnostics(document.uri, []);
     }
 
     /**

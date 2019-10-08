@@ -1,27 +1,27 @@
-import { Type } from "class-transformer";
-import { Position } from "vscode-languageserver";
-import { AliasHelper } from "../../../../../aliases/AliasHelper";
-import { HoverContent } from "../../../../../helper/HoverContent";
-import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
-import { GenericNode } from "../../../GenericNode";
-import { IndexRange } from "../../../IndexRange";
-import { ConnectedOperationNode } from "../ConnectedOperationNode";
-import { OperationNode } from "../OperationNode";
-import { BaseOperandNode } from "./BaseOperandNode";
-import { FunctionOperandNode } from "./FunctionOperandNode";
-import { OperandNode } from "./OperandNode";
-import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
+import { Type } from 'class-transformer';
+import { Position } from 'vscode-languageserver';
+import { AliasHelper } from '../../../../../aliases/AliasHelper';
+import { HoverContent } from '../../../../../helper/HoverContent';
+import { CompletionContainer } from '../../../../../provider/code-completion/CompletionContainer';
+import { SyntaxHighlightingCapture } from '../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture';
+import { GenericNode } from '../../../GenericNode';
+import { IndexRange } from '../../../IndexRange';
+import { ConnectedOperationNode } from '../ConnectedOperationNode';
+import { OperationNode } from '../OperationNode';
+import { BaseOperandNode } from './BaseOperandNode';
+import { FunctionOperandNode } from './FunctionOperandNode';
+import { OperandNode } from './OperandNode';
 
 export class ArrayOperandNode extends BaseOperandNode {
     @Type(() => BaseOperandNode, {
         discriminator: {
-            property: "type",
+            property: 'type',
             subTypes: [
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
-                { value: FunctionOperandNode, name: "FunctionOperandNode" },
-                { value: OperandNode, name: "OperandNode" },
-                { value: ArrayOperandNode, name: "ArrayOperandNode" }
+                { value: OperationNode, name: 'OperationNode' },
+                { value: ConnectedOperationNode, name: 'ConnectedOperationNode' },
+                { value: FunctionOperandNode, name: 'FunctionOperandNode' },
+                { value: OperandNode, name: 'OperandNode' },
+                { value: ArrayOperandNode, name: 'ArrayOperandNode' }
             ]
         }
     })
@@ -53,12 +53,12 @@ export class ArrayOperandNode extends BaseOperandNode {
     }
 
     public getHoverContent(): HoverContent {
-        var content: HoverContent = new HoverContent(this.$range, "Operand: " + this.$dataType + "[]");
+        const content: HoverContent = new HoverContent(this.$range, 'Operand: ' + this.$dataType + '[]');
         return content;
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {
-        var container = CompletionContainer.init();
+        const container = CompletionContainer.init();
         if (!this.isComplete()) {
             container.operandTransition(this.$dataType);
         }
@@ -73,8 +73,8 @@ export class ArrayOperandNode extends BaseOperandNode {
         return this.items.length > 0;
     }
 
-    public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {        
-        var capture = new SyntaxHighlightingCapture();
+    public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
+        const capture = new SyntaxHighlightingCapture();
 
         for (const item of this.$items) {
             capture.merge(item.getPatternInformation(aliasesHelper));

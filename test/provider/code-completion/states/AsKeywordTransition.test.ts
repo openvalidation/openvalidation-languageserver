@@ -1,25 +1,26 @@
-import "jest";
-import { CompletionContainer } from "../../../../src/provider/code-completion/CompletionContainer";
-import { CompletionBuilder } from "../../../../src/provider/code-completion/CompletionBuilder";
-import { AsKeywordTransition } from "../../../../src/provider/code-completion/states/AsKeywordTransition";
-import { TestInitializer } from "../../../Testinitializer";
+import 'jest';
+import { CompletionBuilder } from '../../../../src/provider/code-completion/CompletionBuilder';
+import { CompletionContainer } from '../../../../src/provider/code-completion/CompletionContainer';
+import { AsKeywordTransition } from '../../../../src/provider/code-completion/states/AsKeywordTransition';
+import { TestInitializer } from '../../../Testinitializer';
 
-describe("AsKeywordTransition Tests", () => {
-    var initializer: TestInitializer;
+describe('AsKeywordTransition Tests', () => {
+    let initializer: TestInitializer;
 
     beforeEach(() => {
         initializer = new TestInitializer(true);
     });
 
-    test("getCompletions with AsKeywordTransition, expect one CompletionItem", () => {
-        var container: CompletionContainer = new CompletionContainer();
-        var builder: CompletionBuilder = new CompletionBuilder([], initializer.server.aliasHelper, initializer.server.schema);
+    test('getCompletions with AsKeywordTransition, expect one CompletionItem', () => {
+        const container: CompletionContainer = new CompletionContainer();
+        const builder: CompletionBuilder =
+            new CompletionBuilder([], initializer.$server.aliasHelper, initializer.$server.schema);
 
-        var askeywordTransition: AsKeywordTransition = new AsKeywordTransition();
+        const askeywordTransition: AsKeywordTransition = new AsKeywordTransition();
         container.addTransition(askeywordTransition);
 
-        var expectedLength: number = 1;
-        var actualLength: number = container.getCompletions(builder).build().length;
+        const expectedLength: number = 1;
+        const actualLength: number = container.getCompletions(builder).build().length;
 
         expect(actualLength).toEqual(expectedLength);
     });

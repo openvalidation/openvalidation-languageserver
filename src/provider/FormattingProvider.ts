@@ -1,6 +1,6 @@
-import { DocumentRangeFormattingParams, TextEdit } from "vscode-languageserver";
-import { OvServer } from "../OvServer";
-import { Provider } from "./Provider";
+import { DocumentRangeFormattingParams, TextEdit } from 'vscode-languageserver';
+import { OvServer } from '../OvServer';
+import { Provider } from './Provider';
 
 /**
  * Response-Provider for ``onDocumentRangeFormatting``
@@ -19,7 +19,7 @@ export class FormattingProvider extends Provider {
      * @returns {FormattingProvider} created provider
      * @memberof FormattingProvider
      */
-    static bind(server: OvServer): FormattingProvider {
+    public static bind(server: OvServer): FormattingProvider {
         return new FormattingProvider(server);
     }
 
@@ -34,7 +34,7 @@ export class FormattingProvider extends Provider {
     }
 
     /**
-     * Generates the needed edits which needs to be done in the given document 
+     * Generates the needed edits which needs to be done in the given document
      * to format the code perfectly
      *
      * @private
@@ -44,16 +44,14 @@ export class FormattingProvider extends Provider {
      * @memberof FormattingProvider
      */
     public documentRangeFormatting(params: DocumentRangeFormattingParams): TextEdit[] {
-        var ovDocument = this.ovDocuments.get(params.textDocument.uri);
-        if (!ovDocument) return [];
+        const ovDocument = this.ovDocuments.get(params.textDocument.uri);
+        if (!ovDocument) { return []; }
 
-        var textEdits: TextEdit[] = [];
+        const textEdits: TextEdit[] = [];
 
-        var elements = ovDocument.$elementManager.getElementsByRange(params.range);
-        for (let i = 0; i < elements.length; i++) {
-            const element = elements[i];
-
-            var currentTextEdits = element.formatCode(this.server.aliasHelper);
+        const elements = ovDocument.$elementManager.getElementsByRange(params.range);
+        for (const element of elements) {
+            const currentTextEdits = element.formatCode(this.server.aliasHelper);
             textEdits.push(...currentTextEdits);
         }
 

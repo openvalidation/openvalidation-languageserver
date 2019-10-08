@@ -44,8 +44,10 @@ export class AliasHelper {
      * @memberof TextMateParameter
      */
     public getKeywordByAliasKey(keywordToFind: AliasKey): string | null {
-        var foundKeyword = this.getKeys().find(key => this.aliases.get(key) == keywordToFind);
-        if (!foundKeyword) return null;
+        const foundKeyword = this.getKeys().find(key => this.aliases.get(key) === keywordToFind);
+        if (!foundKeyword) {
+            return null;
+        }
 
         return foundKeyword;
     }
@@ -59,12 +61,13 @@ export class AliasHelper {
      * @memberof TextMateParameter
      */
     public getKeywordsByAliasKeys(...keywordsToFind: AliasKey[]): string[] {
-        var returnList: string[] = []
+        const returnList: string[] = [];
 
         keywordsToFind.forEach(key => {
-            var keyword = this.getKeywordByAliasKey(key);
-            if (!!keyword)
+            const keyword = this.getKeywordByAliasKey(key);
+            if (!!keyword) {
                 returnList.push(keyword);
+            }
         });
 
         return returnList;
@@ -78,7 +81,7 @@ export class AliasHelper {
      * @memberof AliasHelper
      */
     public getKeywordsByAliasKey(keywordToFind: AliasKey): string[] {
-        return this.getKeys().filter(key => this.aliases.get(key)!.indexOf(keywordToFind) != -1);
+        return this.getKeys().filter(key => this.aliases.get(key)!.indexOf(keywordToFind) !== -1);
     }
 
     /**
@@ -89,11 +92,10 @@ export class AliasHelper {
      */
     public getFilteredKeywords(...keywordFilter: AliasKey[]): string[] {
         return this.getKeys().filter(key => {
-            var aliasKey = this.aliases.get(key)!;
-            return keywordFilter.every(keyword => aliasKey.indexOf(keyword) == -1);
+            const aliasKey = this.aliases.get(key)!;
+            return keywordFilter.every(keyword => aliasKey.indexOf(keyword) === -1);
         });
     }
-
 
     /**
      * Returns a list of of-keywords (e.g. `must`)
@@ -145,7 +147,6 @@ export class AliasHelper {
         return this.getKeywordByAliasKey(AliasKey.THEN);
     }
 
-
     /**
      * Returns the keywords that indicate a constrained condition
      *
@@ -170,38 +171,39 @@ export class AliasHelper {
      * Returns all operators that are found inside the current alias-list
      *
      * @param {string} [startingWord] optional parameter, that is used for filtering of the operators
-     * @returns {Map<string, [string, string]>} Map that consists a map with the name and a tuple of the datatype and the proposed sorting-text
+     * @returns {Map<string, [string, string]>} Map that consists
+     *      of the name and a tuple of the datatype and the sorting-text
      * @memberof AliasHelper
      */
     public getOperators(startingWord?: string): Map<string, [string, string]> {
-        var keys: [string, string][] = [];
-        var sortingList: string[] = [];
+        const keys: Array<[string, string]> = [];
+        const sortingList: string[] = [];
 
-        this.aliases.forEach((value: string, key: string) => {
+        this.aliases.forEach((value: string, operatorKey: string) => {
             if (value.indexOf(AliasKey.OPERATOR) !== -1 &&
-                (!startingWord || key.startsWith(startingWord))) {
+                (!startingWord || operatorKey.startsWith(startingWord))) {
 
-                var aliasInList = keys.some(key => key[1] == value);
-                sortingList.push(aliasInList ? "z" : "a");
-                keys.push([key, value]);
+                const aliasInList = keys.some(key => key[1] === value);
+                sortingList.push(aliasInList ? 'z' : 'a');
+                keys.push([operatorKey, value]);
             }
         });
 
-        var returnMap: Map<string, [string, string]> = new Map<string, [string, string]>();
+        const returnMap: Map<string, [string, string]> = new Map<string, [string, string]>();
         for (let index = 0; index < keys.length; index++) {
             const key = keys[index];
             const sortingText = sortingList[index];
 
-            let tmpKey = key[1].replace(AliasKey.OPERATOR, '').replace('ʬ', '');
-            let dataType = this.operators.get(tmpKey.toUpperCase());
+            const tmpKey = key[1].replace(AliasKey.OPERATOR, '').replace('ʬ', '');
+            const dataType = this.operators.get(tmpKey.toUpperCase());
 
-            if (!!dataType && !returnMap.has(key[0]))
+            if (!!dataType && !returnMap.has(key[0])) {
                 returnMap.set(key[0], [dataType, sortingText]);
+            }
         }
 
         return returnMap;
     }
-
 
     /**
      * Returns all functions that are found inside the alias-list
@@ -210,12 +212,13 @@ export class AliasHelper {
      * @memberof AliasHelper
      */
     public getFunctions(): string[] {
-        var returnList: string[] = [];
+        const returnList: string[] = [];
 
         this.aliases.forEach((value: string, key: string) => {
-            var aliasKey = this.aliases.get(key)!;
-            if (aliasKey.indexOf(AliasKey.FUNCTION) !== -1)
+            const aliasKey = this.aliases.get(key)!;
+            if (aliasKey.indexOf(AliasKey.FUNCTION) !== -1) {
                 returnList.push(key);
+            }
         });
 
         return returnList;

@@ -1,7 +1,7 @@
-import { String } from "typescript-string-operations";
-import { FoldingRange, FoldingRangeKind, FoldingRangeRequestParam } from "vscode-languageserver";
-import { OvServer } from "../OvServer";
-import { Provider } from "./Provider";
+import { String } from 'typescript-string-operations';
+import { FoldingRange, FoldingRangeKind, FoldingRangeRequestParam } from 'vscode-languageserver';
+import { OvServer } from '../OvServer';
+import { Provider } from './Provider';
 
 /**
  * Response-Provider for ``onFoldingRanges``
@@ -20,7 +20,7 @@ export class FoldingRangesProvider extends Provider {
      * @returns {FoldingRangesProvider} created provider
      * @memberof FoldingRangesProvider
      */
-    static bind(server: OvServer): FoldingRangesProvider {
+    public static bind(server: OvServer): FoldingRangesProvider {
         return new FoldingRangesProvider(server);
     }
 
@@ -37,33 +37,34 @@ export class FoldingRangesProvider extends Provider {
     /**
      * Generates a list of all foldable sections.
      * This is done with the raw text and not with the syntax-tree to be more performant.
-     * 
+     *
      * @param {FoldingRangeRequestParam} params parameter that defines the specific document
      * @returns {FoldingRange[]} list of a range of all foldable-sections
      * @memberof FoldingRangesProvider
      */
     public getFoldingRanges(params: FoldingRangeRequestParam): FoldingRange[] {
-        var document = this.server.documents.get(params.textDocument.uri);
-        if (!document)
+        const document = this.server.documents.get(params.textDocument.uri);
+        if (!document) {
             return [];
+        }
 
         return this.getFoldingRangesByText(document.getText());
     }
 
-    private getFoldingRangesByText(text: string): FoldingRange[] {
-        var documentText: string[] = text.split("\n");
-        var currentLine: number = 0;
-        var startLine: number = -1;
+    public getFoldingRangesByText(text: string): FoldingRange[] {
+        const documentText: string[] = text.split('\n');
+        let currentLine: number = 0;
+        let startLine: number = -1;
 
-        var foldingRanges: FoldingRange[] = [];
+        const foldingRanges: FoldingRange[] = [];
 
         for (const line of documentText) {
-            if (String.IsNullOrWhiteSpace(line) && startLine != -1) {
-                var foldingRange = FoldingRange.create(startLine, currentLine - 1);
+            if (String.IsNullOrWhiteSpace(line) && startLine !== -1) {
+                const foldingRange = FoldingRange.create(startLine, currentLine - 1);
                 foldingRange.kind = FoldingRangeKind.Region;
                 startLine = -1;
                 foldingRanges.push(foldingRange);
-            } else if (!String.IsNullOrWhiteSpace(line) && startLine == -1) {
+            } else if (!String.IsNullOrWhiteSpace(line) && startLine === -1) {
                 startLine = currentLine;
             }
 

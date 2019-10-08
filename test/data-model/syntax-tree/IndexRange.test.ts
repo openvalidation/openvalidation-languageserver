@@ -1,11 +1,11 @@
-import "jest"
-import { IndexRange } from "../../../src/data-model/syntax-tree/IndexRange";
-import { IndexPosition } from "../../../src/data-model/syntax-tree/IndexPosition";
-import { Position } from "vscode-languageserver";
+import 'jest';
+import { Position } from 'vscode-languageserver';
+import { IndexPosition } from '../../../src/data-model/syntax-tree/IndexPosition';
+import { IndexRange } from '../../../src/data-model/syntax-tree/IndexRange';
 
-describe("IndexRange Tests", () => {
-    test("IndexRange getter/setter test", () => {
-        var position: IndexRange = IndexRange.create(0, 0, 0, 0);
+describe('IndexRange Tests', () => {
+    test('IndexRange getter/setter test', () => {
+        const position: IndexRange = IndexRange.create(0, 0, 0, 0);
         position.$start = new IndexPosition(0, 1);
         position.$end = new IndexPosition(0, 20);
 
@@ -13,88 +13,88 @@ describe("IndexRange Tests", () => {
         expect(position.$end).toEqual(new IndexPosition(0, 20));
     });
 
-    test("equals with unequal positions, expect true", () => {
-        var position: IndexRange = IndexRange.create(0, 0, 0, 0);
-        var secPosition: IndexRange = IndexRange.create(0, 0, 0, 0);
+    test('equals with unequal positions, expect true', () => {
+        const position: IndexRange = IndexRange.create(0, 0, 0, 0);
+        const secPosition: IndexRange = IndexRange.create(0, 0, 0, 0);
 
-        var actual = position.equals(secPosition);
-        var expected = true;
-
-        expect(actual).toEqual(expected);
-    });
-
-    test("equals with equal positions, expect false", () => {
-        var position: IndexRange = IndexRange.create(0, 0, 0, 0);
-        var secPosition: IndexRange = IndexRange.create(0, 10, 0, 15);
-
-        var actual = position.equals(secPosition);
-        var expected = false;
+        const actual = position.equals(secPosition);
+        const expected = true;
 
         expect(actual).toEqual(expected);
     });
 
-    test("includesRange with not included Range, expect false", () => {
-        var position: IndexRange = IndexRange.create(0, 0, 0, 0);
-        var secPosition: IndexRange = IndexRange.create(0, 10, 0, 15);
+    test('equals with equal positions, expect false', () => {
+        const position: IndexRange = IndexRange.create(0, 0, 0, 0);
+        const secPosition: IndexRange = IndexRange.create(0, 10, 0, 15);
 
-        var actual = position.includesRange(secPosition);
-        var expected = false;
-
-        expect(actual).toEqual(expected);
-    });
-    
-    test("includesRange with included Range, expect true", () => {
-        var position: IndexRange = IndexRange.create(0, 0, 0, 12);
-        var secPosition: IndexRange = IndexRange.create(0, 10, 0, 15);
-
-        var actual = position.includesRange(secPosition);
-        var expected = true;
+        const actual = position.equals(secPosition);
+        const expected = false;
 
         expect(actual).toEqual(expected);
     });
 
-    test("includesRange with range without start, expect false", () => {
-        var firstRange: IndexRange = IndexRange.create(0, 0, 0, 12);
-        var secondRange: IndexRange = IndexRange.create(0, 10, 0, 15);
+    test('includesRange with not included Range, expect false', () => {
+        const position: IndexRange = IndexRange.create(0, 0, 0, 0);
+        const secPosition: IndexRange = IndexRange.create(0, 10, 0, 15);
+
+        const actual = position.includesRange(secPosition);
+        const expected = false;
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('includesRange with included Range, expect true', () => {
+        const position: IndexRange = IndexRange.create(0, 0, 0, 12);
+        const secPosition: IndexRange = IndexRange.create(0, 10, 0, 15);
+
+        const actual = position.includesRange(secPosition);
+        const expected = true;
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('includesRange with range without start, expect false', () => {
+        const firstRange: IndexRange = IndexRange.create(0, 0, 0, 12);
+        const secondRange: IndexRange = IndexRange.create(0, 10, 0, 15);
         secondRange.$start = null;
 
-        var actual = firstRange.includesRange(secondRange);
-        var expected = false;
+        const actual = firstRange.includesRange(secondRange);
+        const expected = false;
 
         expect(actual).toEqual(expected);
     });
 
-    test("includesRange with range without start, expect false", () => {
-        var firstRange: IndexRange = IndexRange.create(0, 0, 0, 12);
-        var secondRange: IndexRange = IndexRange.create(0, 10, 0, 15);
+    test('includesRange with range without start, expect false', () => {
+        const firstRange: IndexRange = IndexRange.create(0, 0, 0, 12);
+        const secondRange: IndexRange = IndexRange.create(0, 10, 0, 15);
         secondRange.$end = null;
 
-        var actual = firstRange.includesRange(secondRange);
-        var expected = false;
+        const actual = firstRange.includesRange(secondRange);
+        const expected = false;
 
         expect(actual).toEqual(expected);
     });
 
-    test("startsAfter with no start and end, expect false", () => {
-        var range: IndexRange = IndexRange.create(0, 0, 0, 12);
+    test('startsAfter with no start and end, expect false', () => {
+        const range: IndexRange = IndexRange.create(0, 0, 0, 12);
         range.$start = null;
         range.$end = null;
 
-        var position: Position = Position.create(0, 10);
-        var actual = range.startsAfter(position);
-        var expected = false;
+        const position: Position = Position.create(0, 10);
+        const actual = range.startsAfter(position);
+        const expected = false;
 
         expect(actual).toEqual(expected);
     });
 
-    test("endsBefore with no start and end, expect false", () => {
-        var range: IndexRange = IndexRange.create(0, 0, 0, 12);
+    test('endsBefore with no start and end, expect false', () => {
+        const range: IndexRange = IndexRange.create(0, 0, 0, 12);
         range.$start = null;
         range.$end = null;
 
-        var position: Position = Position.create(0, 10);
-        var actual = range.startsAfter(position);
-        var expected = false;
+        const position: Position = Position.create(0, 10);
+        const actual = range.startsAfter(position);
+        const expected = false;
 
         expect(actual).toEqual(expected);
     });

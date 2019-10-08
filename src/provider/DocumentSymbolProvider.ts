@@ -1,7 +1,7 @@
-import { DocumentSymbolParams, SymbolInformation, SymbolKind } from "vscode-languageserver";
-import { Location } from "vscode-languageserver-types";
-import { OvServer } from "../OvServer";
-import { Provider } from "./Provider";
+import { DocumentSymbolParams, SymbolInformation, SymbolKind } from 'vscode-languageserver';
+import { Location } from 'vscode-languageserver-types';
+import { OvServer } from '../OvServer';
+import { Provider } from './Provider';
 
 /**
  * Response-Provider for ``onDocumentSymbol``
@@ -20,14 +20,14 @@ export class DocumentSymbolProvider extends Provider {
      * @returns {DocumentSymbolProvider} created provider
      * @memberof DocumentSymbolProvider
      */
-    static bind(server: OvServer): DocumentSymbolProvider {
+    public static bind(server: OvServer): DocumentSymbolProvider {
         return new DocumentSymbolProvider(server);
     }
 
     /**
      * Creates an instance of DocumentSymbolProvider.
      * @param {OvServer} server server we want to connect to
-     * @memberof DocumentSymbolProvider 
+     * @memberof DocumentSymbolProvider
      */
     constructor(server: OvServer) {
         super(server);
@@ -43,18 +43,18 @@ export class DocumentSymbolProvider extends Provider {
      * @memberof DocumentSymbolProvider
      */
     public findDocumentSymbols(params: DocumentSymbolParams): SymbolInformation[] {
-        var ovDocument = this.ovDocuments.get(params.textDocument.uri);
-        if (!ovDocument) return [];
+        const ovDocument = this.ovDocuments.get(params.textDocument.uri);
+        if (!ovDocument) { return []; }
 
-        var symbolInformationList: SymbolInformation[] = [];
+        const symbolInformationList: SymbolInformation[] = [];
 
         ovDocument.$elementManager.getVariables().forEach(variable => {
-            var variableNameRange = variable.getRangeOfVariableName();
-            var symbolInformation: SymbolInformation = {
+            const variableNameRange = variable.getRangeOfVariableName();
+            const symbolInformation: SymbolInformation = {
                 name: variable.getNameNode()!.$name,
                 kind: SymbolKind.Variable,
                 location: Location.create(params.textDocument.uri, variableNameRange)
-            }
+            };
             symbolInformationList.push(symbolInformation);
         });
 

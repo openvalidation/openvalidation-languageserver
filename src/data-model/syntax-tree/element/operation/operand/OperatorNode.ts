@@ -1,12 +1,12 @@
-import { String } from "typescript-string-operations";
-import { Position } from "vscode-languageserver";
-import { AliasHelper } from "../../../../../aliases/AliasHelper";
-import { HoverContent } from "../../../../../helper/HoverContent";
-import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
-import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
-import { GenericNode } from "../../../GenericNode";
-import { IndexRange } from "../../../IndexRange";
-import { ScopeEnum } from "../../../../../enums/ScopeEnum";
+import { String } from 'typescript-string-operations';
+import { Position } from 'vscode-languageserver';
+import { AliasHelper } from '../../../../../aliases/AliasHelper';
+import { ScopeEnum } from '../../../../../enums/ScopeEnum';
+import { HoverContent } from '../../../../../helper/HoverContent';
+import { CompletionContainer } from '../../../../../provider/code-completion/CompletionContainer';
+import { SyntaxHighlightingCapture } from '../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture';
+import { GenericNode } from '../../../GenericNode';
+import { IndexRange } from '../../../IndexRange';
 
 export class OperatorNode extends GenericNode {
     private dataType: string;
@@ -45,13 +45,13 @@ export class OperatorNode extends GenericNode {
     }
 
     public getChildren(): GenericNode[] {
-        var childList: GenericNode[] = [];
+        const childList: GenericNode[] = [];
         return childList;
     }
 
     public getHoverContent(): HoverContent {
-        var content: string = "Operator " + this.getOperator() + ": " + this.$dataType;
-        var hoverContent: HoverContent = new HoverContent(this.$range, content);
+        const content: string = 'Operator ' + this.getOperator() + ': ' + this.$dataType;
+        const hoverContent: HoverContent = new HoverContent(this.$range, content);
         return hoverContent;
     }
 
@@ -68,11 +68,11 @@ export class OperatorNode extends GenericNode {
     }
 
     public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
-        var returnString = this.$lines.join("\n");
+        const returnString = this.$lines.join('\n');
         if (String.IsNullOrWhiteSpace(returnString)) {
             return null;
         } else {
-            var capture = new SyntaxHighlightingCapture();
+            const capture = new SyntaxHighlightingCapture();
             capture.addRegexGroupAndCapture(returnString, ScopeEnum.Keyword);
             return capture;
         }

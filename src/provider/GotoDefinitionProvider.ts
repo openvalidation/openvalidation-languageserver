@@ -1,8 +1,8 @@
-import { DefinitionLink, TextDocumentPositionParams } from "vscode-languageserver";
-import { Definition, Location } from "vscode-languageserver-types";
-import { OvServer } from "../OvServer";
-import { VariableNode } from "../data-model/syntax-tree/element/VariableNode";
-import { Provider } from "./Provider";
+import { DefinitionLink, TextDocumentPositionParams } from 'vscode-languageserver';
+import { Definition, Location } from 'vscode-languageserver-types';
+import { VariableNode } from '../data-model/syntax-tree/element/VariableNode';
+import { OvServer } from '../OvServer';
+import { Provider } from './Provider';
 
 /**
  * Response-Provider for ``onDefinition``
@@ -21,7 +21,7 @@ export class GotoDefinitionProvider extends Provider {
      * @returns {GotoDefinitionProvider} created provider
      * @memberof GotoDefinitionProvider
      */
-    static bind(server: OvServer): GotoDefinitionProvider {
+    public static bind(server: OvServer): GotoDefinitionProvider {
         return new GotoDefinitionProvider(server);
     }
 
@@ -45,23 +45,23 @@ export class GotoDefinitionProvider extends Provider {
      * @memberof GotoDefinitionProvider
      */
     public definition(params: TextDocumentPositionParams): DefinitionLink[] | Definition {
-        var ovDocument = this.ovDocuments.get(params.textDocument.uri);
-        if (!ovDocument) return [];
+        const ovDocument = this.ovDocuments.get(params.textDocument.uri);
+        if (!ovDocument) { return []; }
 
-        var referenceTuple = ovDocument.getStringByPosition(params.position);
-        if (!referenceTuple) return [];
+        const referenceTuple = ovDocument.getStringByPosition(params.position);
+        if (!referenceTuple) { return []; }
 
-        var referenceString: string = referenceTuple[0];
+        const referenceString: string = referenceTuple[0];
         // var referenceRange: Range = referenceTuple[1];
 
-        var foundVariables = ovDocument.$elementManager.getVariablesByName(referenceString);
-        if (!foundVariables || foundVariables.length == 0) return [];
+        const foundVariables = ovDocument.$elementManager.getVariablesByName(referenceString);
+        if (!foundVariables || foundVariables.length === 0) { return []; }
 
-        var locationList: Location[] = [];
+        const locationList: Location[] = [];
 
         foundVariables.forEach((variable: VariableNode) => {
-            var range = variable.$range.asRange();
-            var location = Location.create(params.textDocument.uri, range);
+            const range = variable.$range.asRange();
+            const location = Location.create(params.textDocument.uri, range);
             locationList.push(location);
         });
 

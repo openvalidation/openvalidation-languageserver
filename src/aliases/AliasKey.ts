@@ -21,15 +21,14 @@ export enum AliasKey {
     // Variable - Keyword
     AS = 'ʬasʬ',
 
-
     // Operators
     OPERATOR = 'ʬoperatorʬ',
     EQUALS = 'ʬoperatorʬequals',
 
-    //Functions
+    // Functions
     FUNCTION = 'ʬfunctionʬ',
     SUM_OF = 'ʬfunctionʬsum_of',
 
-    //Others
+    // Others
     OF = 'ʬofʬ',
 }

@@ -1,4 +1,4 @@
-import { Position } from "vscode-languageserver";
+import { Position } from 'vscode-languageserver';
 
 /**
  * Dataclass for the positions of the range of syntax-tree nodes
@@ -9,7 +9,6 @@ import { Position } from "vscode-languageserver";
 export class IndexPosition {
     private line: number;
     private column: number;
-
 
     /**
      * Creates an instance of IndexPosition.
@@ -53,7 +52,7 @@ export class IndexPosition {
      * @memberof IndexPosition
      */
     public equals(position: IndexPosition): boolean {
-        return this.$line == position.$line &&
-            this.$column == position.$column;
+        return this.$line === position.$line &&
+            this.$column === position.$column;
     }
 }

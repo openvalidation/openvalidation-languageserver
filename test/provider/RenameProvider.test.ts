@@ -1,71 +1,73 @@
-import "jest";
-import { Position, RenameParams, WorkspaceEdit } from "vscode-languageserver";
-import { RenameProvider } from "../../src/provider/RenameProvider";
-import { TestInitializer } from "../TestInitializer";
+import 'jest';
+import { Position, RenameParams, WorkspaceEdit } from 'vscode-languageserver';
+import { RenameProvider } from '../../src/provider/RenameProvider';
+import { TestInitializer } from '../TestInitializer';
 
-describe("Rename provider test", () => {
-    var provider: RenameProvider;
+describe('Rename provider test', () => {
+    let provider: RenameProvider;
 
     function getParams(newName: string, position: Position): RenameParams {
         return {
-            newName: newName,
+            newName,
             textDocument: {
-                uri: "test.ov"
+                uri: 'test.ov'
             },
-            position: position
-        }
+            position
+        };
     }
 
     beforeEach(() => {
-        var testInitializer = new TestInitializer(true);
+        const testInitializer = new TestInitializer(true);
         provider = testInitializer.renameProvider;
     });
 
-    test("Verify provider exists", () => {
+    test('Verify provider exists', () => {
         expect(provider).not.toBeNull();
     });
 
-    test("rename with empty document, expect no edit", () => {
-        var tmpTestInitializer = new TestInitializer(false);
-        var tmpProvider = tmpTestInitializer.renameProvider;
+    test('rename with empty document, expect no edit', () => {
+        const tmpTestInitializer = new TestInitializer(false);
+        const tmpProvider = tmpTestInitializer.renameProvider;
 
-        var expected: WorkspaceEdit = {};
-        var actual = tmpProvider.rename(getParams("NewText", Position.create(0, 0)));
-
-        expect(actual).toEqual(expected);
-    });
-
-    test("rename with valid document but invalid position, expect no edit", () => {
-        var expected: WorkspaceEdit = {};
-        var actual = provider.rename(getParams("NewText", Position.create(0, 0)));
+        const expected: WorkspaceEdit = {};
+        const actual = tmpProvider.rename(getParams('NewText', Position.create(0, 0)));
 
         expect(actual).toEqual(expected);
     });
 
-    test("rename with invalid documentUri, expect no edit", () => {
-        var expected: WorkspaceEdit = {};
-
-        var inputParams = getParams("NewText", Position.create(0, 0));
-        inputParams.textDocument.uri = "invalidUri";
-
-        var actual = provider.rename(inputParams);
-        expect(actual).toEqual(expected);
-    });
-
-    test("rename with valid document and valid position of variable definition, expect old name don't appears anymore", () => {
-        var expected: WorkspaceEdit = {};
-
-        var variablePosition: Position = Position.create(6, 10);
-        var actual = provider.rename(getParams("NewText", variablePosition));
+    test('rename with valid document but invalid position, expect no edit', () => {
+        const expected: WorkspaceEdit = {};
+        const actual = provider.rename(getParams('NewText', Position.create(0, 0)));
 
         expect(actual).toEqual(expected);
     });
 
-    test("rename with valid document and valid position of variable definition, expect old name don't appears anymore", () => {
-        var expected: WorkspaceEdit = {};
+    test('rename with invalid documentUri, expect no edit', () => {
+        const expected: WorkspaceEdit = {};
 
-        var variablePosition: Position = Position.create(6, 20);
-        var actual = provider.rename(getParams("NewText", variablePosition));
+        const inputParams = getParams('NewText', Position.create(0, 0));
+        inputParams.textDocument.uri = 'invalidUri';
+
+        const actual = provider.rename(inputParams);
+        expect(actual).toEqual(expected);
+    });
+
+    // tslint:disable-next-line: max-line-length
+    test('rename with valid document and valid position of variable definition, expect old name dont appears anymore', () => {
+        const expected: WorkspaceEdit = {};
+
+        const variablePosition: Position = Position.create(6, 10);
+        const actual = provider.rename(getParams('NewText', variablePosition));
+
+        expect(actual).toEqual(expected);
+    });
+
+    // tslint:disable-next-line: max-line-length
+    test('rename with valid document and valid position of variable definition, expect old name dont appears anymore', () => {
+        const expected: WorkspaceEdit = {};
+
+        const variablePosition: Position = Position.create(6, 20);
+        const actual = provider.rename(getParams('NewText', variablePosition));
 
         expect(actual).not.toEqual(expected);
     });

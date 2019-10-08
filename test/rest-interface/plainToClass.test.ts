@@ -1,53 +1,50 @@
-import { plainToClass } from "class-transformer";
-import "jest";
-import { CommentNode } from "../../src/data-model/syntax-tree/element/CommentNode";
-import { ArrayOperandNode } from "../../src/data-model/syntax-tree/element/operation/operand/ArrayOperandNode";
-import { FunctionOperandNode } from "../../src/data-model/syntax-tree/element/operation/operand/FunctionOperandNode";
-import { OperandNode } from "../../src/data-model/syntax-tree/element/operation/operand/OperandNode";
-import { OperatorNode } from "../../src/data-model/syntax-tree/element/operation/operand/OperatorNode";
-import { ConnectedOperationNode } from "../../src/data-model/syntax-tree/element/operation/ConnectedOperationNode";
-import { OperationNode } from "../../src/data-model/syntax-tree/element/operation/OperationNode";
-import { RuleNode } from "../../src/data-model/syntax-tree/element/RuleNode";
-import { VariableNode } from "../../src/data-model/syntax-tree/element/VariableNode";
-import { MainNode } from "../../src/data-model/syntax-tree/MainNode";
-import { Variable } from "../../src/data-model/syntax-tree/Variable";
+import { plainToClass } from 'class-transformer';
+import 'jest';
+import { CommentNode } from '../../src/data-model/syntax-tree/element/CommentNode';
+import { ConnectedOperationNode } from '../../src/data-model/syntax-tree/element/operation/ConnectedOperationNode';
+import { ArrayOperandNode } from '../../src/data-model/syntax-tree/element/operation/operand/ArrayOperandNode';
+import { FunctionOperandNode } from '../../src/data-model/syntax-tree/element/operation/operand/FunctionOperandNode';
+import { OperandNode } from '../../src/data-model/syntax-tree/element/operation/operand/OperandNode';
+import { OperatorNode } from '../../src/data-model/syntax-tree/element/operation/operand/OperatorNode';
+import { OperationNode } from '../../src/data-model/syntax-tree/element/operation/OperationNode';
+import { RuleNode } from '../../src/data-model/syntax-tree/element/RuleNode';
+import { VariableNode } from '../../src/data-model/syntax-tree/element/VariableNode';
+import { MainNode } from '../../src/data-model/syntax-tree/MainNode';
+import { Variable } from '../../src/data-model/syntax-tree/Variable';
 
+describe('plainToClass Test, checks type inference of JSON-Schemas', () => {
 
-describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
-
-    test("check type of MainNodeJson, expect MainNode", async () => {
-        var actual = plainToClass(MainNode, mainNodeJson());
-        var expectedType = MainNode;
+    test('check type of MainNodeJson, expect MainNode', async () => {
+        const actual = plainToClass(MainNode, mainNodeJson());
+        const expectedType = MainNode;
 
         expect(actual).toBeInstanceOf(expectedType);
-        for (let index = 0; index < actual.$declarations.length; index++) {
-            const condition = actual.$declarations[index];
+        for (const condition of actual.$declarations) {
             expect(condition).toBeInstanceOf(Variable);
         }
-        
-        for (let index = 0; index < actual.$scopes.length; index++) {
-            const condition = actual.$scopes[index];
+
+        for (const condition of actual.$scopes) {
             expect(condition).toBeInstanceOf(OperandNode);
         }
     });
 
-    test("check type of OperandNodeJson, expect OperandNode", async () => {
-        var actual = plainToClass(OperandNode, operandNodeJson());
-        var expectedType = OperandNode;
+    test('check type of OperandNodeJson, expect OperandNode', async () => {
+        const actual = plainToClass(OperandNode, operandNodeJson());
+        const expectedType = OperandNode;
 
         expect(actual).toBeInstanceOf(expectedType);
     });
 
-    test("check type of an OperatorJson, expect OperatorNode", async () => {
-        var actual = plainToClass(OperatorNode, operandNodeJson());
-        var expectedType = OperatorNode;
+    test('check type of an OperatorJson, expect OperatorNode', async () => {
+        const actual = plainToClass(OperatorNode, operandNodeJson());
+        const expectedType = OperatorNode;
 
         expect(actual).toBeInstanceOf(expectedType);
     });
 
-    test("check type of an OperationJson, expect OperationNode", async () => {
-        var actual = plainToClass(OperationNode, operationJson());
-        var expectedType = OperationNode;
+    test('check type of an OperationJson, expect OperationNode', async () => {
+        const actual = plainToClass(OperationNode, operationJson());
+        const expectedType = OperationNode;
 
         expect(actual).toBeInstanceOf(expectedType);
         expect(actual.$operator).toBeInstanceOf(OperatorNode);
@@ -55,9 +52,9 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
         expect(actual.$rightOperand).toBeInstanceOf(OperandNode);
     });
 
-    test("check type of another OperationJson, expect OperationNode", async () => {
-        var actual = plainToClass(OperationNode, secondOperationJson());
-        var expectedType = OperationNode;
+    test('check type of another OperationJson, expect OperationNode', async () => {
+        const actual = plainToClass(OperationNode, secondOperationJson());
+        const expectedType = OperationNode;
 
         expect(actual).toBeInstanceOf(expectedType);
         expect(actual.$operator).toBeInstanceOf(OperatorNode);
@@ -65,14 +62,13 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
         expect(actual.$rightOperand).toBeInstanceOf(OperandNode);
     });
 
-    test("check type of an ConnectedOperationJson, expect ConnectedOperationNode", async () => {
-        var actual = plainToClass(ConnectedOperationNode, connectedOperationJson());
-        var expectedType = ConnectedOperationNode;
+    test('check type of an ConnectedOperationJson, expect ConnectedOperationNode', async () => {
+        const actual = plainToClass(ConnectedOperationNode, connectedOperationJson());
+        const expectedType = ConnectedOperationNode;
 
         expect(actual).toBeInstanceOf(expectedType);
 
-        for (let index = 0; index < actual.getConditions().length; index++) {
-            const condition = actual.getConditions()[index];
+        for (const condition of actual.getConditions()) {
             expect(condition).toBeInstanceOf(OperationNode);
             expect((condition as OperationNode).$operator).toBeInstanceOf(OperatorNode);
             expect((condition as OperationNode).$leftOperand).toBeInstanceOf(OperandNode);
@@ -80,16 +76,16 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
         }
     });
 
-    test("check type of an CommentJson, expect CommendNode", async () => {
-        var actual = plainToClass(CommentNode, commentJson());
-        var expectedType = CommentNode;
+    test('check type of an CommentJson, expect CommendNode', async () => {
+        const actual = plainToClass(CommentNode, commentJson());
+        const expectedType = CommentNode;
 
         expect(actual).toBeInstanceOf(expectedType);
     });
 
-    test("check type of an VariableJson, expect VariableNode", async () => {
-        var actual = plainToClass(VariableNode, variableJson());
-        var expectedType = VariableNode;
+    test('check type of an VariableJson, expect VariableNode', async () => {
+        const actual = plainToClass(VariableNode, variableJson());
+        const expectedType = VariableNode;
 
         expect(actual).toBeInstanceOf(expectedType);
         expect(actual.getValue()).toBeInstanceOf(OperationNode);
@@ -98,9 +94,9 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
         expect((actual.getValue() as OperationNode).$leftOperand).toBeInstanceOf(OperandNode);
     });
 
-    test("check type of an RuleJson, expect RuleNode", async () => {
-        var actual = plainToClass(RuleNode, ruleJson());
-        var expectedType = RuleNode;
+    test('check type of an RuleJson, expect RuleNode', async () => {
+        const actual = plainToClass(RuleNode, ruleJson());
+        const expectedType = RuleNode;
 
         expect(actual).toBeInstanceOf(expectedType);
         expect(actual.getCondition()).toBeInstanceOf(OperationNode);
@@ -109,554 +105,552 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
         expect((actual.getCondition() as OperationNode).$leftOperand).toBeInstanceOf(OperandNode);
     });
 
-    test("check type of an FunctionJson, expect FunctionOperandNode", async () => {
-        var actual = plainToClass(FunctionOperandNode, functionJson());
-        var expectedType = FunctionOperandNode;
+    test('check type of an FunctionJson, expect FunctionOperandNode', async () => {
+        const actual = plainToClass(FunctionOperandNode, functionJson());
+        const expectedType = FunctionOperandNode;
 
         expect(actual).toBeInstanceOf(expectedType);
 
-        for (let index = 0; index < actual.$parameters.length; index++) {
-            const parameter = actual.$parameters[index];
+        for (const parameter of actual.$parameters) {
             expect(parameter).toBeInstanceOf(OperandNode);
         }
     });
 
-    test("check type of an ArrayJson, expect ArrayOperandNode", async () => {
-        var actual = plainToClass(ArrayOperandNode, arrayJson());
-        var expectedType = ArrayOperandNode;
+    test('check type of an ArrayJson, expect ArrayOperandNode', async () => {
+        const actual = plainToClass(ArrayOperandNode, arrayJson());
+        const expectedType = ArrayOperandNode;
 
         expect(actual).toBeInstanceOf(expectedType);
 
-        for (let index = 0; index < actual.$items.length; index++) {
-            const parameter = actual.$items[index];
+        for (const parameter of actual.$items) {
             expect(parameter).toBeInstanceOf(OperandNode);
         }
     });
-    
+
     //#region JSON-Definitions
     function mainNodeJson() {
         return {
-            "declarations": [
+            declarations: [
                 {
-                    "name": "Hello",
-                    "dataType": "Test"
+                    name: 'Hello',
+                    dataType: 'Test'
                 }
             ],
-            "scopes": [
+            scopes: [
                 operandNodeJson()
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 42
+            range: {
+                start: {
+                    line: 0,
+                    column: 42
                 },
-                "end": {
-                    "line": 0,
-                    "column": 55
+                end: {
+                    line: 0,
+                    column: 55
                 }
             }
-        }
+        };
     }
 
     function operandNodeJson() {
         return {
-            "lines": [
-                "der Bewerber Minderjährig"
+            lines: [
+                'der Bewerber Minderjährig'
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 5
+            range: {
+                start: {
+                    line: 0,
+                    column: 5
                 },
-                "end": {
-                    "line": 0,
-                    "column": 30
+                end: {
+                    line: 0,
+                    column: 30
                 }
             },
-            "dataType": "String",
-            "name": "der Bewerber Minderjährig",
-            "type": "OperandNode"
+            dataType: 'String',
+            name: 'der Bewerber Minderjährig',
+            type: 'OperandNode'
         };
     }
 
     function secondOperandJson() {
         return {
-            "lines": [
-                "sein Wohnort"
+            lines: [
+                'sein Wohnort'
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 42
+            range: {
+                start: {
+                    line: 0,
+                    column: 42
                 },
-                "end": {
-                    "line": 0,
-                    "column": 55
+                end: {
+                    line: 0,
+                    column: 55
                 }
             },
-            "dataType": "String",
-            "name": "Wohnort",
-            "type": "OperandNode"
+            dataType: 'String',
+            name: 'Wohnort',
+            type: 'OperandNode'
         };
     }
 
     function operatorJson() {
         return {
-            "lines": [
-                " ist nicht "
+            lines: [
+                ' ist nicht '
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 56
+            range: {
+                start: {
+                    line: 0,
+                    column: 56
                 },
-                "end": {
-                    "line": 0,
-                    "column": 65
+                end: {
+                    line: 0,
+                    column: 65
                 }
             },
-            "dataType": "Boolean",
-            "validType": "Object",
-            "operator": "NOT_EQUALS",
-            "type": "OperatorNode"
+            dataType: 'Boolean',
+            validType: 'Object',
+            operator: 'NOT_EQUALS',
+            type: 'OperatorNode'
         };
     }
 
     function operationJson() {
         return {
-            "lines": [
-                "der Bewerber Minderjährig ist"
+            lines: [
+                'der Bewerber Minderjährig ist'
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 5
+            range: {
+                start: {
+                    line: 0,
+                    column: 5
                 },
-                "end": {
-                    "line": 0,
-                    "column": 34
+                end: {
+                    line: 0,
+                    column: 34
                 }
             },
-            "connector": null,
-            "constrained": false,
-            "dataType": "Boolean",
-            "name": null,
-            "leftOperand": operandNodeJson(),
-            "rightOperand": secondOperandJson(),
-            "operator": operatorJson(),
-            "type": "OperationNode"
+            connector: null,
+            constrained: false,
+            dataType: 'Boolean',
+            name: null,
+            leftOperand: operandNodeJson(),
+            rightOperand: secondOperandJson(),
+            operator: operatorJson(),
+            type: 'OperationNode'
         };
     }
 
     function secondOperationJson() {
         return {
-            "lines": [
-                "oder sein Wohnort ist Dortmund)"
+            lines: [
+                'oder sein Wohnort ist Dortmund)'
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 75
+            range: {
+                start: {
+                    line: 0,
+                    column: 75
                 },
-                "end": {
-                    "line": 0,
-                    "column": 106
+                end: {
+                    line: 0,
+                    column: 106
                 }
             },
-            "dataType": "Boolean",
-            "name": null,
-            "connector": null,
-            "constrained": false,
-            "leftOperand": {
-                "lines": [
-                    "sein Wohnort"
+            dataType: 'Boolean',
+            name: null,
+            connector: null,
+            constrained: false,
+            leftOperand: {
+                lines: [
+                    'sein Wohnort'
                 ],
-                "range": {
-                    "start": {
-                        "line": 0,
-                        "column": 80
+                range: {
+                    start: {
+                        line: 0,
+                        column: 80
                     },
-                    "end": {
-                        "line": 0,
-                        "column": 92
+                    end: {
+                        line: 0,
+                        column: 92
                     }
                 },
-                "dataType": "String",
-                "name": "Wohnort",
-                "type": "OperandNode"
+                dataType: 'String',
+                name: 'Wohnort',
+                type: 'OperandNode'
             },
-            "rightOperand": {
-                "lines": [
-                    "Dortmund)"
+            rightOperand: {
+                lines: [
+                    'Dortmund)'
                 ],
-                "range": {
-                    "start": {
-                        "line": 0,
-                        "column": 97
+                range: {
+                    start: {
+                        line: 0,
+                        column: 97
                     },
-                    "end": {
-                        "line": 0,
-                        "column": 106
+                    end: {
+                        line: 0,
+                        column: 106
                     }
                 },
-                "dataType": "String",
-                "name": "Dortmund",
-                "type": "OperandNode"
+                dataType: 'String',
+                name: 'Dortmund',
+                type: 'OperandNode'
             },
-            "operator": {
-                "lines": [
-                    " ist "
+            operator: {
+                lines: [
+                    ' ist '
                 ],
-                "range": {
-                    "start": {
-                        "line": 0,
-                        "column": 93
+                range: {
+                    start: {
+                        line: 0,
+                        column: 93
                     },
-                    "end": {
-                        "line": 0,
-                        "column": 96
+                    end: {
+                        line: 0,
+                        column: 96
                     }
                 },
-                "dataType": "Boolean",
-                "validType": "Object",
-                "operator": "EQUALS",
-                "type": "Operator"
+                dataType: 'Boolean',
+                validType: 'Object',
+                operator: 'EQUALS',
+                type: 'Operator'
             },
-            "type": "OperationNode"
+            type: 'OperationNode'
         };
     }
 
     function connectedOperationJson() {
         return {
-            "lines": [
-                "der Bewerber Minderjährig ist    und (sein Wohnort ist nicht Dortmund oder sein Wohnort ist Dortmund)"
+            lines: [
+                'der Bewerber Minderjährig ist    und (sein Wohnort ist nicht Dortmund oder sein Wohnort ist Dortmund)'
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 5
+            range: {
+                start: {
+                    line: 0,
+                    column: 5
                 },
-                "end": {
-                    "line": 0,
-                    "column": 106
+                end: {
+                    line: 0,
+                    column: 106
                 }
             },
-            "dataType": "Boolean",
-            "name": null,
-            "conditions": [
+            dataType: 'Boolean',
+            name: null,
+            conditions: [
                 operationJson(),
                 secondOperationJson()
             ],
-            "connector": null,
-            "type": "ConnectedOperationNode"
+            connector: null,
+            type: 'ConnectedOperationNode'
         };
     }
 
     function commentJson() {
         return {
-            "lines": [
-                "Kommentar das ist ein Test"
+            lines: [
+                'Kommentar das ist ein Test'
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 0
+            range: {
+                start: {
+                    line: 0,
+                    column: 0
                 },
-                "end": {
-                    "line": 0,
-                    "column": 26
+                end: {
+                    line: 0,
+                    column: 26
                 }
             },
-            "content": "das ist ein Test",
-            "type": "CommentNode"
+            content: 'das ist ein Test',
+            type: 'CommentNode'
         };
     }
 
     function variableJson() {
         return {
-            "lines": [
-                "Alter kleiner 20 ALS test"
+            lines: [
+                'Alter kleiner 20 ALS test'
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 0
+            range: {
+                start: {
+                    line: 0,
+                    column: 0
                 },
-                "end": {
-                    "line": 0,
-                    "column": 25
+                end: {
+                    line: 0,
+                    column: 25
                 }
             },
-            "name": "test",
-            "value": {
-                "lines": [
-                    "Alter kleiner 20"
+            name: 'test',
+            value: {
+                lines: [
+                    'Alter kleiner 20'
                 ],
-                "range": {
-                    "start": {
-                        "line": 0,
-                        "column": 0
+                range: {
+                    start: {
+                        line: 0,
+                        column: 0
                     },
-                    "end": {
-                        "line": 0,
-                        "column": 16
+                    end: {
+                        line: 0,
+                        column: 16
                     }
                 },
-                "dataType": "Boolean",
-                "name": null,
-                "leftOperand": {
-                    "lines": [
-                        "Alter"
+                dataType: 'Boolean',
+                name: null,
+                leftOperand: {
+                    lines: [
+                        'Alter'
                     ],
-                    "range": {
-                        "start": {
-                            "line": 0,
-                            "column": 0
+                    range: {
+                        start: {
+                            line: 0,
+                            column: 0
                         },
-                        "end": {
-                            "line": 0,
-                            "column": 5
+                        end: {
+                            line: 0,
+                            column: 5
                         }
                     },
-                    "dataType": "Decimal",
-                    "name": "Alter",
-                    "type": "OperandNode"
+                    dataType: 'Decimal',
+                    name: 'Alter',
+                    type: 'OperandNode'
                 },
-                "rightOperand": {
-                    "lines": [
-                        "20"
+                rightOperand: {
+                    lines: [
+                        '20'
                     ],
-                    "range": {
-                        "start": {
-                            "line": 0,
-                            "column": 14
+                    range: {
+                        start: {
+                            line: 0,
+                            column: 14
                         },
-                        "end": {
-                            "line": 0,
-                            "column": 16
+                        end: {
+                            line: 0,
+                            column: 16
                         }
                     },
-                    "dataType": "Decimal",
-                    "name": "20.0",
-                    "type": "OperandNode"
+                    dataType: 'Decimal',
+                    name: '20.0',
+                    type: 'OperandNode'
                 },
-                "operator": {
-                    "lines": [
-                        " kleiner "
+                operator: {
+                    lines: [
+                        ' kleiner '
                     ],
-                    "range": {
-                        "start": {
-                            "line": 0,
-                            "column": 6
+                    range: {
+                        start: {
+                            line: 0,
+                            column: 6
                         },
-                        "end": {
-                            "line": 0,
-                            "column": 13
+                        end: {
+                            line: 0,
+                            column: 13
                         }
                     },
-                    "dataType": "Boolean",
-                    "validType": "Decimal",
-                    "operator": "LESS_THAN",
-                    "type": "Operator"
+                    dataType: 'Boolean',
+                    validType: 'Decimal',
+                    operator: 'LESS_THAN',
+                    type: 'Operator'
                 },
-                "type": "OperationNode"
+                type: 'OperationNode'
             },
-            "type": "VariableNode"
+            type: 'VariableNode'
         };
     }
 
     function ruleJson() {
         return {
-            "lines": [
-                "Wenn Alter kleiner 20 Dann hallo"
+            lines: [
+                'Wenn Alter kleiner 20 Dann hallo'
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 0
+            range: {
+                start: {
+                    line: 0,
+                    column: 0
                 },
-                "end": {
-                    "line": 0,
-                    "column": 32
+                end: {
+                    line: 0,
+                    column: 32
                 }
             },
-            "errorMessage": "hallo",
-            "condition": {
-                "lines": [
-                    "Alter kleiner 20"
+            errorMessage: 'hallo',
+            condition: {
+                lines: [
+                    'Alter kleiner 20'
                 ],
-                "range": {
-                    "start": {
-                        "line": 0,
-                        "column": 5
+                range: {
+                    start: {
+                        line: 0,
+                        column: 5
                     },
-                    "end": {
-                        "line": 0,
-                        "column": 21
+                    end: {
+                        line: 0,
+                        column: 21
                     }
                 },
-                "dataType": "Boolean",
-                "name": null,
-                "leftOperand": {
-                    "lines": [
-                        "Alter"
+                dataType: 'Boolean',
+                name: null,
+                leftOperand: {
+                    lines: [
+                        'Alter'
                     ],
-                    "range": {
-                        "start": {
-                            "line": 0,
-                            "column": 5
+                    range: {
+                        start: {
+                            line: 0,
+                            column: 5
                         },
-                        "end": {
-                            "line": 0,
-                            "column": 10
+                        end: {
+                            line: 0,
+                            column: 10
                         }
                     },
-                    "dataType": "Decimal",
-                    "name": "Alter",
-                    "type": "OperandNode"
+                    dataType: 'Decimal',
+                    name: 'Alter',
+                    type: 'OperandNode'
                 },
-                "rightOperand": {
-                    "lines": [
-                        "20"
+                rightOperand: {
+                    lines: [
+                        '20'
                     ],
-                    "range": {
-                        "start": {
-                            "line": 0,
-                            "column": 19
+                    range: {
+                        start: {
+                            line: 0,
+                            column: 19
                         },
-                        "end": {
-                            "line": 0,
-                            "column": 21
+                        end: {
+                            line: 0,
+                            column: 21
                         }
                     },
-                    "dataType": "Decimal",
-                    "name": "20.0",
-                    "type": "OperandNode"
+                    dataType: 'Decimal',
+                    name: '20.0',
+                    type: 'OperandNode'
                 },
-                "operator": {
-                    "lines": [
-                        " kleiner "
+                operator: {
+                    lines: [
+                        ' kleiner '
                     ],
-                    "range": {
-                        "start": {
-                            "line": 0,
-                            "column": 11
+                    range: {
+                        start: {
+                            line: 0,
+                            column: 11
                         },
-                        "end": {
-                            "line": 0,
-                            "column": 18
+                        end: {
+                            line: 0,
+                            column: 18
                         }
                     },
-                    "dataType": "Boolean",
-                    "validType": "Decimal",
-                    "operator": "LESS_THAN",
-                    "type": "Operator"
+                    dataType: 'Boolean',
+                    validType: 'Decimal',
+                    operator: 'LESS_THAN',
+                    type: 'Operator'
                 },
-                "type": "OperationNode"
+                type: 'OperationNode'
             },
-            "type": "RuleNode"
+            type: 'RuleNode'
         };
     }
 
     function functionJson() {
         return {
-            "lines": [
-                "Summe von Einkaufsliste.Preis"
+            lines: [
+                'Summe von Einkaufsliste.Preis'
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 0
+            range: {
+                start: {
+                    line: 0,
+                    column: 0
                 },
-                "end": {
-                    "line": 0,
-                    "column": 29
+                end: {
+                    line: 0,
+                    column: 29
                 }
             },
-            "dataType": "Decimal",
-            "name": "SUM_OF",
-            "parameters": [
+            dataType: 'Decimal',
+            name: 'SUM_OF',
+            parameters: [
                 {
-                    "lines": [
-                        "Einkaufsliste.Preis"
+                    lines: [
+                        'Einkaufsliste.Preis'
                     ],
-                    "range": {
-                        "start": {
-                            "line": 0,
-                            "column": 10
+                    range: {
+                        start: {
+                            line: 0,
+                            column: 10
                         },
-                        "end": {
-                            "line": 0,
-                            "column": 29
+                        end: {
+                            line: 0,
+                            column: 29
                         }
                     },
-                    "dataType": "Decimal",
-                    "name": "Einkaufsliste.Preis",
-                    "type": "OperandNode"
+                    dataType: 'Decimal',
+                    name: 'Einkaufsliste.Preis',
+                    type: 'OperandNode'
                 }
             ],
-            "type": "FunctionOperandNode"
+            type: 'FunctionOperandNode'
         };
     }
 
     function arrayJson() {
         return {
-            "lines": [
-                "Günther, Gans"
+            lines: [
+                'Günther, Gans'
             ],
-            "range": {
-                "start": {
-                    "line": 0,
-                    "column": 14
+            range: {
+                start: {
+                    line: 0,
+                    column: 14
                 },
-                "end": {
-                    "line": 0,
-                    "column": 27
+                end: {
+                    line: 0,
+                    column: 27
                 }
             },
-            "dataType": "String",
-            "name": null,
-            "items": [
+            dataType: 'String',
+            name: null,
+            items: [
                 {
-                    "lines": [
-                        "Günther"
+                    lines: [
+                        'Günther'
                     ],
-                    "range": {
-                        "start": {
-                            "line": 0,
-                            "column": 14
+                    range: {
+                        start: {
+                            line: 0,
+                            column: 14
                         },
-                        "end": {
-                            "line": 0,
-                            "column": 21
+                        end: {
+                            line: 0,
+                            column: 21
                         }
                     },
-                    "dataType": "String",
-                    "name": "Günther",
-                    "type": "OperandNode"
+                    dataType: 'String',
+                    name: 'Günther',
+                    type: 'OperandNode'
                 },
                 {
-                    "lines": [
-                        "Gans"
+                    lines: [
+                        'Gans'
                     ],
-                    "range": {
-                        "start": {
-                            "line": 0,
-                            "column": 23
+                    range: {
+                        start: {
+                            line: 0,
+                            column: 23
                         },
-                        "end": {
-                            "line": 0,
-                            "column": 27
+                        end: {
+                            line: 0,
+                            column: 27
                         }
                     },
-                    "dataType": "String",
-                    "name": "Gans",
-                    "type": "OperandNode"
+                    dataType: 'String',
+                    name: 'Gans',
+                    type: 'OperandNode'
                 }
             ],
-            "type": "ArrayOperandNode"
+            type: 'ArrayOperandNode'
         };
     }
 
     //#endregion
-})
+});

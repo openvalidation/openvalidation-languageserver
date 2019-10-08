@@ -1,56 +1,56 @@
-import "jest";
-import { Position, TextDocumentPositionParams } from "vscode-languageserver";
-import { GotoDefinitionProvider } from "../../src/provider/GotoDefinitionProvider";
-import { TestInitializer } from "../TestInitializer";
+import 'jest';
+import { Position, TextDocumentPositionParams } from 'vscode-languageserver';
+import { GotoDefinitionProvider } from '../../src/provider/GotoDefinitionProvider';
+import { TestInitializer } from '../TestInitializer';
 
-describe("GotoDefinition provider test", () => {
-    var provider: GotoDefinitionProvider;
+describe('GotoDefinition provider test', () => {
+    let provider: GotoDefinitionProvider;
 
     function getParams(position: Position): TextDocumentPositionParams {
         return {
             textDocument: {
-                uri: "test.ov"
+                uri: 'test.ov'
             },
-            position: position
-        }
+            position
+        };
     }
 
     beforeEach(() => {
-        var testInitializer = new TestInitializer(true);
+        const testInitializer = new TestInitializer(true);
         provider = testInitializer.gotoDefinitionProvider;
     });
 
-    test("Verify provider exists", () => {
+    test('Verify provider exists', () => {
         expect(provider).not.toBeNull();
     });
 
-    test("definition with empty document, expect empty list", () => {
-        var tmpTestInitializer = new TestInitializer(false);
-        var tmpProvider = tmpTestInitializer.gotoDefinitionProvider;
+    test('definition with empty document, expect empty list', () => {
+        const tmpTestInitializer = new TestInitializer(false);
+        const tmpProvider = tmpTestInitializer.gotoDefinitionProvider;
 
-        var expected: Location[] = [];
-        var actual = tmpProvider.definition(getParams(Position.create(1, 10)));
+        const expected: Location[] = [];
+        const actual = tmpProvider.definition(getParams(Position.create(1, 10)));
 
         expect(actual).toEqual(expected);
     });
 
-    test("definition with invalid document-uri, expect empty list", () => {
-        var expected: Location[] = [];
+    test('definition with invalid document-uri, expect empty list', () => {
+        const expected: Location[] = [];
 
-        var inputPosition: Position = Position.create(6, 20);
-        var inputParams: TextDocumentPositionParams = {
+        const inputPosition: Position = Position.create(6, 20);
+        const inputParams: TextDocumentPositionParams = {
             textDocument: {
-                uri: "invalidUri"
+                uri: 'invalidUri'
             },
             position: inputPosition
-        }
-        var actual = provider.definition(inputParams);
+        };
+        const actual = provider.definition(inputParams);
         expect(actual).toEqual(expected);
     });
 
-    test("definition with valid document but wrong position, expect empty list", () => {
-        var expected: Location[] = [];
-        var actual = provider.definition(getParams(Position.create(1, 10)));
+    test('definition with valid document but wrong position, expect empty list', () => {
+        const expected: Location[] = [];
+        const actual = provider.definition(getParams(Position.create(1, 10)));
 
         expect(actual).toEqual(expected);
     });

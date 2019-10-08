@@ -16,7 +16,7 @@ export class FormattingHelper {
      * @memberof FormattingHelper
      */
     public static removeDuplicateWhitespacesFromLine(line: string): string {
-        return line.replace(new RegExp("[ \t]+", "g"), " ").trim();
+        return line.replace(new RegExp('[ \t]+', 'g'), ' ').trim();
     }
 
     /**
@@ -28,6 +28,6 @@ export class FormattingHelper {
      * @memberof FormattingHelper
      */
     public static generateSpaces(count: number): string {
-        return " ".repeat(count);
+        return ' '.repeat(count);
     }
 }

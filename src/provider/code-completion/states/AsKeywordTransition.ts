@@ -1,5 +1,5 @@
-import { StateTransition } from "./StateTransition";
-import { CompletionBuilder } from "../CompletionBuilder";
+import { CompletionBuilder } from '../CompletionBuilder';
+import { StateTransition } from './StateTransition';
 
 /**
  * Transition of an `as`-keyword
@@ -15,7 +15,7 @@ export class AsKeywordTransition extends StateTransition {
      * @memberof AsKeywordTransition
      */
     constructor() {
-        super()
+        super();
     }
 
     /**
@@ -27,5 +27,5 @@ export class AsKeywordTransition extends StateTransition {
     public addCompletionItems(generator: CompletionBuilder): void {
         generator.addAsKeyword(this);
     }
-    
+
 }

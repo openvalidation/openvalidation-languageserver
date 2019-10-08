@@ -1,5 +1,4 @@
-import { Type } from "class-transformer";
-
+import { Type } from 'class-transformer';
 
 /**
  * Data-class that is used for the transfer of aliases.
@@ -18,7 +17,8 @@ export class AliasesWithOperators {
     /**
      * Creates an instance of AliasesWithOperators.
      * @param {Map<string, string>} aliases map whith all aliases which contains the key and the natural-text
-     * @param {Map<string, string>} operators map with all operators which contains the natural-text and the datatype of the operator
+     * @param {Map<string, string>} operators map with all operators
+     *  which contains the natural-text and the datatype of the operator
      * @memberof AliasesWithOperators
      */
     constructor(aliases: Map<string, string>, operators: Map<string, string>) {

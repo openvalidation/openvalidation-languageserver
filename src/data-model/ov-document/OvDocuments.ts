@@ -1,4 +1,4 @@
-import { OvDocument } from "./OvDocument";
+import { OvDocument } from './OvDocument';
 
 /**
  * Holds a definition of all currently known OvDocuments. This class
@@ -8,14 +8,14 @@ import { OvDocument } from "./OvDocument";
  * @class OvDocuments
  */
 export class OvDocuments {
-    private _ovDocuments: Map<string, OvDocument>;
+    private ovDocuments: Map<string, OvDocument>;
 
     /**
      * Creates an instance of OvDocuments.
      * @memberof OvDocuments
      */
     constructor() {
-        this._ovDocuments = new Map<string, OvDocument>();
+        this.ovDocuments = new Map<string, OvDocument>();
     }
 
     /**
@@ -26,9 +26,8 @@ export class OvDocuments {
      * @memberof OvDocuments
      */
     public get(uri: string) {
-        return this._ovDocuments.get(uri);
+        return this.ovDocuments.get(uri);
     }
-
 
     /**
      * Saves the given file under the given identifier
@@ -38,6 +37,6 @@ export class OvDocuments {
      * @memberof OvDocuments
      */
     public addOrOverrideOvDocument(uri: string, document: OvDocument) {
-        this._ovDocuments.set(uri, document);
+        this.ovDocuments.set(uri, document);
     }
 }

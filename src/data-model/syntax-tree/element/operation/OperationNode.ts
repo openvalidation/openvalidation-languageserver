@@ -1,30 +1,30 @@
-import { Type } from "class-transformer";
-import { Position } from "vscode-languageserver";
-import { AliasHelper } from "../../../../aliases/AliasHelper";
-import { ScopeEnum } from "../../../../enums/ScopeEnum";
-import { HoverContent } from "../../../../helper/HoverContent";
-import { CompletionContainer } from "../../../../provider/code-completion/CompletionContainer";
-import { SyntaxHighlightingCapture } from "../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
-import { GenericNode } from "../../GenericNode";
-import { IndexRange } from "../../IndexRange";
-import { ConditionNode } from "./ConditionNode";
-import { ConnectedOperationNode } from "./ConnectedOperationNode";
-import { ArrayOperandNode } from "./operand/ArrayOperandNode";
-import { BaseOperandNode } from "./operand/BaseOperandNode";
-import { FunctionOperandNode } from "./operand/FunctionOperandNode";
-import { OperandNode } from "./operand/OperandNode";
-import { OperatorNode } from "./operand/OperatorNode";
+import { Type } from 'class-transformer';
+import { Position } from 'vscode-languageserver';
+import { AliasHelper } from '../../../../aliases/AliasHelper';
+import { ScopeEnum } from '../../../../enums/ScopeEnum';
+import { HoverContent } from '../../../../helper/HoverContent';
+import { CompletionContainer } from '../../../../provider/code-completion/CompletionContainer';
+import { SyntaxHighlightingCapture } from '../../../../provider/syntax-highlighting/SyntaxHighlightingCapture';
+import { GenericNode } from '../../GenericNode';
+import { IndexRange } from '../../IndexRange';
+import { ConditionNode } from './ConditionNode';
+import { ConnectedOperationNode } from './ConnectedOperationNode';
+import { ArrayOperandNode } from './operand/ArrayOperandNode';
+import { BaseOperandNode } from './operand/BaseOperandNode';
+import { FunctionOperandNode } from './operand/FunctionOperandNode';
+import { OperandNode } from './operand/OperandNode';
+import { OperatorNode } from './operand/OperatorNode';
 
 export class OperationNode extends ConditionNode {
     @Type(() => BaseOperandNode, {
         discriminator: {
-            property: "type",
+            property: 'type',
             subTypes: [
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
-                { value: FunctionOperandNode, name: "FunctionOperandNode" },
-                { value: OperandNode, name: "OperandNode" },
-                { value: ArrayOperandNode, name: "ArrayOperandNode" }
+                { value: OperationNode, name: 'OperationNode' },
+                { value: ConnectedOperationNode, name: 'ConnectedOperationNode' },
+                { value: FunctionOperandNode, name: 'FunctionOperandNode' },
+                { value: OperandNode, name: 'OperandNode' },
+                { value: ArrayOperandNode, name: 'ArrayOperandNode' }
             ]
         }
     })
@@ -32,13 +32,13 @@ export class OperationNode extends ConditionNode {
 
     @Type(() => BaseOperandNode, {
         discriminator: {
-            property: "type",
+            property: 'type',
             subTypes: [
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
-                { value: FunctionOperandNode, name: "FunctionOperandNode" },
-                { value: OperandNode, name: "OperandNode" },
-                { value: ArrayOperandNode, name: "ArrayOperandNode" }
+                { value: OperationNode, name: 'OperationNode' },
+                { value: ConnectedOperationNode, name: 'ConnectedOperationNode' },
+                { value: FunctionOperandNode, name: 'FunctionOperandNode' },
+                { value: OperandNode, name: 'OperandNode' },
+                { value: ArrayOperandNode, name: 'ArrayOperandNode' }
             ]
         }
     })
@@ -49,7 +49,13 @@ export class OperationNode extends ConditionNode {
 
     private constrained: boolean;
 
-    constructor(leftOperand: BaseOperandNode | null, operator: OperatorNode | null, rightOperand: BaseOperandNode | null, lines: string[], range: IndexRange) {
+    constructor(
+        leftOperand: BaseOperandNode | null,
+        operator: OperatorNode | null,
+        rightOperand: BaseOperandNode | null,
+        lines: string[],
+        range: IndexRange
+    ) {
         super(lines, range);
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;
@@ -90,22 +96,25 @@ export class OperationNode extends ConditionNode {
     }
 
     public getChildren(): GenericNode[] {
-        var childList: GenericNode[] = [];
+        const childList: GenericNode[] = [];
 
-        if (!!this.leftOperand)
+        if (!!this.leftOperand) {
             childList.push(this.leftOperand);
+        }
 
-        if (!!this.operator)
+        if (!!this.operator) {
             childList.push(this.operator);
+        }
 
-        if (!!this.rightOperand)
+        if (!!this.rightOperand) {
             childList.push(this.rightOperand);
+        }
 
         return childList;
     }
 
     public getHoverContent(): HoverContent {
-        var content: HoverContent = new HoverContent(this.$range, "Operation");
+        const content: HoverContent = new HoverContent(this.$range, 'Operation');
         return content;
     }
 
@@ -115,31 +124,38 @@ export class OperationNode extends ConditionNode {
         }
 
         if (!!this.leftOperand.$range && this.leftOperand.$range.endsBefore(position) && !this.operator) {
-            var container = this.leftOperand.getCompletionContainer(position);
+            const container = this.leftOperand.getCompletionContainer(position);
 
-            if (container.isEmpty())
+            if (container.isEmpty()) {
                 container.operatorTransition(this.leftOperand.$dataType);
+            }
 
             return container;
         }
 
-        if (!!this.operator && !!this.operator.$range && this.operator.$range.endsBefore(position) && !this.rightOperand) {
-            var container = this.operator.getCompletionContainer(position);
-            container.operandTransition(this.leftOperand.$dataType, this.leftOperand.$name)
+        if (!!this.operator &&
+            !!this.operator.$range &&
+            this.operator.$range.endsBefore(position) &&
+            !this.rightOperand
+        ) {
+            const container = this.operator.getCompletionContainer(position);
+            container.operandTransition(this.leftOperand.$dataType, this.leftOperand.$name);
             return container;
         }
 
         if (!!this.rightOperand && !!this.rightOperand.$range && this.rightOperand.$range.endsBefore(position)) {
-            var container = this.rightOperand.getCompletionContainer(position);
+            const container = this.rightOperand.getCompletionContainer(position);
 
-            if (container.isEmpty())
+            if (container.isEmpty()) {
                 container.connectionTransition();
+            }
 
             return container;
         }
 
-        if (this.$range.includesPosition(position))
+        if (this.$range.includesPosition(position)) {
             return CompletionContainer.init().emptyTransition();
+        }
 
         return CompletionContainer.init().connectionTransition();
     }
@@ -149,54 +165,64 @@ export class OperationNode extends ConditionNode {
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        var returnString = this.defaultFormatting();
+        let returnString = this.defaultFormatting();
 
-        if (!!this.leftOperand)
-            returnString = returnString.replace(this.leftOperand.defaultFormatting(), this.leftOperand.getBeautifiedContent(aliasesHelper));
+        if (!!this.leftOperand) {
+            returnString = returnString.replace(
+                this.leftOperand.defaultFormatting(), this.leftOperand.getBeautifiedContent(aliasesHelper));
+        }
 
-        if (!!this.operator)
-            returnString = returnString.replace(this.operator.defaultFormatting(), this.operator.getBeautifiedContent(aliasesHelper));
+        if (!!this.operator) {
+            returnString = returnString.replace(
+                this.operator.defaultFormatting(), this.operator.getBeautifiedContent(aliasesHelper));
+        }
 
-        if (!!this.rightOperand)
-            returnString = returnString.replace(this.rightOperand.defaultFormatting(), this.rightOperand.getBeautifiedContent(aliasesHelper));
+        if (!!this.rightOperand) {
+            returnString = returnString.replace(
+                this.rightOperand.defaultFormatting(), this.rightOperand.getBeautifiedContent(aliasesHelper));
+        }
 
         return returnString;
     }
 
     public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
-        var capture: SyntaxHighlightingCapture | null = new SyntaxHighlightingCapture();
+        const capture: SyntaxHighlightingCapture | null = new SyntaxHighlightingCapture();
 
-        if (!!this.leftOperand)
+        if (!!this.leftOperand) {
             capture.merge(this.leftOperand.getPatternInformation(aliasesHelper));
+        }
 
         if (!!this.operator) {
             capture.addRegexGroupAndCapture(this.getSemanticalSugarOfOperator(), ScopeEnum.Empty);
             capture.merge(this.operator.getPatternInformation(aliasesHelper));
         }
 
-        if (!!this.rightOperand && (!this.leftOperand || !this.leftOperand.$range.includesRange(this.rightOperand.$range)))
+        if (!!this.rightOperand &&
+            (!this.leftOperand || !this.leftOperand.$range.includesRange(this.rightOperand.$range))
+        ) {
             capture.merge(this.rightOperand.getPatternInformation(aliasesHelper));
+        }
 
         return capture;
     }
 
     private getSemanticalSugarOfOperator(): string {
-        if (!this.operator) return "";
+        if (!this.operator) { return ''; }
 
-        var shadowOperator = this.$lines.join("\n");
-        shadowOperator = shadowOperator.replace(new RegExp(this.operator.$lines.join("\n"), "g"), "");
+        let shadowOperator = this.$lines.join('\n');
+        shadowOperator = shadowOperator.replace(new RegExp(this.operator.$lines.join('\n'), 'g'), '');
 
         if (!!this.leftOperand) {
-            var operandString = this.leftOperand.$lines.join("\n");
-            var startIndex = shadowOperator.indexOf(operandString) + operandString.length;
-            var endIndex = shadowOperator.length;
+            const operandString = this.leftOperand.$lines.join('\n');
+            const startIndex = shadowOperator.indexOf(operandString) + operandString.length;
+            const endIndex = shadowOperator.length;
             shadowOperator = shadowOperator.substring(startIndex, endIndex);
         }
 
         if (!!this.rightOperand) {
-            var operandString = this.rightOperand.$lines.join("\n");
-            var startIndex = 0;
-            var endIndex = shadowOperator.indexOf(operandString);
+            const operandString = this.rightOperand.$lines.join('\n');
+            const startIndex = 0;
+            const endIndex = shadowOperator.indexOf(operandString);
             shadowOperator = shadowOperator.substring(startIndex, endIndex);
         }
         return shadowOperator.trim();

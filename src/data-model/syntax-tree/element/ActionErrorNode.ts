@@ -1,9 +1,9 @@
-import { GenericNode } from "../GenericNode";
-import { HoverContent } from "../../../helper/HoverContent";
-import { AliasHelper } from "../../../aliases/AliasHelper";
-import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
-import { Position } from "vscode-languageserver";
-import { IndexRange } from "../IndexRange";
+import { Position } from 'vscode-languageserver';
+import { AliasHelper } from '../../../aliases/AliasHelper';
+import { HoverContent } from '../../../helper/HoverContent';
+import { CompletionContainer } from '../../../provider/code-completion/CompletionContainer';
+import { GenericNode } from '../GenericNode';
+import { IndexRange } from '../IndexRange';
 
 export class ActionErrorNode extends GenericNode {
 
@@ -23,7 +23,7 @@ export class ActionErrorNode extends GenericNode {
     }
 
     public getHoverContent(): HoverContent {
-        return new HoverContent(this.$range, "Error-Message: " + this.errorMessage);
+        return new HoverContent(this.$range, 'Error-Message: ' + this.errorMessage);
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {

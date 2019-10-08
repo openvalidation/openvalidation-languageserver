@@ -1,7 +1,7 @@
-import { Position, RenameParams, TextEdit, WorkspaceEdit } from "vscode-languageserver";
+import { Position, RenameParams, TextEdit, WorkspaceEdit } from 'vscode-languageserver';
 import { Range } from 'vscode-languageserver-types';
-import { OvServer } from "../OvServer";
-import { Provider } from "./Provider";
+import { OvServer } from '../OvServer';
+import { Provider } from './Provider';
 
 /**
  * Response-Provider for ``onRenameRequest``
@@ -20,7 +20,7 @@ export class RenameProvider extends Provider {
      * @returns {RenameProvider} created provider
      * @memberof RenameProvider
      */
-    static bind(server: OvServer): RenameProvider {
+    public static bind(server: OvServer): RenameProvider {
         return new RenameProvider(server);
     }
 
@@ -42,42 +42,45 @@ export class RenameProvider extends Provider {
      * @memberof RenameProvider
      */
     public rename(params: RenameParams): WorkspaceEdit {
-        var ovDocument = this.ovDocuments.get(params.textDocument.uri);
-        if (!ovDocument) return {};
+        const ovDocument = this.ovDocuments.get(params.textDocument.uri);
+        if (!ovDocument) { return {}; }
 
-        var oldTuple = ovDocument.getStringByPosition(params.position);
-        if (!oldTuple) return {};
+        const oldTuple = ovDocument.getStringByPosition(params.position);
+        if (!oldTuple) { return {}; }
 
-        var oldString: string = oldTuple[0];
+        const oldString: string = oldTuple[0];
 
         // Renaming only makes sense for variables
-        var variable = ovDocument.$elementManager.getVariablesByName(oldString);
-        if (!variable) return {};
+        const variable = ovDocument.$elementManager.getVariablesByName(oldString);
+        if (!variable) { return {}; }
 
-        var textEdits: TextEdit[] = [];
+        const textEdits: TextEdit[] = [];
 
         for (const element of ovDocument.$elementManager.$elements) {
-            var range = element.$range;
-            if (!range || !range.$start) continue;
+            const range = element.$range;
+            if (!range || !range.$start) { continue; }
 
-            var lineNumber = range.$start.$line;
+            let lineNumber = range.$start.$line;
 
             for (const line of element.$lines) {
-                var matches = line.match(new RegExp(oldString));
+                const matches = line.match(new RegExp(oldString));
                 lineNumber++;
-                if (!matches) continue;
+                if (!matches) { continue; }
 
                 matches.forEach(match => {
-                    var startIndex = line.indexOf(match);
-                    var endIndex = startIndex + match.length;
+                    const startIndex = line.indexOf(match);
+                    const endIndex = startIndex + match.length;
 
                     textEdits.push({
                         newText: params.newName,
-                        range: Range.create(Position.create(lineNumber - 1, startIndex), Position.create(lineNumber - 1, endIndex))
+                        range: Range.create(
+                            Position.create(lineNumber - 1, startIndex),
+                            Position.create(lineNumber - 1, endIndex)
+                        )
                     });
                 });
             }
         }
-        return { changes: { [params.textDocument.uri]: textEdits }};
+        return { changes: { [params.textDocument.uri]: textEdits } };
     }
 }

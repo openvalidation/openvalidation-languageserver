@@ -1,11 +1,11 @@
-import { Type } from "class-transformer";
-import { String } from "typescript-string-operations";
-import { Position, TextEdit } from "vscode-languageserver";
-import { AliasHelper } from "../../aliases/AliasHelper";
-import { FormattingHelper } from "../../helper/FormattingHelper";
-import { HoverContent } from "../../helper/HoverContent";
-import { CompletionContainer } from "../../provider/code-completion/CompletionContainer";
-import { IndexRange } from "./IndexRange";
+import { Type } from 'class-transformer';
+import { String } from 'typescript-string-operations';
+import { Position, TextEdit } from 'vscode-languageserver';
+import { AliasHelper } from '../../aliases/AliasHelper';
+import { FormattingHelper } from '../../helper/FormattingHelper';
+import { HoverContent } from '../../helper/HoverContent';
+import { CompletionContainer } from '../../provider/code-completion/CompletionContainer';
+import { IndexRange } from './IndexRange';
 
 /**
  * GenericNode for all elements of the syntax-tree
@@ -54,7 +54,7 @@ export abstract class GenericNode {
      * @returns {GenericNode[]}
      * @memberof GenericNode
      */
-    abstract getChildren(): GenericNode[];
+    public abstract getChildren(): GenericNode[];
 
     /**
      * Generates the hovering content which should be shown to the user
@@ -63,7 +63,7 @@ export abstract class GenericNode {
      * @returns {(HoverContent | null)}
      * @memberof GenericNode
      */
-    abstract getHoverContent(): HoverContent;
+    public abstract getHoverContent(): HoverContent;
 
     /**
      * Generates the beautified content and returns it as a string
@@ -74,8 +74,7 @@ export abstract class GenericNode {
      * @returns {string} beautified content
      * @memberof GenericNode
      */
-    abstract getBeautifiedContent(aliasesHelper: AliasHelper): string;
-
+    public abstract getBeautifiedContent(aliasesHelper: AliasHelper): string;
 
     /**
      * Calculates the completion-state with the completion-container
@@ -85,7 +84,7 @@ export abstract class GenericNode {
      * @returns {CompletionContainer}
      * @memberof GenericNode
      */
-    abstract getCompletionContainer(position: Position): CompletionContainer;
+    public abstract getCompletionContainer(position: Position): CompletionContainer;
 
     /**
      * Generates a list of edits for formatting this element
@@ -94,14 +93,14 @@ export abstract class GenericNode {
      * @memberof OvRule
      */
     public formatCode(aliasHelper: AliasHelper): TextEdit[] {
-        var textEdits: TextEdit[] = [];
-        var formattedString: string = this.getBeautifiedContent(aliasHelper);
-        var formattedLines: string[] = formattedString.split("\n").filter(line => !String.IsNullOrWhiteSpace(line));
+        const textEdits: TextEdit[] = [];
+        const formattedString: string = this.getBeautifiedContent(aliasHelper);
+        const formattedLines: string[] = formattedString.split('\n').filter(line => !String.IsNullOrWhiteSpace(line));
 
-        var textEdit: TextEdit = {
-            newText: formattedLines.join("\n"),
+        const textEdit: TextEdit = {
+            newText: formattedLines.join('\n'),
             range: this.$range.asRange()
-        }
+        };
         textEdits.push(textEdit);
 
         return textEdits;
@@ -114,6 +113,6 @@ export abstract class GenericNode {
      * @memberof GenericNode
      */
     public defaultFormatting(): string {
-        return this.$lines.map(line => FormattingHelper.removeDuplicateWhitespacesFromLine(line).trim()).join("\n");
+        return this.$lines.map(line => FormattingHelper.removeDuplicateWhitespacesFromLine(line).trim()).join('\n');
     }
 }

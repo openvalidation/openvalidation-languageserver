@@ -19,7 +19,7 @@ export abstract class ConditionNode extends BaseOperandNode {
      * @memberof ConditionNode
      */
     constructor(line: string[], range: IndexRange) {
-        super(line, range, "Boolean", "");
+        super(line, range, 'Boolean', '');
         this.connector = null;
     }
 

@@ -1,31 +1,31 @@
-import { Type } from "class-transformer";
-import { String } from "typescript-string-operations";
-import { Position, Range } from "vscode-languageserver";
-import { AliasHelper } from "../../../aliases/AliasHelper";
-import { AliasKey } from "../../../aliases/AliasKey";
-import { FormattingHelper } from "../../../helper/FormattingHelper";
-import { HoverContent } from "../../../helper/HoverContent";
-import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
-import { GenericNode } from "../GenericNode";
-import { IndexRange } from "../IndexRange";
-import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
-import { ArrayOperandNode } from "./operation/operand/ArrayOperandNode";
-import { BaseOperandNode } from "./operation/operand/BaseOperandNode";
-import { FunctionOperandNode } from "./operation/operand/FunctionOperandNode";
-import { OperandNode } from "./operation/operand/OperandNode";
-import { OperationNode } from "./operation/OperationNode";
-import { VariableNameNode } from "./VariableNameNode";
+import { Type } from 'class-transformer';
+import { String } from 'typescript-string-operations';
+import { Position, Range } from 'vscode-languageserver';
+import { AliasHelper } from '../../../aliases/AliasHelper';
+import { AliasKey } from '../../../aliases/AliasKey';
+import { FormattingHelper } from '../../../helper/FormattingHelper';
+import { HoverContent } from '../../../helper/HoverContent';
+import { CompletionContainer } from '../../../provider/code-completion/CompletionContainer';
+import { GenericNode } from '../GenericNode';
+import { IndexRange } from '../IndexRange';
+import { ConnectedOperationNode } from './operation/ConnectedOperationNode';
+import { ArrayOperandNode } from './operation/operand/ArrayOperandNode';
+import { BaseOperandNode } from './operation/operand/BaseOperandNode';
+import { FunctionOperandNode } from './operation/operand/FunctionOperandNode';
+import { OperandNode } from './operation/operand/OperandNode';
+import { OperationNode } from './operation/OperationNode';
+import { VariableNameNode } from './VariableNameNode';
 
 export class VariableNode extends GenericNode {
     @Type(() => BaseOperandNode, {
         discriminator: {
-            property: "type",
+            property: 'type',
             subTypes: [
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
-                { value: FunctionOperandNode, name: "FunctionOperandNode" },
-                { value: OperandNode, name: "OperandNode" },
-                { value: ArrayOperandNode, name: "ArrayOperandNode" }
+                { value: OperationNode, name: 'OperationNode' },
+                { value: ConnectedOperationNode, name: 'ConnectedOperationNode' },
+                { value: FunctionOperandNode, name: 'FunctionOperandNode' },
+                { value: OperandNode, name: 'OperandNode' },
+                { value: ArrayOperandNode, name: 'ArrayOperandNode' }
             ]
         }
     })
@@ -41,10 +41,11 @@ export class VariableNode extends GenericNode {
     }
 
     public getChildren(): GenericNode[] {
-        var childList: GenericNode[] = [];
+        const childList: GenericNode[] = [];
 
-        if (!!this.value)
+        if (!!this.value) {
             childList.push(this.value);
+        }
 
         return childList;
     }
@@ -88,58 +89,63 @@ export class VariableNode extends GenericNode {
      * @memberof OvVariable
      */
     public getRangeOfVariableName(): Range {
-        if (!this.getNameNode()) return this.$range.asRange();
+        if (!this.getNameNode()) { return this.$range.asRange(); }
 
         return this.getNameNode()!.$range.asRange();
     }
 
     public getHoverContent(): HoverContent {
-        var contentText = "Variable" + (!this.getNameNode() ? " " : " "  + this.getNameNode()!.$name);
-        if (!!this.getValue())
-            contentText += ": " + this.getValue()!.$dataType;
+        let contentText = 'Variable' + (!this.getNameNode() ? ' ' : ' ' + this.getNameNode()!.$name);
+        if (!!this.getValue()) {
+            contentText += ': ' + this.getValue()!.$dataType;
+        }
 
-        var content: HoverContent = new HoverContent(this.$range, contentText);
+        const content: HoverContent = new HoverContent(this.$range, contentText);
         return content;
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {
-        if (!!this.getNameNode() && !this.getNameNode()!.$range.startsAfter(position))
+        if (!!this.getNameNode() && !this.getNameNode()!.$range.startsAfter(position)) {
             return CompletionContainer.init().emptyTransition();
+        }
 
-        var nameFilter: string | undefined = !this.getNameNode() ? undefined : this.getNameNode()!.$name;
+        const nameFilter: string | undefined = !this.getNameNode() ? undefined : this.getNameNode()!.$name;
 
-        if (!this.value)
+        if (!this.value) {
             return CompletionContainer.init().operandTransition(undefined, nameFilter);
+        }
 
-        var container = this.value.getCompletionContainer(position);
+        const container = this.value.getCompletionContainer(position);
         if (container.isEmpty()) {
             container.operatorTransition(this.value.$dataType);
         }
 
-        if (!!nameFilter)
+        if (!!nameFilter) {
             container.addNameFilterToAllOperands(nameFilter);
-            
+        }
+
         return container;
     }
 
     public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        var variableString: string = this.$lines.join("\n");
-        if (!this.value) return variableString;
+        const variableString: string = this.$lines.join('\n');
+        if (!this.value) { return variableString; }
 
-        var asKeyword: string | null = aliasesHelper.getKeywordByAliasKey(AliasKey.AS);
-        if (!asKeyword) return variableString;
+        const asKeyword: string | null = aliasesHelper.getKeywordByAliasKey(AliasKey.AS);
+        if (!asKeyword) { return variableString; }
 
-        var splittedVariable: string[] = variableString.split(this.value.$lines.join("\n"));
-        var returnString: string = "";
+        const splittedVariable: string[] = variableString.split(this.value.$lines.join('\n'));
+        let returnString: string = '';
 
-        var spaces = FormattingHelper.generateSpaces(asKeyword.length + 1);
-        var conditionString: string = this.value.getBeautifiedContent(aliasesHelper);
-        conditionString = conditionString.replace(new RegExp("\n", 'g'), "\n" + spaces);
-        returnString += spaces + conditionString + "\n";
+        const spaces = FormattingHelper.generateSpaces(asKeyword.length + 1);
+        let conditionString: string = this.value.getBeautifiedContent(aliasesHelper);
+        conditionString = conditionString.replace(new RegExp('\n', 'g'), '\n' + spaces);
+        returnString += spaces + conditionString + '\n';
 
         for (const splittedLine of splittedVariable) {
-            if (!String.IsNullOrWhiteSpace(splittedLine))
+            if (!String.IsNullOrWhiteSpace(splittedLine)) {
                 returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(splittedLine);
+            }
         }
         return returnString;
     }

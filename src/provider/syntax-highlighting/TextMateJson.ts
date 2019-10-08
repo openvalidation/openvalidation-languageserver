@@ -2,24 +2,24 @@
  * Interface for the textmate-grammar-json
  *
  * @export
- * @interface TextMateJson
+ * @interface ITextMateJson
  */
-export interface TextMateJson {
+export interface ITextMateJson {
     scopeName: string;
     name: string;
     fileTypes: string[];
     patterns: Pattern[];
 }
 
-export type Pattern = PatternMatch | PatternBeginEnd | PatternCapture;
+export type Pattern = IPatternMatch | IPatternBeginEnd | IPatternCapture;
 
 /**
  * Base interface for textmate patterns which only contains an optional comment
  *
  * @export
- * @interface GenericPattern
+ * @interface IGenericPattern
  */
-export interface GenericPattern {
+export interface IGenericPattern {
     comment?: string;
 }
 
@@ -27,10 +27,10 @@ export interface GenericPattern {
  * match-pattern which consists of a name and a match
  *
  * @export
- * @interface PatternMatch
- * @extends {GenericPattern}
+ * @interface IPatternMatch
+ * @extends {IGenericPattern}
  */
-export interface PatternMatch extends GenericPattern {
+export interface IPatternMatch extends IGenericPattern {
     name: string;
     match: string;
 }
@@ -39,10 +39,10 @@ export interface PatternMatch extends GenericPattern {
  * begin-/end-pattern which consists of a name, begin and an end
  *
  * @export
- * @interface PatternBeginEnd
- * @extends {GenericPattern}
+ * @interface IPatternBeginEnd
+ * @extends {IGenericPattern}
  */
-export interface PatternBeginEnd extends GenericPattern {
+export interface IPatternBeginEnd extends IGenericPattern {
     name: string;
     begin: string;
     end: string;
@@ -52,10 +52,10 @@ export interface PatternBeginEnd extends GenericPattern {
  * pattern which only contains captures and an optional name
  *
  * @export
- * @interface PatternCapture
- * @extends {GenericPattern}
+ * @interface IPatternCapture
+ * @extends {IGenericPattern}
  */
-export interface PatternCapture extends GenericPattern {
+export interface IPatternCapture extends IGenericPattern {
     match: string;
     captures: any;
 }

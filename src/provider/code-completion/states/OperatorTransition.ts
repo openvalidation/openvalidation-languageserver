@@ -1,5 +1,5 @@
-import { StateTransition } from "./StateTransition";
-import { CompletionBuilder } from "../CompletionBuilder";
+import { CompletionBuilder } from '../CompletionBuilder';
+import { StateTransition } from './StateTransition';
 
 /**
  * Transition for operator-transitions.
@@ -26,7 +26,7 @@ export class OperatorTransition extends StateTransition {
     public get $dataType(): string {
         return this.dataType;
     }
-    
+
     /**
      * Adds the fitting operators to the builder
      *

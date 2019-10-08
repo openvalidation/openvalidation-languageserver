@@ -1,29 +1,29 @@
-import { Type } from "class-transformer";
-import { Position } from "vscode-languageserver";
-import { AliasHelper } from "../../../../aliases/AliasHelper";
-import { FormattingHelper } from "../../../../helper/FormattingHelper";
-import { HoverContent } from "../../../../helper/HoverContent";
-import { CompletionContainer } from "../../../../provider/code-completion/CompletionContainer";
-import { SyntaxHighlightingCapture } from "../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
-import { GenericNode } from "../../GenericNode";
-import { IndexRange } from "../../IndexRange";
-import { ConditionNode } from "./ConditionNode";
-import { OperationNode } from "./OperationNode";
+import { Type } from 'class-transformer';
+import { Position } from 'vscode-languageserver';
+import { AliasHelper } from '../../../../aliases/AliasHelper';
+import { FormattingHelper } from '../../../../helper/FormattingHelper';
+import { HoverContent } from '../../../../helper/HoverContent';
+import { CompletionContainer } from '../../../../provider/code-completion/CompletionContainer';
+import { SyntaxHighlightingCapture } from '../../../../provider/syntax-highlighting/SyntaxHighlightingCapture';
+import { GenericNode } from '../../GenericNode';
+import { IndexRange } from '../../IndexRange';
+import { ConditionNode } from './ConditionNode';
+import { OperationNode } from './OperationNode';
 
 export class ConnectedOperationNode extends ConditionNode {
     @Type(() => ConditionNode, {
         discriminator: {
-            property: "type",
+            property: 'type',
             subTypes: [
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" }
+                { value: OperationNode, name: 'OperationNode' },
+                { value: ConnectedOperationNode, name: 'ConnectedOperationNode' }
             ]
         }
     })
     private conditions: ConditionNode[];
 
     constructor(conditions: ConditionNode[], lines: string[], range: IndexRange) {
-        super(lines, range)
+        super(lines, range);
         this.conditions = conditions;
     }
 
@@ -48,7 +48,7 @@ export class ConnectedOperationNode extends ConditionNode {
     }
 
     public getChildren(): GenericNode[] {
-        var childList: GenericNode[] = [];
+        const childList: GenericNode[] = [];
 
         childList.push(...this.conditions);
 
@@ -56,20 +56,21 @@ export class ConnectedOperationNode extends ConditionNode {
     }
 
     public getHoverContent(): HoverContent {
-        var content: HoverContent = new HoverContent(this.$range, "ConnectedOperation");
+        const content: HoverContent = new HoverContent(this.$range, 'ConnectedOperation');
         return content;
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {
-        if (this.getConditions().length == 0) {
+        if (this.getConditions().length === 0) {
             return CompletionContainer.init().operandTransition();
         }
 
         for (let index = 0; index < this.getConditions().length - 1; index++) {
             const firstElement = this.getConditions()[index];
 
-            if (firstElement.$range.includesPosition(position))
+            if (firstElement.$range.includesPosition(position)) {
                 return firstElement.getCompletionContainer(position);
+            }
 
             const secondElement = this.getConditions()[index + 1];
 
@@ -84,22 +85,23 @@ export class ConnectedOperationNode extends ConditionNode {
     }
 
     public getBeautifiedContent(aliasHelper: AliasHelper): string {
-        if (this.getConditions().length == 0) return this.$lines.join("\n");
+        if (this.getConditions().length === 0) { return this.$lines.join('\n'); }
 
-        var returnString: string = "";
+        let returnString: string = '';
 
-        var extraSpacesForNestedOperation: string = !!this.$connector
+        const extraSpacesForNestedOperation: string = !!this.$connector
             ? FormattingHelper.generateSpaces(this.$connector!.length + 1)
-            : "";
+            : '';
 
         for (let index = 0; index < this.getConditions().length; index++) {
             const element = this.getConditions()[index];
 
             returnString += element.getBeautifiedContent(aliasHelper);
-            returnString = returnString.replace(/(?:\r\n|\r|\n)/g, ("\n" + extraSpacesForNestedOperation));
+            returnString = returnString.replace(/(?:\r\n|\r|\n)/g, ('\n' + extraSpacesForNestedOperation));
 
-            if (index != this.getConditions().length - 1)
-                returnString += "\n";
+            if (index !== this.getConditions().length - 1) {
+                returnString += '\n';
+            }
         }
 
         return returnString;
@@ -110,9 +112,9 @@ export class ConnectedOperationNode extends ConditionNode {
     }
 
     public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
-        if (this.conditions.length == 0) return null;
+        if (this.conditions.length === 0) { return null; }
 
-        var capture = new SyntaxHighlightingCapture();
+        const capture = new SyntaxHighlightingCapture();
         for (const condition of this.conditions) {
             capture.merge(condition.getPatternInformation(aliasesHelper));
         }

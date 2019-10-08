@@ -1,6 +1,6 @@
-import { StateTransition } from "./StateTransition";
-import { CompletionBuilder } from "../CompletionBuilder";
-import { String } from "typescript-string-operations";
+import { String } from 'typescript-string-operations';
+import { CompletionBuilder } from '../CompletionBuilder';
+import { StateTransition } from './StateTransition';
 
 /**
  * Transition for operands
@@ -25,9 +25,9 @@ export class OperandTransition extends StateTransition {
     }
 
     public get $nameFilter(): string[] {
-        var filterList: string[] = this.nameFilter;
+        const filterList: string[] = this.nameFilter;
         for (const filter of this.nameFilter) {
-            var complexChild: string[] = filter.split('.');
+            const complexChild: string[] = filter.split('.');
             if (complexChild.length > 1) {
                 filterList.push(complexChild[complexChild.length - 1]);
             }
@@ -55,13 +55,13 @@ export class OperandTransition extends StateTransition {
      * @memberof OperandTransition
      */
     public isValid(name: string, datatype: string): boolean {
-        if (!this.dataType && this.$nameFilter.length == 0) return true;
+        if (!this.dataType && this.$nameFilter.length === 0) { return true; }
 
         // Wrong Datatype
-        if (!String.IsNullOrWhiteSpace(this.dataType!) && datatype != this.dataType) return false;
+        if (!String.IsNullOrWhiteSpace(this.dataType!) && datatype !== this.dataType) { return false; }
 
         // The Attribute with the name is not allowed
-        if (!!this.$nameFilter && this.$nameFilter.includes(name)) return false;
+        if (!!this.$nameFilter && this.$nameFilter.includes(name)) { return false; }
 
         return true;
     }

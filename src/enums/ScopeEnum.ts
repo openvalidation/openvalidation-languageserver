@@ -9,7 +9,7 @@ export enum ScopeEnum {
     Variable = 'variable.parameter.ov',
     Keyword = 'keyword.ov',
     Comment = 'comment.block.ov',
-    
+
     StaticString = 'string.unquoted.ov',
     StaticNumber = 'constant.numeric.ov',
 

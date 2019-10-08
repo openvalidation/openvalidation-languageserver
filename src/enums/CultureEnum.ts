@@ -5,7 +5,7 @@
  * @enum {number}
  */
 export enum CultureEnum {
-    English = "en",
-    German = "de",
-    Russian = "ru"
+    English = 'en',
+    German = 'de',
+    Russian = 'ru'
 }

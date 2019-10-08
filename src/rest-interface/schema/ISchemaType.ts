@@ -1,5 +1,5 @@
-import { IComplexData } from "./IComplexData";
-import { ISchemaProperty } from "./ISchemaProperty";
+import { IComplexData } from './IComplexData';
+import { ISchemaProperty } from './ISchemaProperty';
 
 /**
  * Interface for the parsed schema which we get from the rest-interface.

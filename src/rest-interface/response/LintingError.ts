@@ -1,6 +1,5 @@
-import { IndexRange } from "../../data-model/syntax-tree/IndexRange";
-import { Type } from "class-transformer";
-
+import { Type } from 'class-transformer';
+import { IndexRange } from '../../data-model/syntax-tree/IndexRange';
 
 /**
  * Class for linting-messages we received from the REST-API.

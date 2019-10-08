@@ -1,4 +1,4 @@
-import { IndexRange } from "src/data-model/syntax-tree/IndexRange";
+import { IndexRange } from 'src/data-model/syntax-tree/IndexRange';
 
 /**
  * Class that contains the string-content and the range of the hovered content
@@ -16,7 +16,7 @@ export class HoverContent {
      * @param {string} content beautified content which will be shown to the user
      * @memberof HoverContent
      */
-    constructor(range: IndexRange, content: string) { 
+    constructor(range: IndexRange, content: string) {
         this.content = content;
         this.range = range;
     }

@@ -10,7 +10,6 @@
     "@sourcegraph/vscode-ws-jsonrpc": "0.0.3-fork",
     "axios": "^0.19.0",
     "axios-mock-adapter": "^1.17.0",
-    "body-parser": "^1.19.0",
     "class-transformer": "^0.2.3",
     "cpx": "^1.5.0",
     "express": "^4.15.2",
@@ -44,7 +43,7 @@
     "build": "tsc && npm run copy:exe",
     "start": "npm run build && node lib/server.js",
     "start:watch": "nodemon",
-    "test": "jest && make-coverage-badge",
+    "test": "jest --no-cache && make-coverage-badge",
     "test:watch": "jest --watch",
     "debug": "nodemon --debug lib/server.js",
     "copy:exe": "cpx ./src/rest-interface/ov-rest.exe ./lib/rest-interface/"

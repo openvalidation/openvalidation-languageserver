@@ -1,6 +1,6 @@
-import { Type } from "class-transformer";
-import { Position, Range } from "vscode-languageserver";
-import { IndexPosition } from "./IndexPosition";
+import { Type } from 'class-transformer';
+import { Position, Range } from 'vscode-languageserver';
+import { IndexPosition } from './IndexPosition';
 
 /**
  * Dataclass that is used for the scopes of the syntax-tree
@@ -9,37 +9,6 @@ import { IndexPosition } from "./IndexPosition";
  * @class IndexRange
  */
 export class IndexRange {
-    @Type(() => IndexPosition)
-    private start: IndexPosition | null;
-
-    @Type(() => IndexPosition)
-    private end: IndexPosition | null;
-
-    /**
-     * Creates an instance of IndexRange.
-     * @param {IndexPosition} start start position
-     * @param {IndexPosition} end end position
-     * @memberof IndexRange
-     */
-    constructor(start: IndexPosition, end: IndexPosition) {
-        this.start = start;
-        this.end = end;
-    }
-
-    /**
-     * Creates an IndexRange by the number parameters
-     *
-     * @static
-     * @param {number} startLine start line of the range
-     * @param {number} startColumn start column of the range
-     * @param {number} endLine end line of the range
-     * @param {number} endColumn end column of the range
-     * @returns
-     * @memberof IndexRange
-     */
-    public static create(startLine: number, startColumn: number, endLine: number, endColumn: number) {
-        return new IndexRange(new IndexPosition(startLine, startColumn), new IndexPosition(endLine, endColumn));
-    }
 
     public get $start(): IndexPosition | null {
         return this.start;
@@ -58,6 +27,37 @@ export class IndexRange {
     }
 
     /**
+     * Creates an IndexRange by the number parameters
+     *
+     * @static
+     * @param {number} startLine start line of the range
+     * @param {number} startColumn start column of the range
+     * @param {number} endLine end line of the range
+     * @param {number} endColumn end column of the range
+     * @returns
+     * @memberof IndexRange
+     */
+    public static create(startLine: number, startColumn: number, endLine: number, endColumn: number) {
+        return new IndexRange(new IndexPosition(startLine, startColumn), new IndexPosition(endLine, endColumn));
+    }
+    @Type(() => IndexPosition)
+    private start: IndexPosition | null;
+
+    @Type(() => IndexPosition)
+    private end: IndexPosition | null;
+
+    /**
+     * Creates an instance of IndexRange.
+     * @param {IndexPosition} start start position
+     * @param {IndexPosition} end end position
+     * @memberof IndexRange
+     */
+    constructor(start: IndexPosition, end: IndexPosition) {
+        this.start = start;
+        this.end = end;
+    }
+
+    /**
      * Returns true, if the position is placed before the range
      *
      * @param {Position} position position that should be checked
@@ -65,9 +65,9 @@ export class IndexRange {
      * @memberof IndexRange
      */
     public startsAfter(position: Position): boolean {
-        if (!this.$start) return false;
+        if (!this.$start) { return false; }
 
-        var afterStart = (this.$start.$line == position.line &&
+        const afterStart = (this.$start.$line === position.line &&
             this.$start.$column <= position.character) ||
             this.$start.$line < position.line;
         return !afterStart;
@@ -81,9 +81,9 @@ export class IndexRange {
      * @memberof IndexRange
      */
     public endsBefore(position: Position): boolean {
-        if (!this.$end) return true;
+        if (!this.$end) { return true; }
 
-        var beforeEnd = (this.$end.$line == position.line &&
+        const beforeEnd = (this.$end.$line === position.line &&
             this.$end.$column >= position.character) ||
             this.$end.$line > position.line;
         return !beforeEnd;
@@ -108,10 +108,10 @@ export class IndexRange {
      * @memberof IndexRange
      */
     public includesRange(range: IndexRange): boolean {
-        if (!range || !range.$start || !range.$end) return false;
+        if (!range || !range.$start || !range.$end) { return false; }
 
-        return this.includesPosition(range.$start.asPosition()) || 
-                this.includesPosition(range.$end.asPosition());
+        return this.includesPosition(range.$start.asPosition()) ||
+            this.includesPosition(range.$end.asPosition());
     }
 
     /**
@@ -121,9 +121,9 @@ export class IndexRange {
      * @memberof IndexRange
      */
     public asRange(): Range {
-        var startPosition: Position = !this.$start ? Position.create(-1, -1) : this.$start.asPosition();
-        var endPosition: Position = !this.$end ? Position.create(-1, -1) : this.$end.asPosition();
-        
+        const startPosition: Position = !this.$start ? Position.create(-1, -1) : this.$start.asPosition();
+        const endPosition: Position = !this.$end ? Position.create(-1, -1) : this.$end.asPosition();
+
         return Range.create(startPosition, endPosition);
     }
 

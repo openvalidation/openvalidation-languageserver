@@ -1,5 +1,5 @@
-import { StateTransition } from "./StateTransition";
-import { CompletionBuilder } from "../CompletionBuilder";
+import { CompletionBuilder } from '../CompletionBuilder';
+import { StateTransition } from './StateTransition';
 
 /**
  * Empty-transition which is used as a placeholder for a state where no items should be aded
@@ -10,7 +10,7 @@ import { CompletionBuilder } from "../CompletionBuilder";
  */
 export class EmptyTransition extends StateTransition {
     constructor() {
-        super()
+        super();
     }
 
     /**

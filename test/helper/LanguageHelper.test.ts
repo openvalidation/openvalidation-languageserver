@@ -1,22 +1,22 @@
-import "jest";
-import { LanguageEnum } from "../../src/enums/LanguageEnum";
-import { LanguageHelper } from "../../src/helper/LanguageHelper";
+import 'jest';
+import { LanguageEnum } from '../../src/enums/LanguageEnum';
+import { LanguageHelper } from '../../src/helper/LanguageHelper';
 
-describe("OvStringHelper.convertOvLanguageToMonacoLanguage Tests", () => {
-    test("Insert Node, expected JavaScript", () => {
-        var expected = "JavaScript";
-        var input = LanguageEnum.Node;
+describe('OvStringHelper.convertOvLanguageToMonacoLanguage Tests', () => {
+    test('Insert Node, expected JavaScript', () => {
+        const expected = 'JavaScript';
+        const input = LanguageEnum.Node;
 
-        var actual = LanguageHelper.convertOvLanguageToMonacoLanguage(input);
+        const actual = LanguageHelper.convertOvLanguageToMonacoLanguage(input);
 
         expect(actual).toEqual(expected);
     });
 
-    test("Insert Java, expected Java", () => {
-        var expected = "Java";
-        var input = LanguageEnum.Java;
+    test('Insert Java, expected Java', () => {
+        const expected = 'Java';
+        const input = LanguageEnum.Java;
 
-        var actual = LanguageHelper.convertOvLanguageToMonacoLanguage(input);
+        const actual = LanguageHelper.convertOvLanguageToMonacoLanguage(input);
 
         expect(actual).toEqual(expected);
     });

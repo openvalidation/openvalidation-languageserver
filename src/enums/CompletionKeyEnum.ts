@@ -6,6 +6,6 @@
  * @enum {number}
  */
 export enum CompletionKeyEnum {
-    Array = ",",
-    ComplexSchema = "."
+    Array = ',',
+    ComplexSchema = '.'
 }
