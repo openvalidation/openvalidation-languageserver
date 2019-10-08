@@ -353,4 +353,71 @@ describe('Operation Tests', () => {
 
         expect(actual).toEqual(operand);
     });
+
+    test('getSemanticalSugarOfOperator with duplicate operator, expect not used operator', () => {
+        const operand: string = 'Test';
+        const left: OperandNode =
+            new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), 'String', operand);
+        const operator: OperatorNode =
+            new OperatorNode(['kleiner'], IndexRange.create(0, 0, 0, 0), 'Boolean', 'kleiner', 'Decimal');
+        const right: OperandNode =
+            new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), 'String', operand);
+        const operationNode: OperationNode =
+            new OperationNode(left, operator, right, ['Test ist kleiner Test'], IndexRange.create(0, 0, 0, 'Test kleiner Test'.length));
+
+        const actual: string = operationNode['getSemanticalSugarOfOperator']();
+        const expected: string = 'ist';
+
+        expect(actual.trim()).toEqual(expected);
+    });
+
+    // tslint:disable-next-line: max-line-length
+    test('getSemanticalSugarOfOperator with duplicate operator but without right operand, expect not used operator', () => {
+        const operand: string = 'Test';
+        const left: OperandNode =
+            new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), 'String', operand);
+        const operator: OperatorNode =
+            new OperatorNode(['kleiner'], IndexRange.create(0, 0, 0, 0), 'Boolean', 'kleiner', 'Decimal');
+        const operationNode: OperationNode =
+            new OperationNode(
+                left, operator, null, ['Test ist kleiner'], IndexRange.create(0, 0, 0, 'Test ist kleiner'.length)
+            );
+
+        const actual: string = operationNode['getSemanticalSugarOfOperator']();
+        const expected: string = 'ist';
+
+        expect(actual.trim()).toEqual(expected);
+    });
+
+    // tslint:disable-next-line: max-line-length
+    test('getSemanticalSugarOfOperator with duplicate operator but without any operand, expect not used operator', () => {
+        const operator: OperatorNode =
+            new OperatorNode(['kleiner'], IndexRange.create(0, 0, 0, 0), 'Boolean', 'kleiner', 'Decimal');
+        const operationNode: OperationNode =
+            new OperationNode(
+                null, operator, null, [' ist kleiner'], IndexRange.create(0, 0, 0, ' ist kleiner'.length)
+            );
+
+        const actual: string = operationNode['getSemanticalSugarOfOperator']();
+        const expected: string = 'ist';
+
+        expect(actual.trim()).toEqual(expected);
+    });
+
+    test('getSemanticalSugarOfOperator without duplicate operator, expect not used operator', () => {
+        const operand: string = 'Test';
+        const left: OperandNode =
+            new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), 'String', operand);
+        const operator: OperatorNode =
+            new OperatorNode(['kleiner'], IndexRange.create(0, 0, 0, 0), 'Boolean', 'kleiner', 'Decimal');
+        const right: OperandNode =
+            new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), 'String', operand);
+        const operationNode: OperationNode =
+            new OperationNode(left, operator, right, ['Test kleiner Test'], IndexRange.create(0, 0, 0, 'Test kleiner Test'.length));
+
+        const actual: string = operationNode['getSemanticalSugarOfOperator']();
+        const expected: string = '';
+
+        expect(actual.trim()).toEqual(expected);
+    });
 });

@@ -43,7 +43,7 @@
     "build": "tsc && npm run copy:exe",
     "start": "npm run build && node lib/server.js",
     "start:watch": "nodemon",
-    "test": "jest --no-cache && make-coverage-badge",
+    "test": "jest && make-coverage-badge",
     "test:watch": "jest --watch",
     "debug": "nodemon --debug lib/server.js",
     "copy:exe": "cpx ./src/rest-interface/ov-rest.exe ./lib/rest-interface/"

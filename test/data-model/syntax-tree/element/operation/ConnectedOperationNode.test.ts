@@ -4,15 +4,20 @@ import { ConnectedOperationNode } from '../../../../../src/data-model/syntax-tre
 import { OperandNode } from '../../../../../src/data-model/syntax-tree/element/operation/operand/OperandNode';
 import { OperatorNode } from '../../../../../src/data-model/syntax-tree/element/operation/operand/OperatorNode';
 import { OperationNode } from '../../../../../src/data-model/syntax-tree/element/operation/OperationNode';
+import { GenericNode } from '../../../../../src/data-model/syntax-tree/GenericNode';
 import { IndexRange } from '../../../../../src/data-model/syntax-tree/IndexRange';
 import { ConnectionTransition } from '../../../../../src/provider/code-completion/states/ConnectionTransition';
 import { EmptyTransition } from '../../../../../src/provider/code-completion/states/EmptyTransition';
 import { OperandTransition } from '../../../../../src/provider/code-completion/states/OperandTransition';
 import { OperatorTransition } from '../../../../../src/provider/code-completion/states/OperatorTransition';
 import { StateTransition } from '../../../../../src/provider/code-completion/states/StateTransition';
+import { TestInitializer } from '../../../../Testinitializer';
 
 describe('ConnectedOperationNode Tests', () => {
+    let initializer: TestInitializer;
+
     beforeEach(() => {
+        initializer = new TestInitializer(true);
     });
 
     test('getCompletionContainer with empty ConnectedOperationNode, expected Empty', () => {
@@ -268,5 +273,81 @@ describe('ConnectedOperationNode Tests', () => {
 
         const actual: StateTransition[] = connectOperation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(OperatorTransition);
+    });
+
+    // test('ActionErrorNode get errorMessage test', () => {
+    //     const errorMessage: string = 'This is an error';
+    //     const errorNode: ActionErrorNode =
+    //         new ActionErrorNode([errorMessage], IndexRange.create(0, 0, 0, errorMessage.length), errorMessage);
+
+    //     expect(errorNode.$errorMessage).toEqual(errorMessage);
+    // });
+
+    test('getChildren with empty node, expect no children', () => {
+        const connectOperation: ConnectedOperationNode =
+            new ConnectedOperationNode([], [], IndexRange.create(0, 0, 0, 35));
+
+        const actual: GenericNode[] = connectOperation.getChildren();
+        const expected: GenericNode[] = [];
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('getChildren with two conditions, expect two children', () => {
+        const leftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 0, 0, 5), 'Decimal', 'Alter');
+        const operator: OperatorNode = new OperatorNode(['gleich'], IndexRange.create(0, 6, 0, 12), 'Boolean', 'EQUALS', 'Object');
+        const rightOperand: OperandNode = new OperandNode(['18'], IndexRange.create(0, 13, 0, 15), 'Decimal', '18.0');
+        const firstOperation =
+            new OperationNode(leftOperand, operator, rightOperand, ['Alter gleich 18'], IndexRange.create(0, 0, 0, 15));
+
+        const secleftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 19, 0, 25), 'Decimal', 'Alter');
+        const secondOperation =
+            new OperationNode(secleftOperand, null, null, ['UND  Alter gleich 18'], IndexRange.create(0, 17, 0, 35));
+
+        const connectOperation: ConnectedOperationNode =
+            new ConnectedOperationNode([firstOperation, secondOperation], [], IndexRange.create(0, 0, 0, 35));
+
+        const actual: GenericNode[] = connectOperation.getChildren();
+        const expected: GenericNode[] = [firstOperation, secondOperation];
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('getHoverContent test, expect not empty content', () => {
+        const leftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 0, 0, 5), 'Decimal', 'Alter');
+        const operator: OperatorNode = new OperatorNode(['gleich'], IndexRange.create(0, 6, 0, 12), 'Boolean', 'EQUALS', 'Object');
+        const rightOperand: OperandNode = new OperandNode(['18'], IndexRange.create(0, 13, 0, 15), 'Decimal', '18.0');
+        const firstOperation =
+            new OperationNode(leftOperand, operator, rightOperand, ['Alter gleich 18'], IndexRange.create(0, 0, 0, 15));
+
+        const secleftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 19, 0, 25), 'Decimal', 'Alter');
+        const secondOperation =
+            new OperationNode(secleftOperand, null, null, ['UND  Alter gleich 18'], IndexRange.create(0, 17, 0, 35));
+
+        const connectOperation: ConnectedOperationNode =
+            new ConnectedOperationNode([firstOperation, secondOperation], [], IndexRange.create(0, 0, 0, 35));
+
+        const actual = connectOperation.getHoverContent();
+
+        expect(actual).not.toBeNull();
+    });
+
+    test('getBeautifiedContent test, expect not empty content', () => {
+        const leftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 0, 0, 5), 'Decimal', 'Alter');
+        const operator: OperatorNode = new OperatorNode(['gleich'], IndexRange.create(0, 6, 0, 12), 'Boolean', 'EQUALS', 'Object');
+        const rightOperand: OperandNode = new OperandNode(['18'], IndexRange.create(0, 13, 0, 15), 'Decimal', '18.0');
+        const firstOperation =
+            new OperationNode(leftOperand, operator, rightOperand, ['Alter gleich 18'], IndexRange.create(0, 0, 0, 15));
+
+        const secleftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 19, 0, 25), 'Decimal', 'Alter');
+        const secondOperation =
+            new OperationNode(secleftOperand, null, null, ['UND  Alter gleich 18'], IndexRange.create(0, 17, 0, 35));
+
+        const connectOperation: ConnectedOperationNode =
+            new ConnectedOperationNode([firstOperation, secondOperation], [], IndexRange.create(0, 0, 0, 35));
+
+        const actual = connectOperation.getBeautifiedContent(initializer.$server.aliasHelper);
+
+        expect(actual).toEqual('Alter gleich 18\nUND Alter gleich 18');
     });
 });
