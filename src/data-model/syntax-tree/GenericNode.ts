@@ -47,10 +47,6 @@ export abstract class GenericNode {
         this.range = value;
     }
 
-    public get $startLineNumber(): number {
-        return this.$range.$start.$line;
-    }
-
     /**
      * Generates a list of all relevant children for tree-traversal
      *

@@ -195,7 +195,7 @@ describe("ArrayOperandNode Tests", () => {
         var arrayOperandNode: ArrayOperandNode = new ArrayOperandNode([operandNode], [operand], IndexRange.create(0, 0, 0, operand.length), "String", operand);
 
         var actual: ScopeEnum[] = arrayOperandNode.getPatternInformation(initializer.server.aliasHelper)!.$capture;
-        var expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.Variable, ScopeEnum.Keyword, ScopeEnum.Variable, ScopeEnum.Empty];
+        var expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.Variable, ScopeEnum.Keyword, ScopeEnum.Variable];
 
         expect(actual).toEqual(expected);
     });

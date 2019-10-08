@@ -9,9 +9,27 @@ import { ConnectedOperationNode } from "../../src/data-model/syntax-tree/element
 import { OperationNode } from "../../src/data-model/syntax-tree/element/operation/OperationNode";
 import { RuleNode } from "../../src/data-model/syntax-tree/element/RuleNode";
 import { VariableNode } from "../../src/data-model/syntax-tree/element/VariableNode";
+import { MainNode } from "../../src/data-model/syntax-tree/MainNode";
+import { Variable } from "../../src/data-model/syntax-tree/Variable";
 
 
 describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
+
+    test("check type of MainNodeJson, expect MainNode", async () => {
+        var actual = plainToClass(MainNode, mainNodeJson());
+        var expectedType = MainNode;
+
+        expect(actual).toBeInstanceOf(expectedType);
+        for (let index = 0; index < actual.$declarations.length; index++) {
+            const condition = actual.$declarations[index];
+            expect(condition).toBeInstanceOf(Variable);
+        }
+        
+        for (let index = 0; index < actual.$scopes.length; index++) {
+            const condition = actual.$scopes[index];
+            expect(condition).toBeInstanceOf(OperandNode);
+        }
+    });
 
     test("check type of OperandNodeJson, expect OperandNode", async () => {
         var actual = plainToClass(OperandNode, operandNodeJson());
@@ -116,6 +134,30 @@ describe("plainToClass Test, checks type inference of JSON-Schemas", () => {
     });
     
     //#region JSON-Definitions
+    function mainNodeJson() {
+        return {
+            "declarations": [
+                {
+                    "name": "Hello",
+                    "dataType": "Test"
+                }
+            ],
+            "scopes": [
+                operandNodeJson()
+            ],
+            "range": {
+                "start": {
+                    "line": 0,
+                    "column": 42
+                },
+                "end": {
+                    "line": 0,
+                    "column": 55
+                }
+            }
+        }
+    }
+
     function operandNodeJson() {
         return {
             "lines": [

@@ -1,5 +1,4 @@
 import "jest";
-import { InitializeResult } from "vscode-languageserver";
 import { TestInitializer } from "./Testinitializer";
 
 describe("Dummy Tests", () => {
@@ -9,10 +8,16 @@ describe("Dummy Tests", () => {
         initializer = new TestInitializer(true);
     });
 
-    test("initialize with empty params, expect no error", async () => {
-        var actual: InitializeResult = await initializer.server["initialize"]({ rootPath: "test", rootUri: "test", processId: 20, capabilities: {}, workspaceFolders: null });
+    test("initialize with rootPath in params, expect no error", async () => {
+        expect(async () => await initializer.server["initialize"]({ rootPath: "test", rootUri: "test", processId: 20, capabilities: {}, workspaceFolders: null })).not.toThrow(Error);
+    });
 
-        expect(actual).not.toBeNull();
+    test("initialize without rootPath but with rootUri in params, expect no error", async () => {
+        expect(async () => await initializer.server["initialize"]({ rootUri: "test", processId: 20, capabilities: {}, workspaceFolders: null })).not.toThrow(Error);
+    });
+
+    test("initialize without paths in params, expect no error", async () => {
+        expect(async () => await initializer.server["initialize"]({ rootUri: null, processId: 20, capabilities: {}, workspaceFolders: null })).not.toThrow(Error);
     });
 
     test("validateAndSetSchemaDefinition with default params, expect no error", () => {
@@ -32,6 +37,10 @@ describe("Dummy Tests", () => {
     });
 
     test("setGeneratedSchema, expect no error", () => {
-        expect(async () => await initializer.server["setGeneratedSchema"](initializer.mockNotEmptyLintingResponse())).not.toThrow(Error);
+        expect(() => initializer.server["setGeneratedSchema"](initializer.mockNotEmptyLintingResponse())).not.toThrow(Error);
     });
+
+    test("start, expect no error", () => {
+        expect(() => initializer.server.start()).not.toThrow(Error);
+    })
 });

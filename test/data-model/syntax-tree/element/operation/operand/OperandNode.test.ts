@@ -145,7 +145,7 @@ describe("OperandNode Tests", () => {
         var operandNode: OperandNode = new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), "Decimal", "Student.Alter");
 
         var actual: ScopeEnum[] = operandNode.getPatternInformation(initializer.server.aliasHelper)!.$capture;
-        var expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.Variable, ScopeEnum.Keyword, ScopeEnum.Variable, ScopeEnum.Empty];
+        var expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.Variable, ScopeEnum.Keyword, ScopeEnum.Variable];
 
         expect(actual).toEqual(expected);
     });

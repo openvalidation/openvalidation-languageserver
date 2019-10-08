@@ -11,6 +11,18 @@ describe("GenericNode Tests", () => {
         initializer = new TestInitializer(true);
     });
 
+    test("GenericNode getter/setter test", () => {
+        var operandNode = new OperandNode([], IndexRange.create(0, 0, 0, 0), "", "");
+
+        var expectedLines: string[] = ["Hello"];
+        operandNode.$lines = expectedLines;
+        var expectedRange: IndexRange = IndexRange.create(10, 10, 10, 10);
+        operandNode.$range = expectedRange;
+
+        expect(operandNode.$lines).toEqual(expectedLines);
+        expect(operandNode.$range).toEqual(expectedRange);
+    });
+
     test("formatCode with good formatted OperandNode, expect no edit", () => {
         var node: GenericNode = new OperandNode(["Test"], IndexRange.create(0, 0, 0, 4), "String", "Test");
 

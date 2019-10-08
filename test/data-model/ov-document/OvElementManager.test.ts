@@ -1,6 +1,8 @@
 import "jest";
 import { OvElementManager } from "../../../src/data-model/ov-document/OvElementManager";
 import { TestInitializer } from "../../TestInitializer";
+import { OperandNode } from "../../../src/data-model/syntax-tree/element/operation/operand/OperandNode";
+import { IndexRange } from "../../../src/data-model/syntax-tree/IndexRange";
 
 describe("Dummy Tests", () => {
     var elementManager: OvElementManager;
@@ -24,5 +26,12 @@ describe("Dummy Tests", () => {
         var expectedLength: number = 1;
         var actualLength = elementManager.getComments().length;
         expect(actualLength).toEqual(expectedLength);
+    });
+
+    test("addElement test, expect element is added", () => {
+        var operandNode = new OperandNode([], IndexRange.create(0, 0, 0, 0), "", "");
+        elementManager.addElement(operandNode);
+    
+        expect(elementManager.$elements.includes(operandNode));
     });
 });

@@ -92,9 +92,9 @@ export class OvServer {
      * @memberof OvServer
      */
     private async initialize(params: InitializeParams): Promise<InitializeResult> {
-        if (params.rootPath) {
+        if (!!params.rootPath) {
             this.workspaceRoot = URI.file(params.rootPath);
-        } else if (params.rootUri) {
+        } else if (!!params.rootUri) {
             this.workspaceRoot = URI.parse(params.rootUri);
         }
 
@@ -122,7 +122,7 @@ export class OvServer {
             },
             colorProvider: false,
             foldingRangeProvider: true,
-            
+
 
             // Boolean for the OV-specific features
             semanticNotification: true,
@@ -217,14 +217,12 @@ export class OvServer {
             }
         }
 
-        if (aliases) {
-            this.aliasHelper.$aliases = aliases;
-            this.aliasHelper.$operators = returnAliases.data.$operators;
+        this.aliasHelper.$aliases = aliases;
+        this.aliasHelper.$operators = returnAliases.data.$operators;
 
-            var commentKeyword = this.aliasHelper.getCommentKeyword();
-            if (!!commentKeyword)
-                this.connection.sendNotification("textDocument/aliasesChanges", commentKeyword);
-        }
+        var commentKeyword = this.aliasHelper.getCommentKeyword();
+        if (!!commentKeyword)
+            this.connection.sendNotification("textDocument/aliasesChanges", commentKeyword);
     }
 
     /**
@@ -232,7 +230,7 @@ export class OvServer {
      *
      * @memberof OvServer
      */
-    start() {
+    public start(): void {
         this.connection.listen();
     }
 }

@@ -34,31 +34,22 @@ describe("SyntaxHighlightingCapture tests", () => {
         expect(actual).toEqual(expected);
     });
 
-    test("addRegexToMatch with empty regex, expect the same as before", () => {
-        var expected = "regex";
+    test("addRegexToMatch with empty regex, expect group of previous string", () => {
+        var input = "regex";
         
-        capture.addRegexToMatch(expected);
-        capture.addRegexToMatch(null);
+        capture.addRegexGroupAndCapture(input, ScopeEnum.Empty);
+        capture.addRegexGroupAndCapture(null, ScopeEnum.Empty);
         var actual = capture.$match;
+        var expected = "(regex)";
 
         expect(actual).toEqual(expected);
     });
-
-
-    test("buildPattern without captures, expect null", () => {
-        var expected = null;
-
-        capture.addRegexToMatch("Test");
-        var actual = capture.buildPattern();
-
-        expect(actual).toEqual(expected);
-    });
-
+    
     test("getRegex with two words, expect match", () => {
         var expected = true;
 
-        capture.addRegexToMatch("Test");
-        capture.addRegexToMatch("Test");
+        capture.addRegexGroupAndCapture("Test", ScopeEnum.Empty);
+        capture.addRegexGroupAndCapture("Test", ScopeEnum.Empty);
         var actual = new RegExp(capture.$match!).test("Test Test");
 
         expect(actual).toEqual(expected);
@@ -67,8 +58,8 @@ describe("SyntaxHighlightingCapture tests", () => {
     test("getRegex with two words, expect no match", () => {
         var expected = false;
 
-        capture.addRegexToMatch("Test");
-        capture.addRegexToMatch("Test");
+        capture.addRegexGroupAndCapture("Test", ScopeEnum.Empty);
+        capture.addRegexGroupAndCapture("Test", ScopeEnum.Empty);
         var actual = new RegExp(capture.$match!).test("Test aTest");
 
         expect(actual).toEqual(expected);
@@ -79,10 +70,8 @@ describe("SyntaxHighlightingCapture tests", () => {
             "2": { name: ScopeEnum.Keyword}
         };
 
-        capture.addRegexToMatch("Test");
-        capture.addRegexToMatch("Test");
-        capture.addCapture(ScopeEnum.Empty);
-        capture.addCapture(ScopeEnum.Keyword);
+        capture.addRegexGroupAndCapture("Test", ScopeEnum.Empty);
+        capture.addRegexGroupAndCapture("Test", ScopeEnum.Keyword);
         var actual = capture.buildPattern();
 
         expect(actual!.captures).toEqual(expected);

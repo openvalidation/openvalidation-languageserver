@@ -19,8 +19,16 @@ export class AliasHelper {
         this.operators = new Map<string, string>();
     }
 
+    public get $aliases(): Map<string, string> {
+        return this.aliases;
+    }
+
     public set $aliases(aliases: Map<string, string>) {
         this.aliases = aliases;
+    }
+
+    public get $operators(): Map<string, string> {
+        return this.operators;
     }
 
     public set $operators(operators: Map<string, string>) {
@@ -170,10 +178,10 @@ export class AliasHelper {
         var sortingList: string[] = [];
 
         this.aliases.forEach((value: string, key: string) => {
-            var aliasInList = keys.some(key => key[1] == value);
             if (value.indexOf(AliasKey.OPERATOR) !== -1 &&
                 (!startingWord || key.startsWith(startingWord))) {
 
+                var aliasInList = keys.some(key => key[1] == value);
                 sortingList.push(aliasInList ? "z" : "a");
                 keys.push([key, value]);
             }

@@ -10,10 +10,10 @@ import { IndexPosition } from "./IndexPosition";
  */
 export class IndexRange {
     @Type(() => IndexPosition)
-    private start: IndexPosition;
+    private start: IndexPosition | null;
 
     @Type(() => IndexPosition)
-    private end: IndexPosition;
+    private end: IndexPosition | null;
 
     /**
      * Creates an instance of IndexRange.
@@ -41,19 +41,19 @@ export class IndexRange {
         return new IndexRange(new IndexPosition(startLine, startColumn), new IndexPosition(endLine, endColumn));
     }
 
-    public get $start(): IndexPosition {
+    public get $start(): IndexPosition | null {
         return this.start;
     }
 
-    public set $start(value: IndexPosition) {
+    public set $start(value: IndexPosition | null) {
         this.start = value;
     }
 
-    public get $end(): IndexPosition {
+    public get $end(): IndexPosition | null {
         return this.end;
     }
 
-    public set $end(value: IndexPosition) {
+    public set $end(value: IndexPosition | null) {
         this.end = value;
     }
 
@@ -121,7 +121,10 @@ export class IndexRange {
      * @memberof IndexRange
      */
     public asRange(): Range {
-        return Range.create(this.$start.asPosition(), this.$end.asPosition());
+        var startPosition: Position = !this.$start ? Position.create(-1, -1) : this.$start.asPosition();
+        var endPosition: Position = !this.$end ? Position.create(-1, -1) : this.$end.asPosition();
+        
+        return Range.create(startPosition, endPosition);
     }
 
     /**

@@ -220,7 +220,7 @@ describe("FunctionOperandNode Tests", () => {
         var functionNode: FunctionOperandNode = new FunctionOperandNode([operandNode], [functionString], IndexRange.create(0, 0, 0, functionString.length), "Decimal", operand, "Decimal");
 
         var actual: ScopeEnum[] = functionNode.getPatternInformation(initializer.server.aliasHelper)!.$capture;
-        var expected: ScopeEnum[] = [ScopeEnum.Keyword, ScopeEnum.Empty, ScopeEnum.Variable, ScopeEnum.Keyword, ScopeEnum.Variable, ScopeEnum.Empty];
+        var expected: ScopeEnum[] = [ScopeEnum.Keyword, ScopeEnum.Empty, ScopeEnum.Variable, ScopeEnum.Keyword, ScopeEnum.Variable];
 
         expect(actual).toEqual(expected);
     });

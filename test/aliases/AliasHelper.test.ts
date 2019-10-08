@@ -14,7 +14,7 @@ describe("AliasHelper Tests", () => {
         input.set("THEN", AliasKey.THEN);
         input.set("IF", AliasKey.IF);
         input.set("OF", AliasKey.OF);
-        input.set("EQUALS", AliasKey.OPERATOR);
+        input.set("EQUALS", "ʬoperatorʬequals");
         input.set("SUM OF", AliasKey.SUM_OF);
         aliasHelper.$aliases = input;
 
@@ -25,6 +25,15 @@ describe("AliasHelper Tests", () => {
 
     beforeEach(() => {
         aliasHelper = new AliasHelper();
+    });
+
+    test("AliasHelper getter/setter test", () => {
+        setDefaultAliases();
+
+        var operators = new Map<string, string>();
+        aliasHelper.$operators = operators;
+
+        expect(aliasHelper.$operators).toEqual(operators);
     });
 
     test("getKeywordByAliasKey with invalid key, expect null", () => {
@@ -124,13 +133,24 @@ describe("AliasHelper Tests", () => {
         expect(actual).toEqual(expected);
     });
 
-    // test("getOperators, expect null", () => {
-    //     setDefaultAliases();
+    test("getOperators, expect one operator", () => {
+        setDefaultAliases();
 
-    //     var expected: number = 1;
-    //     var actualMap: Map<string, [string, string]> = aliasHelper.getOperators();
-    //     var actual: number = actualMap.size;
+        var expected: number = 1;
+        var actualMap: Map<string, [string, string]> = aliasHelper.getOperators();
+        var actual: number = actualMap.size;
 
-    //     expect(actual).toEqual(expected);
-    // });
+        expect(actual).toEqual(expected);
+    });
+
+    test("getOperators with two operators with the same key, expect both operators", () => {
+        setDefaultAliases();
+
+        var expected: number = 2;
+        aliasHelper.$aliases = aliasHelper.$aliases.set("Equals2", "ʬoperatorʬequals");
+        var actualMap: Map<string, [string, string]> = aliasHelper.getOperators();
+        var actual: number = actualMap.size;
+
+        expect(actual).toEqual(expected);
+    });
 })
