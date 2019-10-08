@@ -119,14 +119,14 @@ export class OperationNode extends ConditionNode {
             var container = this.leftOperand.getCompletionContainer(position);
 
             if (container.isEmpty())
-                container.operatorTransition(this.leftOperand.getDataType());
+                container.operatorTransition(this.leftOperand.$dataType);
 
             return container;
         }
 
         if (!!this.operator && !!this.operator.$range && this.operator.$range.endsBefore(position) && !this.rightOperand) {
             var container = this.operator.getCompletionContainer(position);
-            container.operandTransition(this.leftOperand.getDataType(), this.leftOperand.getName())
+            container.operandTransition(this.leftOperand.$dataType, this.leftOperand.$name)
             return container;
         }
 

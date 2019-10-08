@@ -59,7 +59,7 @@ export class UnkownNode extends GenericNode {
 
         var container: CompletionContainer = this.content.getCompletionContainer(position);
         if (container.isEmpty()) {
-            container.operatorTransition(this.content.getDataType());
+            container.operatorTransition(this.content.$dataType);
             container.asKeywordTransition();
         } else if (this.content.isComplete()) {
             container.thenKeywordTransition();

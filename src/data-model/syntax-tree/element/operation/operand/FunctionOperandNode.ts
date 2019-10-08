@@ -61,7 +61,7 @@ export class FunctionOperandNode extends BaseOperandNode {
     }
 
     public getHoverContent(): HoverContent {
-        var stringContent: string = "Function " + this.getName() + ": " + this.getDataType();
+        var stringContent: string = "Function " + this.$name + ": " + this.$dataType;
         var content: HoverContent = new HoverContent(this.$range, stringContent);
         return content;
     }
@@ -69,7 +69,7 @@ export class FunctionOperandNode extends BaseOperandNode {
     public getCompletionContainer(position: Position): CompletionContainer {
         var container = CompletionContainer.init();
         if (!this.isComplete()) {
-            container.operandTransition(this.getDataType());
+            container.operandTransition(this.$dataType);
         }
         return container;
     }
@@ -85,7 +85,7 @@ export class FunctionOperandNode extends BaseOperandNode {
     public getPatternInformation(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {        
         var capture = new SyntaxHighlightingCapture();
         capture.addCapture(ScopeEnum.Keyword);
-        capture.addRegexToMatch(`((?i)${this.getName()})`);
+        capture.addRegexToMatch(`((?i)${this.$name})`);
 
         for (const parameter of this.$parameters) {
             var tmpCapture = parameter.getPatternInformation(aliasesHelper);

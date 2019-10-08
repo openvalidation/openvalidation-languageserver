@@ -96,7 +96,7 @@ export class VariableNode extends GenericNode {
     public getHoverContent(): HoverContent {
         var contentText = "Variable" + (!this.getNameNode() ? " " : " "  + this.getNameNode()!.$name);
         if (!!this.getValue())
-            contentText += ": " + this.getValue()!.getDataType();
+            contentText += ": " + this.getValue()!.$dataType;
 
         var content: HoverContent = new HoverContent(this.$range, contentText);
         return content;
@@ -113,7 +113,7 @@ export class VariableNode extends GenericNode {
 
         var container = this.value.getCompletionContainer(position);
         if (container.isEmpty()) {
-            container.operatorTransition(this.value.getDataType());
+            container.operatorTransition(this.value.$dataType);
         }
 
         if (!!nameFilter)

@@ -20,7 +20,7 @@ export abstract class BaseOperandNode extends GenericNode {
      * Getter dataType
      * @return {string}
      */
-    public getDataType(): string {
+    public get $dataType(): string {
         return this.dataType;
     }
 
@@ -28,7 +28,7 @@ export abstract class BaseOperandNode extends GenericNode {
      * Getter name
      * @return {string}
      */
-    public getName(): string {
+    public get $name(): string {
         return this.name;
     }
    

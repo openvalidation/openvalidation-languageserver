@@ -29,7 +29,7 @@ export class OperandNode extends BaseOperandNode {
     }
 
     public getHoverContent(): HoverContent {
-        var stringContent: string = "Operand " + this.getName() + ": " + this.getDataType();
+        var stringContent: string = "Operand " + this.$name + ": " + this.$dataType;
         var content: HoverContent = new HoverContent(this.$range, stringContent);
         return content;
     }
@@ -50,10 +50,10 @@ export class OperandNode extends BaseOperandNode {
         var joinedLines: string = this.$lines.join("\n");
         if (String.IsNullOrWhiteSpace(joinedLines)) return null;
 
-        if (this.getName().indexOf(".") != -1 && joinedLines.indexOf(".") == -1)
+        if (this.$name.indexOf(".") != -1 && joinedLines.indexOf(".") == -1)
             return this.getPatternInformationForComplexSchema(aliasesHelper);
 
-        var splittedOperand = joinedLines.split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.getName())})`, "gi"));
+        var splittedOperand = joinedLines.split(new RegExp(`(${StringHelper.makeStringRegExSafe(this.$name)})`, "gi"));
         var capture = new SyntaxHighlightingCapture();
 
         var semanticalSugar = splittedOperand[0];
@@ -64,7 +64,7 @@ export class OperandNode extends BaseOperandNode {
 
         var scope: ScopeEnum;
         if (this.$isStatic) {
-            if (this.getDataType() == "Decimal") {
+            if (this.$dataType == "Decimal") {
                 scope = ScopeEnum.StaticNumber;
             } else {
                 scope = ScopeEnum.StaticString;
@@ -99,7 +99,7 @@ export class OperandNode extends BaseOperandNode {
      * @memberof OperandNode
      */
     private getPatternInformationForComplexSchema(aliasesHelper: AliasHelper): SyntaxHighlightingCapture | null {
-        var splittedName = this.getName().split(".").reverse();
+        var splittedName = this.$name.split(".").reverse();
         var splittedOperand = this.$lines.join("\n").split(new RegExp(`(${StringHelper.getOredRegExForWords(...splittedName)})`, "gi"));
         var ofAliases = aliasesHelper.getOfKeywords();
         var capture: SyntaxHighlightingCapture = new SyntaxHighlightingCapture();
