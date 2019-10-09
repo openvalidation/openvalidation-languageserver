@@ -81,7 +81,7 @@ export class IndexRange {
      * @memberof IndexRange
      */
     public endsBefore(position: Position): boolean {
-        if (!this.$end) { return true; }
+        if (!this.$end) { return false; }
 
         const beforeEnd = (this.$end.$line === position.line &&
             this.$end.$column >= position.character) ||

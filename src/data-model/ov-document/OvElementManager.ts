@@ -101,7 +101,7 @@ export class OvElementManager {
      */
     public getVariablesByName(name: string): VariableNode[] | null {
         const filteredVariables: VariableNode[] = this.getVariables().filter(element =>
-                !!element.getNameNode() && element.getNameNode()!.$name.toLowerCase() === name.toLowerCase());
+            !!element.$nameNode && element.$nameNode.$name.toLowerCase() === name.toLowerCase());
         if (filteredVariables.length > 0) {
             return filteredVariables;
         }
@@ -121,9 +121,9 @@ export class OvElementManager {
         const returnNode: VariableNode[] = [];
 
         for (const variable of this.getVariables()) {
-            if (!variable.getNameNode() ||
-                !variable.getValue() ||
-                element.indexOf(variable.getNameNode()!.$name) === -1) {
+            if (!variable.$nameNode ||
+                !variable.$value ||
+                element.indexOf(variable.$nameNode.$name) === -1) {
                 continue;
             }
 
@@ -132,7 +132,7 @@ export class OvElementManager {
                 continue;
             }
 
-            const asKeywordNameString = asKeyword.toLowerCase() + ' ' + variable.getNameNode()!.$name.toLowerCase();
+            const asKeywordNameString = asKeyword.toLowerCase() + ' ' + variable.$nameNode.$name.toLowerCase();
             if (element.toLowerCase().indexOf(asKeywordNameString) === -1) {
                 returnNode.push(variable);
             }

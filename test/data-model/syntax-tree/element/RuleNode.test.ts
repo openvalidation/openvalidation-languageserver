@@ -8,15 +8,20 @@ import { OperandNode } from '../../../../src/data-model/syntax-tree/element/oper
 import { OperatorNode } from '../../../../src/data-model/syntax-tree/element/operation/operand/OperatorNode';
 import { OperationNode } from '../../../../src/data-model/syntax-tree/element/operation/OperationNode';
 import { RuleNode } from '../../../../src/data-model/syntax-tree/element/RuleNode';
+import { GenericNode } from '../../../../src/data-model/syntax-tree/GenericNode';
 import { IndexRange } from '../../../../src/data-model/syntax-tree/IndexRange';
 import { ConnectionTransition } from '../../../../src/provider/code-completion/states/ConnectionTransition';
 import { EmptyTransition } from '../../../../src/provider/code-completion/states/EmptyTransition';
 import { OperandTransition } from '../../../../src/provider/code-completion/states/OperandTransition';
 import { StateTransition } from '../../../../src/provider/code-completion/states/StateTransition';
 import { ThenKeywordTransition } from '../../../../src/provider/code-completion/states/ThenKeywordTransition';
+import { TestInitializer } from '../../../Testinitializer';
 
 describe('RuleNode Tests', () => {
+    let initializer: TestInitializer;
+
     beforeEach(() => {
+        initializer = new TestInitializer(true);
     });
 
     test('getCompletionContainer with empty RuleNode, expected RuleStart', () => {
@@ -124,6 +129,26 @@ describe('RuleNode Tests', () => {
 
         const actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
+    });
+
+    test('getCompletionContainer of constrained rule, expected empty list', () => {
+        const leftOperand: OperandNode = new OperandNode(['Alte'], IndexRange.create(0, 0, 0, 5), 'Decimal', 'Alte');
+        const operator: OperatorNode =
+            new OperatorNode(['muss kleiner'], IndexRange.create(0, 6, 0, 18), 'Boolean', 'LESS_THAN', 'Decimal');
+        const operation =
+            new OperationNode(
+                leftOperand, operator, null, ['Alter muss kleiner '], IndexRange.create(0, 0, 0, 18)
+            );
+        operation.$constrained = true;
+
+        const actionNode = new ActionErrorNode(['Alter muss kleiner '], IndexRange.create(0, 22, 0, 27), '');
+        const rule: RuleNode =
+            new RuleNode(actionNode, operation, ['Alter muss kleiner '], IndexRange.create(0, 0, 0, 27));
+
+        const positionParameter = Position.create(0, 19);
+
+        const actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
+        expect(actual[0]).toBeInstanceOf(OperandTransition);
     });
 
     test('getCompletionContainer with ConnectedOperation and with position after action, expected empty list', () => {
@@ -237,6 +262,130 @@ describe('RuleNode Tests', () => {
 
         const actual: StateTransition[] = rule.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
+    });
+
+    test('RuleNode get/set errorNode/condition test', () => {
+        const ruleNode: RuleNode =
+            new RuleNode(null, null, ['Wenn Alter gleich 18  Dann '], IndexRange.create(0, 0, 0, 27));
+
+        const leftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 5, 0, 10), 'Decimal', 'Alter');
+        const operator: OperatorNode =
+            new OperatorNode(['gleich'], IndexRange.create(0, 11, 0, 17), 'Boolean', 'EQUALS', 'Object');
+        const rightOperand: OperandNode = new OperandNode(['18'], IndexRange.create(0, 18, 0, 20), 'Decimal', '18.0');
+        const operation =
+            new OperationNode(leftOperand, operator, rightOperand, ['Alter gleich 18'], IndexRange.create(0, 5, 0, 20));
+        ruleNode.$condition = operation;
+
+        const actionNode = new ActionErrorNode(['Dann '], IndexRange.create(0, 22, 0, 27), '');
+        ruleNode.$errorNode = actionNode;
+
+        expect(ruleNode.$condition).toEqual(operation);
+        expect(ruleNode.$errorNode).toEqual(actionNode);
+    });
+
+    test('getChildren without child, expect no children', () => {
+        const errorMessage: string = 'This is an error';
+        const ruleNode: RuleNode =
+            new RuleNode(null, null, [errorMessage], IndexRange.create(0, 0, 0, errorMessage.length));
+
+        const actual: GenericNode[] = ruleNode.getChildren();
+        const expected: GenericNode[] = [];
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('getChildren with one child, expect one child', () => {
+        const leftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 5, 0, 10), 'Decimal', 'Alter');
+        const operator: OperatorNode =
+            new OperatorNode(['gleich'], IndexRange.create(0, 11, 0, 17), 'Boolean', 'EQUALS', 'Object');
+        const rightOperand: OperandNode = new OperandNode(['18'], IndexRange.create(0, 18, 0, 20), 'Decimal', '18.0');
+        const operation =
+            new OperationNode(leftOperand, operator, rightOperand, ['Alter gleich 18'], IndexRange.create(0, 5, 0, 20));
+
+        const actionNode = new ActionErrorNode(['Dann '], IndexRange.create(0, 22, 0, 27), '');
+        const ruleNode: RuleNode =
+            new RuleNode(actionNode, operation, ['Wenn Alter gleich 18  Dann '], IndexRange.create(0, 0, 0, 27));
+
+        const actual: GenericNode[] = ruleNode.getChildren();
+        const expected: GenericNode[] = [operation];
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('getHoverContent without content, expect not empty content', () => {
+        const leftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 5, 0, 10), 'Decimal', 'Alter');
+        const operator: OperatorNode =
+            new OperatorNode(['gleich'], IndexRange.create(0, 11, 0, 17), 'Boolean', 'EQUALS', 'Object');
+        const rightOperand: OperandNode = new OperandNode(['18'], IndexRange.create(0, 18, 0, 20), 'Decimal', '18.0');
+        const operation =
+            new OperationNode(leftOperand, operator, rightOperand, ['Alter gleich 18'], IndexRange.create(0, 5, 0, 20));
+
+        const actionNode = new ActionErrorNode(['Dann '], IndexRange.create(0, 22, 0, 27), '');
+        const ruleNode: RuleNode =
+            new RuleNode(actionNode, operation, ['Wenn Alter gleich 18  Dann '], IndexRange.create(0, 0, 0, 27));
+
+        const actual = ruleNode.getHoverContent();
+
+        expect(actual).not.toBeNull();
+    });
+
+    test('getHoverContent with content which is incomplete, expect not empty content', () => {
+        const leftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 5, 0, 10), 'Decimal', 'Alter');
+        const operator: OperatorNode =
+            new OperatorNode(['gleich'], IndexRange.create(0, 11, 0, 17), 'Boolean', 'EQUALS', 'Object');
+        const operation =
+            new OperationNode(leftOperand, operator, null, ['Alter gleich 18'], IndexRange.create(0, 5, 0, 20));
+
+        const actionNode = new ActionErrorNode(['Dann '], IndexRange.create(0, 22, 0, 27), '');
+        const ruleNode: RuleNode =
+            new RuleNode(actionNode, operation, ['Wenn Alter gleich 18  Dann '], IndexRange.create(0, 0, 0, 27));
+
+        const actual = ruleNode.getHoverContent();
+
+        expect(actual).not.toBeNull();
+    });
+
+    test('getHoverContent with content which is complete, expect not empty content', () => {
+        const leftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 5, 0, 10), 'Decimal', 'Alter');
+        const operator: OperatorNode =
+            new OperatorNode(['gleich'], IndexRange.create(0, 11, 0, 17), 'Boolean', 'EQUALS', 'Object');
+        const rightOperand: OperandNode = new OperandNode(['18'], IndexRange.create(0, 18, 0, 20), 'Decimal', '18.0');
+        const operation =
+            new OperationNode(leftOperand, operator, rightOperand, ['Alter gleich 18'], IndexRange.create(0, 5, 0, 20));
+
+        const actionNode = new ActionErrorNode(['Dann '], IndexRange.create(0, 22, 0, 27), '');
+        const ruleNode: RuleNode =
+            new RuleNode(actionNode, operation, ['Wenn Alter gleich 18  Dann '], IndexRange.create(0, 0, 0, 27));
+
+        const actual = ruleNode.getHoverContent();
+
+        expect(actual).not.toBeNull();
+    });
+
+    test('getBeautifiedContent without children, expect not empty content', () => {
+        const ruleNode: RuleNode =
+            new RuleNode(null, null, ['If  Then '], IndexRange.create(0, 0, 0, 27));
+
+        const actual = ruleNode.getBeautifiedContent(initializer.$server.aliasHelper);
+
+        expect(actual).toEqual('If  Then ');
+    });
+
+    test('getBeautifiedContent with children, expect not empty content', () => {
+        const leftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 5, 0, 10), 'Decimal', 'Alter');
+        const operator: OperatorNode =
+            new OperatorNode(['gleich'], IndexRange.create(0, 11, 0, 17), 'Boolean', 'EQUALS', 'Object');
+        const rightOperand: OperandNode = new OperandNode(['18'], IndexRange.create(0, 18, 0, 20), 'Decimal', '18.0');
+        const operation =
+            new OperationNode(leftOperand, operator, rightOperand, ['age equals 18'], IndexRange.create(0, 5, 0, 20));
+
+        const actionNode = new ActionErrorNode(['Dann '], IndexRange.create(0, 22, 0, 27), '');
+        const ruleNode: RuleNode =
+            new RuleNode(actionNode, operation, ['If age equals 18 Then '], IndexRange.create(0, 0, 0, 27));
+
+        const actual = ruleNode.getBeautifiedContent(initializer.$server.aliasHelper);
+
+        expect(actual).toEqual('  If age equals 18\nThen\n');
     });
 
 });

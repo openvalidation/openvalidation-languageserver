@@ -1,5 +1,5 @@
 import 'jest';
-import { Position } from 'vscode-languageserver';
+import { Position, Range } from 'vscode-languageserver';
 import { IndexPosition } from '../../../src/data-model/syntax-tree/IndexPosition';
 import { IndexRange } from '../../../src/data-model/syntax-tree/IndexRange';
 
@@ -93,8 +93,48 @@ describe('IndexRange Tests', () => {
         range.$end = null;
 
         const position: Position = Position.create(0, 10);
-        const actual = range.startsAfter(position);
+        const actual = range.endsBefore(position);
         const expected = false;
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('asRange with no start and end', () => {
+        const range: IndexRange = IndexRange.create(0, 0, 0, 12);
+        range.$start = null;
+        range.$end = null;
+
+        const actual: Range = range.asRange();
+        const expected: Range = Range.create(-1, -1, -1, -1);
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('asRange with no start', () => {
+        const range: IndexRange = IndexRange.create(0, 0, 0, 12);
+        range.$start = null;
+
+        const actual: Range = range.asRange();
+        const expected: Range = Range.create(-1, -1, 0, 12);
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('asRange with no end', () => {
+        const range: IndexRange = IndexRange.create(0, 0, 0, 12);
+        range.$end = null;
+
+        const actual: Range = range.asRange();
+        const expected: Range = Range.create(0, 0, -1, -1);
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('asRange with no end', () => {
+        const range: IndexRange = IndexRange.create(0, 0, 0, 12);
+
+        const actual: Range = range.asRange();
+        const expected: Range = Range.create(0, 0, 0, 12);
 
         expect(actual).toEqual(expected);
     });

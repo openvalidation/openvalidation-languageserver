@@ -35,35 +35,17 @@ export class RuleNode extends GenericNode {
         this.condition = condition;
     }
 
-    /**
-     * Getter errorMessage
-     * @return {string}
-     */
-    public getErrorNode(): ActionErrorNode | null {
+    public get $errorNode(): ActionErrorNode | null {
         return this.errorNode;
     }
-
-    /**
-     * Getter condition
-     * @return {ConditionNode}
-     */
-    public getCondition(): ConditionNode | null {
-        return this.condition;
-    }
-
-    /**
-     * Setter errorMessage
-     * @param {string} value
-     */
-    public setErrorNode(value: ActionErrorNode) {
+    public set $errorNode(value: ActionErrorNode | null) {
         this.errorNode = value;
     }
 
-    /**
-     * Setter condition
-     * @param {ConditionNode} value
-     */
-    public setCondition(value: ConditionNode) {
+    public get $condition(): ConditionNode | null {
+        return this.condition;
+    }
+    public set $condition(value: ConditionNode | null) {
         this.condition = value;
     }
 

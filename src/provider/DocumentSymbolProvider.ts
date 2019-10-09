@@ -50,12 +50,14 @@ export class DocumentSymbolProvider extends Provider {
 
         ovDocument.$elementManager.getVariables().forEach(variable => {
             const variableNameRange = variable.getRangeOfVariableName();
-            const symbolInformation: SymbolInformation = {
-                name: variable.getNameNode()!.$name,
-                kind: SymbolKind.Variable,
-                location: Location.create(params.textDocument.uri, variableNameRange)
-            };
-            symbolInformationList.push(symbolInformation);
+            if (!!variable.$nameNode) {
+                const symbolInformation: SymbolInformation = {
+                    name: variable.$nameNode.$name,
+                    kind: SymbolKind.Variable,
+                    location: Location.create(params.textDocument.uri, variableNameRange)
+                };
+                symbolInformationList.push(symbolInformation);
+            }
         });
 
         return symbolInformationList;

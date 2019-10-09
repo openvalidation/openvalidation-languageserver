@@ -66,7 +66,6 @@ export class OperationNode extends ConditionNode {
     public get $leftOperand(): BaseOperandNode | null {
         return this.leftOperand;
     }
-
     public set $leftOperand(value: BaseOperandNode | null) {
         this.leftOperand = value;
     }
@@ -74,7 +73,6 @@ export class OperationNode extends ConditionNode {
     public get $rightOperand(): BaseOperandNode | null {
         return this.rightOperand;
     }
-
     public set $rightOperand(value: BaseOperandNode | null) {
         this.rightOperand = value;
     }
@@ -82,7 +80,6 @@ export class OperationNode extends ConditionNode {
     public get $operator(): OperatorNode | null {
         return this.operator;
     }
-
     public set $operator(value: OperatorNode | null) {
         this.operator = value;
     }
@@ -90,7 +87,6 @@ export class OperationNode extends ConditionNode {
     public get $constrained(): boolean {
         return this.constrained;
     }
-
     public set $constrained(value: boolean) {
         this.constrained = value;
     }

@@ -50,35 +50,17 @@ export class VariableNode extends GenericNode {
         return childList;
     }
 
-    /**
-     * Getter value
-     * @return {ValueNode}
-     */
-    public getValue(): BaseOperandNode | null {
+    public get $value(): BaseOperandNode | null {
         return this.value;
     }
-
-    /**
-     * Getter name
-     * @return {string}
-     */
-    public getNameNode(): VariableNameNode | null {
-        return this.nameNode;
-    }
-
-    /**
-     * Setter value
-     * @param {ValueNode} value
-     */
-    public setValue(value: BaseOperandNode) {
+    public set $value(value: BaseOperandNode | null) {
         this.value = value;
     }
 
-    /**
-     * Setter name
-     * @param {string} value
-     */
-    public setNameNode(value: VariableNameNode | null) {
+    public get $nameNode(): VariableNameNode | null {
+        return this.nameNode;
+    }
+    public set $nameNode(value: VariableNameNode | null) {
         this.nameNode = value;
     }
 
@@ -89,15 +71,15 @@ export class VariableNode extends GenericNode {
      * @memberof OvVariable
      */
     public getRangeOfVariableName(): Range {
-        if (!this.getNameNode()) { return this.$range.asRange(); }
+        if (!this.$nameNode) { return this.$range.asRange(); }
 
-        return this.getNameNode()!.$range.asRange();
+        return this.$nameNode.$range.asRange();
     }
 
     public getHoverContent(): HoverContent {
-        let contentText = 'Variable' + (!this.getNameNode() ? ' ' : ' ' + this.getNameNode()!.$name);
-        if (!!this.getValue()) {
-            contentText += ': ' + this.getValue()!.$dataType;
+        let contentText = 'Variable' + (!this.$nameNode ? ' ' : ' ' + this.$nameNode.$name);
+        if (!!this.$value) {
+            contentText += ': ' + this.$value.$dataType;
         }
 
         const content: HoverContent = new HoverContent(this.$range, contentText);
@@ -105,11 +87,11 @@ export class VariableNode extends GenericNode {
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {
-        if (!!this.getNameNode() && !this.getNameNode()!.$range.startsAfter(position)) {
+        if (!!this.$nameNode && !this.$nameNode.$range.startsAfter(position)) {
             return CompletionContainer.init().emptyTransition();
         }
 
-        const nameFilter: string | undefined = !this.getNameNode() ? undefined : this.getNameNode()!.$name;
+        const nameFilter: string | undefined = !this.$nameNode ? undefined : this.$nameNode.$name;
 
         if (!this.value) {
             return CompletionContainer.init().operandTransition(undefined, nameFilter);

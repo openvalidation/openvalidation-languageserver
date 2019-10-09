@@ -88,10 +88,10 @@ describe('plainToClass Test, checks type inference of JSON-Schemas', () => {
         const expectedType = VariableNode;
 
         expect(actual).toBeInstanceOf(expectedType);
-        expect(actual.getValue()).toBeInstanceOf(OperationNode);
-        expect((actual.getValue() as OperationNode).$operator).toBeInstanceOf(OperatorNode);
-        expect((actual.getValue() as OperationNode).$rightOperand).toBeInstanceOf(OperandNode);
-        expect((actual.getValue() as OperationNode).$leftOperand).toBeInstanceOf(OperandNode);
+        expect(actual.$value).toBeInstanceOf(OperationNode);
+        expect((actual.$value as OperationNode).$operator).toBeInstanceOf(OperatorNode);
+        expect((actual.$value as OperationNode).$rightOperand).toBeInstanceOf(OperandNode);
+        expect((actual.$value as OperationNode).$leftOperand).toBeInstanceOf(OperandNode);
     });
 
     test('check type of an RuleJson, expect RuleNode', async () => {
@@ -99,10 +99,10 @@ describe('plainToClass Test, checks type inference of JSON-Schemas', () => {
         const expectedType = RuleNode;
 
         expect(actual).toBeInstanceOf(expectedType);
-        expect(actual.getCondition()).toBeInstanceOf(OperationNode);
-        expect((actual.getCondition() as OperationNode).$operator).toBeInstanceOf(OperatorNode);
-        expect((actual.getCondition() as OperationNode).$rightOperand).toBeInstanceOf(OperandNode);
-        expect((actual.getCondition() as OperationNode).$leftOperand).toBeInstanceOf(OperandNode);
+        expect(actual.$condition).toBeInstanceOf(OperationNode);
+        expect((actual.$condition as OperationNode).$operator).toBeInstanceOf(OperatorNode);
+        expect((actual.$condition as OperationNode).$rightOperand).toBeInstanceOf(OperandNode);
+        expect((actual.$condition as OperationNode).$leftOperand).toBeInstanceOf(OperandNode);
     });
 
     test('check type of an FunctionJson, expect FunctionOperandNode', async () => {
