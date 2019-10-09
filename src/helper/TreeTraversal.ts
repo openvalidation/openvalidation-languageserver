@@ -44,11 +44,9 @@ export class TreeTraversal {
                 continue;
             }
 
-            if (child != null) {
-                const nextChilds = child.getChildren();
-                if (nextChilds.length !== 0) {
-                    operations.push(...this.getOperations(nextChilds));
-                }
+            const nextChilds = child.getChildren();
+            if (nextChilds.length !== 0) {
+                operations.push(...this.getOperations(nextChilds));
             }
         }
 
@@ -74,11 +72,9 @@ export class TreeTraversal {
                 continue;
             }
 
-            if (child != null) {
-                const nextChilds = child.getChildren();
-                if (nextChilds.length !== 0) {
-                    operands.push(...this.getLonelyOperands(nextChilds));
-                }
+            const nextChilds = child.getChildren();
+            if (nextChilds.length !== 0) {
+                operands.push(...this.getLonelyOperands(nextChilds));
             }
         }
 

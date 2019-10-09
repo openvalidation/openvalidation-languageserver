@@ -35,6 +35,11 @@ describe('DocumentAction provider test', () => {
         expect(provider).not.toBeNull();
     });
 
+    test('validate with valid uri and test, expect no error', () => {
+        provider['validateText']('test.ov', 'Alter kleiner 30');
+        expect(provider).not.toBeNull();
+    });
+
     test('close with invalid uri, expect no error', () => {
         provider.close(getChangeEvent('invalidUri'));
         expect(provider).not.toBeNull();

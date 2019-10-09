@@ -178,7 +178,6 @@ export class DocumentActionProvider extends Provider {
 
         if (!codeGenerationResponse) { return; }
         this.syntaxNotifier.sendGeneratedCodeIfNecessary(codeGenerationResponse);
-
     }
 
     /**

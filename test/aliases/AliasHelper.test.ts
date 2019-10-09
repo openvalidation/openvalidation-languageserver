@@ -152,4 +152,26 @@ describe('AliasHelper Tests', () => {
 
         expect(actual).toEqual(expected);
     });
+
+    test('getOperators starting with `Eq` with two operators with the same key, expect the matching operator', () => {
+        setDefaultAliases();
+
+        const expected: number = 1;
+        aliasHelper.$aliases = aliasHelper.$aliases.set('Equals2', 'ʬoperatorʬequals');
+        const actualMap: Map<string, [string, string]> = aliasHelper.getOperators('Eq');
+        const actual: number = actualMap.size;
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('getOperators starting with `Eq` with operator with unkown datatype, expect no operator', () => {
+        setDefaultAliases();
+
+        const expected: number = 0;
+        aliasHelper.$aliases = aliasHelper.$aliases.set('Equals2', 'invalid-key');
+        const actualMap: Map<string, [string, string]> = aliasHelper.getOperators('Eq');
+        const actual: number = actualMap.size;
+
+        expect(actual).toEqual(expected);
+    });
 });

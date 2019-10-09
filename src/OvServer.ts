@@ -82,7 +82,7 @@ export class OvServer {
             (params: { schema: string, uri: string }) => this.validateAndSetSchemaDefinition(params));
         this.connection.onNotification(NotificationEnum.LanguageChanged,
             (params: { language: string, uri: string }) => this.setLanguage(params));
-        this.connection.onNotification(NotificationEnum.CommentKeywordChanged,
+        this.connection.onNotification(NotificationEnum.CultureChanged,
             (params: { culture: string, uri: string }) => this.setCulture(params));
     }
 

@@ -1,4 +1,7 @@
 import 'jest';
+import { CultureEnum } from '../src/enums/CultureEnum';
+import { LanguageEnum } from '../src/enums/LanguageEnum';
+import { NotificationEnum } from '../src/enums/NotificationEnum';
 import { TestInitializer } from './Testinitializer';
 
 describe('Dummy Tests', () => {
@@ -53,5 +56,17 @@ describe('Dummy Tests', () => {
 
     test('start, expect no error', () => {
         expect(() => initializer.$server.start()).not.toThrow(Error);
+    });
+
+    test('sendNotification CultureChanged, expect no error', () => {
+        expect(() => initializer.$server.connection.sendNotification(
+            NotificationEnum.CultureChanged, { culture: CultureEnum.Russian, uri: 'test.ov' }
+        )).not.toThrow(Error);
+    });
+
+    test('sendNotification CultureChanged, expect no error', () => {
+        expect(() => initializer.$server.connection.sendNotification(
+            NotificationEnum.LanguageChanged, { language: LanguageEnum.Node, uri: 'test.ov' }
+        )).not.toThrow(Error);
     });
 });

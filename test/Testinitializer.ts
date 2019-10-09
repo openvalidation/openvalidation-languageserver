@@ -11,6 +11,7 @@ import { RuleNode } from '../src/data-model/syntax-tree/element/RuleNode';
 import { UnkownNode } from '../src/data-model/syntax-tree/element/UnkownNode';
 import { VariableNode } from '../src/data-model/syntax-tree/element/VariableNode';
 import { MainNode } from '../src/data-model/syntax-tree/MainNode';
+import { Variable } from '../src/data-model/syntax-tree/Variable';
 import { OvServer } from '../src/OvServer';
 import { CompletionProvider } from '../src/provider/CompletionProvider';
 import { DocumentActionProvider } from '../src/provider/DocumentActionProvider';
@@ -673,6 +674,7 @@ export class TestInitializer {
         range: null,
         type: 'OperandNode'
     };
+
     constructor(fullOvDocument: boolean) {
         this.mockAxios();
 
@@ -687,7 +689,19 @@ export class TestInitializer {
         } else {
             this.server.aliasHelper.$aliases = this.getAliases();
             this.server.aliasHelper.$operators = this.getOperators();
-            const document = new OvDocument(this.getCorrectParseResult().$scopes, [], this.server.aliasHelper);
+
+            this.server.schema.dataProperties = [
+                { name: 'Einkaufsliste.Preis', type: 'Decimal' },
+                { name: 'Preis', type: 'Decimal' },
+                { name: 'Einkaufsliste', type: 'Object' }
+            ];
+            this.server.schema.complexData = [{ parent: 'Einkaufsliste', child: 'Preis' }];
+
+            const document = new OvDocument(
+                this.getCorrectParseResult().$scopes,
+                this.getCorrectParseResult().$declarations,
+                this.server.aliasHelper
+            );
             this.server.ovDocuments.addOrOverrideOvDocument('test.ov', document);
         }
     }
@@ -781,6 +795,7 @@ export class TestInitializer {
         input.set('EQUALS', AliasKey.EQUALS);
         input.set('SUM OF', AliasKey.SUM_OF);
         input.set('OF', AliasKey.OF);
+        input.set('^', 'ʬarithmoperatorʬpower');
         return input;
     }
 
@@ -837,6 +852,8 @@ Alter`;
         const invalidCondition: OperandNode = plainToClass(OperandNode, this.invalidCondition);
         const unkownNode: UnkownNode = plainToClass(UnkownNode, this.unkownNode);
         mainNode.$scopes = [ruleNode, complexRuleNode, variableNode, commentNode, unkownNode, invalidCondition];
+
+        mainNode.$declarations = [new Variable('Alter', 'Decimal'), new Variable('Preis', 'Decimal')];
 
         return mainNode;
     }
