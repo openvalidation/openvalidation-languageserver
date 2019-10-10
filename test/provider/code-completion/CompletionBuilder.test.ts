@@ -1,6 +1,7 @@
 import 'jest';
 import { CompletionItem } from 'vscode-languageserver';
 import { AliasHelper } from '../../../src/aliases/AliasHelper';
+import { Variable } from '../../../src/data-model/syntax-tree/Variable';
 import { CompletionBuilder } from '../../../src/provider/code-completion/CompletionBuilder';
 import { TestInitializer } from '../../Testinitializer';
 
@@ -28,14 +29,20 @@ describe('CompletionGenerator tests', () => {
         expect(actual).toEqual(expected);
     });
 
-    // test("addOperandsWithTypeOfGivenOperand with empty builder, expect another builder", () => {
-    //     var builder: CompletionBuilder = new CompletionBuilder([],
-    // new AliasHelper(), { complexData: [{ child: "Alter", parent: "Student" }],
-    // dataProperties: [{ name: "Student.Alter", type: "Decimal" }] });
+    test('addOperandsWithTypeOfGivenOperand with empty builder, expect another builder', () => {
+        const builder: CompletionBuilder = new CompletionBuilder([new Variable('test', 'Decimal')],
+            new AliasHelper(), {
+            complexData: [{ child: 'Alter', parent: 'Student' }],
+            dataProperties: [
+                { name: 'Student.Alter', type: 'Decimal' },
+                { name: 'Student', type: 'Object' },
+                { name: 'Alter', type: 'Decimal' }
+            ]
+        });
 
-    //     var expected: CompletionItem[] = builder.build();
-    //     var actual: CompletionItem[] = builder.addOperandsWithTypeOfGivenOperand("Something").build();
+        const expected: CompletionItem[] = [];
+        const actual: CompletionItem[] = builder.addOperandsWithTypeOfGivenOperand('Student.Alter').build();
 
-    //     expect(actual).not.toEqual(expected);
-    // });
+        expect(actual).not.toEqual(expected);
+    });
 });

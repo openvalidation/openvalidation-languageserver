@@ -12,34 +12,16 @@ import { IPatternCapture } from './TextMateJson';
  */
 export class SyntaxHighlightingCapture {
 
-    /**
-     * Getter capture
-     * @return {string[]}
-     */
     public get $capture(): ScopeEnum[] {
         return this.capture;
     }
-
-    /**
-     * Setter capture
-     * @param {string[]} value
-     */
     public set $capture(value: ScopeEnum[]) {
         this.capture = value;
     }
 
-    /**
-     * Getter match
-     * @return {string}
-     */
     public get $match(): string | null {
         return this.match;
     }
-
-    /**
-     * Setter match
-     * @param {string} value
-     */
     public set $match(value: string | null) {
         this.match = value;
     }

@@ -28,10 +28,19 @@ describe('TextMateParameter Tests', () => {
         expect(actualLength).toEqual(expectedLength);
     });
 
-    test('getOperationAndOperandPatterns with not empty response', () => {
+    test('getOperationAndOperandPatterns with not empty response but no as-keyword', () => {
         const parameter = new TextMateParameter(testInitializer.mockNotEmptyLintingResponse(), testInitializer.$server);
 
         const actual: Pattern[] = parameter.getOperationAndOperandPatterns(null);
+        const expected: Pattern[] = [];
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('getOperationAndOperandPatterns with not empty response with as-keyword', () => {
+        const parameter = new TextMateParameter(testInitializer.mockNotEmptyLintingResponse(), testInitializer.$server);
+
+        const actual: Pattern[] = parameter.getOperationAndOperandPatterns('AS');
         const expected: Pattern[] = [];
 
         expect(actual).toEqual(expected);

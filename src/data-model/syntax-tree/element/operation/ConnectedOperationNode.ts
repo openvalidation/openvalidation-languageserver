@@ -27,24 +27,16 @@ export class ConnectedOperationNode extends ConditionNode {
         this.conditions = conditions;
     }
 
-    /**
-     * Getter conditions
-     * @return {ConditionNode}
-     */
-    public getConditions(): ConditionNode[] {
+    public get $conditions(): ConditionNode[] {
         return this.conditions;
     }
 
-    /**
-     * Setter conditions
-     * @param {ConditionNode} value
-     */
-    public setConditions(value: ConditionNode[]) {
+    public set $conditions(value: ConditionNode[]) {
         this.conditions = value;
     }
 
     public get $constrained(): boolean {
-        return this.getConditions().map(cond => cond.$constrained).some(bool => bool);
+        return this.$conditions.map(cond => cond.$constrained).some(bool => bool);
     }
 
     public getChildren(): GenericNode[] {
@@ -61,18 +53,18 @@ export class ConnectedOperationNode extends ConditionNode {
     }
 
     public getCompletionContainer(position: Position): CompletionContainer {
-        if (this.getConditions().length === 0) {
+        if (this.$conditions.length === 0) {
             return CompletionContainer.init().operandTransition();
         }
 
-        for (let index = 0; index < this.getConditions().length - 1; index++) {
-            const firstElement = this.getConditions()[index];
+        for (let index = 0; index < this.$conditions.length - 1; index++) {
+            const firstElement = this.$conditions[index];
 
             if (firstElement.$range.includesPosition(position)) {
                 return firstElement.getCompletionContainer(position);
             }
 
-            const secondElement = this.getConditions()[index + 1];
+            const secondElement = this.$conditions[index + 1];
 
             // Position is between both elements
             if (firstElement.$range.endsBefore(position) &&
@@ -81,11 +73,11 @@ export class ConnectedOperationNode extends ConditionNode {
             }
         }
 
-        return this.getConditions()[this.getConditions().length - 1].getCompletionContainer(position);
+        return this.$conditions[this.$conditions.length - 1].getCompletionContainer(position);
     }
 
     public getBeautifiedContent(aliasHelper: AliasHelper): string {
-        if (this.getConditions().length === 0) { return this.$lines.join('\n'); }
+        if (this.$conditions.length === 0) { return this.$lines.join('\n'); }
 
         let returnString: string = '';
 
@@ -93,13 +85,13 @@ export class ConnectedOperationNode extends ConditionNode {
             ? FormattingHelper.generateSpaces(this.$connector!.length + 1)
             : '';
 
-        for (let index = 0; index < this.getConditions().length; index++) {
-            const element = this.getConditions()[index];
+        for (let index = 0; index < this.$conditions.length; index++) {
+            const element = this.$conditions[index];
 
             returnString += element.getBeautifiedContent(aliasHelper);
             returnString = returnString.replace(/(?:\r\n|\r|\n)/g, ('\n' + extraSpacesForNestedOperation));
 
-            if (index !== this.getConditions().length - 1) {
+            if (index !== this.$conditions.length - 1) {
                 returnString += '\n';
             }
         }

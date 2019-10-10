@@ -149,9 +149,11 @@ export class ApiProxy {
             });
 
             if (!!response.data) {
-                return plainToClass(CompletionResponse, response.data);
+                const responseData: CompletionResponse = plainToClass(CompletionResponse, response.data);
+                response.data = responseData;
             }
-            return null;
+            return response.data;
+
         } catch (err) {
             console.log('Empty response in \'postLintingData\'');
             return null;

@@ -68,7 +68,7 @@ describe('plainToClass Test, checks type inference of JSON-Schemas', () => {
 
         expect(actual).toBeInstanceOf(expectedType);
 
-        for (const condition of actual.getConditions()) {
+        for (const condition of actual.$conditions) {
             expect(condition).toBeInstanceOf(OperationNode);
             expect((condition as OperationNode).$operator).toBeInstanceOf(OperatorNode);
             expect((condition as OperationNode).$leftOperand).toBeInstanceOf(OperandNode);

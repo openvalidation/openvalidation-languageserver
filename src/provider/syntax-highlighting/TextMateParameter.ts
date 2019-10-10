@@ -36,6 +36,7 @@ export class TextMateParameter {
     public get $operands(): BaseOperandNode[] {
         return this.operands;
     }
+
     private keywords: string[];
     private identifier: string[];
     private complexSchemaProperties: IComplexData[];

@@ -6,11 +6,13 @@ import { OperatorNode } from '../../../../../src/data-model/syntax-tree/element/
 import { OperationNode } from '../../../../../src/data-model/syntax-tree/element/operation/OperationNode';
 import { GenericNode } from '../../../../../src/data-model/syntax-tree/GenericNode';
 import { IndexRange } from '../../../../../src/data-model/syntax-tree/IndexRange';
+import { ScopeEnum } from '../../../../../src/enums/ScopeEnum';
 import { ConnectionTransition } from '../../../../../src/provider/code-completion/states/ConnectionTransition';
 import { EmptyTransition } from '../../../../../src/provider/code-completion/states/EmptyTransition';
 import { OperandTransition } from '../../../../../src/provider/code-completion/states/OperandTransition';
 import { OperatorTransition } from '../../../../../src/provider/code-completion/states/OperatorTransition';
 import { StateTransition } from '../../../../../src/provider/code-completion/states/StateTransition';
+import { SyntaxHighlightingCapture } from '../../../../../src/provider/syntax-highlighting/SyntaxHighlightingCapture';
 import { TestInitializer } from '../../../../Testinitializer';
 
 describe('ConnectedOperationNode Tests', () => {
@@ -20,8 +22,21 @@ describe('ConnectedOperationNode Tests', () => {
         initializer = new TestInitializer(true);
     });
 
+    test('OperationNode get/set leftOperand/rightOperand/operator test', () => {
+        const connectOperation: ConnectedOperationNode =
+            new ConnectedOperationNode([], [], IndexRange.create(0, 0, 0, 0));
+
+        const leftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 0, 0, 5), 'Decimal', 'Alter');
+        const operator: OperatorNode = new OperatorNode(['gleich'], IndexRange.create(0, 6, 0, 12), 'Boolean', 'EQUALS', 'Object');
+        const rightOperand: OperandNode = new OperandNode(['18'], IndexRange.create(0, 13, 0, 15), 'Decimal', '18.0');
+        const operation =
+            new OperationNode(leftOperand, operator, rightOperand, ['Alter gleich 18'], IndexRange.create(0, 0, 0, 15));
+        connectOperation.$conditions = [operation];
+
+        expect(connectOperation.$conditions).toEqual([operation]);
+    });
+
     test('getCompletionContainer with empty ConnectedOperationNode, expected Empty', () => {
-        // var operation: OperationNode = new OperationNode(null, null, null, [], IndexRange.create(0, 0, 0, 0));
         const connectOperation: ConnectedOperationNode =
             new ConnectedOperationNode([], [], IndexRange.create(0, 0, 0, 0));
 
@@ -349,5 +364,38 @@ describe('ConnectedOperationNode Tests', () => {
         const actual = connectOperation.getBeautifiedContent(initializer.$server.aliasHelper);
 
         expect(actual).toEqual('Alter gleich 18\nUND Alter gleich 18');
+    });
+
+    test('getPatternInformation with empty connectedOperation, expect empty', () => {
+        const connectOperation: ConnectedOperationNode =
+            new ConnectedOperationNode([], [], IndexRange.create(0, 0, 0, 35));
+
+        const actual: SyntaxHighlightingCapture | null =
+            connectOperation.getPatternInformation(initializer.$server.aliasHelper);
+        const expected: SyntaxHighlightingCapture | null = null;
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('getPatternInformation with one operation, expect correct scopes', () => {
+        const left: OperandNode =
+            new OperandNode(['Test bla'], IndexRange.create(0, 0, 0, 4), 'String', 'Test');
+        const operator: OperatorNode =
+            new OperatorNode(['kleiner'], IndexRange.create(0, 9, 0, 16), 'Boolean', 'kleiner', 'Decimal');
+        const right: OperandNode =
+            new OperandNode(['bla Test'], IndexRange.create(0, 21, 0, 25), 'String', 'Test');
+        const operationNode: OperationNode =
+            new OperationNode(
+                left, operator, right, ['Test bla kleiner bla Test'], IndexRange.create(0, 0, 0, 'Test bla kleiner bla Test'.length)
+            );
+        const connectOperation: ConnectedOperationNode =
+            new ConnectedOperationNode([operationNode], [], IndexRange.create(0, 0, 0, 35));
+
+        const actual: ScopeEnum[] = connectOperation.getPatternInformation(initializer.$server.aliasHelper)!.$capture;
+        const expected: ScopeEnum[] = [
+            ScopeEnum.Variable, ScopeEnum.Empty, ScopeEnum.Keyword, ScopeEnum.Empty, ScopeEnum.Variable
+        ];
+
+        expect(actual).toEqual(expected);
     });
 });

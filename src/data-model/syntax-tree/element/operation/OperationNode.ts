@@ -149,11 +149,11 @@ export class OperationNode extends ConditionNode {
             return container;
         }
 
-        if (this.$range.includesPosition(position)) {
-            return CompletionContainer.init().emptyTransition();
-        }
+        // if (this.$range.includesPosition(position)) {
+        return CompletionContainer.init().emptyTransition();
+        // }
 
-        return CompletionContainer.init().connectionTransition();
+        // return CompletionContainer.init().connectionTransition();
     }
 
     public isComplete(): boolean {

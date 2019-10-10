@@ -34,13 +34,15 @@ export class LintingResponse {
     public get $errors(): LintingError[] {
         return this.errors;
     }
-
     public set $errors(errors: LintingError[]) {
         this.errors = errors;
     }
 
     public get $mainAstNode(): MainNode {
         return this.mainAstNode;
+    }
+    public set $mainAstNode(mainAstNode: MainNode) {
+        this.mainAstNode = mainAstNode;
     }
 
     public get $schema(): ISchemaType {

@@ -7,6 +7,7 @@ import { OperatorNode } from '../../../../../src/data-model/syntax-tree/element/
 import { OperationNode } from '../../../../../src/data-model/syntax-tree/element/operation/OperationNode';
 import { GenericNode } from '../../../../../src/data-model/syntax-tree/GenericNode';
 import { IndexRange } from '../../../../../src/data-model/syntax-tree/IndexRange';
+import { ScopeEnum } from '../../../../../src/enums/ScopeEnum';
 import { ConnectionTransition } from '../../../../../src/provider/code-completion/states/ConnectionTransition';
 import { EmptyTransition } from '../../../../../src/provider/code-completion/states/EmptyTransition';
 import { OperandTransition } from '../../../../../src/provider/code-completion/states/OperandTransition';
@@ -19,6 +20,24 @@ describe('Operation Tests', () => {
 
     beforeEach(() => {
         initializer = new TestInitializer(true);
+    });
+
+    test('OperationNode get/set leftOperand/rightOperand/operator test', () => {
+        const operation =
+            new OperationNode(null, null, null, ['Alter gleich 18'], IndexRange.create(0, 0, 0, 15));
+
+        const leftOperand: OperandNode = new OperandNode(['Alter'], IndexRange.create(0, 0, 0, 5), 'Decimal', 'Alter');
+        operation.$leftOperand = leftOperand;
+
+        const operator: OperatorNode = new OperatorNode(['gleich'], IndexRange.create(0, 6, 0, 12), 'Boolean', 'EQUALS', 'Object');
+        operation.$operator = operator;
+
+        const rightOperand: OperandNode = new OperandNode(['18'], IndexRange.create(0, 13, 0, 15), 'Decimal', '18.0');
+        operation.$rightOperand = rightOperand;
+
+        expect(operation.$leftOperand).toEqual(leftOperand);
+        expect(operation.$rightOperand).toEqual(rightOperand);
+        expect(operation.$operator).toEqual(operator);
     });
 
     test('getCompletionContainer with empty OperationNode, expected Empty', () => {
@@ -198,6 +217,20 @@ describe('Operation Tests', () => {
 
         const actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
         expect(actual[0]).toBeInstanceOf(EmptyTransition);
+    });
+
+    // tslint:disable-next-line: max-line-length
+    test('getCompletionContainer with complete OperationNode and position after rightOperand, expected Connection', () => {
+        const leftOperand: OperandNode = new OperandNode(['Alte'], IndexRange.create(0, 1, 0, 5), 'Decimal', 'Alte');
+        const operator: OperatorNode = new OperatorNode(['gleich'], IndexRange.create(0, 6, 0, 12), 'Boolean', 'EQUALS', 'Object');
+        const rightOperand: OperandNode = new OperandNode(['18'], IndexRange.create(0, 13, 0, 15), 'Decimal', '18.0');
+        const operation =
+            new OperationNode(leftOperand, operator, rightOperand, ['Alter gleich 18'], IndexRange.create(0, 0, 0, 15));
+
+        const positionParameter = Position.create(0, 16);
+
+        const actual: StateTransition[] = operation.getCompletionContainer(positionParameter).$transitions;
+        expect(actual[0]).toBeInstanceOf(ConnectionTransition);
     });
 
     test('getCompletionContainer with incomplete OperationNode and invalid position, expected Operands', () => {
@@ -419,5 +452,87 @@ describe('Operation Tests', () => {
         const expected: string = '';
 
         expect(actual.trim()).toEqual(expected);
+    });
+
+    test('getPatternInformation with operation with single static string operand, expect static String', () => {
+        const operand: string = 'Test';
+        const left: OperandNode =
+            new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), 'String', operand, true);
+        const operationNode: OperationNode =
+            new OperationNode(
+                left, null, null, ['Test kleiner Test'], IndexRange.create(0, 0, 0, 'Test kleiner Test'.length)
+            );
+
+        const actual: ScopeEnum[] = operationNode.getPatternInformation(initializer.$server.aliasHelper)!.$capture;
+        const expected: ScopeEnum[] = [ScopeEnum.StaticString];
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('getPatternInformation with operation with single static decimal operand, expect static Decimal', () => {
+        const operand: string = 'Test';
+        const left: OperandNode =
+            new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), 'Decimal', operand, true);
+        const operationNode: OperationNode =
+            new OperationNode(
+                left, null, null, ['Test kleiner Test'], IndexRange.create(0, 0, 0, 'Test kleiner Test'.length)
+            );
+
+        const actual: ScopeEnum[] = operationNode.getPatternInformation(initializer.$server.aliasHelper)!.$capture;
+        const expected: ScopeEnum[] = [ScopeEnum.StaticNumber];
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('getPatternInformation with operation with single variable operand, expect variable', () => {
+        const operand: string = 'Test';
+        const left: OperandNode =
+            new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), 'Decimal', operand);
+        const operationNode: OperationNode =
+            new OperationNode(
+                left, null, null, ['Test kleiner Test'], IndexRange.create(0, 0, 0, 'Test kleiner Test'.length)
+            );
+
+        const actual: ScopeEnum[] = operationNode.getPatternInformation(initializer.$server.aliasHelper)!.$capture;
+        const expected: ScopeEnum[] = [ScopeEnum.Variable];
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('getPatternInformation with operation with operand and operator, expect variable', () => {
+        const operand: string = 'Test';
+        const left: OperandNode =
+            new OperandNode([operand], IndexRange.create(0, 0, 0, operand.length), 'String', operand);
+        const operator: OperatorNode =
+            new OperatorNode(['kleiner'], IndexRange.create(0, 0, 0, 0), 'Boolean', 'kleiner', 'Decimal');
+        const operationNode: OperationNode =
+            new OperationNode(
+                left, operator, null, ['Test test kleiner'], IndexRange.create(0, 0, 0, 'Test kleiner'.length)
+            );
+
+        const actual: ScopeEnum[] = operationNode.getPatternInformation(initializer.$server.aliasHelper)!.$capture;
+        const expected: ScopeEnum[] = [ScopeEnum.Variable, ScopeEnum.Empty, ScopeEnum.Keyword];
+
+        expect(actual).toEqual(expected);
+    });
+
+    test('getPatternInformation with operation with operand and operator, expect variable', () => {
+        const left: OperandNode =
+            new OperandNode(['Test bla'], IndexRange.create(0, 0, 0, 4), 'String', 'Test');
+        const operator: OperatorNode =
+            new OperatorNode(['kleiner'], IndexRange.create(0, 9, 0, 16), 'Boolean', 'kleiner', 'Decimal');
+        const right: OperandNode =
+            new OperandNode(['bla Test'], IndexRange.create(0, 21, 0, 25), 'String', 'Test');
+        const operationNode: OperationNode =
+            new OperationNode(
+                left, operator, right, ['Test bla kleiner bla Test'], IndexRange.create(0, 0, 0, 'Test bla kleiner bla Test'.length)
+            );
+
+        const actual: ScopeEnum[] = operationNode.getPatternInformation(initializer.$server.aliasHelper)!.$capture;
+        const expected: ScopeEnum[] = [
+            ScopeEnum.Variable, ScopeEnum.Empty, ScopeEnum.Keyword, ScopeEnum.Empty, ScopeEnum.Variable
+        ];
+
+        expect(actual).toEqual(expected);
     });
 });

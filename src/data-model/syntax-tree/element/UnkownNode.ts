@@ -39,7 +39,7 @@ export class UnkownNode extends GenericNode {
     public getChildren(): GenericNode[] {
         const children: GenericNode[] = [];
 
-        if (this.content != null) {
+        if (!!this.content) {
             children.push(this.content);
         }
 
