@@ -34,7 +34,7 @@ describe('TextMateParameter Tests', () => {
         const actual: Pattern[] = parameter.getOperationAndOperandPatterns(null);
         const expected: Pattern[] = [];
 
-        expect(actual).toEqual(expected);
+        expect(actual).not.toEqual(expected);
     });
 
     test('getOperationAndOperandPatterns with not empty response with as-keyword', () => {
@@ -43,6 +43,6 @@ describe('TextMateParameter Tests', () => {
         const actual: Pattern[] = parameter.getOperationAndOperandPatterns('AS');
         const expected: Pattern[] = [];
 
-        expect(actual).toEqual(expected);
+        expect(actual).not.toEqual(expected);
     });
 });

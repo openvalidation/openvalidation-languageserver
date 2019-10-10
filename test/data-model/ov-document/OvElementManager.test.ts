@@ -16,8 +16,8 @@ describe('Dummy Tests', () => {
         expect(elementManager).not.toBeNull();
     });
 
-    test('getRules with 2 existing rules, expect 2 rules', () => {
-        const expectedLength: number = 2;
+    test('getRules with 1 existing rules, expect 1 rule', () => {
+        const expectedLength: number = 1;
         const actualLength = elementManager.getRules().length;
         expect(actualLength).toEqual(expectedLength);
     });

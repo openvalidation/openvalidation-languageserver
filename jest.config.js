@@ -1,19 +1,20 @@
-module.exports = {  
-    "preset": 'ts-jest',
-    "testEnvironment": 'node',
-    "roots": [
+module.exports = {
+    preset: 'ts-jest',
+    testEnvironment: 'node',
+    roots: [
         "<rootDir>/test"
     ],
-    "transform": {
+    transform: {
         "^.+\\.tsx?$": "ts-jest"
     },
-    "setupFiles": [
+    setupFiles: [
         "./test/globals.js"
     ],
-    "collectCoverage": true,
-    "coverageReporters": [
+    collectCoverage: true,
+    coverageReporters: [
         "json-summary",
         "text",
         "lcov"
-    ]
+    ],
+    testPathIgnorePatterns: ["/lib/", "/node_modules/"]
 }

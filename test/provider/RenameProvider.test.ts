@@ -66,7 +66,7 @@ describe('Rename provider test', () => {
     test('rename with valid document and valid position of variable definition, expect old name dont appears anymore', () => {
         const expected: WorkspaceEdit = {};
 
-        const variablePosition: Position = Position.create(6, 20);
+        const variablePosition: Position = Position.create(4, 10);
         const actual = provider.rename(getParams('NewText', variablePosition));
 
         expect(actual).not.toEqual(expected);

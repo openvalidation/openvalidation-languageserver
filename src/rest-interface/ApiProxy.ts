@@ -155,7 +155,7 @@ export class ApiProxy {
             return response.data;
 
         } catch (err) {
-            console.log('Empty response in \'postLintingData\'');
+            console.log('Empty response in \'postCompletionData\'');
             return null;
         }
     }

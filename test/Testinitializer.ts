@@ -6,6 +6,7 @@ import { createConnection } from 'vscode-languageserver';
 import { AliasKey } from '../src/aliases/AliasKey';
 import { OvDocument } from '../src/data-model/ov-document/OvDocument';
 import { RuleNode } from '../src/data-model/syntax-tree/element/RuleNode';
+import { IndexRange } from '../src/data-model/syntax-tree/IndexRange';
 import { MainNode } from '../src/data-model/syntax-tree/MainNode';
 import { OvServer } from '../src/OvServer';
 import { CompletionProvider } from '../src/provider/CompletionProvider';
@@ -20,7 +21,9 @@ import { SyntaxNotifier } from '../src/provider/SyntaxNotifier';
 import { AliasesWithOperators } from '../src/rest-interface/aliases/AliasesWithOperators';
 import { CompletionResponse } from '../src/rest-interface/response/CompletionResponse';
 import { ICodeResponse } from '../src/rest-interface/response/ICodeResponse';
+import { LintingError } from '../src/rest-interface/response/LintingError';
 import { LintingResponse } from '../src/rest-interface/response/LintingResponse';
+import { ISchemaType } from '../src/rest-interface/schema/ISchemaType';
 
 /**
  * Class that provides some useful classes and that mocks the Axios-Rest-Api
@@ -254,34 +257,20 @@ export class TestInitializer {
     }
 
     public mockNotEmptyLintingResponse(): LintingResponse {
-        const json = {
-            schema: {
-                dataProperties: [{
-                    name: 'Alter',
-                    type: 'Decimal'
-                }],
-                complexData: [{
-                    parent: 'Einkaufsliste',
-                    child: 'Preis'
-                }]
-            },
-            errors: [{
-                message: 'Hard error!',
-                range: {
-                    start: {
-                        line: 0,
-                        column: 0
-                    },
-                    end: {
-                        line: 1,
-                        column: 44
-                    }
-                }
+        const schema: ISchemaType = {
+            dataProperties: [{
+                name: 'Alter',
+                type: 'Decimal'
+            }],
+            complexData: [{
+                parent: 'Einkaufsliste',
+                child: 'Preis'
             }]
         };
+        const response: LintingResponse = new LintingResponse(this.getCorrectParseResult(), schema);
 
-        const response: LintingResponse = plainToClass(LintingResponse, json);
-        response.$mainAstNode = this.getCorrectParseResult();
+        const errors: LintingError[] = [new LintingError('Hard error!', IndexRange.create(0, 0, 1, 44))];
+        response.$errors = errors;
 
         return response;
     }
@@ -366,490 +355,298 @@ Alter`;
 
     public getCorrectParseResult(): MainNode {
         const mainNodeJson = {
-            'declarations': [
+            declarations: [
                 {
-                    'name': 'Minderjährig',
-                    'dataType': 'Boolean'
+                    name: 'Minderjährig',
+                    dataType: 'Boolean'
                 }
             ],
-            'scopes': [
+            scopes: [
                 {
-                    'lines': [
+                    lines: [
                         'WENN das Alter des Bewerbers KLEINER 18 ist',
                         'DANN Sie müssen mindestens 18 Jahre alt sein'
                     ],
-                    'range': {
-                        'start': {
-                            'line': 0,
-                            'column': 0
+                    range: {
+                        start: {
+                            line: 0,
+                            column: 0
                         },
-                        'end': {
-                            'line': 1,
-                            'column': 44
+                        end: {
+                            line: 1,
+                            column: 44
                         }
                     },
-                    'errorNode': {
-                        'lines': [
+                    errorNode: {
+                        lines: [
                             'Sie müssen mindestens 18 Jahre alt sein'
                         ],
-                        'range': {
-                            'start': {
-                                'line': 1,
-                                'column': 5
+                        range: {
+                            start: {
+                                line: 1,
+                                column: 5
                             },
-                            'end': {
-                                'line': 1,
-                                'column': 44
+                            end: {
+                                line: 1,
+                                column: 44
                             }
                         },
-                        'errorMessage': 'Sie müssen mindestens 18 Jahre alt sein',
-                        'type': 'ActionErrorNode'
+                        errorMessage: 'Sie müssen mindestens 18 Jahre alt sein',
+                        type: 'ActionErrorNode'
                     },
-                    'condition': {
-                        'lines': [
+                    condition: {
+                        lines: [
                             'das Alter des Bewerbers KLEINER 18 ist'
                         ],
-                        'range': {
-                            'start': {
-                                'line': 0,
-                                'column': 5
+                        range: {
+                            start: {
+                                line: 0,
+                                column: 5
                             },
-                            'end': {
-                                'line': 0,
-                                'column': 43
+                            end: {
+                                line: 0,
+                                column: 43
                             }
                         },
-                        'dataType': 'Boolean',
-                        'name': null,
-                        'isStatic': false,
-                        'connector': null,
-                        'leftOperand': {
-                            'lines': [
+                        dataType: 'Boolean',
+                        name: null,
+                        isStatic: false,
+                        connector: null,
+                        leftOperand: {
+                            lines: [
                                 'das Alter des Bewerbers'
                             ],
-                            'range': {
-                                'start': {
-                                    'line': 0,
-                                    'column': 5
+                            range: {
+                                start: {
+                                    line: 0,
+                                    column: 5
                                 },
-                                'end': {
-                                    'line': 0,
-                                    'column': 28
+                                end: {
+                                    line: 0,
+                                    column: 28
                                 }
                             },
-                            'dataType': 'String',
-                            'name': 'das Alter des Bewerbers',
-                            'isStatic': true,
-                            'type': 'OperandNode'
+                            dataType: 'String',
+                            name: 'das Alter des Bewerbers',
+                            isStatic: true,
+                            type: 'OperandNode'
                         },
-                        'rightOperand': {
-                            'lines': [
+                        rightOperand: {
+                            lines: [
                                 '18'
                             ],
-                            'range': {
-                                'start': {
-                                    'line': 0,
-                                    'column': 37
+                            range: {
+                                start: {
+                                    line: 0,
+                                    column: 37
                                 },
-                                'end': {
-                                    'line': 0,
-                                    'column': 39
+                                end: {
+                                    line: 0,
+                                    column: 39
                                 }
                             },
-                            'dataType': 'Decimal',
-                            'name': '18',
-                            'isStatic': true,
-                            'type': 'OperandNode'
+                            dataType: 'Decimal',
+                            name: '18',
+                            isStatic: true,
+                            type: 'OperandNode'
                         },
-                        'operator': {
-                            'lines': [
+                        operator: {
+                            lines: [
                                 'KLEINER'
                             ],
-                            'range': {
-                                'start': {
-                                    'line': 0,
-                                    'column': 29
+                            range: {
+                                start: {
+                                    line: 0,
+                                    column: 29
                                 },
-                                'end': {
-                                    'line': 0,
-                                    'column': 36
+                                end: {
+                                    line: 0,
+                                    column: 36
                                 }
                             },
-                            'dataType': 'Boolean',
-                            'validType': 'Decimal',
-                            'operator': 'LESS_THAN',
-                            'type': 'Operator'
+                            dataType: 'Boolean',
+                            validType: 'Decimal',
+                            operator: 'LESS_THAN',
+                            type: 'Operator'
                         },
-                        'constrained': false,
-                        'type': 'OperationNode'
+                        constrained: false,
+                        type: 'OperationNode'
                     },
-                    'type': 'RuleNode'
+                    type: 'RuleNode'
                 },
                 {
-                    'lines': [
+                    lines: [
                         '    das Alter des Bewerbers ist KLEINER 18',
                         'ALS Minderjährig'
                     ],
-                    'range': {
-                        'start': {
-                            'line': 3,
-                            'column': 0
+                    range: {
+                        start: {
+                            line: 3,
+                            column: 0
                         },
-                        'end': {
-                            'line': 4,
-                            'column': 16
+                        end: {
+                            line: 4,
+                            column: 16
                         }
                     },
-                    'value': {
-                        'lines': [
+                    value: {
+                        lines: [
                             'das Alter des Bewerbers ist KLEINER 18'
                         ],
-                        'range': {
-                            'start': {
-                                'line': 3,
-                                'column': 4
+                        range: {
+                            start: {
+                                line: 3,
+                                column: 4
                             },
-                            'end': {
-                                'line': 3,
-                                'column': 42
+                            end: {
+                                line: 3,
+                                column: 42
                             }
                         },
-                        'dataType': 'Boolean',
-                        'name': null,
-                        'isStatic': false,
-                        'connector': null,
-                        'leftOperand': {
-                            'lines': [
+                        dataType: 'Boolean',
+                        name: null,
+                        isStatic: false,
+                        connector: null,
+                        leftOperand: {
+                            lines: [
                                 'das Alter des Bewerbers'
                             ],
-                            'range': {
-                                'start': {
-                                    'line': 3,
-                                    'column': 4
+                            range: {
+                                start: {
+                                    line: 3,
+                                    column: 4
                                 },
-                                'end': {
-                                    'line': 3,
-                                    'column': 27
+                                end: {
+                                    line: 3,
+                                    column: 27
                                 }
                             },
-                            'dataType': 'String',
-                            'name': 'das Alter des Bewerbers',
-                            'isStatic': true,
-                            'type': 'OperandNode'
+                            dataType: 'String',
+                            name: 'das Alter des Bewerbers',
+                            isStatic: true,
+                            type: 'OperandNode'
                         },
-                        'rightOperand': {
-                            'lines': [
+                        rightOperand: {
+                            lines: [
                                 '18'
                             ],
-                            'range': {
-                                'start': {
-                                    'line': 3,
-                                    'column': 40
+                            range: {
+                                start: {
+                                    line: 3,
+                                    column: 40
                                 },
-                                'end': {
-                                    'line': 3,
-                                    'column': 42
+                                end: {
+                                    line: 3,
+                                    column: 42
                                 }
                             },
-                            'dataType': 'Decimal',
-                            'name': '18',
-                            'isStatic': true,
-                            'type': 'OperandNode'
+                            dataType: 'Decimal',
+                            name: '18',
+                            isStatic: true,
+                            type: 'OperandNode'
                         },
-                        'operator': {
-                            'lines': [
+                        operator: {
+                            lines: [
                                 'KLEINER'
                             ],
-                            'range': {
-                                'start': {
-                                    'line': 3,
-                                    'column': 32
+                            range: {
+                                start: {
+                                    line: 3,
+                                    column: 32
                                 },
-                                'end': {
-                                    'line': 3,
-                                    'column': 39
+                                end: {
+                                    line: 3,
+                                    column: 39
                                 }
                             },
-                            'dataType': 'Boolean',
-                            'validType': 'Decimal',
-                            'operator': 'LESS_THAN',
-                            'type': 'Operator'
+                            dataType: 'Boolean',
+                            validType: 'Decimal',
+                            operator: 'LESS_THAN',
+                            type: 'Operator'
                         },
-                        'constrained': false,
-                        'type': 'OperationNode'
+                        constrained: false,
+                        type: 'OperationNode'
                     },
-                    'nameNode': {
-                        'lines': [
+                    nameNode: {
+                        lines: [
                             'ALS Minderjährig'
                         ],
-                        'range': {
-                            'start': {
-                                'line': 4,
-                                'column': 0
+                        range: {
+                            start: {
+                                line: 4,
+                                column: 0
                             },
-                            'end': {
-                                'line': 4,
-                                'column': 16
+                            end: {
+                                line: 4,
+                                column: 16
                             }
                         },
-                        'name': 'Minderjährig',
-                        'type': 'VariableNameNode'
+                        name: 'Minderjährig',
+                        type: 'VariableNameNode'
                     },
-                    'type': 'VariableNode'
+                    type: 'VariableNode'
                 },
                 {
-                    'lines': [
-                        'WENN der Bewerber Minderjährig ist',
-                        '    UND sein Wohnort ist NICHT Dortmund',
-                        'DANN Sie müssen mindestens 18 Jahre alt sein und aus Dortmund kommen'
-                    ],
-                    'range': {
-                        'start': {
-                            'line': 6,
-                            'column': 0
-                        },
-                        'end': {
-                            'line': 8,
-                            'column': 68
-                        }
-                    },
-                    'errorNode': {
-                        'lines': [
-                            'Sie müssen mindestens 18 Jahre alt sein und aus Dortmund kommen'
-                        ],
-                        'range': {
-                            'start': {
-                                'line': 8,
-                                'column': 5
-                            },
-                            'end': {
-                                'line': 8,
-                                'column': 68
-                            }
-                        },
-                        'errorMessage': 'Sie müssen mindestens 18 Jahre alt sein und aus Dortmund kommen',
-                        'type': 'ActionErrorNode'
-                    },
-                    'condition': {
-                        'lines': [
-                            'der Bewerber Minderjährig ist',
-                            '    UND sein Wohnort ist NICHT Dortmund'
-                        ],
-                        'range': {
-                            'start': {
-                                'line': 6,
-                                'column': 5
-                            },
-                            'end': {
-                                'line': 7,
-                                'column': 39
-                            }
-                        },
-                        'dataType': 'Boolean',
-                        'name': null,
-                        'isStatic': false,
-                        'connector': null,
-                        'conditions': [
-                            {
-                                'lines': [
-                                    'der Bewerber Minderjährig ist'
-                                ],
-                                'range': {
-                                    'start': {
-                                        'line': 6,
-                                        'column': 5
-                                    },
-                                    'end': {
-                                        'line': 6,
-                                        'column': 34
-                                    }
-                                },
-                                'dataType': 'Boolean',
-                                'name': null,
-                                'isStatic': false,
-                                'connector': null,
-                                'leftOperand': {
-                                    'lines': [
-                                        'der Bewerber Minderjährig'
-                                    ],
-                                    'range': {
-                                        'start': {
-                                            'line': 6,
-                                            'column': 18
-                                        },
-                                        'end': {
-                                            'line': 6,
-                                            'column': 30
-                                        }
-                                    },
-                                    'dataType': 'Boolean',
-                                    'name': 'Minderjährig',
-                                    'isStatic': false,
-                                    'type': 'OperandNode'
-                                },
-                                'rightOperand': {
-                                    'lines': [],
-                                    'range': null,
-                                    'dataType': 'Boolean',
-                                    'name': 'true',
-                                    'isStatic': true,
-                                    'type': 'OperandNode'
-                                },
-                                'operator': {
-                                    'lines': [],
-                                    'range': null,
-                                    'dataType': 'Boolean',
-                                    'validType': 'Object',
-                                    'operator': 'EQUALS',
-                                    'type': 'Operator'
-                                },
-                                'constrained': false,
-                                'type': 'OperationNode'
-                            },
-                            {
-                                'lines': [
-                                    'UND sein Wohnort ist NICHT Dortmund'
-                                ],
-                                'range': {
-                                    'start': {
-                                        'line': 7,
-                                        'column': 4
-                                    },
-                                    'end': {
-                                        'line': 7,
-                                        'column': 39
-                                    }
-                                },
-                                'dataType': 'Boolean',
-                                'name': null,
-                                'isStatic': false,
-                                'connector': 'UND',
-                                'leftOperand': {
-                                    'lines': [
-                                        'sein Wohnort'
-                                    ],
-                                    'range': {
-                                        'start': {
-                                            'line': 7,
-                                            'column': 13
-                                        },
-                                        'end': {
-                                            'line': 7,
-                                            'column': 20
-                                        }
-                                    },
-                                    'dataType': 'String',
-                                    'name': 'Wohnort',
-                                    'isStatic': true,
-                                    'type': 'OperandNode'
-                                },
-                                'rightOperand': {
-                                    'lines': [
-                                        'Dortmund'
-                                    ],
-                                    'range': {
-                                        'start': {
-                                            'line': 7,
-                                            'column': 31
-                                        },
-                                        'end': {
-                                            'line': 7,
-                                            'column': 39
-                                        }
-                                    },
-                                    'dataType': 'String',
-                                    'name': 'Dortmund',
-                                    'isStatic': true,
-                                    'type': 'OperandNode'
-                                },
-                                'operator': {
-                                    'lines': [
-                                        'NICHT'
-                                    ],
-                                    'range': {
-                                        'start': {
-                                            'line': 7,
-                                            'column': 25
-                                        },
-                                        'end': {
-                                            'line': 7,
-                                            'column': 30
-                                        }
-                                    },
-                                    'dataType': 'Boolean',
-                                    'validType': 'Object',
-                                    'operator': 'NOT_EQUALS',
-                                    'type': 'Operator'
-                                },
-                                'constrained': false,
-                                'type': 'OperationNode'
-                            }
-                        ],
-                        'type': 'ConnectedOperationNode'
-                    },
-                    'type': 'RuleNode'
-                },
-                {
-                    'lines': [
+                    lines: [
                         'Kommentar das ist ein Kommentar'
                     ],
-                    'range': {
-                        'start': {
-                            'line': 10,
-                            'column': 0
+                    range: {
+                        start: {
+                            line: 10,
+                            column: 0
                         },
-                        'end': {
-                            'line': 10,
-                            'column': 31
+                        end: {
+                            line: 10,
+                            column: 31
                         }
                     },
-                    'content': 'das ist ein Kommentar',
-                    'type': 'CommentNode'
+                    content: 'das ist ein Kommentar',
+                    type: 'CommentNode'
                 },
                 {
-                    'lines': [
+                    lines: [
                         'Alter'
                     ],
-                    'range': {
-                        'start': {
-                            'line': 12,
-                            'column': 0
+                    range: {
+                        start: {
+                            line: 12,
+                            column: 0
                         },
-                        'end': {
-                            'line': 12,
-                            'column': 5
+                        end: {
+                            line: 12,
+                            column: 5
                         }
                     },
-                    'content': {
-                        'lines': [
+                    content: {
+                        lines: [
                             'Alter'
                         ],
-                        'range': {
-                            'start': {
-                                'line': 12,
-                                'column': 0
+                        range: {
+                            start: {
+                                line: 12,
+                                column: 0
                             },
-                            'end': {
-                                'line': 12,
-                                'column': 5
+                            end: {
+                                line: 12,
+                                column: 5
                             }
                         },
-                        'dataType': 'String',
-                        'name': 'Alter',
-                        'isStatic': true,
-                        'type': 'OperandNode'
+                        dataType: 'String',
+                        name: 'Alter',
+                        isStatic: true,
+                        type: 'OperandNode'
                     },
-                    'type': 'UnkownNode'
+                    type: 'UnkownNode'
                 }
             ],
-            'range': {
-                'start': {
-                    'line': 0,
-                    'column': 0
+            range: {
+                start: {
+                    line: 0,
+                    column: 0
                 },
-                'end': {
-                    'line': 12,
-                    'column': 5
+                end: {
+                    line: 12,
+                    column: 5
                 }
             }
         };

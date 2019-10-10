@@ -20,7 +20,7 @@ describe('LintingResponse Tests', () => {
         expect(response.$errors).toEqual(expected);
     });
 
-    test('Create LindddtingResponse, test getter of mainAstNode', () => {
+    test('Create LintingResponse, test getter of mainAstNode', () => {
         const response = new LintingResponse(testInitializer.getCorrectParseResult(), testInitializer.$server.schema);
 
         const expected = testInitializer.getCorrectParseResult();
