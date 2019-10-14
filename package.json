@@ -6,6 +6,7 @@
     "type": "git",
     "url": "https://github.com/openvalidation/ov-language-server.git"
   },
+  "description": "language-server implementation for openVALIDATION",
   "dependencies": {
     "@sourcegraph/vscode-ws-jsonrpc": "0.0.3-fork",
     "axios": "^0.19.0",
