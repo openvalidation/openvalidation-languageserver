@@ -6,29 +6,29 @@
  * @enum {number}
  */
 export enum AliasKey {
-    // Logical Operators
-    AND = 'ʬandʬ',
-    OR = 'ʬorʬ',
+  // Logical Operators
+  AND = "ʬandʬ",
+  OR = "ʬorʬ",
 
-    // Rules - Keywords
-    IF = 'ʬifʬ',
-    THEN = 'ʬthenʬ',
-    CONSTRAINT = 'ʬconstraintʬmust',
+  // Rules - Keywords
+  IF = "ʬifʬ",
+  THEN = "ʬthenʬ",
+  CONSTRAINT = "ʬconstraintʬmust",
 
-    // Comment - Keyword
-    COMMENT = 'ʬcommentʬ',
+  // Comment - Keyword
+  COMMENT = "ʬcommentʬ",
 
-    // Variable - Keyword
-    AS = 'ʬasʬ',
+  // Variable - Keyword
+  AS = "ʬasʬ",
 
-    // Operators
-    OPERATOR = 'ʬoperatorʬ',
-    EQUALS = 'ʬoperatorʬequals',
+  // Operators
+  OPERATOR = "ʬoperatorʬ",
+  EQUALS = "ʬoperatorʬequals",
 
-    // Functions
-    FUNCTION = 'ʬfunctionʬ',
-    SUM_OF = 'ʬfunctionʬsum_of',
+  // Functions
+  FUNCTION = "ʬfunctionʬ",
+  SUM_OF = "ʬfunctionʬsum_of",
 
-    // Others
-    OF = 'ʬofʬ',
+  // Others
+  OF = "ʬofʬ"
 }

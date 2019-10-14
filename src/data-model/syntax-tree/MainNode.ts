@@ -1,8 +1,8 @@
-import { Type } from 'class-transformer';
-import { GenericNode } from './GenericNode';
-import { IndexRange } from './IndexRange';
-import { TypeDecorator } from './TypeDecorator';
-import { Variable } from './Variable';
+import { Type } from "class-transformer";
+import { GenericNode } from "./GenericNode";
+import { IndexRange } from "./IndexRange";
+import { TypeDecorator } from "./TypeDecorator";
+import { Variable } from "./Variable";
 
 /**
  * MainNode for the syntax-tree
@@ -11,44 +11,43 @@ import { Variable } from './Variable';
  * @class MainNode
  */
 export class MainNode {
-    @Type(() => Variable)
-    private declarations: Variable[] = [];
+  @Type(() => Variable)
+  private declarations: Variable[] = [];
 
-    @Type(() => GenericNode, TypeDecorator.getGenericOptions())
-    private scopes: GenericNode[];
+  @Type(() => GenericNode, TypeDecorator.getGenericOptions())
+  private scopes: GenericNode[];
 
-    @Type(() => IndexRange)
-    private range: IndexRange;
+  @Type(() => IndexRange)
+  private range: IndexRange;
 
-    /**
-     * Creates an instance of MainNode.
-     * @memberof MainNode
-     */
-    constructor(range: IndexRange) {
-        this.declarations = [];
-        this.scopes = [];
-        this.range = range;
-    }
+  /**
+   * Creates an instance of MainNode.
+   * @memberof MainNode
+   */
+  constructor(range: IndexRange) {
+    this.declarations = [];
+    this.scopes = [];
+    this.range = range;
+  }
 
-    public get $declarations(): Variable[] {
-        return this.declarations;
-    }
-    public set $declarations(value: Variable[]) {
-        this.declarations = value;
-    }
+  public get $declarations(): Variable[] {
+    return this.declarations;
+  }
+  public set $declarations(value: Variable[]) {
+    this.declarations = value;
+  }
 
-    public get $scopes(): GenericNode[] {
-        return this.scopes;
-    }
-    public set $scopes(value: GenericNode[]) {
-        this.scopes = value;
-    }
+  public get $scopes(): GenericNode[] {
+    return this.scopes;
+  }
+  public set $scopes(value: GenericNode[]) {
+    this.scopes = value;
+  }
 
-    public get $range(): IndexRange {
-        return this.range;
-    }
-    public set $range(value: IndexRange) {
-        this.range = value;
-    }
-
+  public get $range(): IndexRange {
+    return this.range;
+  }
+  public set $range(value: IndexRange) {
+    this.range = value;
+  }
 }

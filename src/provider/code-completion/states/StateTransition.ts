@@ -1,4 +1,4 @@
-import { CompletionBuilder } from '../CompletionBuilder';
+import { CompletionBuilder } from "../CompletionBuilder";
 
 /**
  * Generic class for all transitions that provides methods for all transitions
@@ -8,27 +8,27 @@ import { CompletionBuilder } from '../CompletionBuilder';
  * @class StateTransition
  */
 export abstract class StateTransition {
-    private prependingText: string;
+  private prependingText: string;
 
-    /**
-     * Creates an instance of StateTransition.
-     * @param {string} [prependingText] text that should apear before the completion-item if the item is selected
-     * @memberof StateTransition
-     */
-    constructor(prependingText?: string) {
-        this.prependingText = !prependingText ? '' : prependingText;
-    }
+  /**
+   * Creates an instance of StateTransition.
+   * @param {string} [prependingText] text that should apear before the completion-item if the item is selected
+   * @memberof StateTransition
+   */
+  constructor(prependingText?: string) {
+    this.prependingText = !prependingText ? "" : prependingText;
+  }
 
-    public get $prependingText(): string {
-        return this.prependingText;
-    }
+  public get $prependingText(): string {
+    return this.prependingText;
+  }
 
-    /**
-     * Adds the required-items to the builder
-     *
-     * @abstract
-     * @param {CompletionBuilder} builder builder that need to be manipulated
-     * @memberof StateTransition
-     */
-    public abstract addCompletionItems(builder: CompletionBuilder): void;
+  /**
+   * Adds the required-items to the builder
+   *
+   * @abstract
+   * @param {CompletionBuilder} builder builder that need to be manipulated
+   * @memberof StateTransition
+   */
+  public abstract addCompletionItems(builder: CompletionBuilder): void;
 }

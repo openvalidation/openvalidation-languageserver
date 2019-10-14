@@ -1,29 +1,10 @@
 {
   "defaultSeverity": "warning",
-  "extends": [
-    "tslint:recommended"
-  ],
+  "extends": ["tslint-plugin-prettier", "tslint-config-prettier"],
   "linterOptions": {
-    "exclude": [
-      "node_modules/**"
-    ]
+    "exclude": ["node_modules/**"]
   },
   "rules": {
-    "quotemark": [
-      true,
-      "single"
-    ],
-    "indent": [
-      false,
-      "spaces",
-      4
-    ],
-    "trailing-comma": false,
-    "no-console": false,
-    "arrow-parens": false,
-    "no-empty": false,
-    "object-literal-sort-keys": false,
-    "no-var-requires": false,
-    "no-string-literal": false
+    "prettier": true
   }
 }

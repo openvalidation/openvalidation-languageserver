@@ -1,5 +1,5 @@
-import { CompletionBuilder } from '../CompletionBuilder';
-import { StateTransition } from './StateTransition';
+import { CompletionBuilder } from "../CompletionBuilder";
+import { StateTransition } from "./StateTransition";
 
 /**
  * Transition for the logical connections like `or` or `and`
@@ -9,22 +9,21 @@ import { StateTransition } from './StateTransition';
  * @extends {StateTransition}
  */
 export class ConnectionTransition extends StateTransition {
+  /**
+   * Creates an instance of ConnectionTransition.
+   * @memberof ConnectionTransition
+   */
+  constructor() {
+    super();
+  }
 
-    /**
-     * Creates an instance of ConnectionTransition.
-     * @memberof ConnectionTransition
-     */
-    constructor() {
-        super();
-    }
-
-    /**
-     * Adds the logical operators to the builder
-     *
-     * @param {CompletionBuilder} builder builder that should be manipulated
-     * @memberof ConnectionTransition
-     */
-    public addCompletionItems(builder: CompletionBuilder): void {
-        builder.addLogicalOperators(this);
-    }
+  /**
+   * Adds the logical operators to the builder
+   *
+   * @param {CompletionBuilder} builder builder that should be manipulated
+   * @memberof ConnectionTransition
+   */
+  public addCompletionItems(builder: CompletionBuilder): void {
+    builder.addLogicalOperators(this);
+  }
 }

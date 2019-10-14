@@ -1,5 +1,5 @@
-import { CompletionBuilder } from '../CompletionBuilder';
-import { StateTransition } from './StateTransition';
+import { CompletionBuilder } from "../CompletionBuilder";
+import { StateTransition } from "./StateTransition";
 
 /**
  * Transition of an `then`-keyword
@@ -9,22 +9,21 @@ import { StateTransition } from './StateTransition';
  * @extends {StateTransition}
  */
 export class ThenKeywordTransition extends StateTransition {
+  /**
+   * Creates an instance of ThenKeywordTransition.
+   * @memberof ThenKeywordTransition
+   */
+  constructor() {
+    super();
+  }
 
-    /**
-     * Creates an instance of ThenKeywordTransition.
-     * @memberof ThenKeywordTransition
-     */
-    constructor() {
-        super();
-    }
-
-    /**
-     * Adds the then-keyword to the builder
-     *
-     * @param {CompletionBuilder} builder builder that need to be manipulated
-     * @memberof ThenKeywordTransition
-     */
-    public addCompletionItems(builder: CompletionBuilder): void {
-        builder.addThenKeyword(this);
-    }
+  /**
+   * Adds the then-keyword to the builder
+   *
+   * @param {CompletionBuilder} builder builder that need to be manipulated
+   * @memberof ThenKeywordTransition
+   */
+  public addCompletionItems(builder: CompletionBuilder): void {
+    builder.addThenKeyword(this);
+  }
 }

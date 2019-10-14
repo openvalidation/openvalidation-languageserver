@@ -1,4 +1,3 @@
-
 /**
  * Interface for a standard schema-property that consists of a name and a datatype
  *
@@ -6,6 +5,6 @@
  * @interface ISchemaProperty
  */
 export interface ISchemaProperty {
-    name: string;
-    type: string;
+  name: string;
+  type: string;
 }

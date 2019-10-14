@@ -1,4 +1,4 @@
-import { OvDocument } from './OvDocument';
+import { OvDocument } from "./OvDocument";
 
 /**
  * Holds a definition of all currently known OvDocuments. This class
@@ -8,35 +8,35 @@ import { OvDocument } from './OvDocument';
  * @class OvDocuments
  */
 export class OvDocuments {
-    private ovDocuments: Map<string, OvDocument>;
+  private ovDocuments: Map<string, OvDocument>;
 
-    /**
-     * Creates an instance of OvDocuments.
-     * @memberof OvDocuments
-     */
-    constructor() {
-        this.ovDocuments = new Map<string, OvDocument>();
-    }
+  /**
+   * Creates an instance of OvDocuments.
+   * @memberof OvDocuments
+   */
+  constructor() {
+    this.ovDocuments = new Map<string, OvDocument>();
+  }
 
-    /**
-     * Returns the file with the given identifier
-     *
-     * @param {string} uri identifier of the file
-     * @returns
-     * @memberof OvDocuments
-     */
-    public get(uri: string) {
-        return this.ovDocuments.get(uri);
-    }
+  /**
+   * Returns the file with the given identifier
+   *
+   * @param {string} uri identifier of the file
+   * @returns
+   * @memberof OvDocuments
+   */
+  public get(uri: string) {
+    return this.ovDocuments.get(uri);
+  }
 
-    /**
-     * Saves the given file under the given identifier
-     *
-     * @param {string} uri identifier of the file
-     * @param {OvDocument} document document which should be saved
-     * @memberof OvDocuments
-     */
-    public addOrOverrideOvDocument(uri: string, document: OvDocument) {
-        this.ovDocuments.set(uri, document);
-    }
+  /**
+   * Saves the given file under the given identifier
+   *
+   * @param {string} uri identifier of the file
+   * @param {OvDocument} document document which should be saved
+   * @memberof OvDocuments
+   */
+  public addOrOverrideOvDocument(uri: string, document: OvDocument) {
+    this.ovDocuments.set(uri, document);
+  }
 }

@@ -5,10 +5,10 @@
  * @interface ITextMateJson
  */
 export interface ITextMateJson {
-    scopeName: string;
-    name: string;
-    fileTypes: string[];
-    patterns: Pattern[];
+  scopeName: string;
+  name: string;
+  fileTypes: string[];
+  patterns: Pattern[];
 }
 
 export type Pattern = IPatternMatch | IPatternBeginEnd | IPatternCapture;
@@ -20,7 +20,7 @@ export type Pattern = IPatternMatch | IPatternBeginEnd | IPatternCapture;
  * @interface IGenericPattern
  */
 export interface IGenericPattern {
-    comment?: string;
+  comment?: string;
 }
 
 /**
@@ -31,8 +31,8 @@ export interface IGenericPattern {
  * @extends {IGenericPattern}
  */
 export interface IPatternMatch extends IGenericPattern {
-    name: string;
-    match: string;
+  name: string;
+  match: string;
 }
 
 /**
@@ -43,9 +43,9 @@ export interface IPatternMatch extends IGenericPattern {
  * @extends {IGenericPattern}
  */
 export interface IPatternBeginEnd extends IGenericPattern {
-    name: string;
-    begin: string;
-    end: string;
+  name: string;
+  begin: string;
+  end: string;
 }
 
 /**
@@ -56,6 +56,6 @@ export interface IPatternBeginEnd extends IGenericPattern {
  * @extends {IGenericPattern}
  */
 export interface IPatternCapture extends IGenericPattern {
-    match: string;
-    captures: any;
+  match: string;
+  captures: any;
 }
