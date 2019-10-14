@@ -126,4 +126,10 @@ describe("DocumentAction provider test", () => {
     provider["validateText"]("invalid", "Kommentar hallo");
     expect(provider).not.toBeNull();
   });
+
+  test("validateText with invalid uri but valid text and without axios-mock, expect no error", () => {
+    testInitializer.resetAxios();
+    provider["validateText"]("invalid", "Kommentar hallo");
+    expect(provider).not.toBeNull();
+  });
 });

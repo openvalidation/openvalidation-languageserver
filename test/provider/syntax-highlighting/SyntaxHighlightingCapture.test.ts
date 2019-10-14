@@ -38,13 +38,23 @@ describe("SyntaxHighlightingCapture tests", () => {
     expect(actual).toEqual(expected);
   });
 
-  test("addRegexToMatch with empty regex, expect group of previous string", () => {
+  test("addRegexGroupAndCapture with empty regex, expect group of previous string", () => {
     const input = "regex";
 
     capture.addRegexGroupAndCapture(input, ScopeEnum.Empty);
     capture.addRegexGroupAndCapture(null, ScopeEnum.Empty);
     const actual = capture.$match;
     const expected = "(regex)";
+
+    expect(actual).toEqual(expected);
+  });
+
+  test("addRegexToMatch with empty regex, expect match to be not set", () => {
+    const input = "";
+
+    capture["addRegexToMatch"](input);
+    const actual = capture.$match;
+    const expected = null;
 
     expect(actual).toEqual(expected);
   });

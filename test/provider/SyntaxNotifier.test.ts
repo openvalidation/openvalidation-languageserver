@@ -43,4 +43,19 @@ describe("OvSyntax notifier test", () => {
     changedCode.implementationResult = "Blablabla";
     provider.sendGeneratedCodeIfNecessary(changedCode);
   });
+
+  test("sendNotificationsIfNecessary two times with empty and not empty apiResponse, expect no error", () => {
+    provider.sendTextMateGrammarIfNecessary(
+      testInitializer.mockEmptyLintingResponse()
+    );
+    provider.sendGeneratedCodeIfNecessary(testInitializer.mockEmptyCode());
+    provider.sendTextMateGrammarIfNecessary(
+      testInitializer.mockNotEmptyLintingResponse()
+    );
+
+    const changedCode = testInitializer.mockEmptyCode();
+    changedCode.frameworkResult = "Blabla";
+    changedCode.implementationResult = "Blablabla";
+    provider.sendGeneratedCodeIfNecessary(changedCode);
+  });
 });

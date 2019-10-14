@@ -840,6 +840,21 @@ describe("Operation Tests", () => {
     expect(actual).toEqual(operand);
   });
 
+  test("getSemanticalSugarOfOperator with empty operation, expect empty string", () => {
+    const operationNode: OperationNode = new OperationNode(
+      null,
+      null,
+      null,
+      ["Test ist kleiner Test"],
+      IndexRange.create(0, 0, 0, "Test kleiner Test".length)
+    );
+
+    const actual: string = operationNode["getSemanticalSugarOfOperator"]();
+    const expected: string = "";
+
+    expect(actual.trim()).toEqual(expected);
+  });
+
   test("getSemanticalSugarOfOperator with duplicate operator, expect not used operator", () => {
     const operand: string = "Test";
     const left: OperandNode = new OperandNode(

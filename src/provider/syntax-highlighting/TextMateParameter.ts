@@ -43,7 +43,10 @@ export class TextMateParameter {
 
   private aliasHelper: AliasHelper;
 
-  constructor(private readonly apiResponse: LintingResponse, server: OvServer) {
+  constructor(
+    private readonly apiResponse: LintingResponse | null,
+    server: OvServer
+  ) {
     this.aliasHelper = server.aliasHelper;
 
     this.identifier = this.getIdentifier();
@@ -56,23 +59,22 @@ export class TextMateParameter {
     ];
     this.keywords = server.aliasHelper.getFilteredKeywords(...keywordFilter);
 
-    if (!!apiResponse.$mainAstNode) {
-      const traversal = new TreeTraversal();
-      this.operations = traversal.getOperations(
-        apiResponse.$mainAstNode.$scopes
-      );
-      this.operands = traversal.getLonelyOperands(
-        apiResponse.$mainAstNode.$scopes
-      );
-    } else {
-      this.operations = [];
-      this.operands = [];
-    }
-
     this.asKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.AS);
     this.thenKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.THEN);
     this.commentKeyword = server.aliasHelper.getKeywordByAliasKey(
       AliasKey.COMMENT
+    );
+
+    if (!apiResponse || !apiResponse.$mainAstNode) {
+      this.operations = [];
+      this.operands = [];
+      return;
+    }
+
+    const traversal = new TreeTraversal();
+    this.operations = traversal.getOperations(apiResponse.$mainAstNode.$scopes);
+    this.operands = traversal.getLonelyOperands(
+      apiResponse.$mainAstNode.$scopes
     );
   }
 
@@ -138,16 +140,19 @@ export class TextMateParameter {
     let identifier: string[] = [];
 
     if (
-      !!this.apiResponse.$mainAstNode &&
-      !!this.apiResponse.$mainAstNode.$declarations
+      !this.apiResponse ||
+      !this.apiResponse.$mainAstNode ||
+      !this.apiResponse.$mainAstNode.$declarations
     ) {
-      const names: string[] = this.apiResponse.$mainAstNode.$declarations.map(
-        d => d.$name
-      );
-      identifier = identifier.concat(
-        names.filter(n => !String.IsNullOrWhiteSpace(n))
-      );
+      return identifier;
     }
+
+    const names: string[] = this.apiResponse.$mainAstNode.$declarations.map(
+      d => d.$name
+    );
+    identifier = identifier.concat(
+      names.filter(n => !String.IsNullOrWhiteSpace(n))
+    );
 
     return identifier;
   }

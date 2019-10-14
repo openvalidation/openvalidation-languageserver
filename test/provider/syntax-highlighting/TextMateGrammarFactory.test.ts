@@ -2,6 +2,7 @@ import "jest";
 import { OvServer } from "../../../src/OvServer";
 import { TextMateGrammarFactory } from "../../../src/provider/syntax-highlighting/TextMateGrammarFactory";
 import { TestInitializer } from "../../TestInitializer";
+import { TextMateParameter } from "../../../src/provider/syntax-highlighting/TextMateParameter";
 
 describe("TextMateGrammarFactory Tests", () => {
   let textMateGrammarFactory: TextMateGrammarFactory;
@@ -36,6 +37,18 @@ describe("TextMateGrammarFactory Tests", () => {
     const actualGrammar = textMateGrammarFactory.generateTextMateGrammar(
       testInitializer.mockNotEmptyLintingResponse(),
       server
+    );
+    expect(actualGrammar).not.toBeNull();
+  });
+
+  test("generateTextMateGrammar with not empty response and empty schema, expect not null", () => {
+    const tmpTestInitializer = new TestInitializer(false);
+    const parameter: TextMateParameter = new TextMateParameter(
+      null,
+      tmpTestInitializer.$server
+    );
+    const actualGrammar = textMateGrammarFactory["fillTextMateGrammar"](
+      parameter
     );
     expect(actualGrammar).not.toBeNull();
   });
