@@ -6,6 +6,7 @@ import "reflect-metadata";
 import { createConnection, ProposedFeatures } from "vscode-languageserver";
 import { OvServer } from "./OvServer";
 
+// Starts the Java-Backend in a separat file
 require("./start-backend");
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.

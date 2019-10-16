@@ -1,8 +1,11 @@
 import * as YAML from "js-yaml";
 import {
+  createConnection,
   IConnection,
   InitializeParams,
   InitializeResult,
+  MessageReader,
+  MessageWriter,
   ServerCapabilities,
   TextDocuments
 } from "vscode-languageserver";
@@ -25,6 +28,16 @@ import { ApiProxy } from "./rest-interface/ApiProxy";
 import { LintingResponse } from "./rest-interface/response/LintingResponse";
 import { RestParameter } from "./rest-interface/RestParameter";
 import { ISchemaType } from "./rest-interface/schema/ISchemaType";
+
+export function startServer(
+  reader: MessageReader,
+  writer: MessageWriter
+): OvServer {
+  const connection = createConnection(reader, writer);
+  const server = new OvServer(connection);
+  server.start();
+  return server;
+}
 
 /**
  * Main-object to bind the websocket connection to the function-providers

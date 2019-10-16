@@ -1,4 +1,4 @@
-import * as rpc from "@sourcegraph/vscode-ws-jsonrpc";
+import * as rpc from "vscode-ws-jsonrpc";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { plainToClass } from "class-transformer";

@@ -8,7 +8,6 @@
   },
   "description": "language-server implementation for openVALIDATION",
   "dependencies": {
-    "@sourcegraph/vscode-ws-jsonrpc": "0.0.3-fork",
     "axios": "^0.19.0",
     "class-transformer": "^0.2.3",
     "cpx": "^1.5.0",
@@ -21,6 +20,7 @@
     "vscode-languageserver": "^5.2.1",
     "vscode-languageserver-types": "^3.14.0",
     "vscode-uri": "^2.0.3",
+    "vscode-ws-jsonrpc": "^0.1.1",
     "ws": "^7.1.2"
   },
   "devDependencies": {
@@ -46,6 +46,7 @@
     "clean": "rimraf lib",
     "build": "tsc && npm run copy:exe",
     "start": "npm run build && node lib/server.js",
+    "start:external": "npm run build && node lib/server.js --external",
     "start:watch": "nodemon",
     "test": "jest && make-coverage-badge",
     "test:watch": "jest --watch",
