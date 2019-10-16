@@ -1,6 +1,6 @@
 {
   "name": "ov-language-server",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -10,7 +10,6 @@
   "dependencies": {
     "@sourcegraph/vscode-ws-jsonrpc": "0.0.3-fork",
     "axios": "^0.19.0",
-    "axios-mock-adapter": "^1.17.0",
     "class-transformer": "^0.2.3",
     "cpx": "^1.5.0",
     "express": "^4.15.2",
@@ -26,20 +25,21 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
-    "@types/jest": "^24.0.18",
+    "@types/jest": "^24.0.19",
     "@types/js-yaml": "^3.12.1",
-    "@types/lodash": "^4.14.141",
-    "@types/node": "^12.7.11",
+    "@types/lodash": "^4.14.144",
+    "@types/node": "^12.11.1",
     "@types/normalize-url": "^4.2.0",
     "@types/ws": "^6.0.3",
+    "axios-mock-adapter": "^1.17.0",
     "jest": "^24.9.0",
-    "nodemon": "^1.19.3",
+    "nodemon": "^1.19.4",
     "prettier": "^1.18.2",
     "rimraf": "^3.0.0",
     "ts-jest": "^24.1.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.4"
   },
   "scripts": {
     "prepare": "npm run clean && npm run build",
