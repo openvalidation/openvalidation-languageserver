@@ -11,36 +11,41 @@ import { LintingError } from "./LintingError";
  * @class LintingResponse
  */
 export class LintingResponse {
-    private schema: ISchemaType;
+  private schema: ISchemaType;
 
-    @Type(() => MainNode)
-    private mainAstNode: MainNode;
-    
-    @Type(() => LintingError)
-    private errors: LintingError[];
+  @Type(() => MainNode)
+  private mainAstNode: MainNode;
 
+  @Type(() => LintingError)
+  private errors: LintingError[];
 
-    /**
-     * Creates an instance of LintingResponse.
-     * @param {MainNode} mainAstNode parsed syntax-tree mainNode
-     * @param {ISchemaType} schema parsed schema
-     * @memberof LintingResponse
-     */
-    constructor(mainAstNode: MainNode, schema: ISchemaType) {
-        this.errors = [];
-        this.mainAstNode = mainAstNode;
-        this.schema = schema;
-    }
+  /**
+   * Creates an instance of LintingResponse.
+   * @param {MainNode} mainAstNode parsed syntax-tree mainNode
+   * @param {ISchemaType} schema parsed schema
+   * @memberof LintingResponse
+   */
+  constructor(mainAstNode: MainNode, schema: ISchemaType) {
+    this.errors = [];
+    this.mainAstNode = mainAstNode;
+    this.schema = schema;
+  }
 
-    public get $errors(): LintingError[] {
-        return this.errors;
-    }
-    
-    public get $mainAstNode(): MainNode {
-        return this.mainAstNode;
-    }
+  public get $errors(): LintingError[] {
+    return this.errors;
+  }
+  public set $errors(errors: LintingError[]) {
+    this.errors = errors;
+  }
 
-    public get $schema(): ISchemaType {
-        return this.schema;
-    }
+  public get $mainAstNode(): MainNode {
+    return this.mainAstNode;
+  }
+  public set $mainAstNode(mainAstNode: MainNode) {
+    this.mainAstNode = mainAstNode;
+  }
+
+  public get $schema(): ISchemaType {
+    return this.schema;
+  }
 }

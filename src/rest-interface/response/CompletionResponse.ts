@@ -18,34 +18,34 @@ import { GenericNode } from "../../data-model/syntax-tree/GenericNode";
  * @class CompletionResponse
  */
 export class CompletionResponse {
-    @Type(() => GenericNode, {
-        discriminator: {
-            property: "type",
-            subTypes: [
-                { value: CommentNode, name: "CommentNode" },
-                { value: VariableNode, name: "VariableNode" },
-                { value: RuleNode, name: "RuleNode" },
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
-                { value: FunctionOperandNode, name: "FunctionOperandNode" },
-                { value: OperandNode, name: "OperandNode" },
-                { value: UnkownNode, name: "UnkownNode" },
-                { value: ArrayOperandNode, name: "ArrayOperandNode" }
-            ]
-        }
-    })
-    private scope: GenericNode;
+  @Type(() => GenericNode, {
+    discriminator: {
+      property: "type",
+      subTypes: [
+        { value: CommentNode, name: "CommentNode" },
+        { value: VariableNode, name: "VariableNode" },
+        { value: RuleNode, name: "RuleNode" },
+        { value: OperationNode, name: "OperationNode" },
+        { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
+        { value: FunctionOperandNode, name: "FunctionOperandNode" },
+        { value: OperandNode, name: "OperandNode" },
+        { value: UnkownNode, name: "UnkownNode" },
+        { value: ArrayOperandNode, name: "ArrayOperandNode" }
+      ]
+    }
+  })
+  private scope: GenericNode | null;
 
-    /**
-     * Creates an instance of CompletionResponse.
-     * @param {GenericNode} scope parsed scope
-     * @memberof CompletionResponse
-     */
-    constructor(scope: GenericNode) {
-        this.scope = scope;
-    }
-    
-    public get $scope(): GenericNode {
-        return this.scope;
-    }
+  /**
+   * Creates an instance of CompletionResponse.
+   * @param {GenericNode} scope parsed scope
+   * @memberof CompletionResponse
+   */
+  constructor(scope: GenericNode | null) {
+    this.scope = scope;
+  }
+
+  public get $scope(): GenericNode | null {
+    return this.scope;
+  }
 }

@@ -1,64 +1,88 @@
 import "jest";
 import { StringHelper } from "../../src/helper/StringHelper";
 
-describe("OvStringHelper.getOredRegEx Tests", () => {
-    test("Pass a empty list, expect empty string", () => {
-        var input: string[] = [];
+describe("OvStringHelper Tests", () => {
+  test("getOredRegEx with a empty list, expect empty string", () => {
+    const input: string[] = [];
 
-        var expected = "";
-        var actual = StringHelper.getOredRegEx(input);
+    const expected = "";
+    const actual = StringHelper.getOredRegExForWords(...input);
 
-        expect(actual).toEqual(expected);
-    });
-    
-    test("Pass a list of strings, expected an ored RegEx of them", () => {
-        var input: string[] = ["Alter", "Preis", "Name"];
+    expect(actual).toEqual(expected);
+  });
 
-        var expected = "Alter|Preis|Name";
-        var actual = StringHelper.getOredRegEx(input);
+  test("getOredRegEx with a list of strings, expected an ored RegEx of them", () => {
+    const input: string[] = ["Alter", "Preis", "Name"];
 
-        expect(actual).toEqual(expected);
-    });
+    const expected = "\\bAlter\\b|\\bPreis\\b|\\bName\\b";
+    const actual = StringHelper.getOredRegExForWords(...input);
 
-    test("Pass list with duplicated strings, expected to have every String only once in RegExp", () => {
-        var input = ["Alter", "Preis", "Alter"];
+    expect(actual).toEqual(expected);
+  });
 
-        var expected = "Alter|Preis";
-        var actual = StringHelper.getOredRegEx(input);
+  test("getOredRegEx with list with duplicated strings, expected to have every String only once in RegExp", () => {
+    const input = ["Alter", "Preis", "Alter"];
 
-        expect(actual).toEqual(expected);
-    });
-});
+    const expected = "\\bAlter\\b|\\bPreis\\b";
+    const actual = StringHelper.getOredRegExForWords(...input);
 
-describe("OvStringHelper.getWordAt Tests", () => {
-    test("pass empty string and invalid index, expect empty string", () => {
-        var inputString: string = "";
-        var inputIndex: number = 5;
+    expect(actual).toEqual(expected);
+  });
 
-        var expected = "";
-        var actual = StringHelper.getWordAt(inputString, inputIndex);
+  test("getWordAt with empty string and invalid index, expect empty string", () => {
+    const inputString: string = "";
+    const inputIndex: number = 5;
 
-        expect(actual).toEqual(expected);
-    });
+    const expected = "";
+    const actual = StringHelper.getWordAt(inputString, inputIndex);
 
-    test("pass valid string and invalid index, expect last word", () => {
-        var inputString: string = "some words";
-        var inputIndex: number = 50;
+    expect(actual).toEqual(expected);
+  });
 
-        var expected = "words";
-        var actual = StringHelper.getWordAt(inputString, inputIndex);
+  test("getWordAt with valid string and invalid index, expect last word", () => {
+    const inputString: string = "some words";
+    const inputIndex: number = 50;
 
-        expect(actual).toEqual(expected);
-    });
+    const expected = "words";
+    const actual = StringHelper.getWordAt(inputString, inputIndex);
 
-    
-    test("pass valid string and valid index, expect wanted word", () => {
-        var inputString: string = "some words are here";
-        var inputIndex: number = 13;
+    expect(actual).toEqual(expected);
+  });
 
-        var expected = "are";
-        var actual = StringHelper.getWordAt(inputString, inputIndex);
+  test("getWordAt with valid string and valid index, expect wanted word", () => {
+    const inputString: string = "some words are here";
+    const inputIndex: number = 13;
 
-        expect(actual).toEqual(expected);
-    });
+    const expected = "are";
+    const actual = StringHelper.getWordAt(inputString, inputIndex);
+
+    expect(actual).toEqual(expected);
+  });
+
+  test("makeStringRegExSafe with empty string, expect same string", () => {
+    const inputString: string = "";
+
+    const expected = "";
+    const actual = StringHelper.makeStringRegExSafe(inputString);
+
+    expect(actual).toEqual(expected);
+  });
+
+  test("makeStringRegExSafe with safe string, expect same string", () => {
+    const inputString: string = "safe string";
+
+    const expected = "safe string";
+    const actual = StringHelper.makeStringRegExSafe(inputString);
+
+    expect(actual).toEqual(expected);
+  });
+
+  test("makeStringRegExSafe with unsafe string, expect safe string", () => {
+    const inputString: string = "(un*-)safe string";
+
+    const expected = "\\(un\\*-\\)safe string";
+    const actual = StringHelper.makeStringRegExSafe(inputString);
+
+    expect(actual).toEqual(expected);
+  });
 });

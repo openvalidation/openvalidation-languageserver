@@ -1,4 +1,3 @@
-
 /**
  * Complex interface for schema-attributes which a child-/parent-relation
  *
@@ -6,6 +5,6 @@
  * @interface IComplexData
  */
 export interface IComplexData {
-    parent: string;
-    child: string;   
+  parent: string;
+  child: string;
 }

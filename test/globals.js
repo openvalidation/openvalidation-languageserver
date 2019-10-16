@@ -1,1 +1,1 @@
-require('reflect-metadata');
+require("reflect-metadata");

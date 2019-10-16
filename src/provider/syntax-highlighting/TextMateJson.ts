@@ -2,60 +2,60 @@
  * Interface for the textmate-grammar-json
  *
  * @export
- * @interface TextMateJson
+ * @interface ITextMateJson
  */
-export interface TextMateJson {
-    scopeName: string;
-    name: string;
-    fileTypes: string[];
-    patterns: Pattern[];
+export interface ITextMateJson {
+  scopeName: string;
+  name: string;
+  fileTypes: string[];
+  patterns: Pattern[];
 }
 
-export type Pattern = PatternMatch | PatternBeginEnd | PatternCapture;
+export type Pattern = IPatternMatch | IPatternBeginEnd | IPatternCapture;
 
 /**
  * Base interface for textmate patterns which only contains an optional comment
  *
  * @export
- * @interface GenericPattern
+ * @interface IGenericPattern
  */
-export interface GenericPattern {
-    comment?: string;
+export interface IGenericPattern {
+  comment?: string;
 }
 
 /**
  * match-pattern which consists of a name and a match
  *
  * @export
- * @interface PatternMatch
- * @extends {GenericPattern}
+ * @interface IPatternMatch
+ * @extends {IGenericPattern}
  */
-export interface PatternMatch extends GenericPattern {
-    name: string;
-    match: string;
+export interface IPatternMatch extends IGenericPattern {
+  name: string;
+  match: string;
 }
 
 /**
  * begin-/end-pattern which consists of a name, begin and an end
  *
  * @export
- * @interface PatternBeginEnd
- * @extends {GenericPattern}
+ * @interface IPatternBeginEnd
+ * @extends {IGenericPattern}
  */
-export interface PatternBeginEnd extends GenericPattern {
-    name: string;
-    begin: string;
-    end: string;
+export interface IPatternBeginEnd extends IGenericPattern {
+  name: string;
+  begin: string;
+  end: string;
 }
 
 /**
  * pattern which only contains captures and an optional name
  *
  * @export
- * @interface PatternCapture
- * @extends {GenericPattern}
+ * @interface IPatternCapture
+ * @extends {IGenericPattern}
  */
-export interface PatternCapture extends GenericPattern {
-    name?: string;
-    captures: any;
+export interface IPatternCapture extends IGenericPattern {
+  match: string;
+  captures: any;
 }

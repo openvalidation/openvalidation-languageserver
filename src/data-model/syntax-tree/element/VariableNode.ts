@@ -17,130 +17,146 @@ import { OperationNode } from "./operation/OperationNode";
 import { VariableNameNode } from "./VariableNameNode";
 
 export class VariableNode extends GenericNode {
-    @Type(() => BaseOperandNode, {
-        discriminator: {
-            property: "type",
-            subTypes: [
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
-                { value: FunctionOperandNode, name: "FunctionOperandNode" },
-                { value: OperandNode, name: "OperandNode" },
-                { value: ArrayOperandNode, name: "ArrayOperandNode" }
-            ]
-        }
-    })
-    private value: BaseOperandNode | null;
+  @Type(() => BaseOperandNode, {
+    discriminator: {
+      property: "type",
+      subTypes: [
+        { value: OperationNode, name: "OperationNode" },
+        { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
+        { value: FunctionOperandNode, name: "FunctionOperandNode" },
+        { value: OperandNode, name: "OperandNode" },
+        { value: ArrayOperandNode, name: "ArrayOperandNode" }
+      ]
+    }
+  })
+  private value: BaseOperandNode | null;
 
-    @Type(() => VariableNameNode)
-    private nameNode: VariableNameNode | null;
+  @Type(() => VariableNameNode)
+  private nameNode: VariableNameNode | null;
 
-    constructor(nameNode: VariableNameNode | null, value: BaseOperandNode | null, lines: string[], range: IndexRange) {
-        super(lines, range);
-        this.nameNode = nameNode;
-        this.value = value;
+  constructor(
+    nameNode: VariableNameNode | null,
+    value: BaseOperandNode | null,
+    lines: string[],
+    range: IndexRange
+  ) {
+    super(lines, range);
+    this.nameNode = nameNode;
+    this.value = value;
+  }
+
+  public getChildren(): GenericNode[] {
+    const childList: GenericNode[] = [];
+
+    if (!!this.value) {
+      childList.push(this.value);
     }
 
-    public getChildren(): GenericNode[] {
-        var childList: GenericNode[] = [];
+    return childList;
+  }
 
-        if (!!this.value)
-            childList.push(this.value);
+  public get $value(): BaseOperandNode | null {
+    return this.value;
+  }
+  public set $value(value: BaseOperandNode | null) {
+    this.value = value;
+  }
 
-        return childList;
+  public get $nameNode(): VariableNameNode | null {
+    return this.nameNode;
+  }
+  public set $nameNode(value: VariableNameNode | null) {
+    this.nameNode = value;
+  }
+
+  /**
+   * Returns the Range of the name of this variable
+   *
+   * @returns {(IndexRange | null)}
+   * @memberof OvVariable
+   */
+  public getRangeOfVariableName(): Range {
+    if (!this.$nameNode) {
+      return this.$range.asRange();
     }
 
-    /**
-     * Getter value
-     * @return {ValueNode}
-     */
-    public getValue(): BaseOperandNode | null {
-        return this.value;
+    return this.$nameNode.$range.asRange();
+  }
+
+  public getHoverContent(): HoverContent {
+    let contentText =
+      "Variable" + (!this.$nameNode ? " " : " " + this.$nameNode.$name);
+    if (!!this.$value) {
+      contentText += ": " + this.$value.$dataType;
     }
 
-    /**
-     * Getter name
-     * @return {string}
-     */
-    public getNameNode(): VariableNameNode | null {
-        return this.nameNode;
+    const content: HoverContent = new HoverContent(this.$range, contentText);
+    return content;
+  }
+
+  public getCompletionContainer(position: Position): CompletionContainer {
+    if (!!this.$nameNode && !this.$nameNode.$range.startsAfter(position)) {
+      return CompletionContainer.init().emptyTransition();
     }
 
-    /**
-     * Setter value
-     * @param {ValueNode} value
-     */
-    public setValue(value: BaseOperandNode) {
-        this.value = value;
+    const nameFilter: string | undefined = !this.$nameNode
+      ? undefined
+      : this.$nameNode.$name;
+
+    if (!this.value) {
+      return CompletionContainer.init().operandTransition(
+        undefined,
+        nameFilter
+      );
     }
 
-    /**
-     * Setter name
-     * @param {string} value
-     */
-    public setNameNode(value: VariableNameNode | null) {
-        this.nameNode = value;
+    const container = this.value.getCompletionContainer(position);
+    if (container.isEmpty()) {
+      container.operatorTransition(this.value.$dataType);
     }
 
-    /**
-     * Returns the Range of the name of this variable
-     *
-     * @returns {(IndexRange | null)}
-     * @memberof OvVariable
-     */
-    public getRangeOfVariableName(): Range {
-        if (!this.getNameNode()) return this.$range.asRange();
-
-        return this.getNameNode()!.$range.asRange();
+    if (!!nameFilter) {
+      container.addNameFilterToAllOperands(nameFilter);
     }
 
-    public getHoverContent(): HoverContent | null {
-        var contentText = "Variable" + (!this.getNameNode() ? " " : " "  + this.getNameNode()!.getName());
-        if (!!this.getValue())
-            contentText += ": " + this.getValue()!.getDataType();
+    return container;
+  }
 
-        var content: HoverContent = new HoverContent(this.$range, contentText);
-        return content;
+  public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+    const variableString: string = this.$lines.join("\n");
+    if (!this.value) {
+      return variableString;
     }
 
-    public getCompletionContainer(position: Position): CompletionContainer {
-        if (!!this.getNameNode() && !this.getNameNode()!.$range.startsAfter(position))
-            return CompletionContainer.init().emptyTransition();
-
-        var nameFilter: string | undefined = !this.getNameNode() ? undefined : this.getNameNode()!.getName();
-
-        if (!this.value)
-            return CompletionContainer.init().operandTransition(undefined, nameFilter);
-
-        var container = this.value.getCompletionContainer(position);
-        if (container.isEmpty()) {
-            container.operatorTransition(this.value.getDataType());
-        }
-
-        if (!!nameFilter)
-            container.addNameFilterToAllOperands(nameFilter);
-            
-        return container;
+    const asKeyword: string | null = aliasesHelper.getKeywordByAliasKey(
+      AliasKey.AS
+    );
+    if (!asKeyword) {
+      return variableString;
     }
 
-    public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        var variableString: string = this.$lines.join("\n");
-        if (!this.value) return variableString;
+    const splittedVariable: string[] = variableString.split(
+      this.value.$lines.join("\n")
+    );
+    let returnString: string = "";
 
-        var asKeyword: string | null = aliasesHelper.getKeywordByAliasKey(AliasKey.AS);
-        if (!asKeyword) return variableString;
+    const spaces = FormattingHelper.generateSpaces(asKeyword.length + 1);
+    let conditionString: string = this.value.getBeautifiedContent(
+      aliasesHelper
+    );
+    conditionString = conditionString.replace(
+      new RegExp("\n", "g"),
+      "\n" + spaces
+    );
+    returnString += spaces + conditionString + "\n";
 
-        var splittedVariable: string[] = variableString.split(this.value.$lines.join("\n"));
-        var returnString: string = "";
-
-        var spaces = FormattingHelper.generateSpaces(asKeyword.length + 1);
-        var conditionString: string = this.value.getBeautifiedContent(aliasesHelper);
-        conditionString = conditionString.replace(new RegExp("\n", 'g'), "\n" + spaces);
-        returnString += spaces + conditionString + "\n";
-
-        for (const splittedLine of splittedVariable) {
-            if (!String.IsNullOrWhiteSpace(splittedLine))
-                returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(splittedLine);
-        }
-        return returnString;
+    for (const splittedLine of splittedVariable) {
+      if (!String.IsNullOrWhiteSpace(splittedLine)) {
+        returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(
+          splittedLine
+        );
+      }
     }
+    return returnString;
+  }
 }

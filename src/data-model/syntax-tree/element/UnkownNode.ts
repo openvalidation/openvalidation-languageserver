@@ -7,73 +7,83 @@ import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
 import { ConnectedOperationNode } from "./operation/ConnectedOperationNode";
 import { ArrayOperandNode } from "./operation/operand/ArrayOperandNode";
+import { BaseOperandNode } from "./operation/operand/BaseOperandNode";
 import { FunctionOperandNode } from "./operation/operand/FunctionOperandNode";
 import { OperandNode } from "./operation/operand/OperandNode";
 import { OperationNode } from "./operation/OperationNode";
-import { BaseOperandNode } from "./operation/operand/BaseOperandNode";
 
 export class UnkownNode extends GenericNode {
-    @Type(() => BaseOperandNode, {
-        discriminator: {
-            property: "type",
-            subTypes: [
-                { value: OperationNode, name: "OperationNode" },
-                { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
-                { value: FunctionOperandNode, name: "FunctionOperandNode" },
-                { value: OperandNode, name: "OperandNode" },
-                { value: ArrayOperandNode, name: "ArrayOperandNode" }
-            ]
-        }
-    })
-    private content: BaseOperandNode | null;
+  @Type(() => BaseOperandNode, {
+    discriminator: {
+      property: "type",
+      subTypes: [
+        { value: OperationNode, name: "OperationNode" },
+        { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
+        { value: FunctionOperandNode, name: "FunctionOperandNode" },
+        { value: OperandNode, name: "OperandNode" },
+        { value: ArrayOperandNode, name: "ArrayOperandNode" }
+      ]
+    }
+  })
+  private content: BaseOperandNode | null;
 
-    constructor(content: BaseOperandNode | null, lines: string[], range: IndexRange) {
-        super(lines, range);
-        this.content = content;
+  constructor(
+    content: BaseOperandNode | null,
+    lines: string[],
+    range: IndexRange
+  ) {
+    super(lines, range);
+    this.content = content;
+  }
+
+  public get $content(): BaseOperandNode | null {
+    return this.content;
+  }
+
+  public getChildren(): GenericNode[] {
+    const children: GenericNode[] = [];
+
+    if (!!this.content) {
+      children.push(this.content);
     }
 
-    public getContent(): BaseOperandNode | null {
-        return this.content;
+    return children;
+  }
+
+  public getHoverContent(): HoverContent {
+    if (!this.content) {
+      return new HoverContent(this.$range, "Unkown-Element");
     }
 
-    public getChildren(): GenericNode[] {
-        var children: GenericNode[] = [];
+    const hoverContent = this.content.getHoverContent();
+    const ownContent = "`Unkown-Element` with " + hoverContent.$content;
+    hoverContent.$content = ownContent;
+    return hoverContent;
+  }
 
-        if (this.content != null)
-            children.push(this.content);
-
-        return children;
+  public getCompletionContainer(position: Position): CompletionContainer {
+    if (!this.content) {
+      return CompletionContainer.init().operandTransition();
     }
 
-    public getHoverContent(): HoverContent | null {
-        if (!this.content) return new HoverContent(this.$range, "Unkown-Element");
-        
-        var hoverContent = this.content.getHoverContent();
-        if (!hoverContent) return hoverContent;
-
-        var ownContent = "`Unkown-Element` with " + hoverContent.$content;
-        hoverContent.$content = ownContent;
-        return hoverContent;
+    const container: CompletionContainer = this.content.getCompletionContainer(
+      position
+    );
+    if (container.isEmpty()) {
+      container.operatorTransition(this.content.$dataType);
+      container.asKeywordTransition();
+    } else if (this.content.isComplete()) {
+      container.thenKeywordTransition();
+      container.asKeywordTransition();
     }
-    
-    public getCompletionContainer(position: Position): CompletionContainer {
-        if (!this.content) return CompletionContainer.init().operandTransition();
 
-        var container: CompletionContainer = this.content.getCompletionContainer(position);
-        if (container.isEmpty()) {
-            container.operatorTransition(this.content.getDataType());
-            container.asKeywordTransition();
-        } else if (this.content.isComplete()) {
-            container.thenKeywordTransition();
-            container.asKeywordTransition();
-        }
+    return container;
+  }
 
-        return container;
+  public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+    if (!this.content) {
+      return this.defaultFormatting();
     }
-    
-    public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        if (!this.content)
-            return this.defaultFormatting();
-        return this.content.getBeautifiedContent(aliasesHelper);
-    }
+    return this.content.getBeautifiedContent(aliasesHelper);
+  }
 }

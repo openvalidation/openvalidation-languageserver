@@ -4,56 +4,55 @@ import { DocumentSymbolProvider } from "../../src/provider/DocumentSymbolProvide
 import { TestInitializer } from "../TestInitializer";
 
 describe("DocumentSymbol provider test", () => {
-    var provider: DocumentSymbolProvider;
+  let provider: DocumentSymbolProvider;
 
-    function getParams(): DocumentSymbolParams {
-        return {
-            textDocument: {
-                uri: "test.ov"
-            }
-        }
-    }
+  function getParams(): DocumentSymbolParams {
+    return {
+      textDocument: {
+        uri: "test.ov"
+      }
+    };
+  }
 
-    beforeEach(() => {
-        var testInitializer = new TestInitializer(true);
-        provider = testInitializer.documentSymbolProvider;
-    });
+  beforeEach(() => {
+    const testInitializer = new TestInitializer(true);
+    provider = testInitializer.documentSymbolProvider;
+  });
 
-    test("Verify provider exists", () => {
-        expect(provider).not.toBeNull();
-    });
+  test("Verify provider exists", () => {
+    expect(provider).not.toBeNull();
+  });
 
-    test("findDocumentSymbols with empty document", () => {
-        var tmpTestInitializer = new TestInitializer(false);
-        var tmpProvider = tmpTestInitializer.documentSymbolProvider;
+  test("findDocumentSymbols with empty document", () => {
+    const tmpTestInitializer = new TestInitializer(false);
+    const tmpProvider = tmpTestInitializer.documentSymbolProvider;
 
-        var expected: Location[] = [];
-        var actual = tmpProvider.findDocumentSymbols(getParams());
+    const expected: Location[] = [];
+    const actual = tmpProvider.findDocumentSymbols(getParams());
 
-        expect(actual).toEqual(expected);
-    });
+    expect(actual).toEqual(expected);
+  });
 
-    test("findDocumentSymbols with full document, expect one variable", () => {
-        var expectedLength: number = 1;
-        var expectedName: string = "Minderjährig";
+  test("findDocumentSymbols with full document, expect one variable", () => {
+    const expectedLength: number = 1;
+    const expectedName: string = "Minderjährig";
 
-        var actual = provider.findDocumentSymbols(getParams());
+    const actual = provider.findDocumentSymbols(getParams());
 
-        expect(actual.length).toEqual(expectedLength);
-        expect(actual[0].name).toEqual(expectedName);
-    });
+    expect(actual.length).toEqual(expectedLength);
+    expect(actual[0].name).toEqual(expectedName);
+  });
 
+  test("findDocumentSymbols with wrong document-uri, expect empty array", () => {
+    const expected: SymbolInformation[] = [];
 
-    test("findDocumentSymbols with wrong document-uri, expect empty array", () => {
-        var expected: SymbolInformation[] = [];
+    const input = {
+      textDocument: {
+        uri: "wrongUri"
+      }
+    };
+    const actual = provider.findDocumentSymbols(input);
 
-        var input = {
-            textDocument: {
-                uri: "wrongUri"
-            }
-        }
-        var actual = provider.findDocumentSymbols(input);
-
-        expect(actual).toEqual(expected);
-    });
+    expect(actual).toEqual(expected);
+  });
 });

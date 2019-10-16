@@ -1,4 +1,3 @@
-
 /**
  * Enum for additional completion-keys that should be used inside the completion-engine
  *
@@ -6,6 +5,6 @@
  * @enum {number}
  */
 export enum CompletionKeyEnum {
-    Array = ",",
-    ComplexSchema = "."
+  Array = ",",
+  ComplexSchema = "."
 }

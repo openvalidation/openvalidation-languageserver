@@ -6,34 +6,30 @@ import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
 
 export class VariableNameNode extends GenericNode {
-    private name: string;
+  private name: string;
 
-    constructor(lines: string[], range: IndexRange, name: string) {
-        super(lines, range);
-        this.name = name;
-    }
+  constructor(lines: string[], range: IndexRange, name: string) {
+    super(lines, range);
+    this.name = name;
+  }
 
-    public getName(): string {
-        return this.name;
-    }
+  public get $name(): string {
+    return this.name;
+  }
 
-    public setName(name: string) {
-        this.name = name;
-    }
+  public getChildren(): GenericNode[] {
+    return [];
+  }
 
-    public getChildren(): GenericNode[] {
-        return [];
-    }
+  public getHoverContent(): HoverContent {
+    return new HoverContent(this.$range, "Variable-Name: " + this.name);
+  }
 
-    public getHoverContent(): HoverContent | null {
-        return new HoverContent(this.$range, "Variable-Name: " + this.name);
-    }
+  public getBeautifiedContent(aliasesHelper: AliasHelper): string {
+    return this.$lines.join("\n");
+  }
 
-    public getBeautifiedContent(aliasesHelper: AliasHelper): string {
-        return this.$lines.join("\n");
-    }
-
-    public getCompletionContainer(position: Position): CompletionContainer {
-        return CompletionContainer.init().emptyTransition();
-    }
+  public getCompletionContainer(position: Position): CompletionContainer {
+    return CompletionContainer.init().emptyTransition();
+  }
 }

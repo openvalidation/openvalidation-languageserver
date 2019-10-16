@@ -1,5 +1,6 @@
-import { Pattern } from './TextMateJson';
+import { String } from "typescript-string-operations";
 import { ScopeEnum } from "../../enums/ScopeEnum";
+import { IPatternCapture } from "./TextMateJson";
 
 /**
  * Class that is used for semantic parsing.
@@ -10,98 +11,110 @@ import { ScopeEnum } from "../../enums/ScopeEnum";
  * @class SyntaxHighlightingCapture
  */
 export class SyntaxHighlightingCapture {
-    private capture: ScopeEnum[];
-    private match: string | null;
+  public get $capture(): ScopeEnum[] {
+    return this.capture;
+  }
+  public set $capture(value: ScopeEnum[]) {
+    this.capture = value;
+  }
 
-    constructor() {
-        this.capture = [];
-        this.match = null;
+  public get $match(): string | null {
+    return this.match;
+  }
+  public set $match(value: string | null) {
+    this.match = value;
+  }
+
+  private capture: ScopeEnum[];
+  private match: string | null;
+
+  constructor() {
+    this.capture = [];
+    this.match = null;
+  }
+
+  /**
+   * Adds a new capture string to the list and adds the given regex to the string.
+   * The string will be surround by brackets, so is added as a group itself.
+   * This will be used for highlighting for the `n`-th group in the regex
+   *
+   * @param {(string | null)} regex that will be added
+   * @param {ScopeEnum} scope scope of the regex
+   * @returns {void}
+   * @memberof SyntaxHighlightingCapture
+   */
+  public addRegexGroupAndCapture(regex: string | null, scope: ScopeEnum): void {
+    if (!regex || String.IsNullOrWhiteSpace(regex) || scope.length === 0) {
+      return;
     }
 
-    /**
-     * Getter capture
-     * @return {string[]}
-     */
-    public get $capture(): ScopeEnum[] {
-        return this.capture;
+    this.capture.push(scope);
+    this.addRegexToMatch(`(${regex})`);
+  }
+
+  /**
+   * Adds the content of the given capture to this object
+   *
+   * @param {(SyntaxHighlightingCapture | null)} capture object to merge
+   * @returns {void}
+   * @memberof SyntaxHighlightingCapture
+   */
+  public merge(capture: SyntaxHighlightingCapture | null): void {
+    if (
+      !capture ||
+      !capture.$match ||
+      String.IsNullOrWhiteSpace(capture.$match) ||
+      capture.$capture.length === 0
+    ) {
+      return;
     }
 
-    /**
-     * Getter match
-     * @return {string}
-     */
-    public get $match(): string | null {
-        return this.match;
+    this.capture.push(...capture.$capture);
+    this.addRegexToMatch(capture.$match);
+  }
+
+  /**
+   * Generates a textmate-pattern for the content of the class
+   *
+   * @returns {(Pattern | null)} builded pattern or null, in an error-case
+   * @memberof SyntaxHighlightingCapture
+   */
+  public buildPattern(): IPatternCapture | null {
+    if (!this.$match || this.$capture.length === 0) {
+      return null;
     }
 
-    /**
-     * Setter capture
-     * @param {string[]} value
-     */
-    public set $capture(value: ScopeEnum[]) {
-        this.capture = value;
+    const capture: any = {};
+    for (let index = 1; index <= this.capture.length; index++) {
+      const scope = this.capture[index - 1];
+      if (scope === ScopeEnum.Empty) {
+        continue;
+      }
+
+      capture[`${index}`] = { name: scope };
+    }
+    return {
+      captures: capture,
+      match: this.$match
+    };
+  }
+
+  /**
+   * Adds the given regex to the string.
+   *
+   * @param {(string | null)} regex string that will be added
+   * @returns {void}
+   * @memberof SyntaxHighlightingCapture
+   */
+  private addRegexToMatch(regex: string | null): void {
+    if (!regex || String.IsNullOrWhiteSpace(regex)) {
+      return;
     }
 
-    /**
-     * Setter match
-     * @param {string} value
-     */
-    public set $match(value: string | null) {
-        this.match = value;
+    if (!this.match) {
+      this.match = regex;
+    } else {
+      this.match += `\\s*${regex}`;
     }
-
-    /**
-     * Adds a new capture string to the list.
-     * This will be used for highlighting for the `n`-th group in the regex
-     *
-     * @param {...ScopeEnum[]} scopes
-     * @memberof SyntaxHighlightingCapture
-     */
-    public addCapture(...scopes: ScopeEnum[]): void {
-        this.capture.push(...scopes);
-    }
-
-    /**
-     * Adds the given regex to the string
-     *
-     * @param {(string | null)} regex string that will be added
-     * @returns {void}
-     * @memberof SyntaxHighlightingCapture
-     */
-    public addRegexToMatch(regex: string | null): void {
-        if (!regex) return;
-
-        if (!this.match)
-            this.match = regex;
-        else
-            this.match += `\\s*${regex}`;
-    }
-
-    /**
-     * Generates a textmate-pattern for the content of the class
-     *
-     * @returns {(Pattern | null)} builded pattern or null, in an error-case
-     * @memberof SyntaxHighlightingCapture
-     */
-    public buildPattern(atStartOfTheLine: boolean = false): Pattern | null {
-        if (!this.$match) return null;
-
-        var capture: any = { };
-        for (let index = 1; index <= this.capture.length; index++) {
-            const scope = this.capture[index - 1];
-            capture[`${index}`] = {
-                name: scope
-            }
-        }
-
-        // Lonely operands should be at the start of the line
-        if (atStartOfTheLine)
-            this.$match = `^\\s*${this.$match}`;
-
-        return {
-            match: this.$match,
-            captures: capture
-        }
-    }
-
+  }
 }

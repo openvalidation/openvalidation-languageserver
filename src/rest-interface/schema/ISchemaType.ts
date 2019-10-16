@@ -9,6 +9,6 @@ import { ISchemaProperty } from "./ISchemaProperty";
  * @interface ISchemaType
  */
 export interface ISchemaType {
-    dataProperties: ISchemaProperty[];
-    complexData: IComplexData[];
+  dataProperties: ISchemaProperty[];
+  complexData: IComplexData[];
 }

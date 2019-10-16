@@ -1,9 +1,9 @@
+import { ScopeEnum } from "../../enums/ScopeEnum";
 import { StringHelper } from "../../helper/StringHelper";
 import { OvServer } from "../../OvServer";
-import { TextMateJson } from "./TextMateJson";
-import { TextMateParameter } from "./TextMateParameter";
 import { LintingResponse } from "../../rest-interface/response/LintingResponse";
-import { ScopeEnum } from "../../enums/ScopeEnum";
+import { ITextMateJson } from "./TextMateJson";
+import { TextMateParameter } from "./TextMateParameter";
 
 /**
  * Generates the textmate grammar which the given response of the REST-API
@@ -12,85 +12,94 @@ import { ScopeEnum } from "../../enums/ScopeEnum";
  * @class TextMateGrammarFactory
  */
 export class TextMateGrammarFactory {
+  private emptyLineRegex: string = "^[ \t]*$";
 
-    private emptyLineRegex: string = '^[ \t]*$';
+  constructor() {}
 
-    constructor() { }
+  /**
+   * Generates and returns the TextMateGrammar
+   *
+   * @param {LintingResponse} apiResponse rest-response that holds the relevant parsed data
+   * @param {OvServer} server sever that contains additional parameter we need for generation
+   * @returns {ITextMateJson} JSON-Object of the TextMate-Grammar
+   * @memberof TextMateGrammarFactory
+   */
+  public generateTextMateGrammar(
+    apiResponse: LintingResponse,
+    server: OvServer
+  ): ITextMateJson {
+    const parameter: TextMateParameter = new TextMateParameter(
+      apiResponse,
+      server
+    );
+    const returnPar = this.fillTextMateGrammar(parameter);
+    return returnPar;
+  }
 
-    /**
-     * Generates and returns the TextMateGrammar
-     *
-     * @param {LintingResponse} apiResponse rest-response that holds the relevant parsed data
-     * @param {OvServer} server sever that contains additional parameter we need for generation
-     * @returns {TextMateJson} JSON-Object of the TextMate-Grammar
-     * @memberof TextMateGrammarFactory
-     */
-    public generateTextMateGrammar(apiResponse: LintingResponse, server: OvServer): TextMateJson {
-        var parameter: TextMateParameter = new TextMateParameter(apiResponse, server);;
-        var returnPar = this.fillTextMateGrammar(parameter);
-        return returnPar;
+  /**
+   * fills the textmate grammar which the calculated parameter
+   *
+   * @private
+   * @param {TextMateParameter} parameter previously calculated parameter that holds the data for the grammar
+   * @returns {ITextMateJson}
+   * @memberof TextMateGrammarFactory
+   */
+  private fillTextMateGrammar(parameter: TextMateParameter): ITextMateJson {
+    const json: ITextMateJson = {
+      scopeName: "source.ov",
+      name: "openVALIDATION",
+      fileTypes: ["ov"],
+      patterns: []
+    };
+
+    // Comments
+    json.patterns.push({
+      comment: "standard-comment",
+      name: ScopeEnum.Comment,
+      begin: "(?i)(" + parameter.$commentKeyword + ")",
+      end: this.emptyLineRegex
+    });
+
+    // Error-Message / Action
+    json.patterns.push({
+      comment: "pattern for actions in a rule",
+      name: ScopeEnum.StaticString,
+      begin: "(?<=((?i)(" + parameter.$thenKeyword + ")))",
+      end: this.emptyLineRegex
+    });
+
+    // Keywords without Operators
+    if (parameter.$keywords.length > 0) {
+      json.patterns.push({
+        comment: "pattern for general keywords",
+        name: "keyword.ov",
+        match: StringHelper.getCaseUnsensitiveOredRegExForWords(
+          ...parameter.$keywords
+        )
+      });
     }
 
-    /**
-     * fills the textmate grammar which the calculated parameter
-     *
-     * @private
-     * @param {TextMateParameter} parameter previously calculated parameter that holds the data for the grammar
-     * @returns {TextMateJson}
-     * @memberof TextMateGrammarFactory
-     */
-    private fillTextMateGrammar(parameter: TextMateParameter): TextMateJson {
-        var json: TextMateJson = {
-            scopeName: "source.ov",
-            name: "openVALIDATION",
-            fileTypes: ['ov'],
-            patterns: []
-        };
-
-        // Comments
-        json.patterns.push({
-            comment: 'standard-comment',
-            name: 'comment.line',
-            begin: '(?i)(' + parameter.$commentKeyword + ')',
-            end: this.emptyLineRegex
-        });
-
-        // Error-Message / Action
-        json.patterns.push({
-            comment: 'pattern for actions in a rule',
-            name: 'string.action.ov',
-            begin: '(?<=((?i)(' + parameter.$thenKeyword + ')))',
-            end: this.emptyLineRegex
-        });
-
-        // Variables
-        if (parameter.$identifier.length > 0) {
-            json.patterns.push({
-                comment: 'pattern for identifier (variables)',
-                name: 'variable.parameter.name.ov',
-                match: `((?i)${parameter.$asKeyword}).*${StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.$identifier)}`,
-                captures: {
-                    '1': { name: ScopeEnum.Keyword },
-                    '2': { name: ScopeEnum.Variable }
-                } 
-            });
+    // Variables
+    if (parameter.$identifier.length > 0) {
+      json.patterns.push({
+        comment: "pattern for identifier (variables)",
+        match: `((?i)${
+          parameter.$asKeyword
+        }).*${StringHelper.getCaseUnsensitiveOredRegExForWords(
+          ...parameter.$identifier
+        )}`,
+        captures: {
+          1: { name: ScopeEnum.Keyword },
+          2: { name: ScopeEnum.Variable }
         }
-
-        // Keywords without Operators
-        if (parameter.$keywords.length > 0) {
-            json.patterns.push({
-                comment: 'pattern for general keywords',
-                name: 'keyword.ov',
-                match: StringHelper.getCaseUnsensitiveOredRegExForWords(...parameter.$keywords)
-            });
-        }
-        
-        // Operator Keywords
-        var operationRegex = parameter.getOperationAndOperandPatterns();
-        if (!!operationRegex) {
-            json.patterns.push(...operationRegex);
-        }
-
-        return json;
+      });
     }
+
+    // Operator Keywords
+    json.patterns.push(
+      ...parameter.getOperationAndOperandPatterns(parameter.$asKeyword)
+    );
+
+    return json;
+  }
 }

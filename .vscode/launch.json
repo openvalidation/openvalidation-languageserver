@@ -9,6 +9,24 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/lib/server.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Unit Tests",
+            "port": 9230,
+            "runtimeArgs": [
+                "--inspect-brk=9230",
+                "${workspaceRoot}/node_modules/jest/bin/jest.js",
+                "--runInBand",
+                "--watch"
+            ],
+            "runtimeExecutable": null,
+            "console": "externalTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "BABEL_ENV": "testing"
+            }
         }
     ]
 }

@@ -1,10 +1,9 @@
-import "jest"
+import "jest";
 
 describe("Dummy Tests", () => {
-    beforeEach(() => {
-    });
+  beforeEach(() => {});
 
-    test("Verify Tests Work", () => {
-        expect(true).toBeTruthy()
-    })
+  test("Verify Tests Work", () => {
+    expect(true).toBeTruthy();
+  });
 });
