@@ -161,6 +161,10 @@ export class OperationNode extends ConditionNode {
       return container;
     }
 
+    if (this.$range.endsBefore(position)) {
+      return CompletionContainer.init().connectionTransition();
+    }
+
     return CompletionContainer.init().emptyTransition();
   }
 

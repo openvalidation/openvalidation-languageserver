@@ -349,4 +349,41 @@ describe("Completion provider test", () => {
 
     expect(actual).toEqual(expected);
   });
+
+  test("extractItem with multiple lines, expect correct text and start line", () => {
+    const textInput: string[] = [
+      "Kommentar Das ist ein Kommentar",
+      "          ... über mehrere Zeiledddn",
+      "    ",
+      "ALS variable"
+    ];
+    const positionInput: Position = Position.create(2, 4);
+
+    const expected: [string[], number] = [
+      [
+        "Kommentar Das ist ein Kommentar",
+        "          ... über mehrere Zeiledddn"
+      ],
+      0
+    ];
+    const actual = provider["extractItem"](textInput, positionInput);
+
+    expect(actual).toEqual(expected);
+  });
+
+  // test("extractItem with multiple lines, expect correct text and start line", () => {
+  //   const textInput: string[] = [
+  //     "Kommentar Das ist ein Kommentar",
+  //     "          ... über mehrere Zeiledddn",
+  //     "    ",
+  //     "    ",
+  //     "ALS variable"
+  //   ];
+  //   const positionInput: Position = Position.create(3, 4);
+
+  //   const expected: [string[], number] = [["    ", "ALS variable"], 2];
+  //   const actual = provider["extractItem"](textInput, positionInput);
+
+  //   expect(actual).toEqual(expected);
+  // });
 });
