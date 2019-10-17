@@ -13,19 +13,13 @@ export function startServerAsExternalProcess() {
   );
   const child: ChildProcess = exec(exePath);
 
-  if (!!child.stdout) {
-    child.stdout.on("data", data => {
-      console.log("Server-Log: " + data);
-    });
-  }
-
   if (!!child.stderr) {
     child.stderr.on("data", stderr => {
-      console.log("Server-Error: " + stderr);
+      console.log(`Error: ${stderr}`);
     });
   }
 
   child.on("close", code => {
-    console.log(`child process exited with code ${code}`);
+    console.log(`Language-Server exited with ${code}`);
   });
 }

@@ -28,7 +28,9 @@ const app = express();
 app.use(express.static(__dirname));
 
 // start the server
-const server = app.listen(3000, () => console.log("Server running on 3000!"));
+const server = app.listen(3000, () =>
+  console.log("Language-Server running on 3000!")
+);
 
 // create the web socket
 const wss = new ws.Server({

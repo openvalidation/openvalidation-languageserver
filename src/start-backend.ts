@@ -7,12 +7,6 @@ export function startBackend() {
   const exePath = path.join(__dirname, "/rest-interface/ov-rest.exe");
   const child: ChildProcess = exec(exePath);
 
-  if (!!child.stdout) {
-    child.stdout.on("data", data => {
-      console.log(`REST-Log: ${data}`);
-    });
-  }
-
   if (!!child.stderr) {
     child.stderr.on("data", stderr => {
       console.error(`REST-Error: ${stderr}`);
@@ -20,6 +14,6 @@ export function startBackend() {
   }
 
   child.on("close", code => {
-    console.log(`REST-Interface ${code}`);
+    console.log(`REST-Interface exited with ${code}`);
   });
 }
