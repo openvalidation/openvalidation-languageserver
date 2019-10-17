@@ -4,7 +4,7 @@ import {
   TextEdit,
   WorkspaceEdit
 } from "vscode-languageserver";
-import { Range } from "vscode-languageserver-types";
+import { Range } from "vscode-languageserver";
 import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
 

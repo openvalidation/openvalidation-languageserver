@@ -1,4 +1,4 @@
-import { Range } from "vscode-languageserver-types";
+import { Range } from "vscode-languageserver";
 import { CommentNode } from "../syntax-tree/element/CommentNode";
 import { RuleNode } from "../syntax-tree/element/RuleNode";
 import { VariableNode } from "../syntax-tree/element/VariableNode";

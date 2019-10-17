@@ -2,7 +2,7 @@ import {
   DefinitionLink,
   TextDocumentPositionParams
 } from "vscode-languageserver";
-import { Definition, Location } from "vscode-languageserver-types";
+import { Definition, Location } from "vscode-languageserver";
 import { VariableNode } from "../data-model/syntax-tree/element/VariableNode";
 import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";

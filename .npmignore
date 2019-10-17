@@ -1,4 +1,6 @@
 .vscode
+.vscode-test
+coverage
 node_modules
 .gitignore
 .npmignore
@@ -8,3 +10,5 @@ tsconfig.json
 src
 test
 coverage
+jest.config.js
+tslint.json

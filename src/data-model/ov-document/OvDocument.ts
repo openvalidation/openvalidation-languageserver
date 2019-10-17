@@ -1,5 +1,5 @@
 import { String } from "typescript-string-operations";
-import { Position, Range } from "vscode-languageserver-types";
+import { Position, Range } from "vscode-languageserver";
 import { AliasHelper } from "../../aliases/AliasHelper";
 import { StringHelper } from "../../helper/StringHelper";
 import { GenericNode } from "../syntax-tree/GenericNode";

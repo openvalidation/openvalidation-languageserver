@@ -3,7 +3,7 @@ import {
   SymbolInformation,
   SymbolKind
 } from "vscode-languageserver";
-import { Location } from "vscode-languageserver-types";
+import { Location } from "vscode-languageserver";
 import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
 

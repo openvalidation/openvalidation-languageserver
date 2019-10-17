@@ -32,7 +32,7 @@ Syntax-Highlighting is currently based on a [TextMate-Grammar](https://macromate
 In addition the new generated code gets send to the client over the notification-method `textDocument/generatedCode`. This always happens, when code gets written and the parser generated new code.
 
 Last but not least the language-server is able to handle changes of the schema-, culture- and language-parameters.
-This can be done by the client by sending notifications over the methods `textDocument/schemaChanged`, `textDocument/cultureChanged` and 
+This can be done by the client by sending notifications over the methods `textDocument/schemaChanged`, `textDocument/cultureChanged` and
 `textDocument/languageChanged`. The possible values of these parameters can be seen under the [openVALIDATION-documentation](https://docs.openvalidation.io/api).
 
 ## Getting started
@@ -46,9 +46,8 @@ npm install ov-language-server
 ### Run the language server
 
 ```bash
-node .\node_modules\ov-language-server\lib\server.js
+node .\node_modules\ov-language-server\lib\server-launcher.js
 ```
-
 
 ### Connect to the language server
 
