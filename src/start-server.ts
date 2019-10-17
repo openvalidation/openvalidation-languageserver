@@ -10,6 +10,9 @@ import * as url from "url";
 import * as rpc from "vscode-ws-jsonrpc";
 import * as ws from "ws";
 import { startServer } from "./OvServer";
+import { startBackend } from "./start-backend";
+
+startBackend();
 
 process.on("uncaughtException", (err: any) => {
   console.error("Uncaught Exception: ", err.toString());

@@ -1,7 +1,4 @@
 import { ChildProcess, exec } from "child_process";
-import { startBackend } from "./start-backend";
-
-startBackend();
 
 export function startWebSocket() {
   require("./start-server");
