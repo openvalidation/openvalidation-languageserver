@@ -17,7 +17,7 @@ import { CompletionBuilder } from "./code-completion/CompletionBuilder";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for `onCompletion` and `onCompletionResolve`
+ * Response-Provider for `onCompletion`
  *
  * @export
  * @class CompletionProvider
@@ -43,23 +43,7 @@ export class CompletionProvider extends Provider {
    */
   constructor(server: OvServer) {
     super(server);
-    this.connection.onCompletionResolve(params =>
-      this.completionResolve(params)
-    );
     this.connection.onCompletion(params => this.completion(params));
-  }
-
-  /**
-   * Can Provide further documentation for a specific completion-item
-   *
-   * @private
-   * @param {CompletionItem} params completion item to comment
-   * @returns {CompletionItem} documented completion-item
-   * @memberof CompletionProvider
-   */
-  public completionResolve(params: CompletionItem): CompletionItem {
-    // TODO: More documentation
-    return params;
   }
 
   /**

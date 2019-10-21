@@ -242,7 +242,7 @@ export class OvServer {
       textDocumentSync: this.documents.syncKind,
       codeActionProvider: false,
       completionProvider: {
-        resolveProvider: true,
+        resolveProvider: false,
         triggerCharacters: [
           CompletionKeyEnum.Array,
           CompletionKeyEnum.ComplexSchema
