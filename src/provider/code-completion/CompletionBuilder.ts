@@ -96,7 +96,7 @@ export class CompletionBuilder {
       this.addSnippet("Variable", "$1 " + asWord + " ${2:variable}", "b", "");
     }
 
-    const constrainedWord: string[] = this.aliasHelper.getConstrainedKeyword();
+    const constrainedWord: string[] = this.aliasHelper.getConstrainedKeywords();
     if (constrainedWord.length > 0) {
       this.addSnippet(
         "Constrained Rule",

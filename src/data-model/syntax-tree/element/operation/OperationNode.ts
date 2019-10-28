@@ -287,7 +287,13 @@ export class OperationNode extends ConditionNode {
       shadowOperator = shadowOperator
         .replace(new RegExp(operatorLines, "g"), "")
         .trim();
-      retunCapture.addRegexGroupAndCapture(shadowOperator, ScopeEnum.Empty);
+      var aliases = aliasesHelper.getConstrainedKeywords();
+      var scopeEnum: ScopeEnum = aliases.some(
+        alias => alias.toLowerCase() == shadowOperator.toLowerCase()
+      )
+        ? ScopeEnum.Keyword
+        : ScopeEnum.Empty;
+      retunCapture.addRegexGroupAndCapture(shadowOperator, scopeEnum);
       retunCapture.merge(this.operator.getPatternInformation(aliasesHelper));
     }
 

@@ -341,6 +341,25 @@ describe("Completion provider test", () => {
     expect(actual).toEqual(expected);
   });
 
+  test("extractItem empty line before variable-name, expect whole variable", () => {
+    const textInput: string[] = [
+      "Wenn test",
+      "Dann bla",
+      "",
+      "    ",
+      "Als Test",
+      "",
+      "TextToFind",
+      "find"
+    ];
+    const positionInput: Position = Position.create(3, 4);
+
+    const expected: [string[], number] = [["    ", "Als Test"], 3];
+    const actual = provider["extractItem"](textInput, positionInput);
+
+    expect(actual).toEqual(expected);
+  });
+
   test("extractItem with multiple lines, expect correct text and start line", () => {
     const textInput: string[] = [
       "Kommentar Das ist ein Kommentar",

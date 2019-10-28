@@ -255,6 +255,7 @@ export class CompletionProvider extends Provider {
 
     for (let index = 0; index < text.length; index++) {
       const element = text[index];
+
       if (index === position.line) {
         foundIndex = true;
       }
