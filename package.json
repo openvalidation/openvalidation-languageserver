@@ -1,6 +1,6 @@
 {
   "name": "ov-language-server",
-  "version": "0.0.9",
+  "version": "0.0.9b",
   "description": "language-server implementation for openVALIDATION",
   "repository": {
     "type": "git",
@@ -9,10 +9,10 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc && npm run copy:exe",
-    "clean": "rimraf lib",
-    "copy:exe": "cpx ./src/rest-interface/ov-rest.exe ./lib/rest-interface/",
+    "clean": "rimraf dist",
+    "copy:exe": "cpx ./src/rest-interface/ov-rest.jar ./dist/rest-interface/",
     "prepare": "npm run clean && npm run build",
-    "start": "npm run build && node lib/start-server.js",
+    "start": "npm run build && node dist/start-server.js",
     "start:watch": "nodemon",
     "test": "jest && make-coverage-badge",
     "test:watch": "jest --watch"
@@ -22,6 +22,7 @@
     "class-transformer": "^0.2.3",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.13",
+    "node-jre": "^0.2.3",
     "reflect-metadata": "^0.1.13",
     "typescript": "^3.6.4",
     "typescript-string-operations": "^1.3.1",

@@ -14,7 +14,7 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "rootDir": "src",
-    "outDir": "lib",
+    "outDir": "dist",
     "baseUrl": "./",
     "paths": {
       "src/*": ["src/*"],

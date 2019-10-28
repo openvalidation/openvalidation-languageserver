@@ -46,7 +46,7 @@ npm install ov-language-server
 ### Run the language server
 
 ```bash
-node .\node_modules\ov-language-server\lib\start-server.js
+node .\node_modules\ov-language-server\dist\start-server.js
 ```
 
 ### Connect to the language server

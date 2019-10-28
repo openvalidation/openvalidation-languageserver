@@ -9,7 +9,7 @@ export function startServerAsExternalProcess() {
 
   // Starts the spring-boot-backend
   const exePath = path.join(
-    "node node_modules/ov-language-server/lib/start-server.js"
+    "node node_modules/ov-language-server/dist/start-server.js"
   );
   const child: ChildProcess = exec(exePath);
 

@@ -940,6 +940,7 @@ describe("Operation Tests", () => {
 
     expect(actual.trim()).toEqual(expected);
   });
+
   test("getSemanticalSugarOfOperator without duplicate operator, expect not used operator", () => {
     const operand: string = "Test";
     const left: OperandNode = new OperandNode(
@@ -974,6 +975,41 @@ describe("Operation Tests", () => {
 
     expect(actual.trim()).toEqual(expected);
   });
+
+  // test("getSemanticalSugarOfOperator without duplicate operator, expect not used operator", () => {
+  //   const operand: string = "Test";
+  //   const left: OperandNode = new OperandNode(
+  //     [operand],
+  //     IndexRange.create(0, 0, 0, operand.length),
+  //     "String",
+  //     operand
+  //   );
+  //   const operator: OperatorNode = new OperatorNode(
+  //     ["kleiner"],
+  //     IndexRange.create(0, 0, 0, 0),
+  //     "Boolean",
+  //     "kleiner",
+  //     "Decimal"
+  //   );
+  //   const right: OperandNode = new OperandNode(
+  //     [operand],
+  //     IndexRange.create(0, 0, 0, operand.length),
+  //     "String",
+  //     operand
+  //   );
+  //   const operationNode: OperationNode = new OperationNode(
+  //     left,
+  //     operator,
+  //     right,
+  //     ["das alter größer als ist 20 Jahre"],
+  //     IndexRange.create(0, 0, 0, "das alter größer als ist 20 Jahre".length)
+  //   );
+
+  //   const actual: string = operationNode["getSemanticalSugarOfOperator"]();
+  //   const expected: string = "";
+
+  //   expect(actual.trim()).toEqual(expected);
+  // });
 
   test("getPatternInformation with operation with single static string operand, expect static String", () => {
     const operand: string = "Test";

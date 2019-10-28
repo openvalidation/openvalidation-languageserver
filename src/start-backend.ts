@@ -1,19 +1,29 @@
-import { ChildProcess, exec } from "child_process";
+const jre = require("node-jre");
+const path = require("path");
 
 export function startBackend() {
-  const path = require("path");
+  var relativePath = path.join(
+    path.join(path.dirname(require!.main!.filename)),
+    "/rest-interface/ov-rest.jar"
+  );
+  console.log(relativePath);
 
-  // Starts the spring-boot-backend
-  const exePath = path.join(__dirname, "/rest-interface/ov-rest.exe");
-  const child: ChildProcess = exec(exePath);
+  var output = jre.spawn(
+    [relativePath],
+    "org.springframework.boot.loader.JarLauncher",
+    [],
+    { encoding: "utf8" } // encode output as string
+  );
 
-  if (!!child.stderr) {
-    child.stderr.on("data", stderr => {
-      console.error(`REST-Error: ${stderr}`);
+  if (!!output.stderr) {
+    output.stderr.on("data", (stderr: any) => {
+      console.error(`${stderr}`);
     });
   }
 
-  child.on("close", code => {
-    console.log(`REST-Interface exited with ${code}`);
-  });
+  if (!!output.stdout) {
+    output.stdout.on("data", (stderr: any) => {
+      console.log(`${stderr}`);
+    });
+  }
 }
