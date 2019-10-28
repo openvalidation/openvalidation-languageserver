@@ -41,15 +41,6 @@ describe("Completion provider test", () => {
     expect(actual).toEqual(expected);
   });
 
-  test("completionResolve with default item, expect same item", () => {
-    const expected: CompletionItem = CompletionItem.create("Test-Item");
-
-    const input: CompletionItem = CompletionItem.create("Test-Item");
-    const actual = provider.completionResolve(input);
-
-    expect(actual).toEqual(expected);
-  });
-
   test("completionForParsedElement with null, expected global items", () => {
     const expectedLength: number = 3;
     const actual: CompletionItem[] | null = provider[
