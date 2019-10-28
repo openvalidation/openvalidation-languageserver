@@ -119,8 +119,6 @@ export class OperationNode extends ConditionNode {
       return CompletionContainer.init().operandTransition();
     }
 
-    // return CompletionContainer.init().operandTransition();
-
     if (
       !!this.leftOperand.$range &&
       this.leftOperand.$range.endsBefore(position) &&

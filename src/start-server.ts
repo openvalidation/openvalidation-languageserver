@@ -23,13 +23,14 @@ process.on("uncaughtException", (err: any) => {
 
 // create the express application
 const app = express();
+const PORT = process.env.PORT || 3010;
 
 // serve the static content, i.e. index.html
 app.use(express.static(__dirname));
 
 // start the server
-const server = app.listen(3000, () =>
-  console.log("Language-Server running on 3000!")
+const server = app.listen(PORT, () =>
+  console.log(`Language-Server running on ${PORT}!`)
 );
 
 // create the web socket
