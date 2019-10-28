@@ -84,6 +84,25 @@ export class IndexRange {
   }
 
   /**
+   * Returns true, if the position is placed before the range
+   *
+   * @param {Position} position position that should be checked
+   * @returns {boolean} true, if the position is before the range
+   * @memberof IndexRange
+   */
+  public startsAfterRange(range: IndexRange): boolean {
+    if (!this.$start || !range.$start) {
+      return false;
+    }
+
+    const afterStart =
+      (this.$start.$line === range.$start.$line &&
+        this.$start.$column <= range.$start.$column) ||
+      this.$start.$line < range.$start.$line;
+    return !afterStart;
+  }
+
+  /**
    * Returns true, if the position is placed after the range
    *
    * @param {Position} position position that should be checked

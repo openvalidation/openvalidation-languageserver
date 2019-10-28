@@ -48,7 +48,9 @@ describe("FoldingRanges provider test", () => {
   });
 
   test("getFoldingRangesByText with wrong uri, expected not empty list", () => {
-    const expected: FoldingRange[] = [];
+    const expected: FoldingRange[] = [
+      FoldingRange.create(0, 0, undefined, undefined, "region")
+    ];
 
     const input: string = `Kommentar das ist ein Test`;
     const actual = provider.getFoldingRangesByText(input);
@@ -56,22 +58,27 @@ describe("FoldingRanges provider test", () => {
     expect(actual).toEqual(expected);
   });
 
-  // test("getFoldingRangesByText with wrong uri, expected not empty list", () => {
-  //     var expected: FoldingRange[] = [FoldingRange.create(0, 1, undefined, undefined, "region")];
+  test("getFoldingRangesByText with wrong uri, expected not empty list", () => {
+    var expected: FoldingRange[] = [
+      FoldingRange.create(0, 1, undefined, undefined, "region")
+    ];
 
-  //     var input: string = "Kommentar das ist ein Test\nBla bla";
-  //     var actual = provider["getFoldingRangesByText"](input);
+    var input: string = "Kommentar das ist ein Test\nBla bla";
+    var actual = provider["getFoldingRangesByText"](input);
 
-  //     expect(actual).toEqual(expected);
-  // });
+    expect(actual).toEqual(expected);
+  });
 
-  // test("getFoldingRangesByText with wrong uri, expected not empty list", () => {
-  //     var expected: FoldingRange[] = [FoldingRange.create(0, 0, undefined, undefined, "region"),
-  // FoldingRange.create(2, 3, undefined, undefined, 'region');]
+  test("getFoldingRangesByText with wrong uri, expected not empty list", () => {
+    var expected: FoldingRange[] = [
+      FoldingRange.create(0, 1, undefined, undefined, "region"),
+      FoldingRange.create(3, 4, undefined, undefined, "region")
+    ];
 
-  //     var input: string = "Kommentar das ist ein Test\nHier gehts weiter\n\nAlter kleiner 30\n Dann dwadwad"
-  //     var actual = provider["getFoldingRangesByText"](input);
+    var input: string =
+      "Kommentar das ist ein Test\nHier gehts weiter\n\nAlter kleiner 30\n Dann dwadwad";
+    var actual = provider["getFoldingRangesByText"](input);
 
-  //     expect(actual).toEqual(expected);
-  // });
+    expect(actual).toEqual(expected);
+  });
 });

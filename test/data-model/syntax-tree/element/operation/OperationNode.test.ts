@@ -14,6 +14,7 @@ import { OperandTransition } from "../../../../../src/provider/code-completion/s
 import { OperatorTransition } from "../../../../../src/provider/code-completion/states/OperatorTransition";
 import { StateTransition } from "../../../../../src/provider/code-completion/states/StateTransition";
 import { TestInitializer } from "../../../../Testinitializer";
+import { SyntaxHighlightingCapture } from "../../../../../src/provider/syntax-highlighting/SyntaxHighlightingCapture";
 
 describe("Operation Tests", () => {
   let initializer: TestInitializer;
@@ -840,7 +841,7 @@ describe("Operation Tests", () => {
     expect(actual).toEqual(operand);
   });
 
-  test("getSemanticalSugarOfOperator with empty operation, expect empty string", () => {
+  test("getOperatorCapture with empty operation, expect null", () => {
     const operationNode: OperationNode = new OperationNode(
       null,
       null,
@@ -849,30 +850,31 @@ describe("Operation Tests", () => {
       IndexRange.create(0, 0, 0, "Test kleiner Test".length)
     );
 
-    const actual: string = operationNode["getSemanticalSugarOfOperator"]();
-    const expected: string = "";
+    const actual: SyntaxHighlightingCapture | null = operationNode[
+      "getOperatorCapture"
+    ](initializer.$server.aliasHelper);
 
-    expect(actual.trim()).toEqual(expected);
+    expect(actual).toEqual(null);
   });
 
-  test("getSemanticalSugarOfOperator with duplicate operator, expect not used operator", () => {
+  test("getOperatorCapture with duplicate operator, expect not used operator", () => {
     const operand: string = "Test";
     const left: OperandNode = new OperandNode(
       [operand],
-      IndexRange.create(0, 0, 0, operand.length),
+      IndexRange.create(0, 0, 0, 5),
       "String",
       operand
     );
     const operator: OperatorNode = new OperatorNode(
       ["kleiner"],
-      IndexRange.create(0, 0, 0, 0),
+      IndexRange.create(6, 0, 0, 12),
       "Boolean",
       "kleiner",
       "Decimal"
     );
     const right: OperandNode = new OperandNode(
       [operand],
-      IndexRange.create(0, 0, 0, operand.length),
+      IndexRange.create(13, 0, 0, 17),
       "String",
       operand
     );
@@ -881,16 +883,18 @@ describe("Operation Tests", () => {
       operator,
       right,
       ["Test ist kleiner Test"],
-      IndexRange.create(0, 0, 0, "Test kleiner Test".length)
+      IndexRange.create(0, 0, 0, 17)
     );
 
-    const actual: string = operationNode["getSemanticalSugarOfOperator"]();
-    const expected: string = "ist";
+    const actual: SyntaxHighlightingCapture | null = operationNode[
+      "getOperatorCapture"
+    ](initializer.$server.aliasHelper);
+    const expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.Keyword];
 
-    expect(actual.trim()).toEqual(expected);
+    expect(actual!.$capture).toEqual(expected);
   });
 
-  test("getSemanticalSugarOfOperator with duplicate operator but without right operand, expect not used operator", () => {
+  test("getOperatorCapture with duplicate operator but without right operand, expect not used operator", () => {
     const operand: string = "Test";
     const left: OperandNode = new OperandNode(
       [operand],
@@ -913,13 +917,15 @@ describe("Operation Tests", () => {
       IndexRange.create(0, 0, 0, "Test ist kleiner".length)
     );
 
-    const actual: string = operationNode["getSemanticalSugarOfOperator"]();
-    const expected: string = "ist";
+    const actual: SyntaxHighlightingCapture | null = operationNode[
+      "getOperatorCapture"
+    ](initializer.$server.aliasHelper);
+    const expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.Keyword];
 
-    expect(actual.trim()).toEqual(expected);
+    expect(actual!.$capture).toEqual(expected);
   });
 
-  test("getSemanticalSugarOfOperator with duplicate operator but without any operand, expect not used operator", () => {
+  test("getOperatorCapture with duplicate operator but without any operand, expect not used operator", () => {
     const operator: OperatorNode = new OperatorNode(
       ["kleiner"],
       IndexRange.create(0, 0, 0, 0),
@@ -935,13 +941,15 @@ describe("Operation Tests", () => {
       IndexRange.create(0, 0, 0, " ist kleiner".length)
     );
 
-    const actual: string = operationNode["getSemanticalSugarOfOperator"]();
-    const expected: string = "ist";
+    const actual: SyntaxHighlightingCapture | null = operationNode[
+      "getOperatorCapture"
+    ](initializer.$server.aliasHelper);
+    const expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.Keyword];
 
-    expect(actual.trim()).toEqual(expected);
+    expect(actual!.$capture).toEqual(expected);
   });
 
-  test("getSemanticalSugarOfOperator without duplicate operator, expect not used operator", () => {
+  test("getOperatorCapture without duplicate operator, expect not used operator", () => {
     const operand: string = "Test";
     const left: OperandNode = new OperandNode(
       [operand],
@@ -970,46 +978,50 @@ describe("Operation Tests", () => {
       IndexRange.create(0, 0, 0, "Test kleiner Test".length)
     );
 
-    const actual: string = operationNode["getSemanticalSugarOfOperator"]();
-    const expected: string = "";
+    const actual: SyntaxHighlightingCapture | null = operationNode[
+      "getOperatorCapture"
+    ](initializer.$server.aliasHelper);
+    const expected: ScopeEnum[] = [ScopeEnum.Keyword];
 
-    expect(actual.trim()).toEqual(expected);
+    expect(actual!.$capture).toEqual(expected);
   });
 
-  // test("getSemanticalSugarOfOperator without duplicate operator, expect not used operator", () => {
-  //   const operand: string = "Test";
-  //   const left: OperandNode = new OperandNode(
-  //     [operand],
-  //     IndexRange.create(0, 0, 0, operand.length),
-  //     "String",
-  //     operand
-  //   );
-  //   const operator: OperatorNode = new OperatorNode(
-  //     ["kleiner"],
-  //     IndexRange.create(0, 0, 0, 0),
-  //     "Boolean",
-  //     "kleiner",
-  //     "Decimal"
-  //   );
-  //   const right: OperandNode = new OperandNode(
-  //     [operand],
-  //     IndexRange.create(0, 0, 0, operand.length),
-  //     "String",
-  //     operand
-  //   );
-  //   const operationNode: OperationNode = new OperationNode(
-  //     left,
-  //     operator,
-  //     right,
-  //     ["das alter größer als ist 20 Jahre"],
-  //     IndexRange.create(0, 0, 0, "das alter größer als ist 20 Jahre".length)
-  //   );
+  test("getOperatorCapture without duplicate operator, expect not used operator", () => {
+    const operand: string = "Test";
+    const left: OperandNode = new OperandNode(
+      [operand],
+      IndexRange.create(0, 0, 0, operand.length),
+      "String",
+      operand
+    );
+    const operator: OperatorNode = new OperatorNode(
+      ["kleiner"],
+      IndexRange.create(0, 0, 0, 0),
+      "Boolean",
+      "kleiner",
+      "Decimal"
+    );
+    const right: OperandNode = new OperandNode(
+      [operand],
+      IndexRange.create(0, 0, 0, operand.length),
+      "String",
+      operand
+    );
+    const operationNode: OperationNode = new OperationNode(
+      left,
+      operator,
+      right,
+      ["das alter größer als ist 20 Jahre"],
+      IndexRange.create(0, 0, 0, "das alter größer als ist 20 Jahre".length)
+    );
 
-  //   const actual: string = operationNode["getSemanticalSugarOfOperator"]();
-  //   const expected: string = "";
+    const actual: SyntaxHighlightingCapture | null = operationNode[
+      "getOperatorCapture"
+    ](initializer.$server.aliasHelper);
+    const expected: ScopeEnum[] = [ScopeEnum.Keyword];
 
-  //   expect(actual.trim()).toEqual(expected);
-  // });
+    expect(actual!.$capture).toEqual(expected);
+  });
 
   test("getPatternInformation with operation with single static string operand, expect static String", () => {
     const operand: string = "Test";
@@ -1095,7 +1107,12 @@ describe("Operation Tests", () => {
     );
     const operator: OperatorNode = new OperatorNode(
       ["kleiner"],
-      IndexRange.create(0, 0, 0, 0),
+      IndexRange.create(
+        0,
+        operand.length + 1,
+        0,
+        operand.length + "test kleiner".length + 1
+      ),
       "Boolean",
       "kleiner",
       "Decimal"
@@ -1105,7 +1122,7 @@ describe("Operation Tests", () => {
       operator,
       null,
       ["Test test kleiner"],
-      IndexRange.create(0, 0, 0, "Test kleiner".length)
+      IndexRange.create(0, 0, 0, "Test test kleiner".length)
     );
 
     const actual: ScopeEnum[] = operationNode.getPatternInformation(
