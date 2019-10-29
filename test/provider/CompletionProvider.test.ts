@@ -336,7 +336,7 @@ describe("Completion provider test", () => {
     ];
     const positionInput: Position = Position.create(2, 4);
 
-    const expected: [string[], number] = [[], -1];
+    const expected: [string[], number] | null = null;
     const actual = provider["extractItem"](textInput, positionInput);
 
     expect(actual).toEqual(expected);
