@@ -161,6 +161,10 @@ export class OperationNode extends ConditionNode {
       return container;
     }
 
+    if (this.$range.endsBefore(position)) {
+      return CompletionContainer.init().connectionTransition();
+    }
+
     return CompletionContainer.init().emptyTransition();
   }
 
@@ -200,16 +204,18 @@ export class OperationNode extends ConditionNode {
   ): SyntaxHighlightingCapture | null {
     const capture: SyntaxHighlightingCapture | null = new SyntaxHighlightingCapture();
 
+    let leftOperandCapture: SyntaxHighlightingCapture | null = null;
+    let operatorCapture: SyntaxHighlightingCapture | null = null;
+    let rightOperandCapture: SyntaxHighlightingCapture | null = null;
+
     if (!!this.leftOperand) {
-      capture.merge(this.leftOperand.getPatternInformation(aliasesHelper));
+      leftOperandCapture = this.leftOperand.getPatternInformation(
+        aliasesHelper
+      );
     }
 
     if (!!this.operator) {
-      capture.addRegexGroupAndCapture(
-        this.getSemanticalSugarOfOperator(),
-        ScopeEnum.Empty
-      );
-      capture.merge(this.operator.getPatternInformation(aliasesHelper));
+      operatorCapture = this.getOperatorCapture(aliasesHelper);
     }
 
     if (
@@ -217,22 +223,39 @@ export class OperationNode extends ConditionNode {
       (!this.leftOperand ||
         !this.leftOperand.$range.includesRange(this.rightOperand.$range))
     ) {
-      capture.merge(this.rightOperand.getPatternInformation(aliasesHelper));
+      rightOperandCapture = this.rightOperand.getPatternInformation(
+        aliasesHelper
+      );
     }
+
+    if (
+      !!this.operator &&
+      !!this.leftOperand &&
+      !!this.operator.$range &&
+      !this.operator.$range.startsAfterRange(this.leftOperand.$range)
+    ) {
+      // Then the operator is before the left Operand
+      capture.merge(operatorCapture);
+      capture.merge(leftOperandCapture);
+    } else {
+      capture.merge(leftOperandCapture);
+      capture.merge(operatorCapture);
+    }
+
+    capture.merge(rightOperandCapture);
 
     return capture;
   }
 
-  private getSemanticalSugarOfOperator(): string {
+  private getOperatorCapture(
+    aliasesHelper: AliasHelper
+  ): SyntaxHighlightingCapture | null {
     if (!this.operator) {
-      return "";
+      return null;
     }
 
+    const retunCapture: SyntaxHighlightingCapture = new SyntaxHighlightingCapture();
     let shadowOperator = this.$lines.join("\n");
-    shadowOperator = shadowOperator.replace(
-      new RegExp(this.operator.$lines.join("\n"), "g"),
-      ""
-    );
 
     if (!!this.leftOperand) {
       const operandString = this.leftOperand.$lines.join("\n");
@@ -248,6 +271,30 @@ export class OperationNode extends ConditionNode {
       const endIndex = shadowOperator.indexOf(operandString);
       shadowOperator = shadowOperator.substring(startIndex, endIndex);
     }
-    return shadowOperator.trim();
+
+    var operatorLines: string = this.operator.$lines.join("\n");
+
+    // Then the sugar is after the operator
+    if (shadowOperator.trim().indexOf(operatorLines) == 0) {
+      shadowOperator = shadowOperator
+        .replace(new RegExp(operatorLines, "g"), "")
+        .trim();
+      retunCapture.merge(this.operator.getPatternInformation(aliasesHelper));
+      retunCapture.addRegexGroupAndCapture(shadowOperator, ScopeEnum.Empty);
+    } else {
+      shadowOperator = shadowOperator
+        .replace(new RegExp(operatorLines, "g"), "")
+        .trim();
+      var aliases = aliasesHelper.getConstrainedKeywords();
+      var scopeEnum: ScopeEnum = aliases.some(
+        alias => alias.toLowerCase() == shadowOperator.toLowerCase()
+      )
+        ? ScopeEnum.Keyword
+        : ScopeEnum.Empty;
+      retunCapture.addRegexGroupAndCapture(shadowOperator, scopeEnum);
+      retunCapture.merge(this.operator.getPatternInformation(aliasesHelper));
+    }
+
+    return retunCapture;
   }
 }

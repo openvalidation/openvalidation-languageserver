@@ -17,7 +17,7 @@ import { CompletionBuilder } from "./code-completion/CompletionBuilder";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for `onCompletion` and `onCompletionResolve`
+ * Response-Provider for `onCompletion`
  *
  * @export
  * @class CompletionProvider
@@ -43,23 +43,7 @@ export class CompletionProvider extends Provider {
    */
   constructor(server: OvServer) {
     super(server);
-    this.connection.onCompletionResolve(params =>
-      this.completionResolve(params)
-    );
     this.connection.onCompletion(params => this.completion(params));
-  }
-
-  /**
-   * Can Provide further documentation for a specific completion-item
-   *
-   * @private
-   * @param {CompletionItem} params completion item to comment
-   * @returns {CompletionItem} documented completion-item
-   * @memberof CompletionProvider
-   */
-  public completionResolve(params: CompletionItem): CompletionItem {
-    // TODO: More documentation
-    return params;
   }
 
   /**
@@ -178,7 +162,9 @@ export class CompletionProvider extends Provider {
     params: CompletionParams
   ): Promise<CompletionItem[] | null> {
     const documentText: string[] = document.getText().split("\n");
+
     const itemTuple = this.extractItem(documentText, params.position);
+    if (!itemTuple) return null;
 
     let parseString: string = itemTuple[0].join("\n");
     if (!String.IsNullOrWhiteSpace(parseString)) {
@@ -259,34 +245,54 @@ export class CompletionProvider extends Provider {
   /**
    * Finds the item at the position and returns it with it's starting-number
    *
-   * @param {string[]} text text of the current document
+   * @param {string[]} textLines text of the current document
    * @param {Position} position position of the completion-request
    * @returns {[string[], number]} tuple of the lines and the starting number of the element
    * @memberof CompletionProvider
    */
-  private extractItem(text: string[], position: Position): [string[], number] {
+  private extractItem(
+    textLines: string[],
+    position: Position
+  ): [string[], number] | null {
     let startLine: number = -1;
     let currentLines: string[] = [];
-    let foundIndex: boolean = false;
 
-    for (let index = 0; index < text.length; index++) {
-      const element = text[index];
-      if (index === position.line) {
-        foundIndex = true;
-      }
+    if (position.line >= textLines.length) return [currentLines, startLine];
 
-      if (!String.IsNullOrWhiteSpace(element)) {
-        currentLines.push(element);
-
-        if (startLine === -1) {
-          startLine = index;
+    // Find previous items
+    let foundWhiteSpace: boolean = false;
+    for (let index = position.line; index >= 0; index--) {
+      const element = textLines[index];
+      if (String.IsNullOrWhiteSpace(element)) {
+        // Then the current Whitespace blongs to the element
+        if (
+          !foundWhiteSpace &&
+          index > 0 &&
+          String.IsNullOrWhiteSpace(textLines[index - 1])
+        ) {
+          foundWhiteSpace = true;
+        } else {
+          break;
         }
-      } else if (!foundIndex) {
-        currentLines = [];
-        startLine = -1;
-      } else {
-        break;
       }
+      startLine = index;
+      currentLines.push(textLines[index]);
+    }
+
+    // Then we wanted completion inside an paragraph
+    if (currentLines.length == 0) {
+      return null;
+    }
+
+    // To get the correct order
+    currentLines.reverse();
+
+    // Find items after it
+    for (let index = position.line + 1; index < textLines.length; index++) {
+      const element = textLines[index];
+      if (String.IsNullOrWhiteSpace(element)) break;
+
+      currentLines.push(textLines[index]);
     }
 
     return [currentLines, startLine];

@@ -74,6 +74,12 @@ export class FoldingRangesProvider extends Provider {
       currentLine++;
     }
 
+    if (startLine != -1) {
+      const foldingRange = FoldingRange.create(startLine, currentLine - 1);
+      foldingRange.kind = FoldingRangeKind.Region;
+      foldingRanges.push(foldingRange);
+    }
+
     return foldingRanges;
   }
 }

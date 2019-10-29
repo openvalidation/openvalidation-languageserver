@@ -6,7 +6,7 @@ import {
   Range,
   TextDocument,
   TextDocumentChangeEvent
-} from "vscode-languageserver-types";
+} from "vscode-languageserver";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";

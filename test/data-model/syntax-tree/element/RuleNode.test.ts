@@ -1,5 +1,5 @@
 import "jest";
-import { Position } from "vscode-languageserver-types";
+import { Position } from "vscode-languageserver";
 import { ActionErrorNode } from "../../../../src/data-model/syntax-tree/element/ActionErrorNode";
 import { ConnectedOperationNode } from "../../../../src/data-model/syntax-tree/element/operation/ConnectedOperationNode";
 import { OperandNode } from "../../../../src/data-model/syntax-tree/element/operation/operand/OperandNode";

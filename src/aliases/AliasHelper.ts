@@ -157,7 +157,7 @@ export class AliasHelper {
    * @returns {string[]} constrained keywords
    * @memberof AliasHelper
    */
-  public getConstrainedKeyword(): string[] {
+  public getConstrainedKeywords(): string[] {
     return this.getKeywordsByAliasKey(AliasKey.CONSTRAINT);
   }
 
