@@ -51,7 +51,8 @@ node .\node_modules\ov-language-server\dist\start-server.js
 
 ### Connect to the language server
 
-You can connect to the language server with the url `localhost:3000` for example with the [monaco-languageclient](https://github.com/TypeFox/monaco-languageclient).
+You can connect to the language server with the url `localhost:3010` for example with the [monaco-languageclient](https://github.com/TypeFox/monaco-languageclient).
+You can also specify an own port with the variable `PORT`.
 
 ### Clients
 
