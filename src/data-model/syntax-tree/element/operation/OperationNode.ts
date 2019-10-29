@@ -204,9 +204,9 @@ export class OperationNode extends ConditionNode {
   ): SyntaxHighlightingCapture | null {
     const capture: SyntaxHighlightingCapture | null = new SyntaxHighlightingCapture();
 
-    var leftOperandCapture: SyntaxHighlightingCapture | null = null;
-    var operatorCapture: SyntaxHighlightingCapture | null = null;
-    var rightOperandCapture: SyntaxHighlightingCapture | null = null;
+    let leftOperandCapture: SyntaxHighlightingCapture | null = null;
+    let operatorCapture: SyntaxHighlightingCapture | null = null;
+    let rightOperandCapture: SyntaxHighlightingCapture | null = null;
 
     if (!!this.leftOperand) {
       leftOperandCapture = this.leftOperand.getPatternInformation(

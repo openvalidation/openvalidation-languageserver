@@ -87,33 +87,6 @@ describe("Completion provider test", () => {
     expect(actual!.length).toEqual(expectedLength);
   });
 
-  // test('completionByText with nddull, expected global items', async () => {
-  //     const document: TextDocument = {
-  //         uri: 'test.ov',
-  //         languageId: 'ov',
-  //         version: 0.1,
-  //         getText: () => '',
-  //         positionAt: () => Position.create(0, 0),
-  //         offsetAt: () => 0,
-  //         lineCount: 0
-  //     };
-  //     const params: CompletionParams = {
-  //         textDocument: {
-  //             uri: 'test.ov'
-  //         },
-  //         position: Position.create(0, 0),
-  //         context: {
-  //             triggerKind: CompletionTriggerKind.Invoked,
-  //             triggerCharacter: ''
-  //         }
-  //     };
-
-  //     const actual: CompletionItem[] | null = await provider['completionByText'](document, params)!;
-  //     const expectedLength: number = 0;
-
-  //     expect(actual!.length).toEqual(expectedLength);
-  // });
-
   test("completionByText with Alter, expected operators", async () => {
     const document: TextDocument = {
       uri: "test.ov",
@@ -143,33 +116,6 @@ describe("Completion provider test", () => {
 
     expect(actual!.length).toEqual(expectedLength);
   });
-
-  // test('completionForArray with Alter, expected global items', async () => {
-  //     const document: TextDocument = {
-  //         uri: 'test.ov',
-  //         languageId: 'ov',
-  //         version: 0.1,
-  //         getText: () => 'Alter,',
-  //         positionAt: () => Position.create(0, 0),
-  //         offsetAt: () => 0,
-  //         lineCount: 0
-  //     };
-  //     const params: CompletionParams = {
-  //         textDocument: {
-  //             uri: 'test.ov'
-  //         },
-  //         position: Position.create(0, 'Alter,'.length),
-  //         context: {
-  //             triggerKind: CompletionTriggerKind.TriggerCharacter,
-  //             triggerCharacter: CompletionKeyEnum.Array
-  //         }
-  //     };
-
-  //     const actual: CompletionItem[] | null = await provider['completionForArray'](document, params)!;
-  //     const expectedLength: number = 4;
-
-  //     expect(actual!.length).toEqual(expectedLength);
-  // });
 
   test("completionForSchema with Einkaufsliste, expected global items", async () => {
     const document: TextDocument = {
@@ -322,7 +268,7 @@ describe("Completion provider test", () => {
     expect(actual).toEqual(expected);
   });
 
-  test("extractItem with multiple lines, expect correct text and start line", () => {
+  test("extractItem with multiple lines, fexpect correct text and start line", () => {
     const textInput: string[] = [
       "Wenn test",
       "Dann bla",
@@ -367,7 +313,7 @@ describe("Completion provider test", () => {
       "    ",
       "ALS variable"
     ];
-    const positionInput: Position = Position.create(2, 4);
+    const positionInput: Position = Position.create(1, 4);
 
     const expected: [string[], number] = [
       [
@@ -381,19 +327,49 @@ describe("Completion provider test", () => {
     expect(actual).toEqual(expected);
   });
 
-  // test("extractItem with multiple lines, expect correct text and start line", () => {
-  //   const textInput: string[] = [
-  //     "Kommentar Das ist ein Kommentar",
-  //     "          ... über mehrere Zeiledddn",
-  //     "    ",
-  //     "    ",
-  //     "ALS variable"
-  //   ];
-  //   const positionInput: Position = Position.create(3, 4);
+  test("extractItem with position at paragraph, expect no lines", () => {
+    const textInput: string[] = [
+      "Kommentar Das ist ein Kommentar",
+      "          ... über mehrere Zeiledddn",
+      "    ",
+      "ALS variable"
+    ];
+    const positionInput: Position = Position.create(2, 4);
 
-  //   const expected: [string[], number] = [["    ", "ALS variable"], 2];
-  //   const actual = provider["extractItem"](textInput, positionInput);
+    const expected: [string[], number] = [[], -1];
+    const actual = provider["extractItem"](textInput, positionInput);
 
-  //   expect(actual).toEqual(expected);
-  // });
+    expect(actual).toEqual(expected);
+  });
+
+  test("extractItem with position at variable after paragraph, expect variable", () => {
+    const textInput: string[] = [
+      "Kommentar Das ist ein Kommentar",
+      "          ... über mehrere Zeiledddn",
+      "    ",
+      "ALS variable"
+    ];
+    const positionInput: Position = Position.create(3, 4);
+
+    const expected: [string[], number] = [["ALS variable"], 3];
+    const actual = provider["extractItem"](textInput, positionInput);
+
+    expect(actual).toEqual(expected);
+  });
+
+  test("extractItem with multiple lines, expect correct text and start line", () => {
+    const textInput: string[] = [
+      "Kommentar Das ist ein Kommentar",
+      "          ... über mehrere Zeiledddn",
+      "    ",
+      "    ",
+      "ALS variable"
+    ];
+    const positionInput: Position = Position.create(3, 4);
+
+    const expected: [string[], number] = [["    ", "ALS variable"], 3];
+    const actual = provider["extractItem"](textInput, positionInput);
+
+    expect(actual).toEqual(expected);
+  });
 });
