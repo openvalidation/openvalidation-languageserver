@@ -14,6 +14,7 @@ import { BaseOperandNode } from "./operand/BaseOperandNode";
 import { FunctionOperandNode } from "./operand/FunctionOperandNode";
 import { OperandNode } from "./operand/OperandNode";
 import { OperatorNode } from "./operand/OperatorNode";
+import { TreeTraversal } from "../../../../helper/TreeTraversal";
 
 export class OperationNode extends ConditionNode {
   @Type(() => BaseOperandNode, {
@@ -117,6 +118,14 @@ export class OperationNode extends ConditionNode {
   public getCompletionContainer(position: Position): CompletionContainer {
     if (!this.leftOperand) {
       return CompletionContainer.init().operandTransition();
+    }
+
+    var fittingChild: GenericNode | null = new TreeTraversal().traverseTree(
+      this.getChildren(),
+      position
+    );
+    if (!!fittingChild) {
+      return fittingChild.getCompletionContainer(position);
     }
 
     if (

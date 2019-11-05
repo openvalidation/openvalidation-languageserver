@@ -62,8 +62,12 @@ export class OperatorNode extends GenericNode {
     return hoverContent;
   }
 
-  public getCompletionContainer(range: Position): CompletionContainer {
-    return CompletionContainer.init();
+  public getCompletionContainer(position: Position): CompletionContainer {
+    var container: CompletionContainer = CompletionContainer.init();
+    if (this.$range.includesPosition(position)) {
+      container.operatorTransition(this.$dataType, this.$lines.join("\n"));
+    }
+    return container;
   }
 
   public isComplete(): boolean {

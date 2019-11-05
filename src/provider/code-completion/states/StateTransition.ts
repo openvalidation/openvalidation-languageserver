@@ -9,18 +9,24 @@ import { CompletionBuilder } from "../CompletionBuilder";
  */
 export abstract class StateTransition {
   private prependingText: string;
+  private filterStartText: string;
 
   /**
    * Creates an instance of StateTransition.
    * @param {string} [prependingText] text that should apear before the completion-item if the item is selected
    * @memberof StateTransition
    */
-  constructor(prependingText?: string) {
+  constructor(prependingText?: string, filterStartText?: string) {
     this.prependingText = !prependingText ? "" : prependingText;
+    this.filterStartText = !filterStartText ? "" : filterStartText;
   }
 
   public get $prependingText(): string {
     return this.prependingText;
+  }
+
+  public get $filterStartText(): string {
+    return this.filterStartText;
   }
 
   /**

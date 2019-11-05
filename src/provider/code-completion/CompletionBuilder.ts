@@ -78,6 +78,7 @@ export class CompletionBuilder {
       this.addKeyword(
         this.aliasHelper.getKeywordByAliasKey(AliasKey.IF),
         "a",
+        "",
         ""
       );
 
@@ -86,6 +87,7 @@ export class CompletionBuilder {
           "Rule",
           ifWord + " $1 \n" + thenWord + " ${0:Error Message}",
           "b",
+          "",
           ""
         );
       }
@@ -93,7 +95,13 @@ export class CompletionBuilder {
 
     const asWord = this.aliasHelper.getAsKeyword();
     if (!!asWord) {
-      this.addSnippet("Variable", "$1 " + asWord + " ${2:variable}", "b", "");
+      this.addSnippet(
+        "Variable",
+        "$1 " + asWord + " ${2:variable}",
+        "b",
+        "",
+        ""
+      );
     }
 
     const constrainedWord: string[] = this.aliasHelper.getConstrainedKeywords();
@@ -102,6 +110,7 @@ export class CompletionBuilder {
         "Constrained Rule",
         "$1 ${2:" + constrainedWord[0] + "} $0",
         "c",
+        "",
         ""
       );
     }
@@ -126,6 +135,7 @@ export class CompletionBuilder {
           operator[0],
           operator[1][1],
           transition.$prependingText,
+          transition.$filterStartText,
           operator[1][0]
         );
       }
@@ -150,7 +160,8 @@ export class CompletionBuilder {
           variable.$name,
           variable.$dataType,
           "a",
-          transition.$prependingText
+          transition.$prependingText,
+          transition.$filterStartText
         );
       }
     });
@@ -161,14 +172,21 @@ export class CompletionBuilder {
           property.name,
           property.type,
           "b",
-          transition.$prependingText
+          transition.$prependingText,
+          transition.$filterStartText
         );
       }
     });
 
     const functions = this.aliasHelper.getFunctions();
     functions.forEach(func => {
-      this.addFunction(func, "", "c", transition.$prependingText);
+      this.addFunction(
+        func,
+        "",
+        "c",
+        transition.$prependingText,
+        transition.$filterStartText
+      );
     });
     return this;
   }
@@ -184,7 +202,12 @@ export class CompletionBuilder {
     transition: ConnectionTransition
   ): CompletionBuilder {
     for (const logicalOperator of this.aliasHelper.getLogicalOperators()) {
-      this.addKeyword(logicalOperator, "a", transition.$prependingText);
+      this.addKeyword(
+        logicalOperator,
+        "a",
+        transition.$prependingText,
+        transition.$filterStartText
+      );
     }
     return this;
   }
@@ -200,7 +223,8 @@ export class CompletionBuilder {
     this.addKeyword(
       this.aliasHelper.getKeywordByAliasKey(AliasKey.THEN),
       "a",
-      transition.$prependingText
+      transition.$prependingText,
+      transition.$filterStartText
     );
     return this;
   }
@@ -218,7 +242,8 @@ export class CompletionBuilder {
       keyword,
       keyword + " ${1:variable}",
       "a",
-      transition.$prependingText
+      transition.$prependingText,
+      transition.$filterStartText
     );
     return this;
   }
@@ -230,7 +255,7 @@ export class CompletionBuilder {
    * @returns {CompletionBuilder} builder-class
    * @memberof CompletionBuilder
    */
-  public addFittingChilds(parentName: string): CompletionBuilder {
+  public addFittingChildren(parentName: string): CompletionBuilder {
     this.schema.complexData.forEach(property => {
       const manipulatedParent = parentName.endsWith(".")
         ? parentName.substring(0, parentName.length - 1)
@@ -242,7 +267,7 @@ export class CompletionBuilder {
         const dataType: string | null =
           schemaProperty.length > 0 ? schemaProperty[0].type : null;
         if (!!dataType) {
-          this.addVariable(property.child, dataType, "a", "");
+          this.addVariable(property.child, dataType, "a", "", "");
         }
       }
     });
@@ -281,7 +306,7 @@ export class CompletionBuilder {
   }
 
   /**
-   * Last method of the build whicgh returns all generated items
+   * Last method of the build which returns all generated items
    *
    * @returns {CompletionItem[]} returns all generated completion-items
    * @memberof CompletionBuilder
@@ -305,7 +330,8 @@ export class CompletionBuilder {
     label: string | null,
     dataType: string,
     sortText: string,
-    prependedText: string
+    prependedText: string,
+    filterText: string
   ): CompletionBuilder {
     if (!label) {
       return this;
@@ -315,7 +341,8 @@ export class CompletionBuilder {
       label,
       label,
       sortText,
-      prependedText
+      prependedText,
+      filterText
     );
     completionItem.kind = CompletionItemKind.Variable;
     completionItem.detail = dataType;
@@ -338,7 +365,8 @@ export class CompletionBuilder {
     label: string | null,
     dataType: string,
     sortText: string,
-    prependedText: string
+    prependedText: string,
+    filterText: string
   ): CompletionBuilder {
     if (!label) {
       return this;
@@ -348,7 +376,8 @@ export class CompletionBuilder {
       label,
       label,
       sortText,
-      prependedText
+      prependedText,
+      filterText
     );
     completionItem.kind = CompletionItemKind.Function;
     completionItem.detail = dataType;
@@ -371,6 +400,7 @@ export class CompletionBuilder {
     label: string | null,
     sortText: string,
     prependedText: string,
+    filterText: string,
     documentation?: string
   ): CompletionBuilder {
     if (!label) {
@@ -381,7 +411,8 @@ export class CompletionBuilder {
       label,
       label,
       sortText,
-      prependedText
+      prependedText,
+      filterText
     );
     completionItem.kind = CompletionItemKind.Keyword;
     completionItem.preselect = true;
@@ -409,7 +440,8 @@ export class CompletionBuilder {
     label: string | null,
     text: string,
     sortText: string,
-    prependedText: string
+    prependedText: string,
+    filterText: string
   ): CompletionBuilder {
     if (!label) {
       return this;
@@ -419,7 +451,8 @@ export class CompletionBuilder {
       label,
       text,
       sortText,
-      prependedText
+      prependedText,
+      filterText
     );
     completionItem.kind = CompletionItemKind.Snippet;
     completionItem.insertTextFormat = InsertTextFormat.Snippet;
@@ -445,10 +478,12 @@ export class CompletionBuilder {
     label: string,
     text: string,
     sortText: string,
-    prependedText: string
+    prependedText: string,
+    filterText: string
   ): CompletionItem {
     const item = CompletionItem.create(label);
     item.sortText = sortText;
+    item.filterText = filterText + label;
 
     const tmpPrepended: string = !prependedText ? "" : prependedText;
     item.insertText = tmpPrepended + text;

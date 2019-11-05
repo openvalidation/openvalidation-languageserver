@@ -39,7 +39,7 @@ export class CompletionContainer {
   }
 
   /**
-   * Determines if transitions are allready set
+   * Determines if transitions are already set
    *
    * @returns {boolean} true, if we have no transitions
    * @memberof CompletionContainer
@@ -93,8 +93,11 @@ export class CompletionContainer {
    * @returns {CompletionContainer} this
    * @memberof CompletionContainer
    */
-  public operatorTransition(dataType: string): CompletionContainer {
-    this.transitions.push(new OperatorTransition(dataType));
+  public operatorTransition(
+    dataType: string,
+    filterStartText?: string
+  ): CompletionContainer {
+    this.transitions.push(new OperatorTransition(dataType, filterStartText));
     return this;
   }
 
@@ -104,20 +107,23 @@ export class CompletionContainer {
    *
    * @param {string} [dataType] datatype of the operand
    * @param {string} [nameFilter] name of items that shouldn't show up
-   * @param {string} [prependingText] text that will be shown before the label incase the item get's selected
+   * @param {string} [prependingText] text that will be shown before the label incase the item gets selected
+   * @param {string} [filterStartText] text that will be used as a filter
    * @returns {CompletionContainer}
    * @memberof CompletionContainer
    */
   public operandTransition(
     dataType?: string,
     nameFilter?: string,
-    prependingText?: string
+    prependingText?: string,
+    filterStartText?: string
   ): CompletionContainer {
     this.transitions.push(
       new OperandTransition(
         dataType,
         !!nameFilter ? [nameFilter] : [],
-        prependingText
+        prependingText,
+        filterStartText
       )
     );
     return this;

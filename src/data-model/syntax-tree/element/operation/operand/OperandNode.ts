@@ -41,7 +41,16 @@ export class OperandNode extends BaseOperandNode {
   }
 
   public getCompletionContainer(position: Position): CompletionContainer {
-    return CompletionContainer.init();
+    var container: CompletionContainer = CompletionContainer.init();
+    if (this.$range.includesPosition(position)) {
+      container.operandTransition(
+        this.$dataType,
+        this.$name,
+        undefined,
+        this.$name
+      );
+    }
+    return container;
   }
 
   public isComplete(): boolean {

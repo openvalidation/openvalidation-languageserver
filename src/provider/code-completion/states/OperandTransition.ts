@@ -16,9 +16,10 @@ export class OperandTransition extends StateTransition {
   constructor(
     datatype?: string,
     nameFilter?: string[],
-    prependingText?: string
+    prependingText?: string,
+    filterStartText?: string
   ) {
-    super(prependingText);
+    super(prependingText, filterStartText);
 
     this.dataType = datatype;
     this.nameFilter = !nameFilter ? [] : nameFilter;

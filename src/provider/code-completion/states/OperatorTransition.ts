@@ -17,8 +17,8 @@ export class OperatorTransition extends StateTransition {
    * @param {string} dataType datatype the operator should have
    * @memberof OperatorTransition
    */
-  constructor(dataType: string) {
-    super();
+  constructor(dataType: string, filterStartText?: string) {
+    super(undefined, filterStartText);
 
     this.dataType = dataType;
   }
