@@ -6,7 +6,6 @@ export function startBackend() {
     path.join(path.dirname(require!.main!.filename)),
     "/rest-interface/ov-rest.jar"
   );
-  console.log(relativePath);
 
   var output = jre.spawn(
     [relativePath],

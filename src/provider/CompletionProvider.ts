@@ -188,18 +188,10 @@ export class CompletionProvider extends Provider {
       params.position.character
     );
 
-    const line = document.getText(
-      Range.create(Position.create(params.position.line, 0), params.position)
-    );
-    const wordAtCurrentPosition = StringHelper.getWordAt(
-      line,
-      params.position.character
-    ).trim();
     return this.completionForParsedElement(
       response,
       declarations,
-      relativePosition,
-      wordAtCurrentPosition
+      relativePosition
     );
   }
 
@@ -218,8 +210,7 @@ export class CompletionProvider extends Provider {
   private completionForParsedElement(
     response: CompletionResponse | null,
     declarations: Variable[],
-    relativePosition: Position,
-    wordAtCurrentPosition: string
+    relativePosition: Position
   ): CompletionItem[] | null {
     if (!response) {
       return CompletionBuilder.default(declarations, this.server);
@@ -233,8 +224,7 @@ export class CompletionProvider extends Provider {
     const generator: CompletionBuilder = new CompletionBuilder(
       declarations,
       this.server.aliasHelper,
-      this.server.schema,
-      wordAtCurrentPosition
+      this.server.schema
     );
     return relevantElement!
       .getCompletionContainer(relativePosition)

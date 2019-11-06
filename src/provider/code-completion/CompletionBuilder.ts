@@ -62,8 +62,7 @@ export class CompletionBuilder {
   constructor(
     private readonly declarations: Variable[],
     private readonly aliasHelper: AliasHelper,
-    private readonly schema: ISchemaType,
-    private readonly startingWord?: string
+    private readonly schema: ISchemaType
   ) {
     this.completionList = [];
   }
@@ -127,7 +126,6 @@ export class CompletionBuilder {
    * @memberof CompletionBuilder
    */
   public addFittingOperator(transition: OperatorTransition): CompletionBuilder {
-    console.log(this.startingWord);
     for (const operator of this.aliasHelper.getOperators()) {
       if (
         transition.$dataType === operator[1][0] ||
