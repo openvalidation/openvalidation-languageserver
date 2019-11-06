@@ -446,7 +446,7 @@ describe("Operation Tests", () => {
     const actual: StateTransition[] = operation.getCompletionContainer(
       positionParameter
     ).$transitions;
-    expect(actual[0]).toBeInstanceOf(EmptyTransition);
+    expect(actual[0]).toBeInstanceOf(OperatorTransition);
   });
 
   test("getCompletionContainer with complete OperationNode and position after operator, expected Operands", () => {
@@ -482,7 +482,7 @@ describe("Operation Tests", () => {
     const actual: StateTransition[] = operation.getCompletionContainer(
       positionParameter
     ).$transitions;
-    expect(actual[0]).toBeInstanceOf(EmptyTransition);
+    expect(actual[0]).toBeInstanceOf(OperandTransition);
   });
 
   test("getCompletionContainer with complete OperationNode and position before leftOperand, expected Operands", () => {
@@ -518,7 +518,7 @@ describe("Operation Tests", () => {
     const actual: StateTransition[] = operation.getCompletionContainer(
       positionParameter
     ).$transitions;
-    expect(actual[0]).toBeInstanceOf(EmptyTransition);
+    expect(actual[0]).toBeInstanceOf(OperandTransition);
   });
 
   test("getCompletionContainer with complete OperationNode and position after rightOperand, expected Connection", () => {

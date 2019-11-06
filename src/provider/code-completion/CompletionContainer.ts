@@ -6,6 +6,7 @@ import { OperandTransition } from "./states/OperandTransition";
 import { OperatorTransition } from "./states/OperatorTransition";
 import { StateTransition } from "./states/StateTransition";
 import { ThenKeywordTransition } from "./states/ThenKeywordTransition";
+import { IStateTransition } from "./states/state-constructor/IStateTransition";
 
 /**
  * This class is used for saving the valid transitions of the current state
@@ -90,14 +91,15 @@ export class CompletionContainer {
    * Adds an operatorTransition with the given datatype to the transitions
    *
    * @param {string} dataType datatype that the operator should have
+   * @param {IStateTransition} [constructor] interface that contains some extra attributes
    * @returns {CompletionContainer} this
    * @memberof CompletionContainer
    */
   public operatorTransition(
     dataType: string,
-    filterStartText?: string
+    constructor?: IStateTransition
   ): CompletionContainer {
-    this.transitions.push(new OperatorTransition(dataType, filterStartText));
+    this.transitions.push(new OperatorTransition(dataType, constructor));
     return this;
   }
 
@@ -107,23 +109,20 @@ export class CompletionContainer {
    *
    * @param {string} [dataType] datatype of the operand
    * @param {string} [nameFilter] name of items that shouldn't show up
-   * @param {string} [prependingText] text that will be shown before the label incase the item gets selected
-   * @param {string} [filterStartText] text that will be used as a filter
+   * @param {IStateTransition} [constructor] interface that contains some extra attributes
    * @returns {CompletionContainer}
    * @memberof CompletionContainer
    */
   public operandTransition(
     dataType?: string,
     nameFilter?: string,
-    prependingText?: string,
-    filterStartText?: string
+    constructor?: IStateTransition
   ): CompletionContainer {
     this.transitions.push(
       new OperandTransition(
         dataType,
         !!nameFilter ? [nameFilter] : [],
-        prependingText,
-        filterStartText
+        constructor
       )
     );
     return this;

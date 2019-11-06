@@ -1,5 +1,6 @@
 import { CompletionBuilder } from "../CompletionBuilder";
 import { StateTransition } from "./StateTransition";
+import { IStateTransition } from "./state-constructor/IStateTransition";
 
 /**
  * Transition for operator-transitions.
@@ -15,10 +16,11 @@ export class OperatorTransition extends StateTransition {
   /**
    * Creates an instance of OperatorTransition.
    * @param {string} dataType datatype the operator should have
+   * @param {IStateTransition} [constructor] interface that contains some extra attributes
    * @memberof OperatorTransition
    */
-  constructor(dataType: string, filterStartText?: string) {
-    super(undefined, filterStartText);
+  constructor(dataType: string, constructor?: IStateTransition) {
+    super(constructor);
 
     this.dataType = dataType;
   }
