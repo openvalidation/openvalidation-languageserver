@@ -1,5 +1,6 @@
 import { CompletionBuilder } from "../CompletionBuilder";
 import { StateTransition } from "./StateTransition";
+import { IStateTransition } from "./state-constructor/IStateTransition";
 
 /**
  * Transition of an `as`-keyword
@@ -13,8 +14,8 @@ export class AsKeywordTransition extends StateTransition {
    * Creates an instance of AsKeywordTransition.
    * @memberof AsKeywordTransition
    */
-  constructor() {
-    super();
+  constructor(constructor?: IStateTransition) {
+    super(constructor);
   }
 
   /**
