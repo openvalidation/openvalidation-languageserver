@@ -3,8 +3,6 @@
 [![npm version](https://badge.fury.io/js/ov-language-server.svg)](https://badge.fury.io/js/ov-language-server)
 [![coverage](/coverage/badge.svg)](/coverage/badge.svg)
 
-_This repository is under heavy development._
-
 This is a [language-server](https://microsoft.github.io/language-server-protocol/) implementation of the domain-specific-language [openVALIDATION](https://github.com/openvalidation/openvalidation).
 
 ## Implemented features of the protocol
