@@ -7,6 +7,7 @@ import { CompletionContainer } from "../../../../../provider/code-completion/Com
 import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
+import { IStateTransition } from "src/provider/code-completion/states/state-constructor/IStateTransition";
 
 export class OperatorNode extends GenericNode {
   private dataType: string;
@@ -62,8 +63,16 @@ export class OperatorNode extends GenericNode {
     return hoverContent;
   }
 
-  public getCompletionContainer(range: Position): CompletionContainer {
-    return CompletionContainer.init();
+  public getCompletionContainer(position: Position): CompletionContainer {
+    var container: CompletionContainer = CompletionContainer.init();
+    if (this.$range.includesPosition(position)) {
+      var constructor: IStateTransition = {
+        filterStartText: this.$lines.join("\n"),
+        range: this.$range
+      };
+      container.operatorTransition(this.$validType, constructor);
+    }
+    return container;
   }
 
   public isComplete(): boolean {

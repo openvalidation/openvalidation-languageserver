@@ -5,6 +5,7 @@
         "coverage",
         "jest",
         "mock",
+        "prepending",
         "prettier",
         "reflect",
         "splitted"

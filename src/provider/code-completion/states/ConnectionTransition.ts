@@ -1,5 +1,6 @@
 import { CompletionBuilder } from "../CompletionBuilder";
 import { StateTransition } from "./StateTransition";
+import { IStateTransition } from "./state-constructor/IStateTransition";
 
 /**
  * Transition for the logical connections like `or` or `and`
@@ -13,8 +14,8 @@ export class ConnectionTransition extends StateTransition {
    * Creates an instance of ConnectionTransition.
    * @memberof ConnectionTransition
    */
-  constructor() {
-    super();
+  constructor(constructor?: IStateTransition) {
+    super(constructor);
   }
 
   /**

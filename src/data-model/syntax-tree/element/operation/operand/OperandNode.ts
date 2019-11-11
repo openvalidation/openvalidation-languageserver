@@ -9,6 +9,7 @@ import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highli
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { BaseOperandNode } from "./BaseOperandNode";
+import { IStateTransition } from "src/provider/code-completion/states/state-constructor/IStateTransition";
 
 export class OperandNode extends BaseOperandNode {
   private isStatic: boolean;
@@ -41,7 +42,15 @@ export class OperandNode extends BaseOperandNode {
   }
 
   public getCompletionContainer(position: Position): CompletionContainer {
-    return CompletionContainer.init();
+    var container: CompletionContainer = CompletionContainer.init();
+    if (this.$range.includesPosition(position)) {
+      var constructor: IStateTransition = {
+        filterStartText: this.$name,
+        range: this.$range
+      };
+      container.operandTransition(this.$dataType, this.$name, constructor);
+    }
+    return container;
   }
 
   public isComplete(): boolean {

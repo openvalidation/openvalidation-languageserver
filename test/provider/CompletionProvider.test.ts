@@ -45,7 +45,7 @@ describe("Completion provider test", () => {
     const expectedLength: number = 3;
     const actual: CompletionItem[] | null = provider[
       "completionForParsedElement"
-    ](null, [], Position.create(0, 0), "");
+    ](null, [], Position.create(0, 0));
 
     expect(actual!.length).toEqual(expectedLength);
   });
@@ -54,7 +54,7 @@ describe("Completion provider test", () => {
     const expectedLength: number = 3;
     const actual: CompletionItem[] | null = provider[
       "completionForParsedElement"
-    ](null, [], Position.create(0, 0), "");
+    ](null, [], Position.create(0, 0));
 
     expect(actual!.length).toEqual(expectedLength);
   });
@@ -66,8 +66,7 @@ describe("Completion provider test", () => {
     ](
       testInitializer.getInorrectCompletionResponse(),
       [],
-      Position.create(3, 0),
-      ""
+      Position.create(3, 0)
     );
 
     expect(actual!.length).toEqual(expectedLength);
@@ -80,8 +79,7 @@ describe("Completion provider test", () => {
     ](
       testInitializer.getCorrectCompletionResponse(),
       [],
-      Position.create(5, 0),
-      ""
+      Position.create(5, 0)
     );
 
     expect(actual!.length).toEqual(expectedLength);
@@ -336,7 +334,7 @@ describe("Completion provider test", () => {
     ];
     const positionInput: Position = Position.create(2, 4);
 
-    const expected: [string[], number] = [[], -1];
+    const expected: [string[], number] | null = null;
     const actual = provider["extractItem"](textInput, positionInput);
 
     expect(actual).toEqual(expected);

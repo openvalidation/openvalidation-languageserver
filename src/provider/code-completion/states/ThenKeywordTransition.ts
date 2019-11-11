@@ -1,5 +1,6 @@
 import { CompletionBuilder } from "../CompletionBuilder";
 import { StateTransition } from "./StateTransition";
+import { IStateTransition } from "./state-constructor/IStateTransition";
 
 /**
  * Transition of an `then`-keyword
@@ -13,8 +14,8 @@ export class ThenKeywordTransition extends StateTransition {
    * Creates an instance of ThenKeywordTransition.
    * @memberof ThenKeywordTransition
    */
-  constructor() {
-    super();
+  constructor(constructor?: IStateTransition) {
+    super(constructor);
   }
 
   /**

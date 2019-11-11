@@ -43,18 +43,18 @@ export class TreeTraversal {
    * @memberof TreeTraversal
    */
   public getOperations(genericNodes: GenericNode[]): OperationNode[] {
-    const childs: GenericNode[] = genericNodes;
+    const children: GenericNode[] = genericNodes;
     const operations: OperationNode[] = [];
 
-    for (const child of childs) {
+    for (const child of children) {
       if (child instanceof OperationNode) {
         operations.push(child);
         continue;
       }
 
-      const nextChilds = child.getChildren();
-      if (nextChilds.length !== 0) {
-        operations.push(...this.getOperations(nextChilds));
+      const nextChildren = child.getChildren();
+      if (nextChildren.length !== 0) {
+        operations.push(...this.getOperations(nextChildren));
       }
     }
 
@@ -69,10 +69,10 @@ export class TreeTraversal {
    * @memberof TreeTraversal
    */
   public getLonelyOperands(genericNodes: GenericNode[]): BaseOperandNode[] {
-    const childs: GenericNode[] = genericNodes;
+    const children: GenericNode[] = genericNodes;
     const operands: BaseOperandNode[] = [];
 
-    for (const child of childs) {
+    for (const child of children) {
       if (child instanceof ConditionNode) {
         continue;
       } else if (child instanceof BaseOperandNode) {
@@ -80,9 +80,9 @@ export class TreeTraversal {
         continue;
       }
 
-      const nextChilds = child.getChildren();
-      if (nextChilds.length !== 0) {
-        operands.push(...this.getLonelyOperands(nextChilds));
+      const nextChildren = child.getChildren();
+      if (nextChildren.length !== 0) {
+        operands.push(...this.getLonelyOperands(nextChildren));
       }
     }
 

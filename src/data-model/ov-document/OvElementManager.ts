@@ -138,7 +138,9 @@ export class OvElementManager {
       if (
         !variable.$nameNode ||
         !variable.$value ||
-        element.indexOf(variable.$nameNode.$name) === -1
+        element
+          .toLowerCase()
+          .indexOf(variable.$nameNode.$name.toLowerCase()) === -1
       ) {
         continue;
       }

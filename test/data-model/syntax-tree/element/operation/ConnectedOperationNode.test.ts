@@ -8,7 +8,6 @@ import { GenericNode } from "../../../../../src/data-model/syntax-tree/GenericNo
 import { IndexRange } from "../../../../../src/data-model/syntax-tree/IndexRange";
 import { ScopeEnum } from "../../../../../src/enums/ScopeEnum";
 import { ConnectionTransition } from "../../../../../src/provider/code-completion/states/ConnectionTransition";
-import { EmptyTransition } from "../../../../../src/provider/code-completion/states/EmptyTransition";
 import { OperandTransition } from "../../../../../src/provider/code-completion/states/OperandTransition";
 import { OperatorTransition } from "../../../../../src/provider/code-completion/states/OperatorTransition";
 import { StateTransition } from "../../../../../src/provider/code-completion/states/StateTransition";
@@ -338,7 +337,7 @@ describe("ConnectedOperationNode Tests", () => {
     const actual: StateTransition[] = connectOperation.getCompletionContainer(
       positionParameter
     ).$transitions;
-    expect(actual[0]).toBeInstanceOf(EmptyTransition);
+    expect(actual[0]).toBeInstanceOf(OperatorTransition);
   });
 
   test("getCompletionContainer with ConnectedOperationNode and 2 OperationNodes and position inside second Operation, expected Empty", () => {
@@ -407,7 +406,7 @@ describe("ConnectedOperationNode Tests", () => {
     const actual: StateTransition[] = connectOperation.getCompletionContainer(
       positionParameter
     ).$transitions;
-    expect(actual[0]).toBeInstanceOf(EmptyTransition);
+    expect(actual[0]).toBeInstanceOf(OperatorTransition);
   });
 
   test("getCompletionContainer with ConnectedOperationNode and 2 OperationNodes and one falsy OperationNode and position inside second Operation, expected Empty", () => {
@@ -470,7 +469,7 @@ describe("ConnectedOperationNode Tests", () => {
     const actual: StateTransition[] = connectOperation.getCompletionContainer(
       positionParameter
     ).$transitions;
-    expect(actual[0]).toBeInstanceOf(EmptyTransition);
+    expect(actual[0]).toBeInstanceOf(OperatorTransition);
   });
 
   test("getCompletionContainer with ConnectedOperationNode and 2 OperationNodes and one falsy OperationNode and position after second Operation, expected Empty", () => {

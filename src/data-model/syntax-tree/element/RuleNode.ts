@@ -120,8 +120,11 @@ export class RuleNode extends GenericNode {
     const conditionString: string = this.condition.getBeautifiedContent(
       aliasesHelper
     );
-    returnString +=
-      conditionString + (String.IsNullOrWhiteSpace(returnString) ? "" : "\n");
+    returnString += conditionString;
+
+    if (!String.IsNullOrWhiteSpace(returnString)) {
+      returnString += "\n";
+    }
 
     if (!String.IsNullOrWhiteSpace(splittedRule[1])) {
       returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(

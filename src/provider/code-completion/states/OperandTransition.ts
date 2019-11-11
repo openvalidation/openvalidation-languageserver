@@ -1,6 +1,7 @@
 import { String } from "typescript-string-operations";
 import { CompletionBuilder } from "../CompletionBuilder";
 import { StateTransition } from "./StateTransition";
+import { IStateTransition } from "./state-constructor/IStateTransition";
 
 /**
  * Transition for operands
@@ -13,12 +14,19 @@ export class OperandTransition extends StateTransition {
   private dataType: string | undefined;
   private nameFilter: string[];
 
+  /**
+   *Creates an instance of OperandTransition.
+   * @param {string} [datatype] datatype for the operands
+   * @param {string[]} [nameFilter] filter for the operands
+   * @param {IStateTransition} [constructor] interface that contains some extra attributes
+   * @memberof OperandTransition
+   */
   constructor(
     datatype?: string,
     nameFilter?: string[],
-    prependingText?: string
+    constructor?: IStateTransition
   ) {
-    super(prependingText);
+    super(constructor);
 
     this.dataType = datatype;
     this.nameFilter = !nameFilter ? [] : nameFilter;

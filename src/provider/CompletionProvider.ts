@@ -85,12 +85,12 @@ export class CompletionProvider extends Provider {
   }
 
   /**
-   * Generates a completion for a schema-attribute with childs.
-   * It tries to find childs for the word at the current position and returns them
+   * Generates a completion for a schema-attribute with children.
+   * It tries to find children for the word at the current position and returns them
    *
    * @private
    * @param {CompletionParams} params parameter that contains the textdocument and the position
-   * @returns {(Promise<CompletionItem[] | null>)} items with the found childs, null in case of an error
+   * @returns {(Promise<CompletionItem[] | null>)} items with the found children, null in case of an error
    * @memberof CompletionProvider
    */
   private async completionForSchema(
@@ -109,7 +109,7 @@ export class CompletionProvider extends Provider {
       [],
       this.server.aliasHelper,
       this.server.schema
-    ).addFittingChilds(currentWord);
+    ).addFittingChildren(currentWord);
     return generator.build();
   }
 
@@ -154,7 +154,7 @@ export class CompletionProvider extends Provider {
    *
    * @private
    * @param {CompletionParams} params parameter that contains the textdocument and the position
-   * @returns {(Promise<CompletionItem[] | null>)} generated completionitems, null in case of an error
+   * @returns {(Promise<CompletionItem[] | null>)} generated completion items, null in case of an error
    * @memberof CompletionProvider
    */
   private async completionByText(
@@ -188,18 +188,10 @@ export class CompletionProvider extends Provider {
       params.position.character
     );
 
-    const line = document.getText(
-      Range.create(Position.create(params.position.line, 0), params.position)
-    );
-    const wordAtCurrentPosition = StringHelper.getWordAt(
-      line,
-      params.position.character
-    ).trim();
     return this.completionForParsedElement(
       response,
       declarations,
-      relativePosition,
-      wordAtCurrentPosition
+      relativePosition
     );
   }
 
@@ -212,14 +204,13 @@ export class CompletionProvider extends Provider {
    * @param {Position} relativePosition position inside given node.
    *  Because we only parsed that element alone it needs to be relative to it
    * @param {string} wordAtCurrentPosition found word at the position. This is used for filtering of items
-   * @returns {(Promise<CompletionItem[] | null>)} generated completionitems, null in case of an error
+   * @returns {(Promise<CompletionItem[] | null>)} generated completion items, null in case of an error
    * @memberof CompletionProvider
    */
   private completionForParsedElement(
     response: CompletionResponse | null,
     declarations: Variable[],
-    relativePosition: Position,
-    wordAtCurrentPosition: string
+    relativePosition: Position
   ): CompletionItem[] | null {
     if (!response) {
       return CompletionBuilder.default(declarations, this.server);
@@ -233,8 +224,7 @@ export class CompletionProvider extends Provider {
     const generator: CompletionBuilder = new CompletionBuilder(
       declarations,
       this.server.aliasHelper,
-      this.server.schema,
-      wordAtCurrentPosition
+      this.server.schema
     );
     return relevantElement!
       .getCompletionContainer(relativePosition)
