@@ -1,5 +1,10 @@
 import "jest";
-import { Position, TextDocumentPositionParams } from "vscode-languageserver";
+import {
+  Position,
+  TextDocumentPositionParams,
+  Location,
+  Range
+} from "vscode-languageserver";
 import { GotoDefinitionProvider } from "../../src/provider/GotoDefinitionProvider";
 import { TestInitializer } from "../TestInitializer";
 
@@ -55,11 +60,13 @@ describe("GotoDefinition provider test", () => {
     expect(actual).toEqual(expected);
   });
 
-  // test("definition with valid document and valid position, expect one definition", () => {
-  //     var expectedRange: Range = Range.create(4, 4, 4, 16);
-  //     var expectedLocations: LocationLink[] = [LocationLink.create("test.ov", expectedRange, expectedRange)];
+  test("definition with valid document and valid position, expect one definition", () => {
+    var expectedRange: Range = Range.create(3, 0, 4, 16);
+    var expectedLocations: Location[] = [
+      Location.create("test.ov", expectedRange)
+    ];
 
-  //     var actual = provider.definition(getParams(Position.create(6, 20)));
-  //     expect(actual).toEqual(expectedLocations);
-  // });
+    var actual = provider.definition(getParams(Position.create(4, 14)));
+    expect(actual).toEqual(expectedLocations);
+  });
 });
