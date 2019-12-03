@@ -261,7 +261,7 @@ export class DocumentActionProvider extends Provider {
     return new OvDocument(
       apiResponse.$mainAstNode.$scopes,
       apiResponse.$mainAstNode.$declarations,
-      this.server.aliasHelper
+      this.server.getAliasHelper()
     );
   }
 

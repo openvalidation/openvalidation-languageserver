@@ -47,8 +47,7 @@ export class TextMateParameter {
     private readonly apiResponse: LintingResponse | null,
     server: OvServer
   ) {
-    this.aliasHelper = server.aliasHelper;
-
+    this.aliasHelper = server.getAliasHelper();
     this.identifier = this.getIdentifier();
 
     const keywordFilter: AliasKey[] = [
@@ -57,11 +56,10 @@ export class TextMateParameter {
       AliasKey.AS,
       AliasKey.FUNCTION
     ];
-    this.keywords = server.aliasHelper.getFilteredKeywords(...keywordFilter);
-
-    this.asKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.AS);
-    this.thenKeyword = server.aliasHelper.getKeywordByAliasKey(AliasKey.THEN);
-    this.commentKeyword = server.aliasHelper.getKeywordByAliasKey(
+    this.keywords = this.aliasHelper.getFilteredKeywords(...keywordFilter);
+    this.asKeyword = this.aliasHelper.getKeywordByAliasKey(AliasKey.AS);
+    this.thenKeyword = this.aliasHelper.getKeywordByAliasKey(AliasKey.THEN);
+    this.commentKeyword = this.aliasHelper.getKeywordByAliasKey(
       AliasKey.COMMENT
     );
 

@@ -58,7 +58,7 @@ export class FormattingProvider extends Provider {
       params.range
     );
     for (const element of elements) {
-      const currentTextEdits = element.formatCode(this.server.aliasHelper);
+      const currentTextEdits = element.formatCode(this.server.getAliasHelper());
       textEdits.push(...currentTextEdits);
     }
 

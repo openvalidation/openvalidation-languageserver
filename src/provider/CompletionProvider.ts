@@ -107,7 +107,7 @@ export class CompletionProvider extends Provider {
 
     const generator = new CompletionBuilder(
       [],
-      this.server.aliasHelper,
+      this.server.getAliasHelper(),
       this.server.schema
     ).addFittingChildren(currentWord);
     return generator.build();
@@ -142,7 +142,7 @@ export class CompletionProvider extends Provider {
 
     const generator = new CompletionBuilder(
       declarations,
-      this.server.aliasHelper,
+      this.server.getAliasHelper(),
       this.server.schema
     ).addOperandsWithTypeOfGivenOperand(currentWord.replace(",", ""));
     return generator.build();
@@ -224,7 +224,7 @@ export class CompletionProvider extends Provider {
 
     const generator: CompletionBuilder = new CompletionBuilder(
       declarations,
-      this.server.aliasHelper,
+      this.server.getAliasHelper(),
       this.server.schema
     );
     return relevantElement!

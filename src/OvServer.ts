@@ -64,7 +64,7 @@ export class OvServer {
   public readonly documents = new TextDocuments();
   public readonly ovDocuments = new OvDocuments();
 
-  public aliasHelper = new AliasHelper();
+  private aliasHelper = new AliasHelper();
 
   public language: LanguageEnum;
   public culture: CultureEnum;
@@ -126,6 +126,21 @@ export class OvServer {
     if (!!data.$schema) {
       this.schema = data.$schema;
     }
+  }
+
+  /**
+   * Returns the aliasHelper of the server.
+   * When the aliases are unkown because of a previous error,
+   *  the aliases are requrested from the REST-API
+   *
+   * @returns {AliasHelper} current aliasHelper
+   * @memberof OvServer
+   */
+  public getAliasHelper(): AliasHelper {
+    if (this.aliasHelper.isEmpty()) {
+      this.setAliases();
+    }
+    return this.aliasHelper;
   }
 
   /**
