@@ -21,8 +21,8 @@ export class SchemaProvider {
     let foundUseSchemaCommand: boolean = false;
 
     for (const line of splittedText) {
-      if (line.indexOf("USE SCHEMA") != -1) {
-        schemaPath = line.replace("USE SCHEMA", "").trim();
+      if (line.toUpperCase().indexOf("USE SCHEMA") != -1) {
+        schemaPath = line.replace(new RegExp("USE SCHEMA", "ig"), "").trim();
         foundUseSchemaCommand = true;
         break;
       }
@@ -46,8 +46,6 @@ export class SchemaProvider {
         )
       );
     }
-
-    // TODO: ADD Syntax-Highlighting Rule
 
     let schemaText: JSON = defaultSchema;
     if (schemaPath.trim() !== "") {
@@ -80,8 +78,6 @@ export class SchemaProvider {
         ovText += "\n";
       }
     }
-
-    if (ovText.trim() === "") ovText = text;
 
     return new UseSchemaDataclass(
       useSchemaLineIndex,
