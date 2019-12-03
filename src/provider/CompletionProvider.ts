@@ -183,6 +183,7 @@ export class CompletionProvider extends Provider {
       this.server.restParameter,
       ovDocument
     );
+
     const relativePosition: Position = Position.create(
       params.position.line - itemTuple[1],
       params.position.character
@@ -254,7 +255,7 @@ export class CompletionProvider extends Provider {
     for (let index = position.line; index >= 0; index--) {
       const element = textLines[index];
       if (String.IsNullOrWhiteSpace(element)) {
-        // Then the current Whitespace blongs to the element
+        // Then the current Whitespace belongs to the element
         if (
           !foundWhiteSpace &&
           index > 0 &&
@@ -270,7 +271,7 @@ export class CompletionProvider extends Provider {
     }
 
     // Then we wanted completion inside an paragraph
-    if (currentLines.length == 0) {
+    if (currentLines.length == 0 && position.line != 0) {
       return null;
     }
 
