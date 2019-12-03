@@ -1,5 +1,5 @@
-import { ICodeResponse } from "src/rest-interface/response/ICodeResponse";
-import { LintingResponse } from "src/rest-interface/response/LintingResponse";
+import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
+import { LintingResponse } from "../rest-interface/response/LintingResponse";
 import {
   Diagnostic,
   DiagnosticSeverity,
@@ -12,6 +12,8 @@ import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
 import { Provider } from "./Provider";
 import { SyntaxNotifier } from "./SyntaxNotifier";
+import { SchemaProvider, UseSchemaDataclass } from "../helper/SchemaProvider";
+import { TreeTraversal } from "../helper/TreeTraversal";
 
 /**
  * Provider to handle every response which deals with documents.
@@ -92,17 +94,22 @@ export class DocumentActionProvider extends Provider {
    * @memberof DocumentActionProvider
    */
   public generateDiagnostics(
-    apiResponse: LintingResponse | null
+    apiResponse: LintingResponse | null,
+    useSchemaDataclass: UseSchemaDataclass | null
   ): Diagnostic[] {
     if (apiResponse == null) {
       return [];
     }
 
+    let lineModification: number = !useSchemaDataclass
+      ? 0
+      : useSchemaDataclass.schemaLineIndex + 1;
+
     const diagnostics: Diagnostic[] = [];
     for (const error of apiResponse.$errors) {
       const diagnosticRange: Range = !error.$range
         ? Range.create(0, 0, 0, 1)
-        : error.$range.asRange();
+        : error.$range.moveLines(lineModification).asRange();
       const diagnostic: Diagnostic = Diagnostic.create(
         diagnosticRange,
         error.$message
@@ -110,6 +117,9 @@ export class DocumentActionProvider extends Provider {
       diagnostic.severity = DiagnosticSeverity.Error;
       diagnostics.push(diagnostic);
     }
+
+    if (!!useSchemaDataclass)
+      diagnostics.push(...useSchemaDataclass.diagnostics);
 
     return diagnostics;
   }
@@ -164,7 +174,16 @@ export class DocumentActionProvider extends Provider {
 
   private async validateText(uri: string, documentText: string): Promise<void> {
     let apiResponse: LintingResponse | null = null;
-    let ovDocument: OvDocument | undefined = this.server.ovDocuments.get(uri);
+
+    const useSchema: UseSchemaDataclass | null = SchemaProvider.parseSpecificSchema(
+      documentText,
+      this.server.jsonSchema
+    );
+
+    if (!!useSchema) {
+      documentText = useSchema.ovText;
+      this.server.jsonSchema = useSchema.schemaText;
+    }
 
     try {
       apiResponse = await ApiProxy.postLintingData(
@@ -176,30 +195,35 @@ export class DocumentActionProvider extends Provider {
       return;
     }
 
-    if (!apiResponse) {
-      return;
-    }
-    ovDocument = this.generateDocumentWithAst(apiResponse);
+    if (!apiResponse) return;
 
-    if (!ovDocument) {
-      return;
-    }
-    const diagnostics: Diagnostic[] = this.generateDiagnostics(apiResponse);
-    if (diagnostics !== []) {
-      this.sendDiagnostics(uri, diagnostics);
+    if (!!useSchema) {
+      TreeTraversal.modifyRangeOfEveryNode(
+        apiResponse.$mainAstNode.$scopes,
+        useSchema.schemaLineIndex + 1
+      );
     }
 
-    if (!ovDocument) {
-      return;
-    }
+    let ovDocument: OvDocument | undefined = this.generateDocumentWithAst(
+      apiResponse
+    );
+
+    if (!ovDocument) return;
+
+    const diagnostics: Diagnostic[] = this.generateDiagnostics(
+      apiResponse,
+      useSchema
+    );
+
+    if (diagnostics !== []) this.sendDiagnostics(uri, diagnostics);
+    if (!ovDocument) return;
+
     this.server.ovDocuments.addOrOverrideOvDocument(uri, ovDocument);
     this.server.setGeneratedSchema(apiResponse);
     this.syntaxNotifier.sendTextMateGrammarIfNecessary(apiResponse);
 
     // Then we can't generate code anyway
-    if (apiResponse.$errors.length > 0) {
-      return;
-    }
+    if (apiResponse.$errors.length > 0) return;
 
     let codeGenerationResponse: ICodeResponse | null = null;
     try {
@@ -211,9 +235,7 @@ export class DocumentActionProvider extends Provider {
       console.error("Code generation Error: " + err);
     }
 
-    if (!codeGenerationResponse) {
-      return;
-    }
+    if (!codeGenerationResponse) return;
     this.syntaxNotifier.sendGeneratedCodeIfNecessary(codeGenerationResponse);
   }
 
