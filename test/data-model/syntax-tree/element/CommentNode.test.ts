@@ -81,7 +81,7 @@ describe("CommentNode Tests", () => {
     );
 
     const actual = commentNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual(commentText);
@@ -96,7 +96,7 @@ describe("CommentNode Tests", () => {
     );
 
     const actual = commentNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
     const expected = "This is an error\n        This is an error";
 

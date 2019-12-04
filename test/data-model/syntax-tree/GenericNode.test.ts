@@ -37,7 +37,7 @@ describe("GenericNode Tests", () => {
     );
 
     const expected: string = "Test";
-    const actual: string = node.formatCode(initializer.$server.aliasHelper)[0]
+    const actual: string = node.formatCode(initializer.$server.getAliasHelper())[0]
       .newText;
 
     expect(actual).toEqual(expected);
@@ -52,7 +52,7 @@ describe("GenericNode Tests", () => {
     );
 
     const expected: string = " Test";
-    const actual: string = node.formatCode(initializer.$server.aliasHelper)[0]
+    const actual: string = node.formatCode(initializer.$server.getAliasHelper())[0]
       .newText;
 
     expect(actual).not.toEqual(expected);

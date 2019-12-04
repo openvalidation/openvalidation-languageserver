@@ -1,4 +1,4 @@
-import { LanguageEnum } from "../enums/LanguageEnum";
+import { LanguageEnum } from "ov-language-server-types";
 
 /**
  * Beautifies the generic string from the parse (e.g. astrule -> rule)

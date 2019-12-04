@@ -61,7 +61,7 @@ describe("ActionErrorNode Tests", () => {
     );
 
     const actual = errorNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual(errorMessage);

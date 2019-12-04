@@ -91,7 +91,7 @@ describe("OperandTransition.isValid Tests", () => {
     const initializer: TestInitializer = new TestInitializer(true);
     const builder: CompletionBuilder = new CompletionBuilder(
       [new Variable("Alter", "Decimal")],
-      initializer.$server.aliasHelper,
+      initializer.$server.getAliasHelper(),
       initializer.$server.schema
     );
 

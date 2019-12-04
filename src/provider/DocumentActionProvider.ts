@@ -95,7 +95,7 @@ export class DocumentActionProvider extends Provider {
    */
   public generateDiagnostics(
     apiResponse: LintingResponse | null,
-    useSchemaDataclass: UseSchemaDataclass | null
+    useSchemaDataclass?: UseSchemaDataclass
   ): Diagnostic[] {
     if (apiResponse == null) {
       return [];
@@ -175,7 +175,9 @@ export class DocumentActionProvider extends Provider {
   private async validateText(uri: string, documentText: string): Promise<void> {
     let apiResponse: LintingResponse | null = null;
 
-    const useSchema: UseSchemaDataclass | null = SchemaProvider.parseSpecificSchema(
+    const useSchema:
+      | UseSchemaDataclass
+      | undefined = SchemaProvider.parseSpecificSchema(
       documentText,
       this.server.jsonSchema
     );

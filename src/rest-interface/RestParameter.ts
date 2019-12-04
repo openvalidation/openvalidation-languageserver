@@ -1,6 +1,5 @@
+import { CultureEnum, LanguageEnum } from "ov-language-server-types";
 import { AliasHelper } from "src/aliases/AliasHelper";
-import { CultureEnum } from "../enums/CultureEnum";
-import { LanguageEnum } from "../enums/LanguageEnum";
 
 /**
  * Class that is used inside the REST-API which contains all the necessary parameters for parsing.

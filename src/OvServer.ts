@@ -1,5 +1,10 @@
 import * as YAML from "js-yaml";
 import {
+  CultureEnum,
+  LanguageEnum,
+  NotificationEnum
+} from "ov-language-server-types";
+import {
   createConnection,
   IConnection,
   InitializeParams,
@@ -13,9 +18,6 @@ import { URI } from "vscode-uri";
 import { AliasHelper } from "./aliases/AliasHelper";
 import { OvDocuments } from "./data-model/ov-document/OvDocuments";
 import { CompletionKeyEnum } from "./enums/CompletionKeyEnum";
-import { CultureEnum } from "./enums/CultureEnum";
-import { LanguageEnum } from "./enums/LanguageEnum";
-import { NotificationEnum } from "./enums/NotificationEnum";
 import { CompletionProvider } from "./provider/CompletionProvider";
 import { DocumentActionProvider } from "./provider/DocumentActionProvider";
 import { DocumentSymbolProvider } from "./provider/DocumentSymbolProvider";

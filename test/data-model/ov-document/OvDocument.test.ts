@@ -22,7 +22,7 @@ describe("OvDocument Tests", () => {
 
   beforeEach(() => {
     testInitializer = new TestInitializer(true);
-    aliasHelper = testInitializer.$server.aliasHelper;
+    aliasHelper = testInitializer.$server.getAliasHelper();
 
     const tempDocument = testInitializer.$server.ovDocuments.get("test.ov");
     if (!!tempDocument) {

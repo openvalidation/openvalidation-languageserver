@@ -886,7 +886,7 @@ describe("ConnectedOperationNode Tests", () => {
     );
 
     const actual = connectOperation.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual("Alter gleich 18\nUND Alter gleich 18");
@@ -900,7 +900,7 @@ describe("ConnectedOperationNode Tests", () => {
     );
 
     const actual: SyntaxHighlightingCapture | null = connectOperation.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
     const expected: SyntaxHighlightingCapture | null = null;
 
@@ -941,7 +941,7 @@ describe("ConnectedOperationNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = connectOperation.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [
       ScopeEnum.Variable,

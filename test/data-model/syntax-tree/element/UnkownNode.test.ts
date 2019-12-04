@@ -412,7 +412,7 @@ describe("UnkownNode Tests", () => {
     );
 
     const actual = unkownNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual(errorMessage);
@@ -433,7 +433,7 @@ describe("UnkownNode Tests", () => {
     );
 
     const actual = unkownNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual(operand);

@@ -115,7 +115,7 @@ describe("ArrayOperandNode Tests", () => {
     );
 
     const actual = arrayOperandNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual(operand);
@@ -218,7 +218,7 @@ describe("ArrayOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = arrayOperandNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.Variable];
 
@@ -243,7 +243,7 @@ describe("ArrayOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = arrayOperandNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.StaticString];
 
@@ -268,7 +268,7 @@ describe("ArrayOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = arrayOperandNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.StaticNumber];
 
@@ -293,7 +293,7 @@ describe("ArrayOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = arrayOperandNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.StaticNumber];
 
@@ -318,7 +318,7 @@ describe("ArrayOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = arrayOperandNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [
       ScopeEnum.Empty,
@@ -347,7 +347,7 @@ describe("ArrayOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = arrayOperandNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [
       ScopeEnum.Empty,
@@ -375,7 +375,7 @@ describe("ArrayOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = arrayOperandNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.Variable];
 
@@ -399,7 +399,7 @@ describe("ArrayOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = arrayOperandNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [
       ScopeEnum.Empty,
@@ -428,7 +428,7 @@ describe("ArrayOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = arrayOperandNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [];
 

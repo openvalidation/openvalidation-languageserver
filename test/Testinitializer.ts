@@ -213,11 +213,11 @@ export class TestInitializer {
     if (!fullOvDocument) {
       this.server.ovDocuments.addOrOverrideOvDocument(
         "test.ov",
-        new OvDocument([], [], this.server.aliasHelper)
+        new OvDocument([], [], this.server.getAliasHelper())
       );
     } else {
-      this.server.aliasHelper.$aliases = this.getAliases();
-      this.server.aliasHelper.$operators = this.getOperators();
+      this.server.getAliasHelper().$aliases = this.getAliases();
+      this.server.getAliasHelper().$operators = this.getOperators();
 
       this.server.schema.dataProperties = [
         { name: "Einkaufsliste.Preis", type: "Decimal" },
@@ -231,7 +231,7 @@ export class TestInitializer {
       const document = new OvDocument(
         this.getCorrectParseResult().$scopes,
         this.getCorrectParseResult().$declarations,
-        this.server.aliasHelper
+        this.server.getAliasHelper()
       );
       this.server.ovDocuments.addOrOverrideOvDocument("test.ov", document);
     }

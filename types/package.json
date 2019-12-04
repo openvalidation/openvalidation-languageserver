@@ -5,11 +5,12 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "tsc"
+    "prepare": "tsc"
   },
   "keywords": [
     "type-definitions",
     "openVALIDATION"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "readmeFilename": "README.md"
 }

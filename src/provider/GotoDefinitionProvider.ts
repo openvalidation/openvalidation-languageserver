@@ -1,8 +1,9 @@
 import {
   DefinitionLink,
-  TextDocumentPositionParams
+  TextDocumentPositionParams,
+  LocationLink,
+  Range
 } from "vscode-languageserver";
-import { Definition, Location } from "vscode-languageserver";
 import { VariableNode } from "../data-model/syntax-tree/element/VariableNode";
 import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
@@ -46,9 +47,7 @@ export class GotoDefinitionProvider extends Provider {
    * @returns {(DefinitionLink[] | Definition)} list of all found definitions
    * @memberof GotoDefinitionProvider
    */
-  public definition(
-    params: TextDocumentPositionParams
-  ): DefinitionLink[] | Definition {
+  public definition(params: TextDocumentPositionParams): DefinitionLink[] {
     const ovDocument = this.ovDocuments.get(params.textDocument.uri);
     if (!ovDocument) {
       return [];
@@ -60,7 +59,7 @@ export class GotoDefinitionProvider extends Provider {
     }
 
     const referenceString: string = referenceTuple[0];
-    // var referenceRange: Range = referenceTuple[1];
+    const referenceRange: Range = referenceTuple[1];
 
     const foundVariables = ovDocument.$elementManager.getVariablesByName(
       referenceString
@@ -69,11 +68,15 @@ export class GotoDefinitionProvider extends Provider {
       return [];
     }
 
-    const locationList: Location[] = [];
+    const locationList: LocationLink[] = [];
 
     foundVariables.forEach((variable: VariableNode) => {
       const range = variable.$range.asRange();
-      const location = Location.create(params.textDocument.uri, range);
+      const location = LocationLink.create(
+        params.textDocument.uri,
+        referenceRange,
+        range
+      );
       locationList.push(location);
     });
 

@@ -544,7 +544,7 @@ describe("VariableNode Tests", () => {
     );
 
     const actual = variable.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual(" As Test");
@@ -571,7 +571,7 @@ describe("VariableNode Tests", () => {
     );
 
     const actual = variable.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual("   Alter\nAs Test");

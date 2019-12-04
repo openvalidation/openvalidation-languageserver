@@ -9,7 +9,7 @@ export class SchemaProvider {
   public static parseSpecificSchema(
     text: string,
     defaultSchema: JSON
-  ): UseSchemaDataclass | null {
+  ): UseSchemaDataclass | undefined {
     let splittedText = text.split("\n");
 
     var path = require("path");
@@ -29,7 +29,7 @@ export class SchemaProvider {
       useSchemaLineIndex++;
     }
 
-    if (!foundUseSchemaCommand) return null;
+    if (!foundUseSchemaCommand) return undefined;
 
     let diagnostics: Diagnostic[] = [];
     if (schemaPath.trim() === "") {
