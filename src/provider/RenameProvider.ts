@@ -2,14 +2,15 @@ import {
   Position,
   RenameParams,
   TextEdit,
-  WorkspaceEdit
+  WorkspaceEdit,
+  TextDocumentPositionParams
 } from "vscode-languageserver";
 import { Range } from "vscode-languageserver";
 import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
 
 /**
- * Response-Provider for ``onRenameRequest``
+ * Response-Provider for ``onRenameRequest`` and ``onPrepareRename``
  *
  * @export
  * @class RenameProvider
@@ -35,7 +36,36 @@ export class RenameProvider extends Provider {
    */
   constructor(server: OvServer) {
     super(server);
+    this.connection.onPrepareRename(params => this.prepareRename(params));
     this.connection.onRenameRequest(params => this.rename(params));
+  }
+
+  /**
+   * Valiades weather the position is valid for renaming
+   *
+   * @param {TextDocumentPositionParams} params parameter that contains the requested position
+   * @returns {({ range: Range; placeholder: string } | null)} return null, if invalid
+   * @memberof RenameProvider
+   */
+  public prepareRename(
+    params: TextDocumentPositionParams
+  ): { range: Range; placeholder: string } | null {
+    const ovDocument = this.ovDocuments.get(params.textDocument.uri);
+    if (!ovDocument) return null;
+
+    const oldTuple = ovDocument.getStringByPosition(params.position);
+    if (!oldTuple) return null;
+
+    const oldString: string = oldTuple[0];
+
+    // Renaming only makes sense for variables
+    const variable = ovDocument.$elementManager.getVariablesByName(oldString);
+    if (!variable) return null;
+
+    return {
+      range: variable[0].$range.asRange(),
+      placeholder: oldString
+    };
   }
 
   /**
