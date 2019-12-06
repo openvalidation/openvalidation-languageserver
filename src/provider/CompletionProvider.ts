@@ -1,4 +1,3 @@
-import { CompletionResponse } from "src/rest-interface/response/CompletionResponse";
 import { String } from "typescript-string-operations";
 import {
   CompletionItem,
@@ -10,9 +9,11 @@ import {
 } from "vscode-languageserver";
 import { Variable } from "../data-model/syntax-tree/Variable";
 import { CompletionKeyEnum } from "../enums/CompletionKeyEnum";
+import { SchemaProvider, UseSchemaDataclass } from "../helper/SchemaProvider";
 import { StringHelper } from "../helper/StringHelper";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
+import { CompletionResponse } from "../rest-interface/response/CompletionResponse";
 import { CompletionBuilder } from "./code-completion/CompletionBuilder";
 import { Provider } from "./Provider";
 
@@ -178,10 +179,17 @@ export class CompletionProvider extends Provider {
       declarations = ovDocument.$declarations;
     }
 
+    const useSchema:
+      | UseSchemaDataclass
+      | undefined = SchemaProvider.parseSpecificSchema(
+      document.getText(),
+      this.server
+    );
+
     const response = await ApiProxy.postCompletionData(
       parseString,
       this.server.restParameter,
-      ovDocument
+      !useSchema ? this.server.jsonSchema : useSchema.schemaText
     );
 
     const relativePosition: Position = Position.create(

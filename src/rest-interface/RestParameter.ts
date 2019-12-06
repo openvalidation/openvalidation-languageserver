@@ -17,7 +17,6 @@ export class RestParameter {
    * @memberof RestParameter
    */
   constructor(
-    private schema: JSON,
     private culture: CultureEnum,
     private language: LanguageEnum,
     private aliasHelper: AliasHelper
@@ -28,9 +27,6 @@ export class RestParameter {
   }
   public get $culture(): CultureEnum {
     return this.culture;
-  }
-  public get $schema(): JSON {
-    return this.schema;
   }
   public get $aliasHelper(): AliasHelper {
     return this.aliasHelper;

@@ -179,18 +179,20 @@ export class DocumentActionProvider extends Provider {
       | UseSchemaDataclass
       | undefined = SchemaProvider.parseSpecificSchema(
       documentText,
-      this.server.jsonSchema
+      this.server
     );
 
+    var schema = this.server.jsonSchema;
     if (!!useSchema) {
       documentText = useSchema.ovText;
-      this.server.jsonSchema = useSchema.schemaText;
+      schema = useSchema.schemaText;
     }
 
     try {
       apiResponse = await ApiProxy.postLintingData(
         documentText,
-        this.server.restParameter
+        this.server.restParameter,
+        schema
       );
     } catch (err) {
       console.error("doValidate: " + err);
@@ -231,7 +233,8 @@ export class DocumentActionProvider extends Provider {
     try {
       codeGenerationResponse = await ApiProxy.postData(
         documentText,
-        this.server.restParameter
+        this.server.restParameter,
+        schema
       );
     } catch (err) {
       console.error("Code generation Error: " + err);

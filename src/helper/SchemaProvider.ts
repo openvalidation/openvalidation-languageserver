@@ -1,14 +1,15 @@
 import * as fs from "fs";
 import {
   Diagnostic,
-  Range,
-  DiagnosticSeverity
+  DiagnosticSeverity,
+  Range
 } from "vscode-languageserver-types";
+import { OvServer } from "../OvServer";
 
 export class SchemaProvider {
   public static parseSpecificSchema(
     text: string,
-    defaultSchema: JSON
+    server: OvServer
   ): UseSchemaDataclass | undefined {
     let splittedText = text.split("\n");
 
@@ -19,9 +20,19 @@ export class SchemaProvider {
     let schemaPath: string = "";
     let useSchemaLineIndex: number = 0;
     let foundUseSchemaCommand: boolean = false;
+    let commentKeyword:
+      | string
+      | null = server.getAliasHelper().getCommentKeyword();
 
     for (const line of splittedText) {
-      if (line.toUpperCase().indexOf("USE SCHEMA") != -1) {
+      let useSchemaIndex = line.toUpperCase().indexOf("USE SCHEMA");
+      let commentSchemaIndex = !commentKeyword
+        ? -1
+        : line.toUpperCase().indexOf(commentKeyword);
+      if (
+        useSchemaIndex != -1 &&
+        (commentSchemaIndex == -1 || useSchemaIndex < commentSchemaIndex)
+      ) {
         schemaPath = line.replace(new RegExp("USE SCHEMA", "ig"), "").trim();
         foundUseSchemaCommand = true;
         break;
@@ -47,7 +58,7 @@ export class SchemaProvider {
       );
     }
 
-    let schemaText: JSON = defaultSchema;
+    let schemaText: JSON = server.jsonSchema;
     if (schemaPath.trim() !== "") {
       try {
         let absolutePath = path.resolve(schemaPath);

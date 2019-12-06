@@ -56,13 +56,9 @@ export class OvServer {
    * @memberof OvServer
    */
   public get restParameter(): RestParameter {
-    return new RestParameter(
-      this.jsonSchema,
-      this.culture,
-      this.language,
-      this.aliasHelper
-    );
+    return new RestParameter(this.culture, this.language, this.aliasHelper);
   }
+
   public readonly documents = new TextDocuments();
   public readonly ovDocuments = new OvDocuments();
 
@@ -102,7 +98,7 @@ export class OvServer {
     FoldingRangesProvider.bind(this);
     GotoDefinitionProvider.bind(this);
 
-    // Own Listener for every additional paramater we need for ov-parsing
+    // Own Listener for every additional parameter we need for ov-parsing
     this.connection.onNotification(
       NotificationEnum.SchemaChanged,
       (params: { schema: string; uri: string }) =>
@@ -125,9 +121,7 @@ export class OvServer {
    * @memberof OvServer
    */
   public setGeneratedSchema(data: LintingResponse) {
-    if (!!data.$schema) {
-      this.schema = data.$schema;
-    }
+    this.schema = data.$schema;
   }
 
   /**
