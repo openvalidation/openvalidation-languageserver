@@ -72,10 +72,14 @@ export class GotoDefinitionProvider extends Provider {
 
     foundVariables.forEach((variable: VariableNode) => {
       const range = variable.$range.asRange();
+      const nameRange = !variable.$nameNode
+        ? range
+        : variable.$nameNode.$range.asRange();
       const location = LocationLink.create(
         params.textDocument.uri,
-        referenceRange,
-        range
+        nameRange,
+        range,
+        referenceRange
       );
       locationList.push(location);
     });
