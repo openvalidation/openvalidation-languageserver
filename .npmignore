@@ -12,3 +12,4 @@ test
 coverage
 jest.config.js
 tslint.json
+jre
