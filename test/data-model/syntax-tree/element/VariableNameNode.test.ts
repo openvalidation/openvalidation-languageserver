@@ -61,7 +61,7 @@ describe("VariableNameNode Tests", () => {
     );
 
     const actual = variableNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual(variableName);

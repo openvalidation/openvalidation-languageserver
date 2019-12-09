@@ -903,7 +903,7 @@ describe("RuleNode Tests", () => {
     );
 
     const actual = ruleNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual("If  Then ");
@@ -950,7 +950,7 @@ describe("RuleNode Tests", () => {
     );
 
     const actual = ruleNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual("  If age equals 18\nThen\n");

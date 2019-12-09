@@ -167,6 +167,13 @@ export class IndexRange {
     return Range.create(startPosition, endPosition);
   }
 
+  public moveLines(modification: number): IndexRange {
+    if (!!this.$start) this.$start.$line += modification;
+    if (!!this.$end) this.$end.$line += modification;
+
+    return this;
+  }
+
   /**
    * Determines weather the range equals this range
    *

@@ -71,7 +71,7 @@ describe("OperatorNode Tests", () => {
     );
 
     const actual = operatorNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual(operator);
@@ -122,7 +122,7 @@ describe("OperatorNode Tests", () => {
     );
 
     const actual: SyntaxHighlightingCapture | null = operatorNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
     const expected: SyntaxHighlightingCapture | null = null;
 
@@ -140,7 +140,7 @@ describe("OperatorNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = operatorNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.Keyword];
 

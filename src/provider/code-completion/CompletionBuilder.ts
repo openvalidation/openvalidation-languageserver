@@ -41,7 +41,7 @@ export class CompletionBuilder {
   ): CompletionItem[] {
     return new CompletionBuilder(
       declarations,
-      server.aliasHelper,
+      server.getAliasHelper(),
       server.schema
     )
       .addGlobals()

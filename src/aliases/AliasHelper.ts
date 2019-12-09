@@ -35,6 +35,10 @@ export class AliasHelper {
     this.operators = operators;
   }
 
+  public isEmpty(): boolean {
+    return this.$aliases.size == 0;
+  }
+
   /**
    * Tries to find the natural word for the given parser-key
    *

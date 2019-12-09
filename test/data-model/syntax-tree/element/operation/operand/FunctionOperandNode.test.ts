@@ -141,7 +141,7 @@ describe("FunctionOperandNode Tests", () => {
     );
 
     const actual = functionNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual(functionString);
@@ -254,7 +254,7 @@ describe("FunctionOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = functionNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.Keyword, ScopeEnum.Variable];
 
@@ -281,7 +281,7 @@ describe("FunctionOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = functionNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.Keyword, ScopeEnum.StaticString];
 
@@ -308,7 +308,7 @@ describe("FunctionOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = functionNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.Keyword, ScopeEnum.StaticNumber];
 
@@ -335,7 +335,7 @@ describe("FunctionOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = functionNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [
       ScopeEnum.Keyword,
@@ -366,7 +366,7 @@ describe("FunctionOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = functionNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [
       ScopeEnum.Keyword,
@@ -398,7 +398,7 @@ describe("FunctionOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = functionNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [
       ScopeEnum.Keyword,
@@ -429,7 +429,7 @@ describe("FunctionOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = functionNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [
       ScopeEnum.Keyword,
@@ -459,7 +459,7 @@ describe("FunctionOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = functionNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [
       ScopeEnum.Keyword,
@@ -491,7 +491,7 @@ describe("FunctionOperandNode Tests", () => {
     );
 
     const actual: ScopeEnum[] = functionNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.Keyword];
 

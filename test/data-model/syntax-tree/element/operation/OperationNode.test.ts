@@ -812,7 +812,7 @@ describe("Operation Tests", () => {
     );
 
     const actual = operationNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual(errorMessage);
@@ -835,7 +835,7 @@ describe("Operation Tests", () => {
     );
 
     const actual = operationNode.getBeautifiedContent(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     );
 
     expect(actual).toEqual(operand);
@@ -852,7 +852,7 @@ describe("Operation Tests", () => {
 
     const actual: SyntaxHighlightingCapture | null = operationNode[
       "getOperatorCapture"
-    ](initializer.$server.aliasHelper);
+    ](initializer.$server.getAliasHelper());
 
     expect(actual).toEqual(null);
   });
@@ -888,7 +888,7 @@ describe("Operation Tests", () => {
 
     const actual: SyntaxHighlightingCapture | null = operationNode[
       "getOperatorCapture"
-    ](initializer.$server.aliasHelper);
+    ](initializer.$server.getAliasHelper());
     const expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.Keyword];
 
     expect(actual!.$capture).toEqual(expected);
@@ -919,7 +919,7 @@ describe("Operation Tests", () => {
 
     const actual: SyntaxHighlightingCapture | null = operationNode[
       "getOperatorCapture"
-    ](initializer.$server.aliasHelper);
+    ](initializer.$server.getAliasHelper());
     const expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.Keyword];
 
     expect(actual!.$capture).toEqual(expected);
@@ -943,7 +943,7 @@ describe("Operation Tests", () => {
 
     const actual: SyntaxHighlightingCapture | null = operationNode[
       "getOperatorCapture"
-    ](initializer.$server.aliasHelper);
+    ](initializer.$server.getAliasHelper());
     const expected: ScopeEnum[] = [ScopeEnum.Empty, ScopeEnum.Keyword];
 
     expect(actual!.$capture).toEqual(expected);
@@ -980,7 +980,7 @@ describe("Operation Tests", () => {
 
     const actual: SyntaxHighlightingCapture | null = operationNode[
       "getOperatorCapture"
-    ](initializer.$server.aliasHelper);
+    ](initializer.$server.getAliasHelper());
     const expected: ScopeEnum[] = [ScopeEnum.Keyword];
 
     expect(actual!.$capture).toEqual(expected);
@@ -1017,7 +1017,7 @@ describe("Operation Tests", () => {
 
     const actual: SyntaxHighlightingCapture | null = operationNode[
       "getOperatorCapture"
-    ](initializer.$server.aliasHelper);
+    ](initializer.$server.getAliasHelper());
     const expected: ScopeEnum[] = [ScopeEnum.Keyword];
 
     expect(actual!.$capture).toEqual(expected);
@@ -1041,7 +1041,7 @@ describe("Operation Tests", () => {
     );
 
     const actual: ScopeEnum[] = operationNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.StaticString];
 
@@ -1066,7 +1066,7 @@ describe("Operation Tests", () => {
     );
 
     const actual: ScopeEnum[] = operationNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.StaticNumber];
 
@@ -1090,7 +1090,7 @@ describe("Operation Tests", () => {
     );
 
     const actual: ScopeEnum[] = operationNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [ScopeEnum.Variable];
 
@@ -1126,7 +1126,7 @@ describe("Operation Tests", () => {
     );
 
     const actual: ScopeEnum[] = operationNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [
       ScopeEnum.Variable,
@@ -1166,7 +1166,7 @@ describe("Operation Tests", () => {
     );
 
     const actual: ScopeEnum[] = operationNode.getPatternInformation(
-      initializer.$server.aliasHelper
+      initializer.$server.getAliasHelper()
     )!.$capture;
     const expected: ScopeEnum[] = [
       ScopeEnum.Variable,

@@ -5,7 +5,7 @@ import { Variable } from "../../../src/data-model/syntax-tree/Variable";
 import { CompletionBuilder } from "../../../src/provider/code-completion/CompletionBuilder";
 import { TestInitializer } from "../../Testinitializer";
 import { AliasKey } from "../../../src/aliases/AliasKey";
-// import { AliasKey } from "../../../src/aliases/AliasKey";
+import { EmptyTransition } from "../../../src/provider/code-completion/states/EmptyTransition";
 
 describe("CompletionGenerator tests", () => {
   let initializer: TestInitializer;
@@ -130,7 +130,7 @@ describe("CompletionGenerator tests", () => {
       null,
       "",
       "",
-      ""
+      new EmptyTransition()
     ).build();
 
     expect(actual).toEqual(expected);
@@ -147,7 +147,7 @@ describe("CompletionGenerator tests", () => {
     const actual: CompletionItem[] = builder["addKeyword"](
       null,
       "",
-      "",
+      new EmptyTransition(),
       ""
     ).build();
 
@@ -166,7 +166,7 @@ describe("CompletionGenerator tests", () => {
       null,
       "",
       "",
-      ""
+      new EmptyTransition()
     ).build();
 
     expect(actual).toEqual(expected);
@@ -184,7 +184,7 @@ describe("CompletionGenerator tests", () => {
       null,
       "",
       "",
-      ""
+      new EmptyTransition()
     ).build();
 
     expect(actual).toEqual(expected);

@@ -1,7 +1,9 @@
 import "jest";
-import { CultureEnum } from "../src/enums/CultureEnum";
-import { LanguageEnum } from "../src/enums/LanguageEnum";
-import { NotificationEnum } from "../src/enums/NotificationEnum";
+import {
+  CultureEnum,
+  LanguageEnum,
+  NotificationEnum
+} from "ov-language-server-types";
 import { TestInitializer } from "./Testinitializer";
 
 describe("Dummy Tests", () => {

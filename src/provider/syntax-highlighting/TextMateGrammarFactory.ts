@@ -79,6 +79,16 @@ export class TextMateGrammarFactory {
       });
     }
 
+    // Use Schema
+    json.patterns.push({
+      comment: "pattern for use-schema",
+      match: `((?i)USE SCHEMA)(.*)`,
+      captures: {
+        1: { name: ScopeEnum.Keyword },
+        2: { name: ScopeEnum.StaticString }
+      }
+    });
+
     // Variables
     if (parameter.$identifier.length > 0) {
       json.patterns.push({

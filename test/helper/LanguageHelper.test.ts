@@ -1,5 +1,5 @@
 import "jest";
-import { LanguageEnum } from "../../src/enums/LanguageEnum";
+import { LanguageEnum } from "ov-language-server-types";
 import { LanguageHelper } from "../../src/helper/LanguageHelper";
 
 describe("OvStringHelper.convertOvLanguageToMonacoLanguage Tests", () => {

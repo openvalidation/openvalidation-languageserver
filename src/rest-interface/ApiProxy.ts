@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { plainToClass } from "class-transformer";
+import { CultureEnum } from "ov-language-server-types";
 import { VariableNode } from "src/data-model/syntax-tree/element/VariableNode";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
-import { CultureEnum } from "../enums/CultureEnum";
 import { AliasesWithOperators } from "./aliases/AliasesWithOperators";
 import { CompletionResponse } from "./response/CompletionResponse";
 import { ICodeResponse } from "./response/ICodeResponse";
@@ -27,11 +27,12 @@ export class ApiProxy {
    */
   public static async postData(
     rule: string,
-    parameter: RestParameter
+    parameter: RestParameter,
+    schema: JSON
   ): Promise<ICodeResponse | null> {
     const data = {
       rule,
-      schema: JSON.stringify(parameter.$schema),
+      schema: JSON.stringify(schema),
       culture: parameter.$culture,
       language: parameter.$language
     };
@@ -99,11 +100,12 @@ export class ApiProxy {
    */
   public static async postLintingData(
     rule: string,
-    parameter: RestParameter
+    parameter: RestParameter,
+    schema: JSON
   ): Promise<LintingResponse | null> {
     const data = {
       rule,
-      schema: JSON.stringify(parameter.$schema),
+      schema: JSON.stringify(schema),
       culture: parameter.$culture,
       language: parameter.$language
     };
@@ -139,7 +141,8 @@ export class ApiProxy {
   public static async postCompletionData(
     rule: string,
     parameter: RestParameter,
-    ovDocument: OvDocument | undefined
+    schema: JSON,
+    ovDocument?: OvDocument
   ): Promise<CompletionResponse | null> {
     if (!!ovDocument) {
       const asKeyword: string | null = parameter.$aliasHelper.getAsKeyword();
@@ -156,7 +159,7 @@ export class ApiProxy {
 
     const data = {
       rule,
-      schema: JSON.stringify(parameter.$schema),
+      schema: JSON.stringify(schema),
       culture: parameter.$culture,
       language: parameter.$language
     };

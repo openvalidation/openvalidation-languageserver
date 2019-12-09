@@ -15,7 +15,7 @@ describe("ConnectionTransition Tests", () => {
     const container: CompletionContainer = new CompletionContainer();
     const builder: CompletionBuilder = new CompletionBuilder(
       [],
-      initializer.$server.aliasHelper,
+      initializer.$server.getAliasHelper(),
       initializer.$server.schema
     );
 

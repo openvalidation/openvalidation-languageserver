@@ -1,5 +1,10 @@
 import * as YAML from "js-yaml";
 import {
+  CultureEnum,
+  LanguageEnum,
+  NotificationEnum
+} from "ov-language-server-types";
+import {
   createConnection,
   IConnection,
   InitializeParams,
@@ -13,9 +18,6 @@ import { URI } from "vscode-uri";
 import { AliasHelper } from "./aliases/AliasHelper";
 import { OvDocuments } from "./data-model/ov-document/OvDocuments";
 import { CompletionKeyEnum } from "./enums/CompletionKeyEnum";
-import { CultureEnum } from "./enums/CultureEnum";
-import { LanguageEnum } from "./enums/LanguageEnum";
-import { NotificationEnum } from "./enums/NotificationEnum";
 import { CompletionProvider } from "./provider/CompletionProvider";
 import { DocumentActionProvider } from "./provider/DocumentActionProvider";
 import { DocumentSymbolProvider } from "./provider/DocumentSymbolProvider";
@@ -54,17 +56,13 @@ export class OvServer {
    * @memberof OvServer
    */
   public get restParameter(): RestParameter {
-    return new RestParameter(
-      this.jsonSchema,
-      this.culture,
-      this.language,
-      this.aliasHelper
-    );
+    return new RestParameter(this.culture, this.language, this.aliasHelper);
   }
+
   public readonly documents = new TextDocuments();
   public readonly ovDocuments = new OvDocuments();
 
-  public aliasHelper = new AliasHelper();
+  private aliasHelper = new AliasHelper();
 
   public language: LanguageEnum;
   public culture: CultureEnum;
@@ -100,7 +98,7 @@ export class OvServer {
     FoldingRangesProvider.bind(this);
     GotoDefinitionProvider.bind(this);
 
-    // Own Listener for every additional paramater we need for ov-parsing
+    // Own Listener for every additional parameter we need for ov-parsing
     this.connection.onNotification(
       NotificationEnum.SchemaChanged,
       (params: { schema: string; uri: string }) =>
@@ -123,9 +121,22 @@ export class OvServer {
    * @memberof OvServer
    */
   public setGeneratedSchema(data: LintingResponse) {
-    if (!!data.$schema) {
-      this.schema = data.$schema;
+    this.schema = data.$schema;
+  }
+
+  /**
+   * Returns the aliasHelper of the server.
+   * When the aliases are unkown because of a previous error,
+   *  the aliases are requrested from the REST-API
+   *
+   * @returns {AliasHelper} current aliasHelper
+   * @memberof OvServer
+   */
+  public getAliasHelper(): AliasHelper {
+    if (this.aliasHelper.isEmpty()) {
+      this.setAliases();
     }
+    return this.aliasHelper;
   }
 
   /**

@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { NotificationEnum } from "../enums/NotificationEnum";
+import { NotificationEnum } from "ov-language-server-types";
 import { LanguageHelper } from "../helper/LanguageHelper";
 import { OvServer } from "../OvServer";
 import { ICodeResponse } from "../rest-interface/response/ICodeResponse";

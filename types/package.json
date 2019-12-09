@@ -1,0 +1,16 @@
+{
+  "name": "ov-language-server-types",
+  "version": "0.0.1",
+  "description": "type-definitions for the openVALIDATION language-server",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepare": "tsc"
+  },
+  "keywords": [
+    "type-definitions",
+    "openVALIDATION"
+  ],
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}

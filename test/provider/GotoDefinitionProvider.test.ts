@@ -3,7 +3,8 @@ import {
   Position,
   TextDocumentPositionParams,
   Location,
-  Range
+  Range,
+  LocationLink
 } from "vscode-languageserver";
 import { GotoDefinitionProvider } from "../../src/provider/GotoDefinitionProvider";
 import { TestInitializer } from "../TestInitializer";
@@ -62,8 +63,9 @@ describe("GotoDefinition provider test", () => {
 
   test("definition with valid document and valid position, expect one definition", () => {
     var expectedRange: Range = Range.create(3, 0, 4, 16);
-    var expectedLocations: Location[] = [
-      Location.create("test.ov", expectedRange)
+    var targedRange: Range = Range.create(4, 4, 4, 16);
+    var expectedLocations: LocationLink[] = [
+      LocationLink.create("test.ov", targedRange, expectedRange)
     ];
 
     var actual = provider.definition(getParams(Position.create(4, 14)));

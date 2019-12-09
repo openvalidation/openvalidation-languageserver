@@ -1,6 +1,5 @@
+import { CultureEnum, LanguageEnum } from "ov-language-server-types";
 import { AliasHelper } from "src/aliases/AliasHelper";
-import { CultureEnum } from "../enums/CultureEnum";
-import { LanguageEnum } from "../enums/LanguageEnum";
 
 /**
  * Class that is used inside the REST-API which contains all the necessary parameters for parsing.
@@ -18,7 +17,6 @@ export class RestParameter {
    * @memberof RestParameter
    */
   constructor(
-    private schema: JSON,
     private culture: CultureEnum,
     private language: LanguageEnum,
     private aliasHelper: AliasHelper
@@ -29,9 +27,6 @@ export class RestParameter {
   }
   public get $culture(): CultureEnum {
     return this.culture;
-  }
-  public get $schema(): JSON {
-    return this.schema;
   }
   public get $aliasHelper(): AliasHelper {
     return this.aliasHelper;

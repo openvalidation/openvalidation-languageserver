@@ -1,4 +1,3 @@
-import { CompletionResponse } from "src/rest-interface/response/CompletionResponse";
 import { String } from "typescript-string-operations";
 import {
   CompletionItem,
@@ -10,9 +9,11 @@ import {
 } from "vscode-languageserver";
 import { Variable } from "../data-model/syntax-tree/Variable";
 import { CompletionKeyEnum } from "../enums/CompletionKeyEnum";
+import { SchemaProvider, UseSchemaDataclass } from "../helper/SchemaProvider";
 import { StringHelper } from "../helper/StringHelper";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
+import { CompletionResponse } from "../rest-interface/response/CompletionResponse";
 import { CompletionBuilder } from "./code-completion/CompletionBuilder";
 import { Provider } from "./Provider";
 
@@ -107,7 +108,7 @@ export class CompletionProvider extends Provider {
 
     const generator = new CompletionBuilder(
       [],
-      this.server.aliasHelper,
+      this.server.getAliasHelper(),
       this.server.schema
     ).addFittingChildren(currentWord);
     return generator.build();
@@ -142,7 +143,7 @@ export class CompletionProvider extends Provider {
 
     const generator = new CompletionBuilder(
       declarations,
-      this.server.aliasHelper,
+      this.server.getAliasHelper(),
       this.server.schema
     ).addOperandsWithTypeOfGivenOperand(currentWord.replace(",", ""));
     return generator.build();
@@ -178,11 +179,19 @@ export class CompletionProvider extends Provider {
       declarations = ovDocument.$declarations;
     }
 
+    const useSchema:
+      | UseSchemaDataclass
+      | undefined = SchemaProvider.parseSpecificSchema(
+      document.getText(),
+      this.server
+    );
+
     const response = await ApiProxy.postCompletionData(
       parseString,
       this.server.restParameter,
-      ovDocument
+      !useSchema ? this.server.jsonSchema : useSchema.schemaText
     );
+
     const relativePosition: Position = Position.create(
       params.position.line - itemTuple[1],
       params.position.character
@@ -223,7 +232,7 @@ export class CompletionProvider extends Provider {
 
     const generator: CompletionBuilder = new CompletionBuilder(
       declarations,
-      this.server.aliasHelper,
+      this.server.getAliasHelper(),
       this.server.schema
     );
     return relevantElement!
@@ -254,7 +263,7 @@ export class CompletionProvider extends Provider {
     for (let index = position.line; index >= 0; index--) {
       const element = textLines[index];
       if (String.IsNullOrWhiteSpace(element)) {
-        // Then the current Whitespace blongs to the element
+        // Then the current Whitespace belongs to the element
         if (
           !foundWhiteSpace &&
           index > 0 &&
@@ -270,7 +279,7 @@ export class CompletionProvider extends Provider {
     }
 
     // Then we wanted completion inside an paragraph
-    if (currentLines.length == 0) {
+    if (currentLines.length == 0 && position.line != 0) {
       return null;
     }
 
