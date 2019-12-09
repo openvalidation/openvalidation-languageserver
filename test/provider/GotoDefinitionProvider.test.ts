@@ -63,9 +63,15 @@ describe("GotoDefinition provider test", () => {
 
   test("definition with valid document and valid position, expect one definition", () => {
     var expectedRange: Range = Range.create(3, 0, 4, 16);
-    var targedRange: Range = Range.create(4, 4, 4, 16);
+    var targetRange: Range = Range.create(4, 0, 4, 16);
+    var originSelectionRange: Range = Range.create(4, 4, 4, 16);
     var expectedLocations: LocationLink[] = [
-      LocationLink.create("test.ov", targedRange, expectedRange)
+      LocationLink.create(
+        "test.ov",
+        targetRange,
+        expectedRange,
+        originSelectionRange
+      )
     ];
 
     var actual = provider.definition(getParams(Position.create(4, 14)));
