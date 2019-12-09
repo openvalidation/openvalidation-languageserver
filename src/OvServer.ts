@@ -30,6 +30,7 @@ import { ApiProxy } from "./rest-interface/ApiProxy";
 import { LintingResponse } from "./rest-interface/response/LintingResponse";
 import { RestParameter } from "./rest-interface/RestParameter";
 import { ISchemaType } from "./rest-interface/schema/ISchemaType";
+import { ILanguageNotification } from "ov-language-server-types";
 
 export function startServer(
   reader: MessageReader,
@@ -106,7 +107,7 @@ export class OvServer {
     );
     this.connection.onNotification(
       NotificationEnum.LanguageChanged,
-      (params: { language: string; uri: string }) => this.setLanguage(params)
+      (params: ILanguageNotification) => this.setLanguage(params)
     );
     this.connection.onNotification(
       NotificationEnum.CultureChanged,

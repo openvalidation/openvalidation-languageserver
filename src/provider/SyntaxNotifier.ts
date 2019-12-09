@@ -1,11 +1,14 @@
 import * as _ from "lodash";
-import { NotificationEnum } from "ov-language-server-types";
+import {
+  NotificationEnum,
+  ICodeNotification,
+  ITextMateJson
+} from "ov-language-server-types";
 import { LanguageHelper } from "../helper/LanguageHelper";
 import { OvServer } from "../OvServer";
 import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
 import { LintingResponse } from "../rest-interface/response/LintingResponse";
 import { TextMateGrammarFactory } from "./syntax-highlighting/TextMateGrammarFactory";
-import { ITextMateJson } from "./syntax-highlighting/TextMateJson";
 
 /**
  * Generates the parameter of the notification ``textDocument/semanticHighlighting`` and ``textDocument/generatedCode``
@@ -71,10 +74,10 @@ export class SyntaxNotifier {
 
     // Check, if the new code is different and musst be send to the client
     if (
-      newCodeNotification.value &&
-      !_.isEqual(newCodeNotification.value, this.generatedCode)
+      newCodeNotification.implementation &&
+      !_.isEqual(newCodeNotification.implementation, this.generatedCode)
     ) {
-      this.generatedCode = newCodeNotification.value;
+      this.generatedCode = newCodeNotification.implementation;
       this.server.connection.sendNotification(
         NotificationEnum.GeneratedCode,
         JSON.stringify(newCodeNotification)
@@ -92,12 +95,13 @@ export class SyntaxNotifier {
    */
   private generatedCodeDataObject(
     apiResponse: ICodeResponse
-  ): { language: string; value: string } {
+  ): ICodeNotification {
     const json = {
       language: LanguageHelper.convertOvLanguageToMonacoLanguage(
         this.server.language
       ),
-      value: apiResponse.implementationResult
+      implementation: apiResponse.implementationResult,
+      framework: apiResponse.frameworkResult
     };
 
     return json;

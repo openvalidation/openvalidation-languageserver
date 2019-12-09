@@ -2,8 +2,8 @@ import { ScopeEnum } from "../../enums/ScopeEnum";
 import { StringHelper } from "../../helper/StringHelper";
 import { OvServer } from "../../OvServer";
 import { LintingResponse } from "../../rest-interface/response/LintingResponse";
-import { ITextMateJson } from "./TextMateJson";
 import { TextMateParameter } from "./TextMateParameter";
+import { ITextMateJson } from "ov-language-server-types";
 
 /**
  * Generates the textmate grammar which the given response of the REST-API

@@ -1,6 +1,6 @@
 import { String } from "typescript-string-operations";
 import { ScopeEnum } from "../../enums/ScopeEnum";
-import { IPatternCapture } from "./TextMateJson";
+import { IPatternCapture } from "ov-language-server-types";
 
 /**
  * Class that is used for semantic parsing.

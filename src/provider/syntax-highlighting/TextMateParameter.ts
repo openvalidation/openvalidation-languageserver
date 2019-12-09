@@ -7,7 +7,7 @@ import { TreeTraversal } from "../../helper/TreeTraversal";
 import { OvServer } from "../../OvServer";
 import { LintingResponse } from "../../rest-interface/response/LintingResponse";
 import { SyntaxHighlightingCapture } from "./SyntaxHighlightingCapture";
-import { Pattern } from "./TextMateJson";
+import { Pattern } from "ov-language-server-types";
 
 export class TextMateParameter {
   public get $keywords(): string[] {
