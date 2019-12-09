@@ -1,5 +1,5 @@
 import "jest";
-import { Pattern } from "../../../src/provider/syntax-highlighting/TextMateJson";
+import { Pattern } from "ov-language-server-types";
 import { TextMateParameter } from "../../../src/provider/syntax-highlighting/TextMateParameter";
 import { TestInitializer } from "../../Testinitializer";
 import { LintingResponse } from "../../../src/rest-interface/response/LintingResponse";
