@@ -1,6 +1,6 @@
 {
   "name": "ov-language-server",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "language-server implementation for openVALIDATION",
   "repository": {
     "type": "git",
@@ -24,7 +24,7 @@
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.13",
     "njre": "^0.2.0",
-    "ov-language-server-types": "file:./types",
+    "ov-language-server-types": "0.0.1",
     "reflect-metadata": "^0.1.13",
     "typescript": "^3.6.4",
     "typescript-string-operations": "^1.3.1",
