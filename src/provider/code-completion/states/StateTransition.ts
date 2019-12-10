@@ -1,6 +1,6 @@
+import { IndexRange } from "../../../data-model/syntax-tree/IndexRange";
 import { CompletionBuilder } from "../CompletionBuilder";
 import { IStateTransition } from "./state-constructor/IStateTransition";
-import { IndexRange } from "src/data-model/syntax-tree/IndexRange";
 
 /**
  * Generic class for all transitions that provides methods for all transitions

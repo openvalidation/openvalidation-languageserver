@@ -72,7 +72,7 @@ export class OvServer {
   public jsonSchema: JSON;
   protected workspaceRoot: URI | undefined;
 
-  private readonly documentActionProvider: DocumentActionProvider;
+  public readonly documentActionProvider: DocumentActionProvider;
 
   /**
    * Creates an instance of OvServer.

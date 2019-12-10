@@ -9,10 +9,29 @@ import "reflect-metadata";
 import * as url from "url";
 import * as rpc from "vscode-ws-jsonrpc";
 import * as ws from "ws";
-import { startServer } from "./OvServer";
+import { startServer, OvServer } from "./OvServer";
 import { startBackend } from "./start-backend";
+import { ChildProcess } from "child_process";
 
-startBackend();
+var server: OvServer;
+const output: ChildProcess = startBackend();
+if (!!output.stderr) {
+  output.stderr.on("data", (stderr: any) => {
+    console.error(`${stderr}`);
+  });
+}
+if (!!output.stdout) {
+  output.stdout.on("data", (stdout: any) => {
+    if (stdout.trim() !== "Started REST-API") return;
+    console.log("Started REST-API");
+
+    if (!server || !server.documentActionProvider) return;
+    for (const textDocument of server.documents.all()) {
+      server.documentActionProvider.validate(textDocument.uri);
+    }
+    console.log("Validated Documents");
+  });
+}
 
 process.on("uncaughtException", (err: any) => {
   console.error("Uncaught Exception: ", err.toString());
@@ -29,7 +48,7 @@ const PORT = process.env.PORT || 3010;
 app.use(express.static(__dirname));
 
 // start the server
-const server = app.listen(PORT, () =>
+const expressServer = app.listen(PORT, () =>
   console.log(`Language-Server running on ${PORT}!`)
 );
 
@@ -39,7 +58,7 @@ const wss = new ws.Server({
   perMessageDeflate: false
 });
 
-server.on(
+expressServer.on(
   "upgrade",
   (request: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
     const pathname = request.url ? url.parse(request.url).pathname : undefined;
@@ -88,5 +107,6 @@ function bindWebSocket(webSocket: ws): void {
 function launch(socket: rpc.IWebSocket) {
   const reader = new rpc.WebSocketMessageReader(socket);
   const writer = new rpc.WebSocketMessageWriter(socket);
-  startServer(reader, writer);
+
+  server = startServer(reader, writer);
 }

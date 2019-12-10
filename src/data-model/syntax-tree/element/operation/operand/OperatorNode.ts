@@ -4,10 +4,10 @@ import { AliasHelper } from "../../../../../aliases/AliasHelper";
 import { ScopeEnum } from "../../../../../enums/ScopeEnum";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
+import { IStateTransition } from "../../../../../provider/code-completion/states/state-constructor/IStateTransition";
 import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
-import { IStateTransition } from "src/provider/code-completion/states/state-constructor/IStateTransition";
 
 export class OperatorNode extends GenericNode {
   private dataType: string;

@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { plainToClass } from "class-transformer";
 import { CultureEnum } from "ov-language-server-types";
-import { VariableNode } from "src/data-model/syntax-tree/element/VariableNode";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
+import { VariableNode } from "../data-model/syntax-tree/element/VariableNode";
 import { AliasesWithOperators } from "./aliases/AliasesWithOperators";
 import { CompletionResponse } from "./response/CompletionResponse";
 import { ICodeResponse } from "./response/ICodeResponse";

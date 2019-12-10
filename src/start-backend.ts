@@ -1,7 +1,8 @@
-const path = require("path");
-const spawn = require("child_process").exec;
+import { ChildProcess, exec } from "child_process";
 
-export function startBackend() {
+const path = require("path");
+
+export function startBackend(): ChildProcess {
   var relativePath = path.join(
     path.join(path.dirname(require!.main!.filename)),
     "/rest-interface/ov-rest.jar"
@@ -10,16 +11,6 @@ export function startBackend() {
     path.join(path.resolve(__dirname)),
     "../jre/jdk8u232-b09-jre/bin/java.exe"
   );
-  var output = spawn(`${jrePath} -jar ${relativePath}`);
-
-  if (!!output.stderr) {
-    output.stderr.on("data", (stderr: any) => {
-      console.error(`${stderr}`);
-    });
-  }
-  if (!!output.stdout) {
-    output.stdout.on("data", (stderr: any) => {
-      console.log(`${stderr}`);
-    });
-  }
+  var output = exec(`${jrePath} -jar ${relativePath}`);
+  return output;
 }

@@ -5,11 +5,11 @@ import { ScopeEnum } from "../../../../../enums/ScopeEnum";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { StringHelper } from "../../../../../helper/StringHelper";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
+import { IStateTransition } from "../../../../../provider/code-completion/states/state-constructor/IStateTransition";
 import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { BaseOperandNode } from "./BaseOperandNode";
-import { IStateTransition } from "src/provider/code-completion/states/state-constructor/IStateTransition";
 
 export class OperandNode extends BaseOperandNode {
   private isStatic: boolean;

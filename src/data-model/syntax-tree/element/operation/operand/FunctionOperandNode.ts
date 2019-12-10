@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { AliasHelper } from "src/aliases/AliasHelper";
+import { AliasHelper } from "../../../../../aliases/AliasHelper";
 import { Position } from "vscode-languageserver";
 import { ScopeEnum } from "../../../../../enums/ScopeEnum";
 import { HoverContent } from "../../../../../helper/HoverContent";
