@@ -12,5 +12,10 @@ export function startBackend(): ChildProcess {
     "../jre/jdk8u232-b09-jre/bin/java.exe"
   );
   var output = exec(`${jrePath} -jar ${relativePath}`);
+  if (!!output.stderr) {
+    output.stderr.on("data", (stderr: any) => {
+      console.error(`${stderr}`);
+    });
+  }
   return output;
 }
