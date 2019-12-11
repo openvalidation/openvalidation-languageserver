@@ -5,6 +5,8 @@ import { HoverContent } from "../../../helper/HoverContent";
 import { CompletionContainer } from "../../../provider/code-completion/CompletionContainer";
 import { GenericNode } from "../GenericNode";
 import { IndexRange } from "../IndexRange";
+import { SyntaxToken } from "ov-language-server-types";
+import { ScopeEnum } from "../../../enums/ScopeEnum";
 
 export class CommentNode extends GenericNode {
   public content: string;
@@ -36,16 +38,25 @@ export class CommentNode extends GenericNode {
 
     const spaces = FormattingHelper.generateSpaces(commentKeyword.length + 1);
 
-    let returnString: string = FormattingHelper.removeDuplicateWhitespacesFromLine(
+    let returnString: string = FormattingHelper.removeDuplicateWhitespaceFromLine(
       this.$lines[0]
     );
     for (let index = 1; index < this.$lines.length; index++) {
-      const lineWithoutSpaces = FormattingHelper.removeDuplicateWhitespacesFromLine(
+      const lineWithoutSpaces = FormattingHelper.removeDuplicateWhitespaceFromLine(
         this.$lines[index]
       );
       const element = "\n" + spaces + lineWithoutSpaces.trim();
       returnString += element;
     }
     return returnString;
+  }
+
+  public getSpecificTokens(): SyntaxToken[] {
+    return [
+      {
+        pattern: ScopeEnum.Comment,
+        range: this.$range.asRange()
+      }
+    ];
   }
 }

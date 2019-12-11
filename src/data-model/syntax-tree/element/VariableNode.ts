@@ -52,6 +52,10 @@ export class VariableNode extends GenericNode {
       childList.push(this.value);
     }
 
+    if (!!this.$nameNode) {
+      childList.push(this.$nameNode);
+    }
+
     return childList;
   }
 
@@ -152,7 +156,7 @@ export class VariableNode extends GenericNode {
 
     for (const splittedLine of splittedVariable) {
       if (!String.IsNullOrWhiteSpace(splittedLine)) {
-        returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(
+        returnString += FormattingHelper.removeDuplicateWhitespaceFromLine(
           splittedLine
         );
       }

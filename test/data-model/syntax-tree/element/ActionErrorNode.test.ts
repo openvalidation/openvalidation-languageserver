@@ -19,7 +19,8 @@ describe("ActionErrorNode Tests", () => {
     const errorNode: ActionErrorNode = new ActionErrorNode(
       [errorMessage],
       IndexRange.create(0, 0, 0, errorMessage.length),
-      errorMessage
+      errorMessage,
+      IndexRange.create(0, 0, 0, errorMessage.length)
     );
 
     expect(errorNode.$errorMessage).toEqual(errorMessage);
@@ -30,7 +31,8 @@ describe("ActionErrorNode Tests", () => {
     const errorNode: ActionErrorNode = new ActionErrorNode(
       [errorMessage],
       IndexRange.create(0, 0, 0, errorMessage.length),
-      errorMessage
+      errorMessage,
+      IndexRange.create(0, 0, 0, errorMessage.length)
     );
 
     const actual: GenericNode[] = errorNode.getChildren();
@@ -44,7 +46,8 @@ describe("ActionErrorNode Tests", () => {
     const errorNode: ActionErrorNode = new ActionErrorNode(
       [errorMessage],
       IndexRange.create(0, 0, 0, errorMessage.length),
-      errorMessage
+      errorMessage,
+      IndexRange.create(0, 0, 0, errorMessage.length)
     );
 
     const actual = errorNode.getHoverContent();
@@ -57,7 +60,8 @@ describe("ActionErrorNode Tests", () => {
     const errorNode: ActionErrorNode = new ActionErrorNode(
       [errorMessage],
       IndexRange.create(0, 0, 0, errorMessage.length),
-      errorMessage
+      errorMessage,
+      IndexRange.create(0, 0, 0, errorMessage.length)
     );
 
     const actual = errorNode.getBeautifiedContent(
@@ -72,7 +76,8 @@ describe("ActionErrorNode Tests", () => {
     const errorNode: ActionErrorNode = new ActionErrorNode(
       [errorMessage],
       IndexRange.create(0, 0, 0, errorMessage.length),
-      errorMessage
+      errorMessage,
+      IndexRange.create(0, 0, 0, errorMessage.length)
     );
 
     const actual: StateTransition = errorNode.getCompletionContainer(

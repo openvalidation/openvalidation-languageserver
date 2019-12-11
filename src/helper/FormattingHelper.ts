@@ -13,7 +13,7 @@ export class FormattingHelper {
    * @returns {string}
    * @memberof FormattingHelper
    */
-  public static removeDuplicateWhitespacesFromLine(line: string): string {
+  public static removeDuplicateWhitespaceFromLine(line: string): string {
     return line.replace(new RegExp("[ \t]+", "g"), " ").trim();
   }
 

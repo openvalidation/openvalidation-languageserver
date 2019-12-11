@@ -1,4 +1,4 @@
-import { Range } from "vscode-languageserver";
+import { Range } from "vscode-languageserver-protocol";
 
 /**
  * Additional notifications that openVALIDATION requires

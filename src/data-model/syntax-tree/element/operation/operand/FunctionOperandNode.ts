@@ -1,10 +1,8 @@
 import { Type } from "class-transformer";
 import { AliasHelper } from "../../../../../aliases/AliasHelper";
 import { Position } from "vscode-languageserver";
-import { ScopeEnum } from "../../../../../enums/ScopeEnum";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
-import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { ConnectedOperationNode } from "../ConnectedOperationNode";
@@ -12,6 +10,7 @@ import { OperationNode } from "../OperationNode";
 import { ArrayOperandNode } from "./ArrayOperandNode";
 import { BaseOperandNode } from "./BaseOperandNode";
 import { OperandNode } from "./OperandNode";
+import { SyntaxToken } from "ov-language-server-types";
 
 export class FunctionOperandNode extends BaseOperandNode {
   @Type(() => BaseOperandNode, {
@@ -90,16 +89,13 @@ export class FunctionOperandNode extends BaseOperandNode {
     return this.defaultFormatting();
   }
 
-  public getPatternInformation(
-    aliasesHelper: AliasHelper
-  ): SyntaxHighlightingCapture | null {
-    const capture = new SyntaxHighlightingCapture();
-    capture.addRegexGroupAndCapture(`(?i)${this.$name}`, ScopeEnum.Keyword);
+  public getSpecificTokens(): SyntaxToken[] {
+    var returnList = [];
 
-    for (const parameter of this.$parameters) {
-      capture.merge(parameter.getPatternInformation(aliasesHelper));
+    for (const item of this.$parameters) {
+      returnList.push(...item.getSpecificTokens());
     }
 
-    return capture;
+    return returnList;
   }
 }

@@ -1,12 +1,12 @@
 import "jest";
 import { FormattingHelper } from "./../../src/helper/FormattingHelper";
 
-describe("FormattingHelper.removeDuplicateWhitespacesFromLine Tests", () => {
+describe("FormattingHelper.removeDuplicateWhitespaceFromLine Tests", () => {
   test("insert empty string, expected empty string", () => {
     const expected: string = "";
 
     const input: string = "";
-    const actual: string = FormattingHelper.removeDuplicateWhitespacesFromLine(
+    const actual: string = FormattingHelper.removeDuplicateWhitespaceFromLine(
       input
     );
 
@@ -17,7 +17,7 @@ describe("FormattingHelper.removeDuplicateWhitespacesFromLine Tests", () => {
     const expected: string = "thisIsATest";
 
     const input: string = "thisIsATest";
-    const actual: string = FormattingHelper.removeDuplicateWhitespacesFromLine(
+    const actual: string = FormattingHelper.removeDuplicateWhitespaceFromLine(
       input
     );
 
@@ -28,7 +28,7 @@ describe("FormattingHelper.removeDuplicateWhitespacesFromLine Tests", () => {
     const expected: string = "this is a test";
 
     const input: string = "this \t is     a    \t   test ";
-    const actual: string = FormattingHelper.removeDuplicateWhitespacesFromLine(
+    const actual: string = FormattingHelper.removeDuplicateWhitespaceFromLine(
       input
     );
 

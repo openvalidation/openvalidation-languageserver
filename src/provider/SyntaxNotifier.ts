@@ -4,11 +4,9 @@ import {
   ICodeNotification,
   ITextMateJson
 } from "ov-language-server-types";
-import { LanguageHelper } from "../helper/LanguageHelper";
 import { OvServer } from "../OvServer";
 import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
 import { LintingResponse } from "../rest-interface/response/LintingResponse";
-import { TextMateGrammarFactory } from "./syntax-highlighting/TextMateGrammarFactory";
 
 /**
  * Generates the parameter of the notification ``textDocument/semanticHighlighting`` and ``textDocument/generatedCode``
@@ -18,9 +16,8 @@ import { TextMateGrammarFactory } from "./syntax-highlighting/TextMateGrammarFac
  * @class SyntaxNotifier
  */
 export class SyntaxNotifier {
-  private textMateGrammar: ITextMateJson | null;
+  public textMateGrammar: ITextMateJson | null;
   private generatedCode: string | null;
-  private textMateGrammarFactory: TextMateGrammarFactory;
 
   /**
    * Creates an instance of OvSyntaxNotifier.
@@ -30,7 +27,6 @@ export class SyntaxNotifier {
   constructor(private readonly server: OvServer) {
     this.textMateGrammar = null;
     this.generatedCode = null;
-    this.textMateGrammarFactory = new TextMateGrammarFactory();
   }
 
   /**
@@ -49,18 +45,16 @@ export class SyntaxNotifier {
       return;
     }
 
-    const textMateGrammar: ITextMateJson = this.textMateGrammarFactory.generateTextMateGrammar(
-      apiResponse,
-      this.server
-    );
-    // Check, if the new grammar is different and musst be send to the client
-    if (!_.isEqual(textMateGrammar, this.textMateGrammar)) {
-      this.textMateGrammar = textMateGrammar;
-      this.server.connection.sendNotification(
-        NotificationEnum.SemanticHighlighting,
-        JSON.stringify(textMateGrammar)
-      );
+    var highlightingParams = [];
+
+    for (const scope of apiResponse.$mainAstNode.$scopes) {
+      highlightingParams.push(...scope.getTokens());
     }
+
+    this.server.connection.sendNotification(
+      NotificationEnum.SemanticHighlighting,
+      JSON.stringify(highlightingParams)
+    );
   }
 
   /**
@@ -72,7 +66,7 @@ export class SyntaxNotifier {
   public sendGeneratedCodeIfNecessary(apiResponse: ICodeResponse): void {
     const newCodeNotification = this.generatedCodeDataObject(apiResponse);
 
-    // Check, if the new code is different and musst be send to the client
+    // Check, if the new code is different and must be send to the client
     if (
       newCodeNotification.implementation &&
       !_.isEqual(newCodeNotification.implementation, this.generatedCode)
@@ -97,9 +91,7 @@ export class SyntaxNotifier {
     apiResponse: ICodeResponse
   ): ICodeNotification {
     const json = {
-      language: LanguageHelper.convertOvLanguageToMonacoLanguage(
-        this.server.language
-      ),
+      language: this.server.language,
       implementation: apiResponse.implementationResult,
       framework: apiResponse.frameworkResult
     };

@@ -13,7 +13,6 @@ import { ApiProxy } from "../rest-interface/ApiProxy";
 import { Provider } from "./Provider";
 import { SyntaxNotifier } from "./SyntaxNotifier";
 import { SchemaProvider, UseSchemaDataclass } from "../helper/SchemaProvider";
-import { TreeTraversal } from "../helper/TreeTraversal";
 
 /**
  * Provider to handle every response which deals with documents.
@@ -202,9 +201,8 @@ export class DocumentActionProvider extends Provider {
     if (!apiResponse) return;
 
     if (!!useSchema) {
-      TreeTraversal.modifyRangeOfEveryNode(
-        apiResponse.$mainAstNode.$scopes,
-        useSchema.schemaLineIndex + 1
+      apiResponse.$mainAstNode.$scopes.forEach(scope =>
+        scope.modifyRangeOfEveryNode(useSchema.schemaLineIndex + 1)
       );
     }
 

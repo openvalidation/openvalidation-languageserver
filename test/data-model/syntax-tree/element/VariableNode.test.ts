@@ -25,7 +25,8 @@ describe("VariableNode Tests", () => {
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
       IndexRange.create(0, 1, 0, 9),
-      "Test"
+      "Test",
+      IndexRange.create(0, 5, 0, 9)
     );
     const variable: VariableNode = new VariableNode(
       variableNameNode,
@@ -46,7 +47,8 @@ describe("VariableNode Tests", () => {
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
       IndexRange.create(0, 7, 0, 15),
-      "Test"
+      "Test",
+      IndexRange.create(0, 11, 0, 15)
     );
 
     const leftOperand: OperandNode = new OperandNode(
@@ -74,7 +76,8 @@ describe("VariableNode Tests", () => {
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
       IndexRange.create(0, 6, 0, 14),
-      "Test"
+      "Test",
+      IndexRange.create(0, 10, 0, 14)
     );
 
     const leftOperand: OperandNode = new OperandNode(
@@ -102,7 +105,8 @@ describe("VariableNode Tests", () => {
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
       IndexRange.create(0, 14, 0, 22),
-      "Test"
+      "Test",
+      IndexRange.create(0, 18, 0, 22)
     );
 
     const leftOperand: OperandNode = new OperandNode(
@@ -149,8 +153,9 @@ describe("VariableNode Tests", () => {
   test("getCompletionContainer with VariableNode and ConnectedOperationNode and half full OperationNode and position after variable, expected Empty", () => {
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
-      IndexRange.create(0, 14, 0, 22),
-      "Test"
+      IndexRange.create(0, 10, 0, 22),
+      "Test",
+      IndexRange.create(0, 14, 0, 22)
     );
 
     const leftOperand: OperandNode = new OperandNode(
@@ -251,8 +256,9 @@ describe("VariableNode Tests", () => {
 
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
-      IndexRange.create(0, 37, 0, 44),
-      "Test"
+      IndexRange.create(0, 33, 0, 44),
+      "Test",
+      IndexRange.create(0, 37, 0, 44)
     );
     const variable: VariableNode = new VariableNode(
       variableNameNode,
@@ -326,8 +332,9 @@ describe("VariableNode Tests", () => {
 
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
-      IndexRange.create(0, 36, 0, 44),
-      "Test"
+      IndexRange.create(0, 32, 0, 44),
+      "Test",
+      IndexRange.create(0, 36, 0, 44)
     );
     const variable: VariableNode = new VariableNode(
       variableNameNode,
@@ -382,8 +389,9 @@ describe("VariableNode Tests", () => {
 
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
-      IndexRange.create(0, 7, 0, 15),
-      "Test"
+      IndexRange.create(0, 0, 0, 15),
+      "Test",
+      IndexRange.create(0, 7, 0, 15)
     );
     variableNode.$nameNode = variableNameNode;
 
@@ -407,8 +415,9 @@ describe("VariableNode Tests", () => {
   test("getChildren with one child, expect one child", () => {
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
-      IndexRange.create(0, 7, 0, 15),
-      "Test"
+      IndexRange.create(0, 0, 0, 15),
+      "Test",
+      IndexRange.create(0, 7, 0, 15)
     );
 
     const leftOperand: OperandNode = new OperandNode(
@@ -446,7 +455,7 @@ describe("VariableNode Tests", () => {
     );
 
     const actual: GenericNode[] = variable.getChildren();
-    const expected: GenericNode[] = [operation];
+    const expected: GenericNode[] = [operation, variableNameNode];
 
     expect(actual).toEqual(expected);
   });
@@ -467,8 +476,9 @@ describe("VariableNode Tests", () => {
   test("getHoverContent with content which is incomplete, expect not empty content", () => {
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
-      IndexRange.create(0, 7, 0, 15),
-      "Test"
+      IndexRange.create(0, 0, 0, 15),
+      "Test",
+      IndexRange.create(0, 7, 0, 15)
     );
 
     const leftOperand: OperandNode = new OperandNode(
@@ -492,8 +502,9 @@ describe("VariableNode Tests", () => {
   test("getHoverContent with content which is complete, expect not empty content", () => {
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
-      IndexRange.create(0, 7, 0, 15),
-      "Test"
+      IndexRange.create(0, 0, 0, 15),
+      "Test",
+      IndexRange.create(0, 7, 0, 15)
     );
 
     const leftOperand: OperandNode = new OperandNode(
@@ -553,8 +564,9 @@ describe("VariableNode Tests", () => {
   test("getBeautifiedContent with children, expect not empty content", () => {
     const variableNameNode: VariableNameNode = new VariableNameNode(
       ["Als Test"],
-      IndexRange.create(0, 7, 0, 15),
-      "Test"
+      IndexRange.create(0, 0, 0, 15),
+      "Test",
+      IndexRange.create(0, 7, 0, 15)
     );
 
     const leftOperand: OperandNode = new OperandNode(

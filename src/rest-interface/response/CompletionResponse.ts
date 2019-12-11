@@ -6,7 +6,7 @@ import { FunctionOperandNode } from "../../data-model/syntax-tree/element/operat
 import { OperandNode } from "../../data-model/syntax-tree/element/operation/operand/OperandNode";
 import { OperationNode } from "../../data-model/syntax-tree/element/operation/OperationNode";
 import { RuleNode } from "../../data-model/syntax-tree/element/RuleNode";
-import { UnkownNode } from "../../data-model/syntax-tree/element/UnkownNode";
+import { UnknownNode } from "../../data-model/syntax-tree/element/UnknownNode";
 import { VariableNode } from "../../data-model/syntax-tree/element/VariableNode";
 import { GenericNode } from "../../data-model/syntax-tree/GenericNode";
 
@@ -29,7 +29,7 @@ export class CompletionResponse {
         { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
         { value: FunctionOperandNode, name: "FunctionOperandNode" },
         { value: OperandNode, name: "OperandNode" },
-        { value: UnkownNode, name: "UnkownNode" },
+        { value: UnknownNode, name: "UnknownNode" },
         { value: ArrayOperandNode, name: "ArrayOperandNode" }
       ]
     }

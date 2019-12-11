@@ -3,7 +3,6 @@ import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../../../aliases/AliasHelper";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
-import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
 import { ConnectedOperationNode } from "../ConnectedOperationNode";
@@ -11,6 +10,7 @@ import { OperationNode } from "../OperationNode";
 import { BaseOperandNode } from "./BaseOperandNode";
 import { FunctionOperandNode } from "./FunctionOperandNode";
 import { OperandNode } from "./OperandNode";
+import { SyntaxToken } from "ov-language-server-types";
 
 export class ArrayOperandNode extends BaseOperandNode {
   @Type(() => BaseOperandNode, {
@@ -82,15 +82,13 @@ export class ArrayOperandNode extends BaseOperandNode {
     return this.items.length > 0;
   }
 
-  public getPatternInformation(
-    aliasesHelper: AliasHelper
-  ): SyntaxHighlightingCapture | null {
-    const capture = new SyntaxHighlightingCapture();
+  public getSpecificTokens(): SyntaxToken[] {
+    var returnList = [];
 
     for (const item of this.$items) {
-      capture.merge(item.getPatternInformation(aliasesHelper));
+      returnList.push(...item.getSpecificTokens());
     }
 
-    return capture;
+    return returnList;
   }
 }

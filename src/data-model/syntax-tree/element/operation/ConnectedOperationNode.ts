@@ -4,11 +4,11 @@ import { AliasHelper } from "../../../../aliases/AliasHelper";
 import { FormattingHelper } from "../../../../helper/FormattingHelper";
 import { HoverContent } from "../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../provider/code-completion/CompletionContainer";
-import { SyntaxHighlightingCapture } from "../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../GenericNode";
 import { IndexRange } from "../../IndexRange";
 import { ConditionNode } from "./ConditionNode";
 import { OperationNode } from "./OperationNode";
+import { SyntaxToken } from "ov-language-server-types";
 
 export class ConnectedOperationNode extends ConditionNode {
   @Type(() => ConditionNode, {
@@ -112,21 +112,18 @@ export class ConnectedOperationNode extends ConditionNode {
   }
 
   public isComplete(): boolean {
-    return this.conditions.map(cond => cond.isComplete()).every(bool => bool);
+    return this.conditions
+      .map(condition => condition.isComplete())
+      .every(bool => bool);
   }
 
-  public getPatternInformation(
-    aliasesHelper: AliasHelper
-  ): SyntaxHighlightingCapture | null {
-    if (this.conditions.length === 0) {
-      return null;
+  public getSpecificTokens(): SyntaxToken[] {
+    var returnList = [];
+
+    for (const item of this.$conditions) {
+      returnList.push(...item.getSpecificTokens());
     }
 
-    const capture = new SyntaxHighlightingCapture();
-    for (const condition of this.conditions) {
-      capture.merge(condition.getPatternInformation(aliasesHelper));
-    }
-
-    return capture;
+    return returnList;
   }
 }

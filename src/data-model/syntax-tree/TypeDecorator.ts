@@ -6,7 +6,7 @@ import { FunctionOperandNode } from "./element/operation/operand/FunctionOperand
 import { OperandNode } from "./element/operation/operand/OperandNode";
 import { OperationNode } from "./element/operation/OperationNode";
 import { RuleNode } from "./element/RuleNode";
-import { UnkownNode } from "./element/UnkownNode";
+import { UnknownNode } from "./element/UnknownNode";
 import { VariableNode } from "./element/VariableNode";
 
 /**
@@ -43,7 +43,7 @@ export class TypeDecorator {
           { value: ConnectedOperationNode, name: "ConnectedOperationNode" },
           { value: FunctionOperandNode, name: "FunctionOperandNode" },
           { value: OperandNode, name: "OperandNode" },
-          { value: UnkownNode, name: "UnkownNode" },
+          { value: UnknownNode, name: "UnknownNode" },
           { value: ArrayOperandNode, name: "ArrayOperandNode" }
         ]
       }

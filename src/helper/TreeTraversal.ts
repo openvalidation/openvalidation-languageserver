@@ -89,23 +89,6 @@ export class TreeTraversal {
     return operands;
   }
 
-  public static modifyRangeOfEveryNode(
-    genericNodes: GenericNode[],
-    lineChange: number
-  ): void {
-    for (const node of genericNodes) {
-      if (!!node.$range) {
-        const start = node.$range.$start;
-        if (!!start) start.$line += lineChange;
-
-        const end = node.$range.$end;
-        if (!!end) end.$line += lineChange;
-      }
-
-      this.modifyRangeOfEveryNode(node.getChildren(), lineChange);
-    }
-  }
-
   /**
    * Recursive method for the next qualified node
    *

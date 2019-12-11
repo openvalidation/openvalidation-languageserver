@@ -634,7 +634,7 @@ Alter`;
             isStatic: true,
             type: "OperandNode"
           },
-          type: "UnkownNode"
+          type: "UnknownNode"
         }
       ],
       range: {

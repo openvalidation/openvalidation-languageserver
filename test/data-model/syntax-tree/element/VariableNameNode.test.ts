@@ -19,7 +19,8 @@ describe("VariableNameNode Tests", () => {
     const variableNode: VariableNameNode = new VariableNameNode(
       [variableName],
       IndexRange.create(0, 0, 0, variableName.length),
-      variableName
+      variableName,
+      IndexRange.create(0, 0, 0, variableName.length)
     );
 
     expect(variableNode.$name).toEqual(variableName);
@@ -30,7 +31,8 @@ describe("VariableNameNode Tests", () => {
     const variableNode: VariableNameNode = new VariableNameNode(
       [variableName],
       IndexRange.create(0, 0, 0, variableName.length),
-      variableName
+      variableName,
+      IndexRange.create(0, 0, 0, variableName.length)
     );
 
     const actual: GenericNode[] = variableNode.getChildren();
@@ -44,7 +46,8 @@ describe("VariableNameNode Tests", () => {
     const variableNode: VariableNameNode = new VariableNameNode(
       [variableName],
       IndexRange.create(0, 0, 0, variableName.length),
-      variableName
+      variableName,
+      IndexRange.create(0, 0, 0, variableName.length)
     );
 
     const actual = variableNode.getHoverContent();
@@ -57,7 +60,8 @@ describe("VariableNameNode Tests", () => {
     const variableNode: VariableNameNode = new VariableNameNode(
       [variableName],
       IndexRange.create(0, 0, 0, variableName.length),
-      variableName
+      variableName,
+      IndexRange.create(0, 0, 0, variableName.length)
     );
 
     const actual = variableNode.getBeautifiedContent(
@@ -72,7 +76,8 @@ describe("VariableNameNode Tests", () => {
     const variableNode: VariableNameNode = new VariableNameNode(
       [variableName],
       IndexRange.create(0, 0, 0, variableName.length),
-      variableName
+      variableName,
+      IndexRange.create(0, 0, 0, variableName.length)
     );
 
     const actual: StateTransition = variableNode.getCompletionContainer(

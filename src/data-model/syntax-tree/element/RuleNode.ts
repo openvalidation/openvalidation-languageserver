@@ -60,6 +60,10 @@ export class RuleNode extends GenericNode {
       childList.push(this.condition);
     }
 
+    if (!!this.$errorNode) {
+      childList.push(this.$errorNode);
+    }
+
     return childList;
   }
 
@@ -113,7 +117,7 @@ export class RuleNode extends GenericNode {
 
     if (!String.IsNullOrWhiteSpace(splittedRule[0])) {
       returnString +=
-        FormattingHelper.removeDuplicateWhitespacesFromLine(splittedRule[0]) +
+        FormattingHelper.removeDuplicateWhitespaceFromLine(splittedRule[0]) +
         " ";
     }
 
@@ -127,7 +131,7 @@ export class RuleNode extends GenericNode {
     }
 
     if (!String.IsNullOrWhiteSpace(splittedRule[1])) {
-      returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(
+      returnString += FormattingHelper.removeDuplicateWhitespaceFromLine(
         splittedRule[1]
       );
     }
