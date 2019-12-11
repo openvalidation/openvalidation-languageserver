@@ -1,3 +1,5 @@
+import { Range } from "vscode-languageserver";
+
 /**
  * Additional notifications that openVALIDATION requires
  *
@@ -170,4 +172,9 @@ export interface IPatternBeginEnd extends IGenericPattern {
 export interface IPatternCapture extends IGenericPattern {
   match: string;
   captures: any;
+}
+
+export interface SyntaxToken {
+  range: Range;
+  pattern: string;
 }
