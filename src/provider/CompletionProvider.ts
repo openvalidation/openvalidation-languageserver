@@ -9,8 +9,9 @@ import {
 } from "vscode-languageserver";
 import { Variable } from "../data-model/syntax-tree/Variable";
 import { CompletionKeyEnum } from "../enums/CompletionKeyEnum";
-import { SchemaProvider, UseSchemaDataclass } from "../helper/SchemaProvider";
+import { SchemaProvider } from "../helper/SchemaProvider";
 import { StringHelper } from "../helper/StringHelper";
+import { UseSchemaDataclass } from "../helper/UseSchemaDataclass";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
 import { CompletionResponse } from "../rest-interface/response/CompletionResponse";
