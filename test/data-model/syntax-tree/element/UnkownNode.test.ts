@@ -302,24 +302,24 @@ describe("UnknownNode Tests", () => {
 
   test("UnknownNode get content test", () => {
     const errorMessage: string = "This is an error";
-    const UnknownNode: UnknownNode = new UnknownNode(
+    const unknownNode: UnknownNode = new UnknownNode(
       null,
       [errorMessage],
       IndexRange.create(0, 0, 0, errorMessage.length)
     );
 
-    expect(UnknownNode.$content).toEqual(null);
+    expect(unknownNode.$content).toEqual(null);
   });
 
   test("getChildren without child, expect no children", () => {
     const errorMessage: string = "This is an error";
-    const UnknownNode: UnknownNode = new UnknownNode(
+    const unknownNode: UnknownNode = new UnknownNode(
       null,
       [errorMessage],
       IndexRange.create(0, 0, 0, errorMessage.length)
     );
 
-    const actual: GenericNode[] = UnknownNode.getChildren();
+    const actual: GenericNode[] = unknownNode.getChildren();
     const expected: GenericNode[] = [];
 
     expect(actual).toEqual(expected);
@@ -333,13 +333,13 @@ describe("UnknownNode Tests", () => {
       "String",
       operand
     );
-    const UnknownNode: UnknownNode = new UnknownNode(
+    const unknownNode: UnknownNode = new UnknownNode(
       operandNode,
       [operand],
       IndexRange.create(0, 0, 0, operand.length)
     );
 
-    const actual: GenericNode[] = UnknownNode.getChildren();
+    const actual: GenericNode[] = unknownNode.getChildren();
     const expected: GenericNode[] = [operandNode];
 
     expect(actual).toEqual(expected);
@@ -347,13 +347,13 @@ describe("UnknownNode Tests", () => {
 
   test("getHoverContent without content, expect not empty content", () => {
     const errorMessage: string = "This is an error";
-    const UnknownNode: UnknownNode = new UnknownNode(
+    const unknownNode: UnknownNode = new UnknownNode(
       null,
       [errorMessage],
       IndexRange.create(0, 0, 0, errorMessage.length)
     );
 
-    const actual = UnknownNode.getHoverContent();
+    const actual = unknownNode.getHoverContent();
 
     expect(actual).not.toBeNull();
   });
@@ -366,13 +366,13 @@ describe("UnknownNode Tests", () => {
       "String",
       operand
     );
-    const UnknownNode: UnknownNode = new UnknownNode(
+    const unknownNode: UnknownNode = new UnknownNode(
       operandNode,
       [operand],
       IndexRange.create(0, 0, 0, operand.length)
     );
 
-    const actual = UnknownNode.getHoverContent();
+    const actual = unknownNode.getHoverContent();
 
     expect(actual).not.toBeNull();
   });
@@ -392,26 +392,26 @@ describe("UnknownNode Tests", () => {
       "String",
       operand
     );
-    const UnknownNode: UnknownNode = new UnknownNode(
+    const unknownNode: UnknownNode = new UnknownNode(
       arrayOperandNode,
       [operand],
       IndexRange.create(0, 0, 0, operand.length)
     );
 
-    const actual = UnknownNode.getHoverContent();
+    const actual = unknownNode.getHoverContent();
 
     expect(actual).not.toBeNull();
   });
 
   test("getBeautifiedContent without children, expect not empty content", () => {
     const errorMessage: string = "This is an error";
-    const UnknownNode: UnknownNode = new UnknownNode(
+    const unknownNode: UnknownNode = new UnknownNode(
       null,
       [errorMessage],
       IndexRange.create(0, 0, 0, errorMessage.length)
     );
 
-    const actual = UnknownNode.getBeautifiedContent(
+    const actual = unknownNode.getBeautifiedContent(
       initializer.$server.getAliasHelper()
     );
 
@@ -426,13 +426,13 @@ describe("UnknownNode Tests", () => {
       "String",
       operand
     );
-    const UnknownNode: UnknownNode = new UnknownNode(
+    const unknownNode: UnknownNode = new UnknownNode(
       operandNode,
       [operand],
       IndexRange.create(0, 0, 0, operand.length)
     );
 
-    const actual = UnknownNode.getBeautifiedContent(
+    const actual = unknownNode.getBeautifiedContent(
       initializer.$server.getAliasHelper()
     );
 

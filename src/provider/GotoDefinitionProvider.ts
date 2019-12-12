@@ -38,7 +38,6 @@ export class GotoDefinitionProvider extends Provider {
     this.connection.onDefinition(params => this.definition(params));
   }
 
-  // TODO: Change to DefinitionLink, support must added to the monaco-client
   /**
    * Generates a list of all found definitions for a string at a given position
    *

@@ -3,7 +3,6 @@ import { GenericNode } from "./GenericNode";
 import { IndexRange } from "./IndexRange";
 import { TypeDecorator } from "./TypeDecorator";
 import { Variable } from "./Variable";
-import { VariableNode } from "./element/VariableNode";
 
 /**
  * MainNode for the syntax-tree
@@ -50,17 +49,5 @@ export class MainNode {
   }
   public set $range(value: IndexRange) {
     this.range = value;
-  }
-
-  public getVariableNodes(): VariableNode[] {
-    var returnList: VariableNode[] = [];
-
-    for (var scope of this.$scopes) {
-      if (scope instanceof VariableNode) {
-        returnList.push(scope);
-      }
-    }
-
-    return returnList;
   }
 }

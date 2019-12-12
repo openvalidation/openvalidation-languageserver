@@ -138,4 +138,28 @@ describe("IndexRange Tests", () => {
 
     expect(actual).toEqual(expected);
   });
+
+  test("moveLines by 1 with an empty range, expect the same range", () => {
+    const range: IndexRange = IndexRange.create(0, 0, 0, 0);
+    range.$start = null;
+    range.$end = null;
+
+    const parameter: number = 1;
+    const actual: IndexRange = range.moveLines(parameter);
+    const expected: IndexRange = IndexRange.create(0, 0, 0, 0);
+    expected.$start = null;
+    expected.$end = null;
+
+    expect(actual).toEqual(expected);
+  });
+
+  test("moveLines by 1 with an empty range, expect the same range", () => {
+    const range: IndexRange = IndexRange.create(0, 0, 0, 0);
+
+    const parameter: number = 1;
+    const actual: IndexRange = range.moveLines(parameter);
+    const expected: IndexRange = IndexRange.create(1, 0, 1, 0);
+
+    expect(actual).toEqual(expected);
+  });
 });

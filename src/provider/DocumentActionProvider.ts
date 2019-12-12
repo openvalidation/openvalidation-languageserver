@@ -12,7 +12,8 @@ import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
 import { Provider } from "./Provider";
 import { SyntaxNotifier } from "./SyntaxNotifier";
-import { SchemaProvider, UseSchemaDataclass } from "../helper/SchemaProvider";
+import { SchemaProvider } from "../helper/SchemaProvider";
+import { UseSchemaDataclass } from "src/helper/UseSchemaDataclass";
 
 /**
  * Provider to handle every response which deals with documents.
