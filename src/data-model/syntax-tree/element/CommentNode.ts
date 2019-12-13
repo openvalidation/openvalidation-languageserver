@@ -16,7 +16,7 @@ export class CommentNode extends GenericNode {
     this.content = content;
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     const childList: GenericNode[] = [];
     return childList;
   }

@@ -53,15 +53,19 @@ export class RuleNode extends GenericNode {
     this.condition = value;
   }
 
-  public getChildren(): GenericNode[] {
-    const childList: GenericNode[] = [];
-
-    if (!!this.condition) {
-      childList.push(this.condition);
-    }
-
+  public getRelevantChildren(): GenericNode[] {
+    const childList: GenericNode[] = this.getChildren();
     if (!!this.$errorNode) {
       childList.push(this.$errorNode);
+    }
+
+    return childList;
+  }
+
+  public getChildren(): GenericNode[] {
+    const childList: GenericNode[] = [];
+    if (!!this.condition) {
+      childList.push(this.condition);
     }
 
     return childList;

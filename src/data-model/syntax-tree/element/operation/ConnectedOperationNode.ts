@@ -39,7 +39,7 @@ export class ConnectedOperationNode extends ConditionNode {
     return this.$conditions.map(cond => cond.$constrained).some(bool => bool);
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     const childList: GenericNode[] = [];
 
     childList.push(...this.conditions);

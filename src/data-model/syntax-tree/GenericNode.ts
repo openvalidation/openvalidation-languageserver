@@ -68,7 +68,18 @@ export abstract class GenericNode {
    * @returns {GenericNode[]}
    * @memberof GenericNode
    */
-  public abstract getChildren(): GenericNode[];
+  public abstract getRelevantChildren(): GenericNode[];
+
+  /**
+   * Generates a list of all relevant children for tree-traversal.
+   * Defaults to the `GetChildren` method but enables a more specific hovering function
+   *
+   * @returns {GenericNode[]}
+   * @memberof GenericNode
+   */
+  public getChildren(): GenericNode[] {
+    return this.getRelevantChildren();
+  }
 
   /**
    * Generates the hovering content which should be shown to the user
@@ -160,7 +171,7 @@ export abstract class GenericNode {
 
     tokens.push(...this.getSpecificTokens());
 
-    for (const child of this.getChildren()) {
+    for (const child of this.getRelevantChildren()) {
       tokens.push(...child.getTokens());
     }
 
@@ -191,7 +202,7 @@ export abstract class GenericNode {
     }
 
     // Modify range for every child
-    for (const child of this.getChildren()) {
+    for (const child of this.getRelevantChildren()) {
       child.modifyRangeOfEveryNode(lineChange);
     }
   }

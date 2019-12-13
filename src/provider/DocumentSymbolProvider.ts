@@ -40,7 +40,7 @@ export class DocumentSymbolProvider extends Provider {
   }
 
   /**
-   * Generates symbol-informations for every variable (and operator) to find a specific
+   * Generates symbol-information for every variable (and operator) to find a specific
    * variable in the editor
    *
    * @param {DocumentSymbolParams} params parameter that defines the specific document

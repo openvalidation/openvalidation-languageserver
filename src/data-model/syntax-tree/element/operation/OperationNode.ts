@@ -90,7 +90,7 @@ export class OperationNode extends ConditionNode {
     this.constrained = value;
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     const childList: GenericNode[] = [];
 
     if (!!this.leftOperand) {
@@ -109,7 +109,19 @@ export class OperationNode extends ConditionNode {
   }
 
   public getHoverContent(): HoverContent {
-    const content: HoverContent = new HoverContent(this.$range, "Operation");
+    let operationString: string = "";
+    operationString += !this.$leftOperand ? "" : `${this.$leftOperand.$name} `;
+    operationString += !this.$operator
+      ? ""
+      : `${this.$operator.$lines.join("\n")} `;
+    operationString += !this.$rightOperand ? "" : this.$rightOperand.$name;
+
+    const content: HoverContent = new HoverContent(
+      this.$range,
+      operationString.trim() !== ""
+        ? `Operation: ${operationString}`
+        : "Operation"
+    );
     return content;
   }
 
@@ -119,7 +131,7 @@ export class OperationNode extends ConditionNode {
     }
 
     var fittingChild: GenericNode | null = new TreeTraversal().traverseTree(
-      this.getChildren(),
+      this.getRelevantChildren(),
       position
     );
     if (!!fittingChild) {

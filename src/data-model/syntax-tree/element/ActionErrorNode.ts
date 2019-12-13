@@ -34,7 +34,7 @@ export class ActionErrorNode extends GenericNode {
     return this.actionErrorRange;
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     return [new UnknownNode(null, [], this.actionErrorRange)];
   }
 

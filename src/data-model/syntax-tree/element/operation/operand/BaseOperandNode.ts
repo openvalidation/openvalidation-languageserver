@@ -36,7 +36,7 @@ export abstract class BaseOperandNode extends GenericNode {
     return this.name;
   }
 
-  public abstract getChildren(): GenericNode[];
+  public abstract getRelevantChildren(): GenericNode[];
   public abstract getHoverContent(): HoverContent;
   public abstract getCompletionContainer(range: Position): CompletionContainer;
   public abstract isComplete(): boolean;

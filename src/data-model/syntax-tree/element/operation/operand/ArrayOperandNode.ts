@@ -46,7 +46,7 @@ export class ArrayOperandNode extends BaseOperandNode {
     return this.items;
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     return this.$items.map(i => (i as unknown) as GenericNode);
   }
 

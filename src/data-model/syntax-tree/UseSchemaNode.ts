@@ -25,7 +25,7 @@ export class UseSchemaNode extends GenericNode {
     this.line = line;
     this.schemaText = schemaText;
   }
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     const childList: GenericNode[] = [];
     return childList;
   }

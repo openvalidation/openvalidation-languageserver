@@ -50,7 +50,7 @@ export class OperatorNode extends GenericNode {
     return this.operator;
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     const childList: GenericNode[] = [];
     return childList;
   }

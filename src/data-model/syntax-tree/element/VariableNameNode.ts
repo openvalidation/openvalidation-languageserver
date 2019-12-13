@@ -34,7 +34,7 @@ export class VariableNameNode extends GenericNode {
     return this.variableNameRange;
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     return [new UnknownNode(null, [], this.variableNameRange)];
   }
 

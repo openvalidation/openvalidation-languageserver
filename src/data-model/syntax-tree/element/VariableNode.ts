@@ -45,20 +45,6 @@ export class VariableNode extends GenericNode {
     this.value = value;
   }
 
-  public getChildren(): GenericNode[] {
-    const childList: GenericNode[] = [];
-
-    if (!!this.value) {
-      childList.push(this.value);
-    }
-
-    if (!!this.$nameNode) {
-      childList.push(this.$nameNode);
-    }
-
-    return childList;
-  }
-
   public get $value(): BaseOperandNode | null {
     return this.value;
   }
@@ -85,6 +71,24 @@ export class VariableNode extends GenericNode {
     }
 
     return this.$nameNode.$range.asRange();
+  }
+
+  public getRelevantChildren(): GenericNode[] {
+    const childList: GenericNode[] = this.getChildren();
+    if (!!this.$nameNode) {
+      childList.push(this.$nameNode);
+    }
+
+    return childList;
+  }
+
+  public getChildren(): GenericNode[] {
+    const childList: GenericNode[] = [];
+    if (!!this.value) {
+      childList.push(this.value);
+    }
+
+    return childList;
   }
 
   public getHoverContent(): HoverContent {

@@ -27,7 +27,7 @@ export class OperandNode extends BaseOperandNode {
     return this.isStatic;
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     const childList: GenericNode[] = [];
     return childList;
   }

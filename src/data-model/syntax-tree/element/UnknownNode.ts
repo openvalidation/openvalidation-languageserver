@@ -40,7 +40,7 @@ export class UnknownNode extends GenericNode {
     return this.content;
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     const children: GenericNode[] = [];
 
     if (!!this.content) {
@@ -52,11 +52,11 @@ export class UnknownNode extends GenericNode {
 
   public getHoverContent(): HoverContent {
     if (!this.content) {
-      return new HoverContent(this.$range, "Unkown-Element");
+      return new HoverContent(this.$range, "Unknown Element");
     }
 
     const hoverContent = this.content.getHoverContent();
-    const ownContent = "`Unkown-Element` with " + hoverContent.$content;
+    const ownContent = "`Unknown Element` with " + hoverContent.$content;
     hoverContent.$content = ownContent;
     return hoverContent;
   }

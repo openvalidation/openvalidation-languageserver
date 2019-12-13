@@ -54,7 +54,7 @@ export class FunctionOperandNode extends BaseOperandNode {
     return this.acceptedType;
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     return this.$parameters;
   }
 
