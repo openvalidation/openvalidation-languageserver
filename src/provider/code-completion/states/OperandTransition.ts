@@ -74,7 +74,8 @@ export class OperandTransition extends StateTransition {
     // Wrong Datatype
     if (
       !String.IsNullOrWhiteSpace(this.dataType!) &&
-      datatype !== this.dataType
+      datatype !== this.dataType &&
+      this.dataType != "Object"
     ) {
       return false;
     }

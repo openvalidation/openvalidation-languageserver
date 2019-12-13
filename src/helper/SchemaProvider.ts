@@ -12,7 +12,7 @@ export class SchemaProvider {
     text: string,
     server: OvServer
   ): UseSchemaDataclass | undefined {
-    let splittedText = text.split("\r\n");
+    let splittedText = text.split("\n");
     let path = require("path");
     let schemaPath: string = "";
     let useSchemaLineIndex: number = 0;
@@ -32,7 +32,7 @@ export class SchemaProvider {
         useSchemaIndex != -1 &&
         (commentSchemaIndex == -1 || useSchemaIndex < commentSchemaIndex)
       ) {
-        useSchemaLine = line;
+        useSchemaLine = line.replace("\r", "");
         schemaPath = line.replace(new RegExp("USE SCHEMA", "ig"), "").trim();
         foundUseSchemaCommand = true;
         break;

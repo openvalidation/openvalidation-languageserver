@@ -196,7 +196,8 @@ export class CompletionProvider extends Provider {
       this.server.restParameter,
       !useSchema || !useSchema.schemaText
         ? this.server.jsonSchema
-        : useSchema.schemaText
+        : useSchema.schemaText,
+      ovDocument
     );
 
     const relativePosition: Position = Position.create(

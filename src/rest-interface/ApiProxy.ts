@@ -142,7 +142,7 @@ export class ApiProxy {
     rule: string,
     parameter: RestParameter,
     schema: JSON,
-    ovDocument?: OvDocument
+    ovDocument: OvDocument | undefined
   ): Promise<CompletionResponse | null> {
     if (!!ovDocument) {
       const asKeyword: string | null = parameter.$aliasHelper.getAsKeyword();
