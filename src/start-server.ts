@@ -11,14 +11,16 @@ import * as rpc from "vscode-ws-jsonrpc";
 import * as ws from "ws";
 import { startServer, OvServer } from "./OvServer";
 import { startBackend } from "./start-backend";
-import { ChildProcess } from "child_process";
 import { validateDocuments } from "./server-launcher";
 
 // Starts the Java-Backend in a separate file
-const output: ChildProcess = startBackend();
-if (!!output.stdout) {
-  output.stdout.on("data", (stdout: any) => validateDocuments(stdout, server));
-}
+startBackend().then(output => {
+  if (!!output.stdout) {
+    output.stdout.on("data", (stdout: any) =>
+      validateDocuments(stdout, server)
+    );
+  }
+});
 
 var server: OvServer;
 
