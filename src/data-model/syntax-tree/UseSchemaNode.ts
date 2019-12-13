@@ -12,9 +12,9 @@ export class UseSchemaNode extends GenericNode {
   private lineNumber: number;
   private line: string;
   private useSchemaLength: number = "USE SCHEMA".length;
-  private schemaText: string;
+  private schemaText: JSON | null;
 
-  constructor(lineNumber: number, line: string, schemaText: string) {
+  constructor(lineNumber: number, line: string, schemaText: JSON | null) {
     super([line], IndexRange.create(lineNumber, 0, lineNumber, line.length), [
       new KeywordNode(
         [line.substring(0, "USE SCHEMA".length)],
@@ -31,10 +31,10 @@ export class UseSchemaNode extends GenericNode {
   }
 
   public getHoverContent(): HoverContent {
-    const content: HoverContent = new HoverContent(
-      this.$range,
-      "```json\n" + `${this.schemaText}\n` + "```"
-    );
+    const contentText: string = !this.schemaText
+      ? ""
+      : "```json\n" + `${JSON.stringify(this.schemaText)}\n` + "```";
+    const content: HoverContent = new HoverContent(this.$range, contentText);
     return content;
   }
 

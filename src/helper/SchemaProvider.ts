@@ -59,7 +59,7 @@ export class SchemaProvider {
       );
     }
 
-    let schemaText: JSON = server.jsonSchema;
+    let schemaText: JSON | null = null;
     if (schemaPath.trim() !== "") {
       try {
         let absolutePath = path.resolve(schemaPath);

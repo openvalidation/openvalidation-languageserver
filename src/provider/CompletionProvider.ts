@@ -190,7 +190,9 @@ export class CompletionProvider extends Provider {
     const response = await ApiProxy.postCompletionData(
       parseString,
       this.server.restParameter,
-      !useSchema ? this.server.jsonSchema : useSchema.schemaText
+      !useSchema || !useSchema.schemaText
+        ? this.server.jsonSchema
+        : useSchema.schemaText
     );
 
     const relativePosition: Position = Position.create(
