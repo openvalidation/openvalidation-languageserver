@@ -455,7 +455,7 @@ describe("VariableNode Tests", () => {
     );
 
     const actual: GenericNode[] = variable.getChildren();
-    const expected: GenericNode[] = [operation, variableNameNode];
+    const expected: GenericNode[] = [operation];
 
     expect(actual).toEqual(expected);
   });

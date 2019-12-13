@@ -34,6 +34,18 @@ Last but not least the language-server is able to handle changes of the schema-,
 This can be done by the client by sending notifications over the methods `textDocument/schemaChanged`, `textDocument/cultureChanged` and
 `textDocument/languageChanged`. The possible values of these parameters can be seen under the [openVALIDATION-documentation](https://docs.openvalidation.io/api).
 
+### Providing a dynamic schema
+
+To provide a Schema for openVALIDATION the language-server defines the new openVALIDATION command `Use Schema`. With this command, you can provide a JSON-Schema by pasting the file path to the command.
+
+For example, the following command refers to a JSON-Schema with a relative path.
+
+```
+Use Schema ./schema.json
+```
+
+It is also possible to use an absolute path instead of a relative. We look forward to supporting more schema types like YAML, but currently, only JSON files can be used.
+
 ## Getting started
 
 ### Installing

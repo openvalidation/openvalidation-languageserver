@@ -771,7 +771,7 @@ describe("RuleNode Tests", () => {
     );
 
     const actual: GenericNode[] = ruleNode.getChildren();
-    const expected: GenericNode[] = [operation, actionNode];
+    const expected: GenericNode[] = [operation];
 
     expect(actual).toEqual(expected);
   });
