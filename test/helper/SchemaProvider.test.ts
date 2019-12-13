@@ -40,7 +40,8 @@ describe("SchemaProvider Tests", () => {
           "you have to provide a schema-path",
           DiagnosticSeverity.Error
         )
-      ]
+      ],
+      "USE SCHEMA"
     );
 
     expect(actualResult).toEqual(expectedResult);
@@ -62,7 +63,8 @@ describe("SchemaProvider Tests", () => {
           "ENOENT: no such file or directory, open 'C:\\Projects\\openVALIDATION\\ov-language-server\\blabla'",
           DiagnosticSeverity.Error
         )
-      ]
+      ],
+      "USE SCHEMA blabla"
     );
 
     expect(actualResult).toEqual(expectedResult);

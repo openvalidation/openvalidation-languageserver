@@ -20,6 +20,7 @@ export class SchemaProvider {
     let commentKeyword:
       | string
       | null = server.getAliasHelper().getCommentKeyword();
+    let useSchemaLine: string = "";
 
     // Iterate threw lines
     for (const line of splittedText) {
@@ -31,6 +32,7 @@ export class SchemaProvider {
         useSchemaIndex != -1 &&
         (commentSchemaIndex == -1 || useSchemaIndex < commentSchemaIndex)
       ) {
+        useSchemaLine = line;
         schemaPath = line.replace(new RegExp("USE SCHEMA", "ig"), "").trim();
         foundUseSchemaCommand = true;
         break;
@@ -93,7 +95,8 @@ export class SchemaProvider {
       useSchemaLineIndex,
       schemaText,
       ovText,
-      diagnostics
+      diagnostics,
+      useSchemaLine
     );
   }
 }

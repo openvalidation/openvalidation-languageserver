@@ -1,7 +1,4 @@
 import { Position } from "vscode-languageserver";
-import { ConditionNode } from "../data-model/syntax-tree/element/operation/ConditionNode";
-import { BaseOperandNode } from "../data-model/syntax-tree/element/operation/operand/BaseOperandNode";
-import { OperationNode } from "../data-model/syntax-tree/element/operation/OperationNode";
 import { GenericNode } from "../data-model/syntax-tree/GenericNode";
 
 /**
@@ -33,60 +30,6 @@ export class TreeTraversal {
     }
 
     return this.traverseNode(child, position);
-  }
-
-  /**
-   * Tries to find all conditions recursive
-   *
-   * @param {GenericNode[]} genericNodes all known nodes
-   * @returns {ConditionNode[]} found conditions
-   * @memberof TreeTraversal
-   */
-  public getOperations(genericNodes: GenericNode[]): OperationNode[] {
-    const children: GenericNode[] = genericNodes;
-    const operations: OperationNode[] = [];
-
-    for (const child of children) {
-      if (child instanceof OperationNode) {
-        operations.push(child);
-        continue;
-      }
-
-      const nextChildren = child.getChildren();
-      if (nextChildren.length !== 0) {
-        operations.push(...this.getOperations(nextChildren));
-      }
-    }
-
-    return operations;
-  }
-
-  /**
-   * Tries to find all operandNodes that aren't inside an operation recursive
-   *
-   * @param {GenericNode[]} genericNodes all known nodes
-   * @returns {BaseOperandNode[]} found operandNodes
-   * @memberof TreeTraversal
-   */
-  public getLonelyOperands(genericNodes: GenericNode[]): BaseOperandNode[] {
-    const children: GenericNode[] = genericNodes;
-    const operands: BaseOperandNode[] = [];
-
-    for (const child of children) {
-      if (child instanceof ConditionNode) {
-        continue;
-      } else if (child instanceof BaseOperandNode) {
-        operands.push(child);
-        continue;
-      }
-
-      const nextChildren = child.getChildren();
-      if (nextChildren.length !== 0) {
-        operands.push(...this.getLonelyOperands(nextChildren));
-      }
-    }
-
-    return operands;
   }
 
   /**

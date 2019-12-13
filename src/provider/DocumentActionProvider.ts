@@ -6,6 +6,7 @@ import {
   TextDocumentChangeEvent
 } from "vscode-languageserver";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
+import { UseSchemaNode } from "../data-model/syntax-tree/UseSchemaNode";
 import { SchemaProvider } from "../helper/SchemaProvider";
 import { UseSchemaDataclass } from "../helper/UseSchemaDataclass";
 import { OvServer } from "../OvServer";
@@ -204,6 +205,13 @@ export class DocumentActionProvider extends Provider {
     if (!!useSchema) {
       apiResponse.$mainAstNode.$scopes.forEach(scope =>
         scope.modifyRangeOfEveryNode(useSchema.schemaLineIndex + 1)
+      );
+      apiResponse.$mainAstNode.$scopes.unshift(
+        new UseSchemaNode(
+          useSchema.schemaLineIndex,
+          useSchema.useSchemaLine,
+          JSON.stringify(useSchema.schemaText)
+        )
       );
     }
 
