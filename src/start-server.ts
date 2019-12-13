@@ -9,10 +9,20 @@ import "reflect-metadata";
 import * as url from "url";
 import * as rpc from "vscode-ws-jsonrpc";
 import * as ws from "ws";
-import { startServer } from "./OvServer";
+import { startServer, OvServer } from "./OvServer";
 import { startBackend } from "./start-backend";
+import { validateDocuments } from "./server-launcher";
 
-startBackend();
+// Starts the Java-Backend in a separate file
+startBackend().then(output => {
+  if (!!output.stdout) {
+    output.stdout.on("data", (stdout: any) =>
+      validateDocuments(stdout, server)
+    );
+  }
+});
+
+var server: OvServer;
 
 process.on("uncaughtException", (err: any) => {
   console.error("Uncaught Exception: ", err.toString());
@@ -29,7 +39,7 @@ const PORT = process.env.PORT || 3010;
 app.use(express.static(__dirname));
 
 // start the server
-const server = app.listen(PORT, () =>
+const expressServer = app.listen(PORT, () =>
   console.log(`Language-Server running on ${PORT}!`)
 );
 
@@ -39,7 +49,7 @@ const wss = new ws.Server({
   perMessageDeflate: false
 });
 
-server.on(
+expressServer.on(
   "upgrade",
   (request: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
     const pathname = request.url ? url.parse(request.url).pathname : undefined;
@@ -88,5 +98,6 @@ function bindWebSocket(webSocket: ws): void {
 function launch(socket: rpc.IWebSocket) {
   const reader = new rpc.WebSocketMessageReader(socket);
   const writer = new rpc.WebSocketMessageWriter(socket);
-  startServer(reader, writer);
+
+  server = startServer(reader, writer);
 }

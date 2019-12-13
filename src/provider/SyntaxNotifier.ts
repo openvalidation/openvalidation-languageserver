@@ -1,11 +1,12 @@
 import * as _ from "lodash";
-import { NotificationEnum } from "ov-language-server-types";
-import { LanguageHelper } from "../helper/LanguageHelper";
+import {
+  NotificationEnum,
+  ICodeNotification,
+  ITextMateJson
+} from "ov-language-server-types";
 import { OvServer } from "../OvServer";
 import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
 import { LintingResponse } from "../rest-interface/response/LintingResponse";
-import { TextMateGrammarFactory } from "./syntax-highlighting/TextMateGrammarFactory";
-import { ITextMateJson } from "./syntax-highlighting/TextMateJson";
 
 /**
  * Generates the parameter of the notification ``textDocument/semanticHighlighting`` and ``textDocument/generatedCode``
@@ -15,9 +16,8 @@ import { ITextMateJson } from "./syntax-highlighting/TextMateJson";
  * @class SyntaxNotifier
  */
 export class SyntaxNotifier {
-  private textMateGrammar: ITextMateJson | null;
+  public textMateGrammar: ITextMateJson | null;
   private generatedCode: string | null;
-  private textMateGrammarFactory: TextMateGrammarFactory;
 
   /**
    * Creates an instance of OvSyntaxNotifier.
@@ -27,7 +27,6 @@ export class SyntaxNotifier {
   constructor(private readonly server: OvServer) {
     this.textMateGrammar = null;
     this.generatedCode = null;
-    this.textMateGrammarFactory = new TextMateGrammarFactory();
   }
 
   /**
@@ -46,18 +45,16 @@ export class SyntaxNotifier {
       return;
     }
 
-    const textMateGrammar: ITextMateJson = this.textMateGrammarFactory.generateTextMateGrammar(
-      apiResponse,
-      this.server
-    );
-    // Check, if the new grammar is different and musst be send to the client
-    if (!_.isEqual(textMateGrammar, this.textMateGrammar)) {
-      this.textMateGrammar = textMateGrammar;
-      this.server.connection.sendNotification(
-        NotificationEnum.SemanticHighlighting,
-        JSON.stringify(textMateGrammar)
-      );
+    var highlightingParams = [];
+
+    for (const scope of apiResponse.$mainAstNode.$scopes) {
+      highlightingParams.push(...scope.getTokens());
     }
+
+    this.server.connection.sendNotification(
+      NotificationEnum.SemanticHighlighting,
+      JSON.stringify(highlightingParams)
+    );
   }
 
   /**
@@ -69,12 +66,12 @@ export class SyntaxNotifier {
   public sendGeneratedCodeIfNecessary(apiResponse: ICodeResponse): void {
     const newCodeNotification = this.generatedCodeDataObject(apiResponse);
 
-    // Check, if the new code is different and musst be send to the client
+    // Check, if the new code is different and must be send to the client
     if (
-      newCodeNotification.value &&
-      !_.isEqual(newCodeNotification.value, this.generatedCode)
+      newCodeNotification.implementation &&
+      !_.isEqual(newCodeNotification.implementation, this.generatedCode)
     ) {
-      this.generatedCode = newCodeNotification.value;
+      this.generatedCode = newCodeNotification.implementation;
       this.server.connection.sendNotification(
         NotificationEnum.GeneratedCode,
         JSON.stringify(newCodeNotification)
@@ -92,12 +89,11 @@ export class SyntaxNotifier {
    */
   private generatedCodeDataObject(
     apiResponse: ICodeResponse
-  ): { language: string; value: string } {
+  ): ICodeNotification {
     const json = {
-      language: LanguageHelper.convertOvLanguageToMonacoLanguage(
-        this.server.language
-      ),
-      value: apiResponse.implementationResult
+      language: this.server.language,
+      implementation: apiResponse.implementationResult,
+      framework: apiResponse.frameworkResult
     };
 
     return json;

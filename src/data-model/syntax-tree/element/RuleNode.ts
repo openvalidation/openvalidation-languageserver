@@ -53,9 +53,17 @@ export class RuleNode extends GenericNode {
     this.condition = value;
   }
 
+  public getRelevantChildren(): GenericNode[] {
+    const childList: GenericNode[] = this.getChildren();
+    if (!!this.$errorNode) {
+      childList.push(this.$errorNode);
+    }
+
+    return childList;
+  }
+
   public getChildren(): GenericNode[] {
     const childList: GenericNode[] = [];
-
     if (!!this.condition) {
       childList.push(this.condition);
     }
@@ -113,7 +121,7 @@ export class RuleNode extends GenericNode {
 
     if (!String.IsNullOrWhiteSpace(splittedRule[0])) {
       returnString +=
-        FormattingHelper.removeDuplicateWhitespacesFromLine(splittedRule[0]) +
+        FormattingHelper.removeDuplicateWhitespaceFromLine(splittedRule[0]) +
         " ";
     }
 
@@ -127,7 +135,7 @@ export class RuleNode extends GenericNode {
     }
 
     if (!String.IsNullOrWhiteSpace(splittedRule[1])) {
-      returnString += FormattingHelper.removeDuplicateWhitespacesFromLine(
+      returnString += FormattingHelper.removeDuplicateWhitespaceFromLine(
         splittedRule[1]
       );
     }

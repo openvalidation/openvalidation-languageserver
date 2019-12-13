@@ -179,7 +179,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 0, 0, 21),
-      ""
+      "",
+      IndexRange.create(0, 23, 0, 23)
     );
     const rule: RuleNode = new RuleNode(
       actionNode,
@@ -227,7 +228,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 22, 0, 27),
-      ""
+      "",
+      IndexRange.create(0, 29, 0, 29)
     );
     const rule: RuleNode = new RuleNode(
       actionNode,
@@ -275,7 +277,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 22, 0, 27),
-      ""
+      "",
+      IndexRange.create(0, 29, 0, 29)
     );
     const rule: RuleNode = new RuleNode(
       actionNode,
@@ -318,7 +321,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Alter muss kleiner "],
       IndexRange.create(0, 22, 0, 27),
-      ""
+      "",
+      IndexRange.create(0, 22, 0, 27)
     );
     const rule: RuleNode = new RuleNode(
       actionNode,
@@ -399,7 +403,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 41, 0, 46),
-      ""
+      "",
+      IndexRange.create(0, 48, 0, 48)
     );
     const rule: RuleNode = new RuleNode(
       actionNode,
@@ -479,7 +484,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 42, 0, 46),
-      ""
+      "",
+      IndexRange.create(0, 48, 0, 48)
     );
     const rule: RuleNode = new RuleNode(
       actionNode,
@@ -560,7 +566,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 42, 0, 46),
-      ""
+      "",
+      IndexRange.create(0, 48, 0, 48)
     );
     const rule: RuleNode = new RuleNode(
       actionNode,
@@ -641,7 +648,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 42, 0, 46),
-      ""
+      "",
+      IndexRange.create(0, 48, 0, 48)
     );
     const rule: RuleNode = new RuleNode(
       actionNode,
@@ -697,7 +705,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 22, 0, 27),
-      ""
+      "",
+      IndexRange.create(0, 28, 0, 28)
     );
     ruleNode.$errorNode = actionNode;
 
@@ -751,7 +760,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 22, 0, 27),
-      ""
+      "",
+      IndexRange.create(0, 28, 0, 28)
     );
     const ruleNode: RuleNode = new RuleNode(
       actionNode,
@@ -761,7 +771,7 @@ describe("RuleNode Tests", () => {
     );
 
     const actual: GenericNode[] = ruleNode.getChildren();
-    const expected: GenericNode[] = [operation];
+    const expected: GenericNode[] = [operation, actionNode];
 
     expect(actual).toEqual(expected);
   });
@@ -797,7 +807,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 22, 0, 27),
-      ""
+      "",
+      IndexRange.create(0, 28, 0, 28)
     );
     const ruleNode: RuleNode = new RuleNode(
       actionNode,
@@ -835,7 +846,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 22, 0, 27),
-      ""
+      "",
+      IndexRange.create(0, 28, 0, 28)
     );
     const ruleNode: RuleNode = new RuleNode(
       actionNode,
@@ -880,7 +892,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 22, 0, 27),
-      ""
+      "",
+      IndexRange.create(0, 28, 0, 28)
     );
     const ruleNode: RuleNode = new RuleNode(
       actionNode,
@@ -940,7 +953,8 @@ describe("RuleNode Tests", () => {
     const actionNode = new ActionErrorNode(
       ["Dann "],
       IndexRange.create(0, 22, 0, 27),
-      ""
+      "",
+      IndexRange.create(0, 28, 0, 28)
     );
     const ruleNode: RuleNode = new RuleNode(
       actionNode,

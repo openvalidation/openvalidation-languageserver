@@ -1,13 +1,12 @@
-import { String } from "typescript-string-operations";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../../../aliases/AliasHelper";
 import { ScopeEnum } from "../../../../../enums/ScopeEnum";
 import { HoverContent } from "../../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../../provider/code-completion/CompletionContainer";
-import { SyntaxHighlightingCapture } from "../../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
+import { IStateTransition } from "../../../../../provider/code-completion/states/state-constructor/IStateTransition";
 import { GenericNode } from "../../../GenericNode";
 import { IndexRange } from "../../../IndexRange";
-import { IStateTransition } from "src/provider/code-completion/states/state-constructor/IStateTransition";
+import { SyntaxToken } from "ov-language-server-types";
 
 export class OperatorNode extends GenericNode {
   private dataType: string;
@@ -51,7 +50,7 @@ export class OperatorNode extends GenericNode {
     return this.operator;
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     const childList: GenericNode[] = [];
     return childList;
   }
@@ -83,16 +82,14 @@ export class OperatorNode extends GenericNode {
     return this.defaultFormatting();
   }
 
-  public getPatternInformation(
-    aliasesHelper: AliasHelper
-  ): SyntaxHighlightingCapture | null {
-    const returnString = this.$lines.join("\n");
-    if (String.IsNullOrWhiteSpace(returnString)) {
-      return null;
-    } else {
-      const capture = new SyntaxHighlightingCapture();
-      capture.addRegexGroupAndCapture(returnString, ScopeEnum.Keyword);
-      return capture;
-    }
+  public getSpecificTokens(): SyntaxToken[] {
+    if (!this.$range) return [];
+
+    return [
+      {
+        pattern: ScopeEnum.Keyword,
+        range: this.$range.asRange()
+      }
+    ];
   }
 }

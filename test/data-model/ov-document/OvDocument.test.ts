@@ -82,7 +82,12 @@ describe("OvDocument Tests", () => {
 
   function getAstVariable(): VariableNode {
     return new VariableNode(
-      new VariableNameNode(["Als Test"], IndexRange.create(0, 0, 0, 0), "Test"),
+      new VariableNameNode(
+        ["Als Test"],
+        IndexRange.create(0, 0, 0, 0),
+        "Test",
+        IndexRange.create(0, 0, 0, 0)
+      ),
       new OperandNode(["Value"], getDefaultRange(), "", ""),
       ["Das ist ein Alter Test"],
       getDefaultRange()
@@ -109,7 +114,8 @@ describe("OvDocument Tests", () => {
       new ActionErrorNode(
         ["Dann Error"],
         IndexRange.create(0, 0, 0, 0),
-        "Error"
+        "Error",
+        IndexRange.create(0, 0, 0, 0)
       ),
       operation,
       ["Das ist ein Alter Test"],

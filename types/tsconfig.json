@@ -3,8 +3,6 @@
     "target": "es5",
     "module": "commonjs",
     "declaration": true,
-    "strict": true,
-    "esModuleInterop": true,
     "rootDir": "src",
     "outDir": "dist"
   },

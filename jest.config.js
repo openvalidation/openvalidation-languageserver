@@ -8,5 +8,5 @@ module.exports = {
   setupFiles: ["./test/globals.js"],
   collectCoverage: true,
   coverageReporters: ["json-summary", "text", "lcov"],
-  testPathIgnorePatterns: ["/dist/", "/node_modules/"]
+  testPathIgnorePatterns: ["/dist/", "/types/", "/node_modules/"]
 };

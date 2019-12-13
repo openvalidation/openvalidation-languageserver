@@ -1,4 +1,5 @@
 import { ChildProcess, exec } from "child_process";
+import { OvServer } from "./OvServer";
 
 export function startWebSocket() {
   require("./start-server");
@@ -22,4 +23,15 @@ export function startServerAsExternalProcess() {
   child.on("close", code => {
     console.log(`Language-Server exited with ${code}`);
   });
+}
+
+export function validateDocuments(stdout: string, server: OvServer) {
+  if (stdout.trim() !== "Started REST-API") return;
+  console.log("Started REST-API");
+
+  if (!server || !server.documentActionProvider) return;
+  for (const textDocument of server.documents.all()) {
+    server.documentActionProvider.validate(textDocument.uri);
+  }
+  console.log("Validated Documents");
 }

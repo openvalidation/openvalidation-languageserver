@@ -93,29 +93,6 @@ export class AliasHelper {
   }
 
   /**
-   * Return everything, but no operators and no of-keyword
-   *
-   * @returns {string[]}
-   * @memberof AliasHelper
-   */
-  public getFilteredKeywords(...keywordFilter: AliasKey[]): string[] {
-    return this.getKeys().filter(key => {
-      const aliasKey = this.aliases.get(key)!;
-      return keywordFilter.every(keyword => aliasKey.indexOf(keyword) === -1);
-    });
-  }
-
-  /**
-   * Returns a list of of-keywords (e.g. `must`)
-   *
-   * @returns {string[]} list of found-keywords
-   * @memberof AliasHelper
-   */
-  public getOfKeywords(): string[] {
-    return this.getKeywordsByAliasKey(AliasKey.OF);
-  }
-
-  /**
    * Returns the logical-operators, currently only `or` and `and`
    *
    * @returns {string[]} found operators

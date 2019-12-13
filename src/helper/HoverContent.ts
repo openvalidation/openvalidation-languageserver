@@ -1,4 +1,4 @@
-import { IndexRange } from "src/data-model/syntax-tree/IndexRange";
+import { IndexRange } from "../data-model/syntax-tree/IndexRange";
 
 /**
  * Class that contains the string-content and the range of the hovered content

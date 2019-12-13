@@ -25,7 +25,8 @@ In addition to the features of the lsp, we provide the following openVALIDATION-
 - [x] Generated Code
 - [x] Language-Specific-Definitions
 
-Syntax-Highlighting is currently based on a [TextMate-Grammar](https://macromates.com/manual/en/language_grammars) and gets automatically send to the client over the notification-method `textDocument/semanticHighlighting`. This only happens, when the grammar changes significantly.
+Syntax-Highlighting is currently implemented by tokenizing the whole file and calculate the range for specific tokens.
+The list of tokens gets automatically send to the client over the notification-method `textDocument/semanticHighlighting`.
 
 In addition the new generated code gets send to the client over the notification-method `textDocument/generatedCode`. This always happens, when code gets written and the parser generated new code.
 

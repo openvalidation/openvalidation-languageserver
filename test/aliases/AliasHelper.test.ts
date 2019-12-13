@@ -111,15 +111,6 @@ describe("AliasHelper Tests", () => {
     expect(actual).toEqual(expected);
   });
 
-  test("getOfKeywords with default aliases, expect comment keyword", () => {
-    setDefaultAliases();
-
-    const expected: string[] = ["OF"];
-    const actual: string[] = aliasHelper.getOfKeywords();
-
-    expect(actual).toEqual(expected);
-  });
-
   test("getFunctions with default aliases, expect comment keyword", () => {
     setDefaultAliases();
 

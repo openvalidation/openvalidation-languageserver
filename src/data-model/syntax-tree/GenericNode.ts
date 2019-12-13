@@ -1,12 +1,14 @@
 import { Type } from "class-transformer";
+import { SyntaxToken } from "ov-language-server-types";
 import { String } from "typescript-string-operations";
 import { Position, TextEdit } from "vscode-languageserver";
 import { AliasHelper } from "../../aliases/AliasHelper";
+import { ScopeEnum } from "../../enums/ScopeEnum";
 import { FormattingHelper } from "../../helper/FormattingHelper";
 import { HoverContent } from "../../helper/HoverContent";
 import { CompletionContainer } from "../../provider/code-completion/CompletionContainer";
 import { IndexRange } from "./IndexRange";
-
+import { KeywordNode } from "./KeywordNode";
 /**
  * GenericNode for all elements of the syntax-tree
  *
@@ -20,15 +22,19 @@ export abstract class GenericNode {
   @Type(() => IndexRange)
   private range: IndexRange;
 
+  @Type(() => KeywordNode)
+  private keywords: KeywordNode[];
+
   /**
    * Creates an instance of GenericNode.
    * @param {string[]} lines lines of the node
    * @param {IndexRange} range scope of the node
    * @memberof GenericNode
    */
-  constructor(lines: string[], range: IndexRange) {
+  constructor(lines: string[], range: IndexRange, keywords?: KeywordNode[]) {
     this.lines = lines;
     this.range = range;
+    this.keywords = !keywords ? [] : keywords;
   }
 
   public get $lines(): string[] {
@@ -47,6 +53,14 @@ export abstract class GenericNode {
     this.range = value;
   }
 
+  public get $keywords(): KeywordNode[] {
+    return this.keywords;
+  }
+
+  public set $keywords(keywords: KeywordNode[]) {
+    this.keywords = keywords;
+  }
+
   /**
    * Generates a list of all relevant children for tree-traversal
    *
@@ -54,7 +68,18 @@ export abstract class GenericNode {
    * @returns {GenericNode[]}
    * @memberof GenericNode
    */
-  public abstract getChildren(): GenericNode[];
+  public abstract getRelevantChildren(): GenericNode[];
+
+  /**
+   * Generates a list of all relevant children for tree-traversal.
+   * Defaults to the `GetChildren` method but enables a more specific hovering function
+   *
+   * @returns {GenericNode[]}
+   * @memberof GenericNode
+   */
+  public getChildren(): GenericNode[] {
+    return this.getRelevantChildren();
+  }
 
   /**
    * Generates the hovering content which should be shown to the user
@@ -111,7 +136,7 @@ export abstract class GenericNode {
   }
 
   /**
-   * Default formatting for all nodes which is the removing of all duplcare whitespaces
+   * Default formatting for all nodes which is the removing of all duplicate whitespace
    *
    * @returns {string} formatted lines in one string, joined by `\n`
    * @memberof GenericNode
@@ -119,8 +144,66 @@ export abstract class GenericNode {
   public defaultFormatting(): string {
     return this.$lines
       .map(line =>
-        FormattingHelper.removeDuplicateWhitespacesFromLine(line).trim()
+        FormattingHelper.removeDuplicateWhitespaceFromLine(line).trim()
       )
       .join("\n");
+  }
+
+  /**
+   * returns the tokens of the element which are required for syntax-highlighting
+   * this methods handles the generic tokens like keywords
+   *
+   * @abstract
+   * @returns {SyntaxToken[]}
+   * @memberof GenericNode
+   */
+  public getTokens(): SyntaxToken[] {
+    var tokens: SyntaxToken[] = [];
+
+    if (!!this.$keywords) {
+      for (const keyword of this.$keywords) {
+        tokens.push({
+          range: keyword.$range.asRange(),
+          pattern: ScopeEnum.Keyword
+        });
+      }
+    }
+
+    tokens.push(...this.getSpecificTokens());
+
+    for (const child of this.getRelevantChildren()) {
+      tokens.push(...child.getTokens());
+    }
+
+    return tokens;
+  }
+
+  /**
+   * returns the tokens of the element which are required for syntax-highlighting
+   * this method can be overloaded by children if they require specific tokens
+   *
+   * @abstract
+   * @returns {SyntaxToken[]}
+   * @memberof GenericNode
+   */
+  public getSpecificTokens(): SyntaxToken[] {
+    return [];
+  }
+
+  public modifyRangeOfEveryNode(lineChange: number): void {
+    if (!this.$range) return;
+    this.$range.moveLines(lineChange);
+
+    // Modify range for every keyword
+    for (const node of this.$keywords) {
+      if (!!node.$range) {
+        node.$range.moveLines(lineChange);
+      }
+    }
+
+    // Modify range for every child
+    for (const child of this.getRelevantChildren()) {
+      child.modifyRangeOfEveryNode(lineChange);
+    }
   }
 }

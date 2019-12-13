@@ -1,5 +1,3 @@
-import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
-import { LintingResponse } from "../rest-interface/response/LintingResponse";
 import {
   Diagnostic,
   DiagnosticSeverity,
@@ -8,12 +6,15 @@ import {
   TextDocumentChangeEvent
 } from "vscode-languageserver";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
+import { UseSchemaNode } from "../data-model/syntax-tree/UseSchemaNode";
+import { SchemaProvider } from "../helper/SchemaProvider";
+import { UseSchemaDataclass } from "../helper/UseSchemaDataclass";
 import { OvServer } from "../OvServer";
 import { ApiProxy } from "../rest-interface/ApiProxy";
+import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
+import { LintingResponse } from "../rest-interface/response/LintingResponse";
 import { Provider } from "./Provider";
 import { SyntaxNotifier } from "./SyntaxNotifier";
-import { SchemaProvider, UseSchemaDataclass } from "../helper/SchemaProvider";
-import { TreeTraversal } from "../helper/TreeTraversal";
 
 /**
  * Provider to handle every response which deals with documents.
@@ -202,9 +203,15 @@ export class DocumentActionProvider extends Provider {
     if (!apiResponse) return;
 
     if (!!useSchema) {
-      TreeTraversal.modifyRangeOfEveryNode(
-        apiResponse.$mainAstNode.$scopes,
-        useSchema.schemaLineIndex + 1
+      apiResponse.$mainAstNode.$scopes.forEach(scope =>
+        scope.modifyRangeOfEveryNode(useSchema.schemaLineIndex + 1)
+      );
+      apiResponse.$mainAstNode.$scopes.unshift(
+        new UseSchemaNode(
+          useSchema.schemaLineIndex,
+          useSchema.useSchemaLine,
+          JSON.stringify(useSchema.schemaText)
+        )
       );
     }
 

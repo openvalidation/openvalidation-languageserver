@@ -1,10 +1,8 @@
 import { Type } from "class-transformer";
 import { Position } from "vscode-languageserver";
 import { AliasHelper } from "../../../../aliases/AliasHelper";
-import { ScopeEnum } from "../../../../enums/ScopeEnum";
 import { HoverContent } from "../../../../helper/HoverContent";
 import { CompletionContainer } from "../../../../provider/code-completion/CompletionContainer";
-import { SyntaxHighlightingCapture } from "../../../../provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { GenericNode } from "../../GenericNode";
 import { IndexRange } from "../../IndexRange";
 import { ConditionNode } from "./ConditionNode";
@@ -92,7 +90,7 @@ export class OperationNode extends ConditionNode {
     this.constrained = value;
   }
 
-  public getChildren(): GenericNode[] {
+  public getRelevantChildren(): GenericNode[] {
     const childList: GenericNode[] = [];
 
     if (!!this.leftOperand) {
@@ -111,7 +109,19 @@ export class OperationNode extends ConditionNode {
   }
 
   public getHoverContent(): HoverContent {
-    const content: HoverContent = new HoverContent(this.$range, "Operation");
+    let operationString: string = "";
+    operationString += !this.$leftOperand ? "" : `${this.$leftOperand.$name} `;
+    operationString += !this.$operator
+      ? ""
+      : `${this.$operator.$lines.join("\n")} `;
+    operationString += !this.$rightOperand ? "" : this.$rightOperand.$name;
+
+    const content: HoverContent = new HoverContent(
+      this.$range,
+      operationString.trim() !== ""
+        ? `Operation: ${operationString}`
+        : "Operation"
+    );
     return content;
   }
 
@@ -121,7 +131,7 @@ export class OperationNode extends ConditionNode {
     }
 
     var fittingChild: GenericNode | null = new TreeTraversal().traverseTree(
-      this.getChildren(),
+      this.getRelevantChildren(),
       position
     );
     if (!!fittingChild) {
@@ -206,104 +216,5 @@ export class OperationNode extends ConditionNode {
     }
 
     return returnString;
-  }
-
-  public getPatternInformation(
-    aliasesHelper: AliasHelper
-  ): SyntaxHighlightingCapture | null {
-    const capture: SyntaxHighlightingCapture | null = new SyntaxHighlightingCapture();
-
-    let leftOperandCapture: SyntaxHighlightingCapture | null = null;
-    let operatorCapture: SyntaxHighlightingCapture | null = null;
-    let rightOperandCapture: SyntaxHighlightingCapture | null = null;
-
-    if (!!this.leftOperand) {
-      leftOperandCapture = this.leftOperand.getPatternInformation(
-        aliasesHelper
-      );
-    }
-
-    if (!!this.operator) {
-      operatorCapture = this.getOperatorCapture(aliasesHelper);
-    }
-
-    if (
-      !!this.rightOperand &&
-      (!this.leftOperand ||
-        !this.leftOperand.$range.includesRange(this.rightOperand.$range))
-    ) {
-      rightOperandCapture = this.rightOperand.getPatternInformation(
-        aliasesHelper
-      );
-    }
-
-    if (
-      !!this.operator &&
-      !!this.leftOperand &&
-      !!this.operator.$range &&
-      !this.operator.$range.startsAfterRange(this.leftOperand.$range)
-    ) {
-      // Then the operator is before the left Operand
-      capture.merge(operatorCapture);
-      capture.merge(leftOperandCapture);
-    } else {
-      capture.merge(leftOperandCapture);
-      capture.merge(operatorCapture);
-    }
-
-    capture.merge(rightOperandCapture);
-
-    return capture;
-  }
-
-  private getOperatorCapture(
-    aliasesHelper: AliasHelper
-  ): SyntaxHighlightingCapture | null {
-    if (!this.operator) {
-      return null;
-    }
-
-    const retunCapture: SyntaxHighlightingCapture = new SyntaxHighlightingCapture();
-    let shadowOperator = this.$lines.join("\n");
-
-    if (!!this.leftOperand) {
-      const operandString = this.leftOperand.$lines.join("\n");
-      const startIndex =
-        shadowOperator.indexOf(operandString) + operandString.length;
-      const endIndex = shadowOperator.length;
-      shadowOperator = shadowOperator.substring(startIndex, endIndex);
-    }
-
-    if (!!this.rightOperand) {
-      const operandString = this.rightOperand.$lines.join("\n");
-      const startIndex = 0;
-      const endIndex = shadowOperator.indexOf(operandString);
-      shadowOperator = shadowOperator.substring(startIndex, endIndex);
-    }
-
-    var operatorLines: string = this.operator.$lines.join("\n");
-
-    // Then the sugar is after the operator
-    if (shadowOperator.trim().indexOf(operatorLines) == 0) {
-      shadowOperator = shadowOperator
-        .replace(new RegExp(operatorLines, "g"), "")
-        .trim();
-      retunCapture.merge(this.operator.getPatternInformation(aliasesHelper));
-      retunCapture.addRegexGroupAndCapture(shadowOperator, ScopeEnum.Empty);
-    } else {
-      shadowOperator = shadowOperator
-        .replace(new RegExp(operatorLines, "g"), "")
-        .trim();
-      var aliases = aliasesHelper.getConstrainedKeywords();
-      var scopeEnum: ScopeEnum = aliases.some(
-        alias => alias.toLowerCase() == shadowOperator.toLowerCase()
-      )
-        ? ScopeEnum.Keyword
-        : ScopeEnum.Empty;
-      retunCapture.addRegexGroupAndCapture(shadowOperator, scopeEnum);
-      retunCapture.merge(this.operator.getPatternInformation(aliasesHelper));
-    }
-
-    return retunCapture;
   }
 }

@@ -5,6 +5,7 @@ import {
   Range
 } from "vscode-languageserver-types";
 import { OvServer } from "../OvServer";
+import { UseSchemaDataclass } from "./UseSchemaDataclass";
 
 export class SchemaProvider {
   public static parseSpecificSchema(
@@ -12,18 +13,16 @@ export class SchemaProvider {
     server: OvServer
   ): UseSchemaDataclass | undefined {
     let splittedText = text.split("\n");
-
-    var path = require("path");
-
-    // TODO: ASK for Schema aliases and look for it
-
+    let path = require("path");
     let schemaPath: string = "";
     let useSchemaLineIndex: number = 0;
     let foundUseSchemaCommand: boolean = false;
     let commentKeyword:
       | string
       | null = server.getAliasHelper().getCommentKeyword();
+    let useSchemaLine: string = "";
 
+    // Iterate threw lines
     for (const line of splittedText) {
       let useSchemaIndex = line.toUpperCase().indexOf("USE SCHEMA");
       let commentSchemaIndex = !commentKeyword
@@ -33,6 +32,7 @@ export class SchemaProvider {
         useSchemaIndex != -1 &&
         (commentSchemaIndex == -1 || useSchemaIndex < commentSchemaIndex)
       ) {
+        useSchemaLine = line;
         schemaPath = line.replace(new RegExp("USE SCHEMA", "ig"), "").trim();
         foundUseSchemaCommand = true;
         break;
@@ -40,6 +40,7 @@ export class SchemaProvider {
       useSchemaLineIndex++;
     }
 
+    // Then we don't have a "USE SCHEMA" command
     if (!foundUseSchemaCommand) return undefined;
 
     let diagnostics: Diagnostic[] = [];
@@ -81,7 +82,7 @@ export class SchemaProvider {
 
     var ovText: string = "";
 
-    // Split first lines
+    // Get lines after the command
     for (let i = useSchemaLineIndex + 1; i < splittedText.length; i++) {
       ovText += splittedText[i];
 
@@ -94,16 +95,8 @@ export class SchemaProvider {
       useSchemaLineIndex,
       schemaText,
       ovText,
-      diagnostics
+      diagnostics,
+      useSchemaLine
     );
   }
-}
-
-export class UseSchemaDataclass {
-  constructor(
-    public schemaLineIndex: number,
-    public schemaText: JSON,
-    public ovText: string,
-    public diagnostics: Diagnostic[]
-  ) {}
 }

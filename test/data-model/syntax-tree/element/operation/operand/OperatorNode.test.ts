@@ -3,9 +3,7 @@ import { Position } from "vscode-languageserver";
 import { OperatorNode } from "../../../../../../src/data-model/syntax-tree/element/operation/operand/OperatorNode";
 import { GenericNode } from "../../../../../../src/data-model/syntax-tree/GenericNode";
 import { IndexRange } from "../../../../../../src/data-model/syntax-tree/IndexRange";
-import { ScopeEnum } from "../../../../../../src/enums/ScopeEnum";
 import { StateTransition } from "../../../../../../src/provider/code-completion/states/StateTransition";
-import { SyntaxHighlightingCapture } from "../../../../../../src/provider/syntax-highlighting/SyntaxHighlightingCapture";
 import { TestInitializer } from "../../../../../Testinitializer";
 
 describe("OperatorNode Tests", () => {
@@ -107,42 +105,6 @@ describe("OperatorNode Tests", () => {
 
     const actual: boolean = operatorNode.isComplete();
     const expected: boolean = true;
-
-    expect(actual).toEqual(expected);
-  });
-
-  test("getPatternInformation with empty lines, expect null", () => {
-    const operator: string = "";
-    const operatorNode: OperatorNode = new OperatorNode(
-      [operator],
-      IndexRange.create(0, 0, 0, operator.length),
-      "Boolean",
-      operator,
-      "Decimal"
-    );
-
-    const actual: SyntaxHighlightingCapture | null = operatorNode.getPatternInformation(
-      initializer.$server.getAliasHelper()
-    );
-    const expected: SyntaxHighlightingCapture | null = null;
-
-    expect(actual).toEqual(expected);
-  });
-
-  test("getPatternInformation with empty lines, expect keyword", () => {
-    const operator: string = "SMALLER THAN";
-    const operatorNode: OperatorNode = new OperatorNode(
-      [operator],
-      IndexRange.create(0, 0, 0, operator.length),
-      "Boolean",
-      operator,
-      "Decimal"
-    );
-
-    const actual: ScopeEnum[] = operatorNode.getPatternInformation(
-      initializer.$server.getAliasHelper()
-    )!.$capture;
-    const expected: ScopeEnum[] = [ScopeEnum.Keyword];
 
     expect(actual).toEqual(expected);
   });

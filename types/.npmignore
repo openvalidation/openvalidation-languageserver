@@ -2,3 +2,4 @@
 .npmignore
 tsconfig.json
 src
+node_modules
