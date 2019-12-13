@@ -187,6 +187,10 @@ export class CompletionProvider extends Provider {
       this.server
     );
 
+    // No completion at the useSchema command
+    if (!!useSchema && useSchema.schemaLineIndex == params.position.line)
+      return null;
+
     const response = await ApiProxy.postCompletionData(
       parseString,
       this.server.restParameter,

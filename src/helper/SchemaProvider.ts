@@ -12,7 +12,7 @@ export class SchemaProvider {
     text: string,
     server: OvServer
   ): UseSchemaDataclass | undefined {
-    let splittedText = text.split("\n");
+    let splittedText = text.split("\r\n");
     let path = require("path");
     let schemaPath: string = "";
     let useSchemaLineIndex: number = 0;
