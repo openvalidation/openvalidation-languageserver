@@ -26,13 +26,13 @@ In addition to the features of the lsp, we provide the following openVALIDATION-
 - [x] Language-Specific-Definitions
 
 Syntax-Highlighting is currently implemented by tokenizing the whole file and calculate the range for specific tokens.
-The list of tokens gets automatically send to the client over the notification-method `textDocument/semanticHighlighting`.
+The list of tokens gets automatically send to the client over the notification-method `openVALIDATION/semanticHighlighting`.
 
-In addition the new generated code gets send to the client over the notification-method `textDocument/generatedCode`. This always happens, when code gets written and the parser generated new code.
+In addition the new generated code gets send to the client over the notification-method `openVALIDATION/generatedCode`. This always happens, when code gets written and the parser generated new code.
 
 Last but not least the language-server is able to handle changes of the schema-, culture- and language-parameters.
-This can be done by the client by sending notifications over the methods `textDocument/schemaChanged`, `textDocument/cultureChanged` and
-`textDocument/languageChanged`. The possible values of these parameters can be seen under the [openVALIDATION-documentation](https://docs.openvalidation.io/api).
+This can be done by the client by sending notifications over the methods `openVALIDATION/schemaChanged`, `openVALIDATION/cultureChanged` and
+`openVALIDATION/languageChanged`. The possible values of these parameters can be seen under the [openVALIDATION-documentation](https://docs.openvalidation.io/api).
 
 ### Providing a dynamic schema
 

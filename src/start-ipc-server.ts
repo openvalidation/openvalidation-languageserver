@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * Enables the starting for an extension e.g. for Vistual Studio Code
+ * Enables the starting for an extension e.g. for Visual Studio Code
  * ------------------------------------------------------------------------------------------ */
 
 import "reflect-metadata";

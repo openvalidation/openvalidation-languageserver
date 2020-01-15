@@ -8,14 +8,14 @@ import { Range } from "vscode-languageserver-protocol";
  */
 export enum NotificationEnum {
   // notifications from the server to the client
-  GeneratedCode = "textDocument/generatedCode",
-  CommentKeywordChanged = "textDocument/aliasesChanges",
-  SemanticHighlighting = "textDocument/semanticHighlighting",
+  GeneratedCode = "openVALIDATION/generatedCode",
+  CommentKeywordChanged = "openVALIDATION/aliasesChanges",
+  SemanticHighlighting = "openVALIDATION/semanticHighlighting",
 
   // notifications from the client to the server
-  CultureChanged = "textDocument/cultureChanged",
-  LanguageChanged = "textDocument/languageChanged",
-  SchemaChanged = "textDocument/schemaChanged"
+  CultureChanged = "openVALIDATION/cultureChanged",
+  LanguageChanged = "openVALIDATION/languageChanged",
+  SchemaChanged = "openVALIDATION/schemaChanged"
 }
 
 /**
