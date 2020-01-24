@@ -65,7 +65,8 @@ describe("ApiProxy Tests with moked axios", () => {
     const response = await ApiProxy.postCompletionData(
       initializer.getDocumentText(),
       initializer.$server.restParameter,
-      initializer.$server.jsonSchema
+      initializer.$server.jsonSchema,
+      initializer.$server.ovDocuments.get("test.ov")
     );
     expect(response).not.toBeNull();
   });

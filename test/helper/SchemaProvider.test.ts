@@ -32,7 +32,7 @@ describe("SchemaProvider Tests", () => {
       | undefined = SchemaProvider.parseSpecificSchema(textParameter, server);
     const expectedResult: UseSchemaDataclass = new UseSchemaDataclass(
       0,
-      JSON.parse("{}"),
+      null,
       " \n",
       [
         Diagnostic.create(
@@ -55,7 +55,7 @@ describe("SchemaProvider Tests", () => {
       | undefined = SchemaProvider.parseSpecificSchema(textParameter, server);
     const expectedResult: UseSchemaDataclass = new UseSchemaDataclass(
       0,
-      JSON.parse("{}"),
+      null,
       " \n",
       [
         Diagnostic.create(
@@ -67,7 +67,9 @@ describe("SchemaProvider Tests", () => {
       "USE SCHEMA blabla"
     );
 
-    expect(actualResult).toEqual(expectedResult);
+    expect(actualResult!.diagnostics[0].range).toEqual(
+      expectedResult.diagnostics[0].range
+    );
   });
 
   test("parseSpecificSchema with commented use-schema, expect undefined", () => {
