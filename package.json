@@ -6,6 +6,11 @@
     "type": "git",
     "url": "https://github.com/openvalidation/openvalidation-languageserver.git"
   },
+  "keywords": [
+    "openVALIDATION",
+    "LSP",
+    "language-server"
+  ],
   "author": {
     "name": "openVALIDATION",
     "email": "validaria@openvalidation.io",
