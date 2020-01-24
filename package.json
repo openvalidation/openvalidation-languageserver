@@ -1,17 +1,20 @@
 {
   "name": "ov-language-server",
-  "version": "0.0.18",
+  "version": "0.1.0",
   "description": "language-server implementation for openVALIDATION",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openvalidation/ov-language-server.git"
+    "url": "https://github.com/openvalidation/openvalidation-languageserver.git"
+  },
+  "author": {
+    "name": "openVALIDATION",
+    "email": "validaria@openvalidation.io",
+    "url": "https://openvalidation.io/"
   },
   "license": "MIT",
   "scripts": {
-    "install": "node install.js",
-    "build": "tsc && npm run copy:jar",
+    "build": "tsc",
     "clean": "rimraf dist",
-    "copy:jar": "ncp ./src/rest-interface/ov-rest.jar ./dist/rest-interface/ov-rest.jar",
     "prepare": "npm run clean && npm run build",
     "start": "npm run build && node ./dist/start-server.js",
     "start:watch": "nodemon",
@@ -21,11 +24,10 @@
   "dependencies": {
     "axios": "^0.19.0",
     "class-transformer": "^0.2.3",
-    "find-java-home": "^1.1.0",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.13",
-    "njre": "^0.2.0",
-    "ov-language-server-types": "0.0.5",
+    "openvalidation-languageserver-backend": "^0.0.1",
+    "ov-language-server-types": "^0.1.0",
     "reflect-metadata": "^0.1.13",
     "typescript": "^3.6.4",
     "typescript-string-operations": "^1.3.1",
@@ -45,7 +47,6 @@
     "express": "^4.15.2",
     "jest": "^24.9.0",
     "make-coverage-badge": "^1.2.0",
-    "ncp": "^2.0.0",
     "nodemon": "^1.19.4",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.0",

@@ -1,6 +1,6 @@
-const njre = require("njre");
+const njb = require("node-java-connector");
 
-njre
+njb
   .install(8, { type: "jre" })
   .then(dir => {})
   .catch(err => {

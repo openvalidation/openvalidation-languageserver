@@ -32,7 +32,7 @@ export class SchemaProvider {
         useSchemaIndex != -1 &&
         (commentSchemaIndex == -1 || useSchemaIndex < commentSchemaIndex)
       ) {
-        useSchemaLine = line;
+        useSchemaLine = line.replace("\r", "");
         schemaPath = line.replace(new RegExp("USE SCHEMA", "ig"), "").trim();
         foundUseSchemaCommand = true;
         break;
@@ -59,7 +59,7 @@ export class SchemaProvider {
       );
     }
 
-    let schemaText: JSON = server.jsonSchema;
+    let schemaText: JSON | null = null;
     if (schemaPath.trim() !== "") {
       try {
         let absolutePath = path.resolve(schemaPath);

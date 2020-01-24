@@ -86,46 +86,6 @@ export class DocumentActionProvider extends Provider {
   }
 
   /**
-   * Generates the diagnostics for the given document
-   *
-   * @private
-   * @param {(LintingResponse | null)} apiResponse response of the REST-Api
-   * @param {OvDocument} ovDocument document das should be validated
-   * @returns {Diagnostic[]}
-   * @memberof DocumentActionProvider
-   */
-  public generateDiagnostics(
-    apiResponse: LintingResponse | null,
-    useSchemaDataclass?: UseSchemaDataclass
-  ): Diagnostic[] {
-    if (apiResponse == null) {
-      return [];
-    }
-
-    let lineModification: number = !useSchemaDataclass
-      ? 0
-      : useSchemaDataclass.schemaLineIndex + 1;
-
-    const diagnostics: Diagnostic[] = [];
-    for (const error of apiResponse.$errors) {
-      const diagnosticRange: Range = !error.$range
-        ? Range.create(0, 0, 0, 1)
-        : error.$range.moveLines(lineModification).asRange();
-      const diagnostic: Diagnostic = Diagnostic.create(
-        diagnosticRange,
-        error.$message
-      );
-      diagnostic.severity = DiagnosticSeverity.Error;
-      diagnostics.push(diagnostic);
-    }
-
-    if (!!useSchemaDataclass)
-      diagnostics.push(...useSchemaDataclass.diagnostics);
-
-    return diagnostics;
-  }
-
-  /**
    * Deletes the diagnostics completely
    *
    * @private
@@ -186,7 +146,7 @@ export class DocumentActionProvider extends Provider {
     var schema = this.server.jsonSchema;
     if (!!useSchema) {
       documentText = useSchema.ovText;
-      schema = useSchema.schemaText;
+      if (!!useSchema.schemaText) schema = useSchema.schemaText;
     }
 
     try {
@@ -210,7 +170,7 @@ export class DocumentActionProvider extends Provider {
         new UseSchemaNode(
           useSchema.schemaLineIndex,
           useSchema.useSchemaLine,
-          JSON.stringify(useSchema.schemaText)
+          useSchema.schemaText
         )
       );
     }
@@ -249,6 +209,46 @@ export class DocumentActionProvider extends Provider {
 
     if (!codeGenerationResponse) return;
     this.syntaxNotifier.sendGeneratedCodeIfNecessary(codeGenerationResponse);
+  }
+
+  /**
+   * Generates the diagnostics for the given document
+   *
+   * @private
+   * @param {(LintingResponse | null)} apiResponse response of the REST-Api
+   * @param {OvDocument} ovDocument document das should be validated
+   * @returns {Diagnostic[]}
+   * @memberof DocumentActionProvider
+   */
+  public generateDiagnostics(
+    apiResponse: LintingResponse | null,
+    useSchemaDataclass?: UseSchemaDataclass
+  ): Diagnostic[] {
+    if (apiResponse == null) {
+      return [];
+    }
+
+    let lineModification: number = !useSchemaDataclass
+      ? 0
+      : useSchemaDataclass.schemaLineIndex + 1;
+
+    const diagnostics: Diagnostic[] = [];
+    for (const error of apiResponse.$errors) {
+      const diagnosticRange: Range = !error.$range
+        ? Range.create(0, 0, 0, 1)
+        : error.$range.moveLines(lineModification).asRange();
+      const diagnostic: Diagnostic = Diagnostic.create(
+        diagnosticRange,
+        error.$message
+      );
+      diagnostic.severity = DiagnosticSeverity.Error;
+      diagnostics.push(diagnostic);
+    }
+
+    if (!!useSchemaDataclass)
+      diagnostics.push(...useSchemaDataclass.diagnostics);
+
+    return diagnostics;
   }
 
   /**

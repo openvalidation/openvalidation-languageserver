@@ -1,11 +1,11 @@
 /* --------------------------------------------------------------------------------------------
- * Enables the starting for an extension e.g. for Vistual Studio Code
+ * Enables the starting for an extension e.g. for Visual Studio Code
  * ------------------------------------------------------------------------------------------ */
 
 import "reflect-metadata";
 import { createConnection, ProposedFeatures } from "vscode-languageserver";
 import { OvServer } from "./OvServer";
-import { startBackend } from "./start-backend";
+import { startBackend } from "openvalidation-languageserver-backend";
 import { validateDocuments } from "./server-launcher";
 
 // Starts the Java-Backend in a separate file

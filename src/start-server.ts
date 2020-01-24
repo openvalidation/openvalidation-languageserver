@@ -10,7 +10,7 @@ import * as url from "url";
 import * as rpc from "vscode-ws-jsonrpc";
 import * as ws from "ws";
 import { startServer, OvServer } from "./OvServer";
-import { startBackend } from "./start-backend";
+import { startBackend } from "openvalidation-languageserver-backend";
 import { validateDocuments } from "./server-launcher";
 
 // Starts the Java-Backend in a separate file

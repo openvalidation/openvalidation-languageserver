@@ -1,0 +1,33 @@
+{
+  "name": "openvalidation-languageserver-backend",
+  "version": "0.0.1",
+  "description": "automated starting of the openvalidation-rest module",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openvalidation/openvalidation-languageserver.git"
+  },
+  "scripts": {
+    "install": "node install.js",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "openVALIDATION",
+    "REST",
+    "language-server"
+  ],
+  "author": {
+    "name": "openVALIDATION",
+    "email": "validaria@openvalidation.io",
+    "url": "https://openvalidation.io/"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "node-java-connector": "^0.1.1",
+    "typescript": "^3.7.4"
+  },
+  "devDependencies": {
+    "@types/node": "^13.1.7"
+  }
+}
