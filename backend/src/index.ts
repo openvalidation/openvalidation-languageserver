@@ -4,10 +4,7 @@ import { executeJar } from "node-java-connector";
 const path = require("path");
 
 export async function startBackend(): Promise<ChildProcess> {
-  var relativePath = path.join(
-    path.join(path.dirname(__dirname)),
-    "../java/ov-rest.jar"
-  );
+  var relativePath = path.join(path.dirname(__filename), "../java/ov-rest.jar");
 
   var output = await executeJar(relativePath);
   if (!!output.stderr) {

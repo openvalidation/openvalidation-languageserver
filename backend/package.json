@@ -1,6 +1,6 @@
 {
   "name": "openvalidation-languageserver-backend",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "automated starting of the openvalidation-rest module",
   "main": "dist/index.js",
   "repository": {
@@ -10,7 +10,7 @@
   "scripts": {
     "install": "node install.js",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepare": "npm run build"
   },
   "keywords": [
     "openVALIDATION",
