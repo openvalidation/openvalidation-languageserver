@@ -1,9 +1,6 @@
 import * as fs from "fs";
-import {
-  Diagnostic,
-  DiagnosticSeverity,
-  Range
-} from "vscode-languageserver-types";
+import * as path from "path";
+import { Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver-types";
 import { OvServer } from "../OvServer";
 import { UseSchemaDataclass } from "./UseSchemaDataclass";
 
@@ -13,7 +10,6 @@ export class SchemaProvider {
     server: OvServer
   ): UseSchemaDataclass | undefined {
     let splittedText = text.split("\n");
-    let path = require("path");
     let schemaPath: string = "";
     let useSchemaLineIndex: number = 0;
     let foundUseSchemaCommand: boolean = false;
@@ -62,7 +58,8 @@ export class SchemaProvider {
     let schemaText: JSON | null = null;
     if (schemaPath.trim() !== "") {
       try {
-        let absolutePath = path.resolve(schemaPath);
+        // the path of the file is required, because it otherwise wouldn't be relative
+        let absolutePath = path.resolve(path.dirname(__filename), schemaPath);
         schemaText = JSON.parse(fs.readFileSync(absolutePath, "utf8"));
       } catch (err) {
         diagnostics.push(

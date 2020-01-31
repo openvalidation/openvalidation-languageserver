@@ -1,7 +1,7 @@
 import { ChildProcess } from "child_process";
 import { executeJar } from "node-java-connector";
+import * as path from "path";
 
-const path = require("path");
 const port = 31057;
 
 export async function startBackend(): Promise<ChildProcess> {

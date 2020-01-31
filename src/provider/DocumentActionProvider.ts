@@ -18,7 +18,7 @@ import { SyntaxNotifier } from "./SyntaxNotifier";
 
 /**
  * Provider to handle every response which deals with documents.
- * In addition, it handels the `onDidOpen`, `onDidChangeContent` and `onDidClose` requests
+ * In addition, it handles the `onDidOpen`, `onDidChangeContent` and `onDidClose` requests
  *
  * @export
  * @class DocumentActionProvider
