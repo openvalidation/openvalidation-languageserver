@@ -10,7 +10,8 @@
   "scripts": {
     "install": "node install.js",
     "build": "tsc",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "test": "jest"
   },
   "keywords": [
     "openVALIDATION",
@@ -24,6 +25,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "jest": "^25.1.0",
     "node-java-connector": "^0.1.3",
     "typescript": "^3.7.4"
   },
