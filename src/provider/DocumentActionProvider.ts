@@ -15,6 +15,7 @@ import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
 import { LintingResponse } from "../rest-interface/response/LintingResponse";
 import { Provider } from "./Provider";
 import { SyntaxNotifier } from "./SyntaxNotifier";
+import { URI } from "vscode-uri";
 
 /**
  * Provider to handle every response which deals with documents.
@@ -130,17 +131,22 @@ export class DocumentActionProvider extends Provider {
       return;
     }
 
-    return this.validateText(uri, document.getText());
+    return this.validateText(uri, document);
   }
 
-  private async validateText(uri: string, documentText: string): Promise<void> {
+  private async validateText(
+    uri: string,
+    document: TextDocument
+  ): Promise<void> {
     let apiResponse: LintingResponse | null = null;
+    let documentText: string = document.getText();
 
     const useSchema:
       | UseSchemaDataclass
       | undefined = SchemaProvider.parseSpecificSchema(
       documentText,
-      this.server
+      this.server,
+      URI.parse(document.uri)
     );
 
     var schema = this.server.jsonSchema;

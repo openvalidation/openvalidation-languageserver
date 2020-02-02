@@ -7,6 +7,7 @@ import {
   Range,
   TextDocument
 } from "vscode-languageserver";
+import { URI } from "vscode-uri";
 import { Variable } from "../data-model/syntax-tree/Variable";
 import { CompletionKeyEnum } from "../enums/CompletionKeyEnum";
 import { SchemaProvider } from "../helper/SchemaProvider";
@@ -91,7 +92,7 @@ export class CompletionProvider extends Provider {
    * It tries to find children for the word at the current position and returns them
    *
    * @private
-   * @param {CompletionParams} params parameter that contains the textdocument and the position
+   * @param {CompletionParams} params parameter that contains the text document and the position
    * @returns {(Promise<CompletionItem[] | null>)} items with the found children, null in case of an error
    * @memberof CompletionProvider
    */
@@ -120,7 +121,7 @@ export class CompletionProvider extends Provider {
    * It returns an item for every variable or schema-attribute that has the same datatype than the current expression
    *
    * @private
-   * @param {CompletionParams} params parameter that contains the textdocument and the position
+   * @param {CompletionParams} params parameter that contains the text document and the position
    * @returns {(Promise<CompletionItem[] | null>)} items that has been found, null in case of an error
    * @memberof CompletionProvider
    */
@@ -155,7 +156,7 @@ export class CompletionProvider extends Provider {
    * Parsed the current element and tries to get completion-state from it
    *
    * @private
-   * @param {CompletionParams} params parameter that contains the textdocument and the position
+   * @param {CompletionParams} params parameter that contains the text document and the position
    * @returns {(Promise<CompletionItem[] | null>)} generated completion items, null in case of an error
    * @memberof CompletionProvider
    */
@@ -184,7 +185,8 @@ export class CompletionProvider extends Provider {
       | UseSchemaDataclass
       | undefined = SchemaProvider.parseSpecificSchema(
       document.getText(),
-      this.server
+      this.server,
+      URI.parse(document.uri)
     );
 
     // No completion at the useSchema command

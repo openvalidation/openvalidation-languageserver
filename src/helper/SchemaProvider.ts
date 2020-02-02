@@ -1,13 +1,19 @@
 import * as fs from "fs";
 import * as path from "path";
-import { Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver-types";
+import {
+  Diagnostic,
+  DiagnosticSeverity,
+  Range
+} from "vscode-languageserver-types";
+import { URI } from "vscode-uri";
 import { OvServer } from "../OvServer";
 import { UseSchemaDataclass } from "./UseSchemaDataclass";
 
 export class SchemaProvider {
   public static parseSpecificSchema(
     text: string,
-    server: OvServer
+    server: OvServer,
+    documentUri: URI
   ): UseSchemaDataclass | undefined {
     let splittedText = text.split("\n");
     let schemaPath: string = "";
@@ -59,7 +65,7 @@ export class SchemaProvider {
     if (schemaPath.trim() !== "") {
       try {
         // the path of the file is required, because it otherwise wouldn't be relative
-        let absolutePath = path.resolve(path.dirname(__filename), schemaPath);
+        let absolutePath = path.resolve(documentUri.path, schemaPath);
         schemaText = JSON.parse(fs.readFileSync(absolutePath, "utf8"));
       } catch (err) {
         diagnostics.push(

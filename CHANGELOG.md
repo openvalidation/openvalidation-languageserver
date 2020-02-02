@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.4] - 2020-01-24
+
+### Changed
+
+- Path in `USE SCHEMA` can now be relative from the parsed file or absolute
+
 ## [0.1.3] - 2020-01-24
 
 ### Changed
