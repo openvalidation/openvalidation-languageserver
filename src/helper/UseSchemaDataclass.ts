@@ -6,6 +6,7 @@ export class UseSchemaDataclass {
     public schemaText: JSON | null,
     public ovText: string,
     public diagnostics: Diagnostic[],
-    public useSchemaLine: string
+    public useSchemaLine: string,
+    public schemaPath: string
   ) {}
 }

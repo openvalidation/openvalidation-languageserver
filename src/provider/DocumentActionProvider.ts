@@ -176,7 +176,8 @@ export class DocumentActionProvider extends Provider {
         new UseSchemaNode(
           useSchema.schemaLineIndex,
           useSchema.useSchemaLine,
-          useSchema.schemaText
+          useSchema.schemaText,
+          useSchema.schemaPath
         )
       );
     }

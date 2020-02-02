@@ -1,11 +1,13 @@
 import {
   DocumentSymbolParams,
   SymbolInformation,
-  SymbolKind
+  SymbolKind,
+  Range
 } from "vscode-languageserver";
 import { Location } from "vscode-languageserver";
 import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
+import { UseSchemaNode } from "../data-model/syntax-tree/UseSchemaNode";
 
 /**
  * Response-Provider for ``onDocumentSymbol``
@@ -68,6 +70,21 @@ export class DocumentSymbolProvider extends Provider {
         symbolInformationList.push(symbolInformation);
       }
     });
+
+    // Symbol for navigation to schema
+    if (ovDocument.$elementManager.$elements[0] instanceof UseSchemaNode) {
+      const useSchemaNode: UseSchemaNode = ovDocument.$elementManager
+        .$elements[0] as UseSchemaNode;
+      const symbolInformation: SymbolInformation = {
+        name: "Schema",
+        kind: SymbolKind.File,
+        location: Location.create(
+          useSchemaNode.filePath,
+          Range.create(0, 0, 0, 0)
+        )
+      };
+      symbolInformationList.push(symbolInformation);
+    }
 
     return symbolInformationList;
   }

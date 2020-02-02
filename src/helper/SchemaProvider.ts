@@ -62,10 +62,11 @@ export class SchemaProvider {
     }
 
     let schemaText: JSON | null = null;
+    let absolutePath: string = "";
     if (schemaPath.trim() !== "") {
       try {
         // the path of the file is required, because it otherwise wouldn't be relative
-        let absolutePath = getPathFromUriAndString(documentUri, schemaPath);
+        absolutePath = getPathFromUriAndString(documentUri, schemaPath);
         schemaText = JSON.parse(fs.readFileSync(absolutePath, "utf8"));
       } catch (err) {
         diagnostics.push(
@@ -99,7 +100,8 @@ export class SchemaProvider {
       schemaText,
       ovText,
       diagnostics,
-      useSchemaLine
+      useSchemaLine,
+      absolutePath
     );
   }
 }

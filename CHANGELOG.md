@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- workspace-symbol for schema. This enables navigation to the used schema
+
 ## [0.1.4] - 2020-02-02
 
-- Bug Fix
+- Bug Fixing
 
 ## [0.1.4] - 2020-02-02
 
