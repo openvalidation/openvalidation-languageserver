@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import * as path from "path";
+import { getPathFromUriAndString } from "./PathHelper";
 import {
   Diagnostic,
   DiagnosticSeverity,
@@ -65,7 +65,7 @@ export class SchemaProvider {
     if (schemaPath.trim() !== "") {
       try {
         // the path of the file is required, because it otherwise wouldn't be relative
-        let absolutePath = path.resolve(documentUri.path, schemaPath);
+        let absolutePath = getPathFromUriAndString(documentUri, schemaPath);
         schemaText = JSON.parse(fs.readFileSync(absolutePath, "utf8"));
       } catch (err) {
         diagnostics.push(

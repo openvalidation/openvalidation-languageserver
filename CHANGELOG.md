@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.1.4] - 2020-01-24
+## [0.1.4] - 2020-02-02
+
+- Bug Fix
+
+## [0.1.4] - 2020-02-02
 
 ### Changed
 
