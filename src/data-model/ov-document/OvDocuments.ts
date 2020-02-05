@@ -30,13 +30,24 @@ export class OvDocuments {
   }
 
   /**
+   * Returns the file with the given identifier
+   *
+   * @param {string} uri identifier of the file
+   * @returns
+   * @memberof OvDocuments
+   */
+  public all(): OvDocument[] {
+    return Array.from(this.ovDocuments.values());
+  }
+
+  /**
    * Saves the given file under the given identifier
    *
    * @param {string} uri identifier of the file
    * @param {OvDocument} document document which should be saved
    * @memberof OvDocuments
    */
-  public addOrOverrideOvDocument(uri: string, document: OvDocument) {
-    this.ovDocuments.set(uri, document);
+  public addOrOverrideOvDocument(document: OvDocument) {
+    this.ovDocuments.set(document.$documentUri, document);
   }
 }

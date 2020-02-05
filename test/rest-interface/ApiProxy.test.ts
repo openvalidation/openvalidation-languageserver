@@ -66,7 +66,7 @@ describe("ApiProxy Tests with moked axios", () => {
       initializer.getDocumentText(),
       initializer.$server.restParameter,
       initializer.$server.jsonSchema,
-      initializer.$server.ovDocuments.get("test.ov")
+      undefined
     );
     expect(response).not.toBeNull();
   });

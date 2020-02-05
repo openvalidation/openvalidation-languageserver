@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- workspace-symbol for schema. This enables navigation to the used schema
+- Goto Symbol for schema. This enables navigation to the used schema
+- Support for `workspace/symbol` request of the lsp
 
 ## [0.1.4] - 2020-02-02
 

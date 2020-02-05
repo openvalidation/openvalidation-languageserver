@@ -7,7 +7,6 @@ import {
 import { OvServer } from "../OvServer";
 import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
 import { LintingResponse } from "../rest-interface/response/LintingResponse";
-import { UseSchemaNode } from "../data-model/syntax-tree/UseSchemaNode";
 
 /**
  * Generates the parameter of the notification ``textDocument/semanticHighlighting`` and ``textDocument/generatedCode``
@@ -41,9 +40,7 @@ export class SyntaxNotifier {
     // If this is the case, we have a parsing-error
     if (
       !apiResponse.$mainAstNode ||
-      apiResponse.$mainAstNode.$scopes.length === 0 ||
-      (apiResponse.$mainAstNode.$scopes.length === 1 &&
-        apiResponse.$mainAstNode.$scopes[0] instanceof UseSchemaNode)
+      apiResponse.$mainAstNode.$scopes.length === 0
     ) {
       return;
     }

@@ -1,5 +1,5 @@
 import { SyntaxToken } from "ov-language-server-types";
-import { Position } from "vscode-languageserver";
+import { Position, Location, Range } from "vscode-languageserver";
 import { AliasHelper } from "../../aliases/AliasHelper";
 import { ScopeEnum } from "../../enums/ScopeEnum";
 import { HoverContent } from "../../helper/HoverContent";
@@ -37,6 +37,10 @@ export class UseSchemaNode extends GenericNode {
     return "file://" + this.schemaPath;
   }
 
+  public get location(): Location {
+    return Location.create(this.filePath, Range.create(0, 0, 0, 0));
+  }
+
   public getRelevantChildren(): GenericNode[] {
     const childList: GenericNode[] = [];
     return childList;
@@ -50,7 +54,7 @@ export class UseSchemaNode extends GenericNode {
     return content;
   }
 
-  public getCompletionContainer(range: Position): CompletionContainer {
+  public getCompletionContainer(position: Position): CompletionContainer {
     return CompletionContainer.init().emptyTransition();
   }
 

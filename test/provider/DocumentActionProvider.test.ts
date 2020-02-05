@@ -105,14 +105,16 @@ describe("DocumentAction provider test", () => {
 
   test("generateDocumentWithAst with empty response, expect undefined", () => {
     const actual: OvDocument | undefined = provider["generateDocumentWithAst"](
-      testInitializer.mockEmptyLintingResponse()
+      testInitializer.mockEmptyLintingResponse(),
+      "test.ov"
     );
     expect(actual).toEqual(undefined);
   });
 
   test("generateDocumentWithAst with not empty response, expect ovDocument", () => {
     const actual: OvDocument | undefined = provider["generateDocumentWithAst"](
-      testInitializer.mockNotEmptyLintingResponse()
+      testInitializer.mockNotEmptyLintingResponse(),
+      "test.ov"
     );
     expect(actual).not.toEqual(undefined);
   });

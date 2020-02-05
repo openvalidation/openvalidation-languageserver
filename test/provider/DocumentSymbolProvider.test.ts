@@ -55,4 +55,25 @@ describe("DocumentSymbol provider test", () => {
 
     expect(actual).toEqual(expected);
   });
+
+  test("findDocumentSymbols with query that fits with no variable, expect empty list", () => {
+    const expected: SymbolInformation[] = [];
+
+    const input = {
+      query: "XYZ"
+    };
+    const actual = provider.findWorkspaceSymbols(input);
+
+    expect(actual).toEqual(expected);
+  });
+
+  test("findDocumentSymbols with query that fits with no variable, expect empty list", () => {
+    const input = {
+      query: "Mind"
+    };
+    const actual = provider.findWorkspaceSymbols(input);
+
+    expect(actual.length).toEqual(1);
+    expect(actual[0].name).toEqual("Minderjährig");
+  });
 });

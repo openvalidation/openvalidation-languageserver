@@ -3,6 +3,7 @@ import { OvServer } from "../../src/OvServer";
 import { SchemaProvider } from "../../src/helper/SchemaProvider";
 import { UseSchemaDataclass } from "../../src/helper/UseSchemaDataclass";
 import { Diagnostic, Range, DiagnosticSeverity } from "vscode-languageserver";
+import { URI } from "vscode-uri";
 
 describe("SchemaProvider Tests", () => {
   let initializer: TestInitializer;
@@ -18,7 +19,11 @@ describe("SchemaProvider Tests", () => {
 
     const actualResult:
       | UseSchemaDataclass
-      | undefined = SchemaProvider.parseSpecificSchema(textParameter, server);
+      | undefined = SchemaProvider.parseSpecificSchema(
+      textParameter,
+      server,
+      URI.parse("./test.ov")
+    );
     const expectedResult: UseSchemaDataclass | undefined = undefined;
 
     expect(actualResult).toEqual(expectedResult);
@@ -29,7 +34,11 @@ describe("SchemaProvider Tests", () => {
 
     const actualResult:
       | UseSchemaDataclass
-      | undefined = SchemaProvider.parseSpecificSchema(textParameter, server);
+      | undefined = SchemaProvider.parseSpecificSchema(
+      textParameter,
+      server,
+      URI.parse("./test.ov")
+    );
     const expectedResult: UseSchemaDataclass = new UseSchemaDataclass(
       0,
       null,
@@ -41,7 +50,8 @@ describe("SchemaProvider Tests", () => {
           DiagnosticSeverity.Error
         )
       ],
-      "USE SCHEMA"
+      "USE SCHEMA",
+      ""
     );
 
     expect(actualResult).toEqual(expectedResult);
@@ -52,7 +62,11 @@ describe("SchemaProvider Tests", () => {
 
     const actualResult:
       | UseSchemaDataclass
-      | undefined = SchemaProvider.parseSpecificSchema(textParameter, server);
+      | undefined = SchemaProvider.parseSpecificSchema(
+      textParameter,
+      server,
+      URI.parse("./test.ov")
+    );
     const expectedResult: UseSchemaDataclass = new UseSchemaDataclass(
       0,
       null,
@@ -64,7 +78,8 @@ describe("SchemaProvider Tests", () => {
           DiagnosticSeverity.Error
         )
       ],
-      "USE SCHEMA blabla"
+      "USE SCHEMA blabla",
+      "/test.ov/"
     );
 
     expect(actualResult!.diagnostics[0].range).toEqual(
@@ -77,7 +92,11 @@ describe("SchemaProvider Tests", () => {
 
     const actualResult:
       | UseSchemaDataclass
-      | undefined = SchemaProvider.parseSpecificSchema(textParameter, server);
+      | undefined = SchemaProvider.parseSpecificSchema(
+      textParameter,
+      server,
+      URI.parse("./test.ov")
+    );
     const expectedResult: UseSchemaDataclass | undefined = undefined;
 
     expect(actualResult).toEqual(expectedResult);

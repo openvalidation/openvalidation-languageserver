@@ -3,6 +3,7 @@ import { CommentNode } from "../syntax-tree/element/CommentNode";
 import { RuleNode } from "../syntax-tree/element/RuleNode";
 import { VariableNode } from "../syntax-tree/element/VariableNode";
 import { GenericNode } from "../syntax-tree/GenericNode";
+import { UseSchemaNode } from "../syntax-tree/UseSchemaNode";
 
 /**
  * Saves all elements of an OvDocument and provides a few methods
@@ -64,6 +65,14 @@ export class OvElementManager {
     return this.elements.filter(
       element => element instanceof RuleNode
     ) as RuleNode[];
+  }
+
+  public getUseSchemaNode(): UseSchemaNode | null {
+    // We assume, that the first node should be the "Use Scheme"
+    if (this.$elements[0] instanceof UseSchemaNode) {
+      return this.$elements[0] as UseSchemaNode;
+    }
+    return null;
   }
 
   /**

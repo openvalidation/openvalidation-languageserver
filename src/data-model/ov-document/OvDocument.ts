@@ -14,6 +14,31 @@ import { OvElementManager } from "./OvElementManager";
  * @class OvDocument
  */
 export class OvDocument {
+  private elementManager: OvElementManager;
+  private declarations: Variable[];
+  private aliasesHelper: AliasHelper;
+  private documentUri: string;
+
+  /**
+   * Creates an instance of OvDocument.
+   * @param {GenericNode[]} astElements parsed elements
+   * @param {Variable[]} declarations found variables inside the document
+   * @param {AliasHelper} aliasesHelper helper that contains the available aliases
+   * @memberof OvDocument
+   */
+  constructor(
+    astElements: GenericNode[],
+    declarations: Variable[],
+    aliasesHelper: AliasHelper,
+    textDocumentUri: string
+  ) {
+    this.elementManager = new OvElementManager();
+    this.declarations = declarations;
+    this.aliasesHelper = aliasesHelper;
+    this.documentUri = textDocumentUri;
+    this.create(astElements);
+  }
+
   public get $declarations(): Variable[] {
     return this.declarations;
   }
@@ -26,24 +51,8 @@ export class OvDocument {
     return this.aliasesHelper;
   }
 
-  private elementManager: OvElementManager;
-  private declarations: Variable[];
-
-  /**
-   * Creates an instance of OvDocument.
-   * @param {GenericNode[]} astElements parsed elements
-   * @param {Variable[]} declarations found variables inside the document
-   * @param {AliasHelper} aliasesHelper helper that contains the available aliases
-   * @memberof OvDocument
-   */
-  constructor(
-    astElements: GenericNode[],
-    declarations: Variable[],
-    private aliasesHelper: AliasHelper
-  ) {
-    this.elementManager = new OvElementManager();
-    this.declarations = declarations;
-    this.create(astElements);
+  public get $documentUri(): string {
+    return this.documentUri;
   }
 
   /**

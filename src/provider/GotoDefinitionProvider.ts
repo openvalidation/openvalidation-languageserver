@@ -52,6 +52,19 @@ export class GotoDefinitionProvider extends Provider {
       return [];
     }
 
+    const useSchemaNode = ovDocument.$elementManager.getUseSchemaNode();
+    if (useSchemaNode != null) {
+      const navigationRange = Range.create(0, 0, 0, 0);
+      const schemaRange = useSchemaNode.$range.asRange();
+      const location = LocationLink.create(
+        useSchemaNode.filePath,
+        navigationRange,
+        navigationRange,
+        schemaRange
+      );
+      return [location];
+    }
+
     const referenceTuple = ovDocument.getStringByPosition(params.position);
     if (!referenceTuple) {
       return [];

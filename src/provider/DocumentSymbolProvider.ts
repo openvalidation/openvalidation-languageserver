@@ -2,12 +2,13 @@ import {
   DocumentSymbolParams,
   SymbolInformation,
   SymbolKind,
-  Range
+  WorkspaceSymbolParams
 } from "vscode-languageserver";
 import { Location } from "vscode-languageserver";
 import { OvServer } from "../OvServer";
 import { Provider } from "./Provider";
-import { UseSchemaNode } from "../data-model/syntax-tree/UseSchemaNode";
+import { OvDocument } from "src/data-model/ov-document/OvDocument";
+import { VariableNameNode } from "src/data-model/syntax-tree/element/VariableNameNode";
 
 /**
  * Response-Provider for ``onDocumentSymbol``
@@ -39,6 +40,9 @@ export class DocumentSymbolProvider extends Provider {
     this.connection.onDocumentSymbol(params =>
       this.findDocumentSymbols(params)
     );
+    this.connection.onWorkspaceSymbol(params =>
+      this.findWorkspaceSymbols(params)
+    );
   }
 
   /**
@@ -57,35 +61,56 @@ export class DocumentSymbolProvider extends Provider {
       return [];
     }
 
+    return this.getSymbolInformation(ovDocument);
+  }
+
+  public findWorkspaceSymbols(
+    params: WorkspaceSymbolParams
+  ): SymbolInformation[] {
+    const relevantDocuments: OvDocument[] = this.server.ovDocuments.all();
+    const symbolsPerDocument: SymbolInformation[][] = relevantDocuments.map(
+      document => this.getSymbolInformation(document, params.query)
+    );
+    return symbolsPerDocument.reduce((prev, curr) => prev.concat(curr));
+  }
+
+  private getSymbolInformation(ovDocument: OvDocument, query?: string) {
     const symbolInformationList: SymbolInformation[] = [];
 
     ovDocument.$elementManager.getVariables().forEach(variable => {
       const variableNameRange = variable.getRangeOfVariableName();
-      if (!!variable.$nameNode) {
+      if (this.noQuerySetOrNameMatchesQuery(variable.$nameNode, query)) {
         const symbolInformation: SymbolInformation = {
-          name: variable.$nameNode.$name,
+          name: variable.$nameNode!.$name,
           kind: SymbolKind.Variable,
-          location: Location.create(params.textDocument.uri, variableNameRange)
+          location: Location.create(ovDocument.$documentUri, variableNameRange)
         };
         symbolInformationList.push(symbolInformation);
       }
     });
 
     // Symbol for navigation to schema
-    if (ovDocument.$elementManager.$elements[0] instanceof UseSchemaNode) {
-      const useSchemaNode: UseSchemaNode = ovDocument.$elementManager
-        .$elements[0] as UseSchemaNode;
+    const useSchemaNode = ovDocument.$elementManager.getUseSchemaNode();
+    if (useSchemaNode != null) {
       const symbolInformation: SymbolInformation = {
         name: "Schema",
         kind: SymbolKind.File,
-        location: Location.create(
-          useSchemaNode.filePath,
-          Range.create(0, 0, 0, 0)
-        )
+        location: useSchemaNode.location
       };
       symbolInformationList.push(symbolInformation);
     }
 
     return symbolInformationList;
+  }
+
+  private noQuerySetOrNameMatchesQuery(
+    nameNode: VariableNameNode | null,
+    query?: string
+  ): boolean {
+    if (!nameNode) return false;
+
+    return (
+      !query || nameNode.$name.toLowerCase().indexOf(query.toLowerCase()) != -1
+    );
   }
 }

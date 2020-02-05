@@ -2,7 +2,7 @@ import * as rpc from "vscode-ws-jsonrpc";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { plainToClass } from "class-transformer";
-import { createConnection } from "vscode-languageserver";
+import { createConnection, IConnection } from "vscode-languageserver";
 import { AliasKey } from "../src/aliases/AliasKey";
 import { OvDocument } from "../src/data-model/ov-document/OvDocument";
 import { RuleNode } from "../src/data-model/syntax-tree/element/RuleNode";
@@ -34,6 +34,10 @@ import { ISchemaType } from "../src/rest-interface/schema/ISchemaType";
 export class TestInitializer {
   public get $server(): OvServer {
     return this.server;
+  }
+
+  public get $connection(): IConnection {
+    return this.connection;
   }
 
   public get completionProvider(): CompletionProvider {
@@ -73,6 +77,7 @@ export class TestInitializer {
   }
 
   private server: OvServer;
+  private connection: IConnection;
   private mockAdapter: MockAdapter = new MockAdapter(axios);
 
   private aliasesJson = {
@@ -207,13 +212,12 @@ export class TestInitializer {
     const socket: rpc.IWebSocket = this.getDummySocket();
     const reader = new rpc.WebSocketMessageReader(socket);
     const writer = new rpc.WebSocketMessageWriter(socket);
-    const connection = createConnection(reader, writer);
-    this.server = new OvServer(connection);
+    this.connection = createConnection(reader, writer);
+    this.server = new OvServer(this.connection);
 
     if (!fullOvDocument) {
       this.server.ovDocuments.addOrOverrideOvDocument(
-        "test.ov",
-        new OvDocument([], [], this.server.getAliasHelper())
+        new OvDocument([], [], this.server.getAliasHelper(), "test.ov")
       );
     } else {
       this.server.getAliasHelper().$aliases = this.getAliases();
@@ -231,9 +235,10 @@ export class TestInitializer {
       const document = new OvDocument(
         this.getCorrectParseResult().$scopes,
         this.getCorrectParseResult().$declarations,
-        this.server.getAliasHelper()
+        this.server.getAliasHelper(),
+        "test.ov"
       );
-      this.server.ovDocuments.addOrOverrideOvDocument("test.ov", document);
+      this.server.ovDocuments.addOrOverrideOvDocument(document);
     }
   }
 
@@ -244,6 +249,22 @@ export class TestInitializer {
     };
 
     return json;
+  }
+
+  public mockLintingResponseWithEmptyMainAst(): LintingResponse {
+    const json = {
+      mainAstNode: {
+        scopes: [],
+        declarations: []
+      },
+      schema: {
+        dataProperties: [],
+        complexData: []
+      }
+    };
+
+    const response: LintingResponse = plainToClass(LintingResponse, json);
+    return response;
   }
 
   public mockEmptyLintingResponse(): LintingResponse {

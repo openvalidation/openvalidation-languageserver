@@ -28,22 +28,22 @@ describe("OvDocument Tests", () => {
     if (!!tempDocument) {
       ovDocument = tempDocument;
     } else {
-      ovDocument = new OvDocument([], [], new AliasHelper());
+      ovDocument = new OvDocument([], [], new AliasHelper(), "test.ov");
     }
   });
 
   test("Create Empty OvDocument, expect no error", () => {
-    const document = new OvDocument([], [], new AliasHelper());
+    const document = new OvDocument([], [], new AliasHelper(), "test.ov");
     expect(document).not.toBeNull();
   });
 
   test("Create Empty OvDocument with initialized aliasHelper, expect no error", () => {
-    const document = new OvDocument([], [], aliasHelper);
+    const document = new OvDocument([], [], aliasHelper, "test.ov");
     expect(document).not.toBeNull();
   });
 
   test("Create Empty OvDocument with sample text, expect no error", () => {
-    const document = new OvDocument([], [], aliasHelper);
+    const document = new OvDocument([], [], aliasHelper, "test.ov");
     expect(document).not.toBeNull();
   });
 
@@ -51,7 +51,8 @@ describe("OvDocument Tests", () => {
     const document = new OvDocument(
       getListOfAllKnownAstElements(),
       [],
-      aliasHelper
+      aliasHelper,
+      "test.ov"
     );
     expect(document).not.toBeNull();
   });
@@ -60,7 +61,8 @@ describe("OvDocument Tests", () => {
     const document = new OvDocument(
       getListOfAllKnownAstElements(),
       [],
-      aliasHelper
+      aliasHelper,
+      "test.ov"
     );
     expect(document).not.toBeNull();
   });

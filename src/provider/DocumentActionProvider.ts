@@ -131,22 +131,18 @@ export class DocumentActionProvider extends Provider {
       return;
     }
 
-    return this.validateText(uri, document);
+    return this.validateText(uri, document.getText());
   }
 
-  private async validateText(
-    uri: string,
-    document: TextDocument
-  ): Promise<void> {
+  private async validateText(uri: string, documentText: string): Promise<void> {
     let apiResponse: LintingResponse | null = null;
-    let documentText: string = document.getText();
 
     const useSchema:
       | UseSchemaDataclass
       | undefined = SchemaProvider.parseSpecificSchema(
       documentText,
       this.server,
-      URI.parse(document.uri)
+      URI.parse(uri)
     );
 
     var schema = this.server.jsonSchema;
@@ -183,9 +179,9 @@ export class DocumentActionProvider extends Provider {
     }
 
     let ovDocument: OvDocument | undefined = this.generateDocumentWithAst(
-      apiResponse
+      apiResponse,
+      uri
     );
-
     if (!ovDocument) return;
 
     const diagnostics: Diagnostic[] = this.generateDiagnostics(
@@ -196,7 +192,7 @@ export class DocumentActionProvider extends Provider {
     if (diagnostics !== []) this.sendDiagnostics(uri, diagnostics);
     if (!ovDocument) return;
 
-    this.server.ovDocuments.addOrOverrideOvDocument(uri, ovDocument);
+    this.server.ovDocuments.addOrOverrideOvDocument(ovDocument);
     this.server.setGeneratedSchema(apiResponse);
     this.syntaxNotifier.sendTextMateGrammarIfNecessary(apiResponse);
 
@@ -267,7 +263,8 @@ export class DocumentActionProvider extends Provider {
    * @memberof DocumentActionProvider
    */
   private generateDocumentWithAst(
-    apiResponse: LintingResponse | null
+    apiResponse: LintingResponse | null,
+    uri: string
   ): OvDocument | undefined {
     if (
       !apiResponse ||
@@ -280,7 +277,8 @@ export class DocumentActionProvider extends Provider {
     return new OvDocument(
       apiResponse.$mainAstNode.$scopes,
       apiResponse.$mainAstNode.$declarations,
-      this.server.getAliasHelper()
+      this.server.getAliasHelper(),
+      uri
     );
   }
 
