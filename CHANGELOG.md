@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 - Goto Symbol for schema. This enables navigation to the used schema
 - Support for `workspace/symbol` request of the lsp
 
-## [0.1.4] - 2020-02-02
+## [0.1.5] - 2020-02-02
 
 - Bug Fixing
 
