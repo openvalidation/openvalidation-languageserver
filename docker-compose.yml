@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  openvalidation-language-server:
+    image: openvalidation-language-server:latest
+    build:
+      context: .
+    ports:
+      - '3010:3010'
+#      - '31057:31057' # exposes openvalidation rest api
