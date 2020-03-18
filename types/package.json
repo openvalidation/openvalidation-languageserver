@@ -18,7 +18,7 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "typescript": "^3.7.3",
-    "vscode-languageserver-protocol": "^3.14.1"
+    "typescript": "^3.8.3",
+    "vscode-languageserver-protocol": "^3.15.3"
   }
 }
