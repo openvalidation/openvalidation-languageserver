@@ -1,10 +1,6 @@
-import {
-  Diagnostic,
-  DiagnosticSeverity,
-  Range,
-  TextDocument,
-  TextDocumentChangeEvent
-} from "vscode-languageserver";
+import { NotificationEnum } from "ov-language-server-types";
+import { Diagnostic, DiagnosticSeverity, Range, TextDocument, TextDocumentChangeEvent } from "vscode-languageserver";
+import { URI } from "vscode-uri";
 import { OvDocument } from "../data-model/ov-document/OvDocument";
 import { UseSchemaNode } from "../data-model/syntax-tree/UseSchemaNode";
 import { SchemaProvider } from "../helper/SchemaProvider";
@@ -15,7 +11,6 @@ import { ICodeResponse } from "../rest-interface/response/ICodeResponse";
 import { LintingResponse } from "../rest-interface/response/LintingResponse";
 import { Provider } from "./Provider";
 import { SyntaxNotifier } from "./SyntaxNotifier";
-import { URI } from "vscode-uri";
 
 /**
  * Provider to handle every response which deals with documents.
@@ -140,10 +135,10 @@ export class DocumentActionProvider extends Provider {
     const useSchema:
       | UseSchemaDataclass
       | undefined = SchemaProvider.parseSpecificSchema(
-      documentText,
-      this.server,
-      URI.parse(uri)
-    );
+        documentText,
+        this.server,
+        URI.parse(uri)
+      );
 
     var schema = this.server.jsonSchema;
     if (!!useSchema) {
@@ -189,7 +184,8 @@ export class DocumentActionProvider extends Provider {
       useSchema
     );
 
-    if (diagnostics !== []) this.sendDiagnostics(uri, diagnostics);
+    this.sendApiResponseToClient(apiResponse, diagnostics);
+
     if (!ovDocument) return;
 
     this.server.ovDocuments.addOrOverrideOvDocument(ovDocument);
@@ -297,6 +293,14 @@ export class DocumentActionProvider extends Provider {
     this.server.connection.sendDiagnostics({
       uri: documentUri,
       diagnostics
+    });
+  }
+
+  private sendApiResponseToClient(apiResponse: LintingResponse, diagnostics: Diagnostic[]) {
+    this.server.connection.sendNotification(NotificationEnum.ParsingResult, {
+      variables: apiResponse.$mainAstNode.$declarations,
+      diagnostics: diagnostics,
+      parsedSchema: apiResponse.$schema
     });
   }
 }

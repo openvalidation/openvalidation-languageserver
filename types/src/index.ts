@@ -11,6 +11,7 @@ export enum NotificationEnum {
   GeneratedCode = "openVALIDATION/generatedCode",
   CommentKeywordChanged = "openVALIDATION/aliasesChanges",
   SemanticHighlighting = "openVALIDATION/semanticHighlighting",
+  ParsingResult = "openVALIDATION/parsingResult",
 
   // notifications from the client to the server
   CultureChanged = "openVALIDATION/cultureChanged",

@@ -4,10 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.6] - 2020-03-26
+
 ### Added
 
 - Goto Symbol for schema. This enables navigation to the used schema
 - Support for `workspace/symbol` request of the lsp
+- Server now sends the parsing-result in form of the schema, variables and diagnostics to the client
 
 ## [0.1.5] - 2020-02-02
 
