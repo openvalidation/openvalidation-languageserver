@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.7] - 2020-03-26
+
+### Fixed
+
+- Fixed usage of wrong version in languageserver-types
+
 ## [0.1.6] - 2020-03-26
 
 ### Added
