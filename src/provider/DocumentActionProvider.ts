@@ -183,9 +183,10 @@ export class DocumentActionProvider extends Provider {
       apiResponse,
       useSchema
     );
+    
+    if (diagnostics !== []) this.sendDiagnostics(uri, diagnostics);
 
     this.sendApiResponseToClient(apiResponse, diagnostics);
-
     if (!ovDocument) return;
 
     this.server.ovDocuments.addOrOverrideOvDocument(ovDocument);

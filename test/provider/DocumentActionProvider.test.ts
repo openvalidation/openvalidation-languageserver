@@ -134,4 +134,6 @@ describe("DocumentAction provider test", () => {
     provider["validateText"]("invalid", "Kommentar hallo");
     expect(provider).not.toBeNull();
   });
+
+  // TODO: Test, that we send diagnostics if we have some
 });
